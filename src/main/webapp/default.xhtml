@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:f="http://java.sun.com/jsf/core">
+    <h:body>
+    	
+    	<ui:composition template="template/common/commonLayout.xhtml">
+    	 
+    	 
+    	 	<ui:define name="content">
+    		    	<h:form id="form">
+ <f:loadBundle var="msg" basename="com.vfp.tres.messages"></f:loadBundle>
+ <h2>
+ <h:outputText value="#{msg['messages.message']}" />
+ </h2>
+ <br />
+  <h:outputText value="#{msg['massages.cmn.common.first.fname']}" />
+ <h:commandButton value="français"
+ action="#{manageLanguages.changeLanguage('fr')}"
+ rendered="#{manageLanguages.locale == 'en'}" />
+ <h:commandButton value="English"
+ action="#{manageLanguages.changeLanguage('en')}"
+ rendered="#{manageLanguages.locale == 'fr'}" />
+ </h:form>
+    		</ui:define>
+</ui:composition>
+    </h:body>
+
+</html>
