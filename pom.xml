@@ -78,7 +78,7 @@
  </dependencies>
  
  <build>
-  <finalName>jsfresourcebundle</finalName>
+  <finalName>vfpProject_v1</finalName>
  </build>
 
 </project>
