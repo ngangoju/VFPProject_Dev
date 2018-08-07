@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package tres.domain;
 
@@ -15,7 +11,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @MappedSuperclass
 public abstract class CommonDomain implements Serializable {
-private static final long serialVersionUID = -3333275582900585705L;
+private static final long serialVersionUID = -3333275582900585701L;
 public CommonDomain() {
 
   }

@@ -28,8 +28,15 @@ public class Sector implements  Serializable{
     @Column(name = "sectorId")
     private int sectorId;
     
-    @Column(name = "sectorName")
-    private String sectorName;
+    @Column(name = "sectorName_en")
+    private String sectorName_en;
+    
+    
+    @Column(name = "sectorName_fr")
+    private String sectorName_fr;
+    
+    @Column(name = "sectorName_rw")
+    private String sectorName_rw;
     
     @ManyToOne
     @JoinColumn(name = "distric")
@@ -43,13 +50,6 @@ public class Sector implements  Serializable{
         this.sectorId = sectorId;
     }
 
-    public String getSectorName() {
-        return sectorName;
-    }
-
-    public void setSectorName(String sectorName) {
-        this.sectorName = sectorName;
-    }
 
     public District getDistric() {
         return distric;
@@ -58,6 +58,30 @@ public class Sector implements  Serializable{
     public void setDistric(District distric) {
         this.distric = distric;
     }
+
+	public String getSectorName_en() {
+		return sectorName_en;
+	}
+
+	public void setSectorName_en(String sectorName_en) {
+		this.sectorName_en = sectorName_en;
+	}
+
+	public String getSectorName_fr() {
+		return sectorName_fr;
+	}
+
+	public void setSectorName_fr(String sectorName_fr) {
+		this.sectorName_fr = sectorName_fr;
+	}
+
+	public String getSectorName_rw() {
+		return sectorName_rw;
+	}
+
+	public void setSectorName_rw(String sectorName_rw) {
+		this.sectorName_rw = sectorName_rw;
+	}
     
     
     

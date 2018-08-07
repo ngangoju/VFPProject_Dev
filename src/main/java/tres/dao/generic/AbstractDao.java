@@ -633,7 +633,7 @@ configConnection();
         return null;
     }
 
-    public  boolean creatingNewTable() {
+    public   boolean creatingNewTable() {
         configConnection();
        // Session session = getMyCurrentSession();
 

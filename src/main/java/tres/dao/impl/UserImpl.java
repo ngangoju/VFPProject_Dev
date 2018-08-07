@@ -22,29 +22,31 @@ public class UserImpl extends AbstractDao<Long, Users> implements IUsers{
             Thread.currentThread().getStackTrace()[0].getClassName());
 
 public Users saveUsers(Users users) {
-	// TODO Auto-generated method stub
-	return null;
+	   return saveIntable(users);  
 }
 
 public List<Users> getListUsers() {
-	// TODO Auto-generated method stub
-	return null;
+	   return (List<Users>)(Object)getModelList(); 
 }
 
 public Users gettUserById(int userId, String primaryKeyclomunName) {
-	// TODO Auto-generated method stub
-	return null;
+	   return (Users) getModelById(userId,primaryKeyclomunName);	 
 }
 
 public Users UpdateUsers(Users users) {
-	// TODO Auto-generated method stub
-	return null;
+	 return updateIntable(users);
 }
 
 public Users getUsersWithQuery(String[] propertyName, Object[] value, String hqlStatement) {
-	// TODO Auto-generated method stub
-	return null;
+    try {
+        return (Users)getModelWithMyHQL(propertyName, value, hqlStatement); 
+    } catch (Exception ex) {
+        LOGGER.info("getUsersWithQuery  Query error ::::"+ ex.getMessage());
+    }
+    return null;
+  }
+
 }
 
 
-}
+

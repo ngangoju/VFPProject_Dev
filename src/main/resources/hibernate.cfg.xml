@@ -17,7 +17,8 @@
         <mapping class="tres.domain.UserCategory" />
         <mapping class="tres.domain.Users" />
         <mapping class="tres.domain.LoginHistoric" />
-        <mapping class="tres.domain.Department" />
+        <mapping class="tres.domain.Cell" />
+        <mapping class="tres.domain.Village" />
         
     </session-factory>
 </hibernate-configuration>

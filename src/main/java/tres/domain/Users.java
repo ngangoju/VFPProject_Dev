@@ -30,10 +30,13 @@ public class Users extends CommonDomain implements Serializable  {
     @Column(name = "userId")
     private int userId;
  
-    @Column(name = "userName",unique=true)
-    private String userName;
-    @Column(name = "password")
-    private String password;
+    /*this is for userName*/ 
+    @Column(name = "viewId",unique=true)
+    private String viewId;
+    
+   /*this is for pasword*/ 
+    @Column(name = "viewName")
+    private String viewName;
 
     @Column(name = "fname")
     private String fname;
@@ -76,20 +79,10 @@ public class Users extends CommonDomain implements Serializable  {
     
     
     @ManyToOne
-    @JoinColumn(name = "sector")
-    private Sector sector;
-    
-    @ManyToOne
-    @JoinColumn(name = "department")
-    private Department department;
-
-    public Sector getSector() {
-        return sector;
-    }
-
-    public void setSector(Sector sector) {
-        this.sector = sector;
-    }
+    @JoinColumn(name = "village")
+    private Village village;
+   
+   
     
    
     public int getUserId() {
@@ -100,21 +93,7 @@ public class Users extends CommonDomain implements Serializable  {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+ 
 
     public UserCategory getUserCategory() {
         return userCategory;
@@ -217,13 +196,31 @@ public class Users extends CommonDomain implements Serializable  {
         this.DateOfBirth = DateOfBirth;
     }
 
-    public Department getDepartment() {
-        return department;
-    }
+	public Village getVillage() {
+		return village;
+	}
 
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
+	public void setVillage(Village village) {
+		this.village = village;
+	}
+
+	public String getViewId() {
+		return viewId;
+	}
+
+	public void setViewId(String viewId) {
+		this.viewId = viewId;
+	}
+
+	public String getViewName() {
+		return viewName;
+	}
+
+	public void setViewName(String viewName) {
+		this.viewName = viewName;
+	}
+
+  
 
   
 
