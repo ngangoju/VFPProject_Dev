@@ -14,7 +14,7 @@ import tres.domain.Institution;
 public class ActivityImpl extends AbstractDao<Long, Activity> implements IActivity {
 
 	public Activity saveActivity(Activity activity) {
-		return saveIntable(activity);
+		return saveIntable(activity); 
 	}
 
 	public List<Activity> getListActivities() {

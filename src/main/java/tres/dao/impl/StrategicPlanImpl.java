@@ -14,7 +14,7 @@ import tres.domain.StrategicPlan;
 public class StrategicPlanImpl extends AbstractDao<Long, StrategicPlan> implements IStrategicPlan {
 
 	public StrategicPlan saveStrategicPlan(StrategicPlan strategicPlan) {
-		return saveIntable(strategicPlan);
+		return saveIntable(strategicPlan); 
 	}
 
 	public List<StrategicPlan> getListStrategicPlans() {

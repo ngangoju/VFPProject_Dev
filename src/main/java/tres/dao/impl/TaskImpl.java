@@ -13,7 +13,7 @@ import tres.domain.Task;
 public class TaskImpl extends AbstractDao<Long, Task> implements ITask {
 
 	public Task saveTask(Task task) {
-		return saveIntable(task);
+		return saveIntable(task); 
 	}
 
 	public List<Task> getListTasks() {
