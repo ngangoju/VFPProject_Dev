@@ -1,9 +1,5 @@
 package tres.domain;
 
-/**
- * author Junior
- **/
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,83 +12,87 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ *
+ * @author NGANGO
+ */
 @Entity
 @Table(name = "Activity")
 @NamedQuery(name = "Activity.findAll", query = "select r from Activity r order by v desc")
-public class Activity implements  Serializable{
-    
- private static final long serialVersionUID = 1L;
-@Id
-@GeneratedValue
-@Column(name = "ACTIVITY_ID")
-private int activityId;
+public class Activity implements Serializable {
 
-@Column(name = "description")
-private String description;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "ACTIVITY_ID")
+	private int activityId;
 
-@Column(name = "status")
-private String status;
+	@Column(name = "description")
+	private String description;
 
-@Column(name = "weight")
-private String weight;
+	@Column(name = "status")
+	private String status;
 
-@Column(name = "date")
-private Date date;
+	@Column(name = "weight")
+	private String weight;
 
-@ManyToOne
-@JoinColumn(name = "task")
-private Task task;
+	@Column(name = "date")
+	private Date date;
 
-public int getActivityId() {
-	return activityId;
-}
+	@ManyToOne
+	@JoinColumn(name = "task")
+	private Task task;
 
-public void setActivityId(int activityId) {
-	this.activityId = activityId;
-}
+	public int getActivityId() {
+		return activityId;
+	}
 
-public String getDescription() {
-	return description;
-}
+	public void setActivityId(int activityId) {
+		this.activityId = activityId;
+	}
 
-public void setDescription(String description) {
-	this.description = description;
-}
+	public String getDescription() {
+		return description;
+	}
 
-public String getStatus() {
-	return status;
-}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-public void setStatus(String status) {
-	this.status = status;
-}
+	public String getStatus() {
+		return status;
+	}
 
-public String getWeight() {
-	return weight;
-}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-public void setWeight(String weight) {
-	this.weight = weight;
-}
+	public String getWeight() {
+		return weight;
+	}
 
-public Date getDate() {
-	return date;
-}
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
 
-public void setDate(Date date) {
-	this.date = date;
-}
+	public Date getDate() {
+		return date;
+	}
 
-public static long getSerialversionuid() {
-	return serialVersionUID;
-}
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-public Task getTask() {
-	return task;
-}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
-public void setTask(Task task) {
-	this.task = task;
-}
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
 
 }

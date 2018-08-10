@@ -1,35 +1,32 @@
 package tres.dao.impl;
 
-/**
- * author Junior
- **/
-
 import java.util.List;
 
 import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IActivity;
 import tres.domain.Activity;
+import tres.domain.Institution;
 
-public class ActivityImpl extends  AbstractDao<Long, Activity> implements  IActivity {
+/**
+ *
+ * @author NGANGO
+ */
+public class ActivityImpl extends AbstractDao<Long, Activity> implements IActivity {
 
 	public Activity saveActivity(Activity activity) {
-		// TODO Auto-generated method stub
-		return null;
+		return saveIntable(activity);
 	}
 
 	public List<Activity> getListActivities() {
-		// TODO Auto-generated method stub
-		return null;
+		return (List<Activity>) (Object) getModelList();
 	}
 
 	public Activity getActivityById(int activityId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Activity) getModelById(activityId, primaryKeyclomunName);
 	}
 
 	public Activity UpdateActivity(Activity activity) {
-		// TODO Auto-generated method stub
-		return null;
+		return updateIntable(activity);
 	}
 
 }

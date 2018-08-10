@@ -1,35 +1,31 @@
 package tres.dao.impl;
 
-/**
- * author Junior
- **/
-
 import java.util.List;
 
+/**
+ *
+ * @author NGANGO
+ */
 import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.ITask;
 import tres.domain.Task;
 
-public class TaskImpl extends  AbstractDao<Long, Task> implements  ITask {
+public class TaskImpl extends AbstractDao<Long, Task> implements ITask {
 
 	public Task saveTask(Task task) {
-		// TODO Auto-generated method stub
-		return null;
+		return saveIntable(task);
 	}
 
 	public List<Task> getListTasks() {
-		// TODO Auto-generated method stub
-		return null;
+		return (List<Task>) (Object) getModelList();
 	}
 
 	public Task getTaskById(int taskId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Task) getModelById(taskId, primaryKeyclomunName);
 	}
-	
+
 	public Task UpdateTask(Task task) {
-		// TODO Auto-generated method stub
-		return null;
+		return updateIntable(task);
 	}
 
 }

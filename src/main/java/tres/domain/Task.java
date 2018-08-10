@@ -1,9 +1,5 @@
 package tres.domain;
 
-/**
- * author Junior
- **/
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,84 +12,88 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ *
+ * @author NGANGO
+ */
 @Entity
-@Table(name="Task")
+@Table(name = "Task")
 @NamedQuery(name = "Task.findAll", query = "select r from Task r order by v desc")
-public class Task implements  Serializable{
-    
- private static final long serialVersionUID = 1L;
-@Id
-@GeneratedValue
-@Column(name="taskId")
-private int taskId;
+public class Task implements Serializable {
 
-@Column(name="description")
-private String description;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "taskId")
+	private int taskId;
 
-@Column(name="startDate")
-private Date startDate;
+	@Column(name = "description")
+	private String description;
 
-@Column(name="endDate")
-private Date endDate;
+	@Column(name = "startDate")
+	private Date startDate;
 
-@ManyToOne
-@JoinColumn(name="subTask")
-private Task subTask;
+	@Column(name = "endDate")
+	private Date endDate;
 
-@ManyToOne
-@JoinColumn(name = "strategicPlan")
-private StrategicPlan strategicPlan;
+	@ManyToOne
+	@JoinColumn(name = "subTask")
+	private Task subTask;
 
-public int getTaskId() {
-	return taskId;
-}
+	@ManyToOne
+	@JoinColumn(name = "strategicPlan")
+	private StrategicPlan strategicPlan;
 
-public void setTaskId(int taskId) {
-	this.taskId = taskId;
-}
+	public int getTaskId() {
+		return taskId;
+	}
 
-public String getDescription() {
-	return description;
-}
+	public void setTaskId(int taskId) {
+		this.taskId = taskId;
+	}
 
-public void setDescription(String description) {
-	this.description = description;
-}
+	public String getDescription() {
+		return description;
+	}
 
-public Date getStartDate() {
-	return startDate;
-}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-public void setStartDate(Date startDate) {
-	this.startDate = startDate;
-}
+	public Date getStartDate() {
+		return startDate;
+	}
 
-public Date getEndDate() {
-	return endDate;
-}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
 
-public void setEndDate(Date endDate) {
-	this.endDate = endDate;
-}
+	public Date getEndDate() {
+		return endDate;
+	}
 
-public StrategicPlan getStrategicPlan() {
-	return strategicPlan;
-}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
 
-public Task getSubTask() {
-	return subTask;
-}
+	public StrategicPlan getStrategicPlan() {
+		return strategicPlan;
+	}
 
-public void setSubTask(Task subTask) {
-	this.subTask = subTask;
-}
+	public Task getSubTask() {
+		return subTask;
+	}
 
-public void setStrategicPlan(StrategicPlan strategicPlan) {
-	this.strategicPlan = strategicPlan;
-}
+	public void setSubTask(Task subTask) {
+		this.subTask = subTask;
+	}
 
-public static long getSerialversionuid() {
-	return serialVersionUID;
-}
+	public void setStrategicPlan(StrategicPlan strategicPlan) {
+		this.strategicPlan = strategicPlan;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 }
