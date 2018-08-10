@@ -17,7 +17,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+/**
+*
+* @author Emmanuel
+*/
 @Entity
 @Table(name = "Users")
 @NamedQuery(name = "Users.findAll",
@@ -81,9 +84,6 @@ public class Users extends CommonDomain implements Serializable  {
     @ManyToOne
     @JoinColumn(name = "village")
     private Village village;
-   
-   
-    
    
     public int getUserId() {
         return userId;

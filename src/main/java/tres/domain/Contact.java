@@ -32,6 +32,10 @@ public class Contact implements Serializable {
 	@JoinColumn(name = "institution")
 	private Institution institution;
 
+	@ManyToOne
+	@JoinColumn(name="user")
+	private Users user;
+	
 	public int getContactId() {
 		return contactId;
 	}
@@ -55,4 +59,13 @@ public class Contact implements Serializable {
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+	
 }

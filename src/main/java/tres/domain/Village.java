@@ -8,7 +8,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+/**
+*
+* @author Emmanuel
+*/
 @Entity
 @Table(name = "Village")
 @NamedQuery(name = "Village.findAll",

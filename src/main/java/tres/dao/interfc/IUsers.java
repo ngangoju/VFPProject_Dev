@@ -10,9 +10,9 @@ import tres.domain.Users;
 import java.util.List;
 
 /**
- *
- * @author RTAP4
- */
+*
+* @author Emmanuel
+*/
 public interface IUsers {
      public Users saveUsers(Users users);
         public List<Users> getListUsers();

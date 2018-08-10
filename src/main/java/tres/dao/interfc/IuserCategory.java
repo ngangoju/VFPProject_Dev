@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author RTAP4
+ * @author Emmanuel
  */
 public interface IuserCategory {
     public UserCategory saveUsercategory(UserCategory usercategory);

@@ -8,7 +8,10 @@ package tres.dao.interfc;
 
 import java.util.List;
 import tres.domain.Province;
-
+/**
+*
+* @author Emmanuel
+*/
 public interface IProvince {
   public Province saveProvince(Province province);
        public List<Province> getListProvinces();

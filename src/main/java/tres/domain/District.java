@@ -15,7 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+/**
+*
+* @author Emmanuel
+*/
 @Entity
 @Table(name = "District")
 @NamedQuery(name = "District.findAll", query = "SELECT r FROM District r order by v desc")

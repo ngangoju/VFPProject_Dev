@@ -6,7 +6,10 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.ICell;
 import tres.domain.Cell;
 
-
+/**
+*
+* @author Emmanuel
+*/
 
 public class CellImpl extends AbstractDao<Long, Cell> implements ICell {
 

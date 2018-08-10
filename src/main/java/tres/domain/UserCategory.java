@@ -12,7 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+/**
+*
+* @author Emmanuel
+*/
 @Entity
 @Table(name = "UserCategory")
 @NamedQuery(name = "UserCategory.findAll",

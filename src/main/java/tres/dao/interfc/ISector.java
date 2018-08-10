@@ -8,7 +8,10 @@ package tres.dao.interfc;
 
 import java.util.List;
 import tres.domain.Sector;
-
+/**
+*
+* @author Emmanuel
+*/
 public interface ISector {
     public Sector saveSector(Sector sector);
        public List<Sector> getListSectors();
