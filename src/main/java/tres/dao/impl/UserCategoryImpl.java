@@ -13,24 +13,28 @@ import java.util.List;
 
 /**
  *
- * @author RTAP4
+ * @author Emmanuel
  */
-public class UserCategoryImpl extends  AbstractDao<Long, UserCategory> implements  IuserCategory {
+public class UserCategoryImpl extends AbstractDao<Long, UserCategory> implements IuserCategory {
 
 	public UserCategory saveUsercategory(UserCategory usercategory) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return saveIntable(usercategory);
 	}
 
 	public List<UserCategory> getListUsercategory() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return (List<UserCategory>) (Object) getModelList();
+	}
+
+	public UserCategory getUserCategoryById(int usercatId, String primaryKeyColumn) {
+		return (UserCategory) getModelById(usercatId, primaryKeyColumn);
+
 	}
 
 	public UserCategory UpdateUsercategory(UserCategory usercategory) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return updateIntable(usercategory);
 	}
 
- 
 }

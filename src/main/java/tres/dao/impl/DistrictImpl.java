@@ -11,28 +11,31 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IDistrict;
 import tres.domain.District;
 
+/**
+ *
+ * @author Emmanuel
+ */
 
-public class DistrictImpl extends  AbstractDao<Long, District> implements  IDistrict{
+public class DistrictImpl extends AbstractDao<Long, District> implements IDistrict {
 
 	public District saveDistrict(District district) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return saveIntable(district);
 	}
 
 	public List<District> getListDistricts() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return (List<District>) (Object) getModelList();
 	}
 
 	public District getDistrictById(int districtId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return (District) getModelById(districtId, primaryKeyclomunName);
 	}
 
 	public District UpdateDistrict(District district) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+		return updateIntable(district);
+	}
 
 }
