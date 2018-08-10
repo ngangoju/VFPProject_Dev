@@ -12,31 +12,30 @@ import tres.dao.interfc.IProvince;
 import tres.dao.interfc.ISector;
 import tres.domain.Province;
 import tres.domain.Sector;
-
 /**
- *
- * @author Eric
- */
+*
+* @author Emmanuel
+*/
 public class SectorImpl extends  AbstractDao<Long, Sector> implements  ISector  {
 
 	public Sector saveSector(Sector sector) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return saveIntable(sector);
 	}
 
 	public List<Sector> getListSectors() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return (List<Sector>)(Object)getModelList();
 	}
 
 	public Sector getSectorById(int sectorId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return (Sector)getModelById(sectorId, primaryKeyclomunName);
 	}
 
 	public Sector UpdateSector(Sector sector) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return updateIntable(sector);
 	}
 
  
