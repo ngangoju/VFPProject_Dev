@@ -4,9 +4,9 @@
    <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3307/tresscore</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/tresscore</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">root</property>
+    <property name="hibernate.connection.password">x</property>
         <property name="hbm2ddl.auto">update</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.current_session_context_class">thread</property>
@@ -18,6 +18,8 @@
         <mapping class="tres.domain.Users" />
         <mapping class="tres.domain.LoginHistoric" />
         <mapping class="tres.domain.Cell" />
+        <mapping class="tres.domain.Village" />
+        <mapping class="tres.domain.Village" />
         <mapping class="tres.domain.Village" />
         
     </session-factory>
