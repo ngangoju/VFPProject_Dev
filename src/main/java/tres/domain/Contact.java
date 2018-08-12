@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Contact")
 @NamedQuery(name = "Contact.findAll", query = "SELECT r FROM Contact r order by v desc")
-public class Contact implements Serializable {
+public class Contact extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -28,9 +28,11 @@ public class Contact implements Serializable {
 	@Column(name = "contactDetails")
 	private String contactDetails;
 
-	@ManyToOne
-	@JoinColumn(name = "institution")
-	private Institution institution;
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "phone")
+	private String phone;
 
 	@ManyToOne
 	@JoinColumn(name="user")
@@ -52,13 +54,7 @@ public class Contact implements Serializable {
 		this.contactDetails = contactDetails;
 	}
 
-	public Institution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
-	}
+	
 
 	public Users getUser() {
 		return user;
@@ -67,5 +63,23 @@ public class Contact implements Serializable {
 	public void setUser(Users user) {
 		this.user = user;
 	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
+	
 	
 }

@@ -7,7 +7,7 @@
 package tres.dao.impl;
 
 import tres.dao.generic.AbstractDao;
-import tres.dao.interfc.IuserCategory;
+import tres.dao.interfc.IUserCategory;
 import tres.domain.UserCategory;
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Emmanuel
  */
-public class UserCategoryImpl extends AbstractDao<Long, UserCategory> implements IuserCategory {
+public class UserCategoryImpl extends AbstractDao<Long, UserCategory> implements IUserCategory {
 
 	public UserCategory saveUsercategory(UserCategory usercategory) {
 

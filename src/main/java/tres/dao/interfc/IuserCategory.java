@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Emmanuel
  */
-public interface IuserCategory {
+public interface IUserCategory {
     public UserCategory saveUsercategory(UserCategory usercategory);
         public List<UserCategory> getListUsercategory();
          public UserCategory UpdateUsercategory(UserCategory usercategory);

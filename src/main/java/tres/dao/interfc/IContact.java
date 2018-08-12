@@ -14,5 +14,5 @@ public interface IContact {
 
 	public Contact getContactById(int contactId, String primaryKeyclomunName);
 
-	public Contact UpdateInstitution(Contact contact);
+	public Contact UpdateContact(Contact contact);
 }

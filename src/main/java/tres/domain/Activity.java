@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -36,7 +38,8 @@ public class Activity implements Serializable {
 	@Column(name = "weight")
 	private String weight;
 
-	@Column(name = "date")
+	@Column(name = "creationDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
 	@ManyToOne
@@ -83,9 +86,6 @@ public class Activity implements Serializable {
 		this.date = date;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 
 	public Task getTask() {
 		return task;

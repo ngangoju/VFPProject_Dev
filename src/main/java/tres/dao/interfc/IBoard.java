@@ -14,9 +14,9 @@ import java.util.List;
 * @author Gwiza
 */
 public interface IBoard {
-     public Board saveUsers(Board board);
-        public List<Board> getListUsers();
-         public Board gettUserById(int userId,String primaryKeyclomunName);
-         public Board UpdateUsers(Board users);
-public Board getUsersWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
+     public Board saveBoards(Board board);
+        public List<Board> getListBoards();
+         public Board getBoardById(int boardId,String primaryKeyclomunName);
+         public Board UpdateBoard(Board board);
+public Board getBoardsWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
 }

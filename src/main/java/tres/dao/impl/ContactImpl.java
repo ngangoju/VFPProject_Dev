@@ -23,7 +23,7 @@ public class ContactImpl extends AbstractDao<Long, Contact> implements IContact 
 		return (Contact) getModelById(contactId, primaryKeyclomunName);
 	}
 
-	public Contact UpdateInstitution(Contact contact) {
+	public Contact UpdateContact(Contact contact) {
 		return updateIntable(contact);
 	}
 

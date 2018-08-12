@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -19,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Task")
 @NamedQuery(name = "Task.findAll", query = "select r from Task r order by v desc")
-public class Task implements Serializable {
+public class Task  extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -30,10 +32,12 @@ public class Task implements Serializable {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "startDate")
+	@Column(name = "startDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
 
-	@Column(name = "endDate")
+	@Column(name = "endDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
 
 	@ManyToOne
@@ -92,8 +96,6 @@ public class Task implements Serializable {
 		this.strategicPlan = strategicPlan;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+
 
 }

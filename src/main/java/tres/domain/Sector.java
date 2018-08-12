@@ -31,6 +31,10 @@ public class Sector implements  Serializable{
     @Column(name = "sectorId")
     private int sectorId;
     
+    @Column(name = "code")
+    private String code;
+    
+    
     @Column(name = "sectorName_en")
     private String sectorName_en;
     
@@ -84,6 +88,14 @@ public class Sector implements  Serializable{
 
 	public void setSectorName_rw(String sectorName_rw) {
 		this.sectorName_rw = sectorName_rw;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
     
     

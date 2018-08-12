@@ -30,6 +30,10 @@ public class District implements Serializable {
 	@Column(name = "districtId")
 	private int districtId;
 
+    
+    @Column(name = "code")
+    private String code;
+    
 	@Column(name = "districtName_en")
 	private String districtName_en;
 
@@ -81,6 +85,14 @@ public class District implements Serializable {
 
 	public void setDistrictName_rw(String districtName_rw) {
 		this.districtName_rw = districtName_rw;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	

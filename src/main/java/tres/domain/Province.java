@@ -28,6 +28,10 @@ public class Province implements  Serializable{
     @Column(name = "provenceId")
     private int provenceId;
     
+    
+    @Column(name = "code")
+    private String code;
+    
      @Column(name = "provenceName_rw")
     private String provenceName_rw;
      
@@ -67,6 +71,14 @@ public class Province implements  Serializable{
 
 	public void setProvenceName_fr(String provenceName_fr) {
 		this.provenceName_fr = provenceName_fr;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
    
