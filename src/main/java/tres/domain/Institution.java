@@ -11,9 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 /**
  * author James
- * */
+ */
 @Entity
 @Table(name = "Institution")
 @NamedQuery(name = "Institution.findAll", query = "SELECT r FROM Institution r order by v desc")
@@ -38,6 +39,9 @@ public class Institution implements Serializable {
 	@OneToOne
 	@JoinColumn
 	private Users institutionRepresenative;
+	@ManyToOne
+	@JoinColumn(name = "institution")
+	private Institution institution;
 
 	public Users getInstitutionRepresenative() {
 		return institutionRepresenative;
