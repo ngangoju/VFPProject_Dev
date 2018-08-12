@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "Board")
-@NamedQuery(name = "Users.findAll", query = "SELECT r FROM Board r order by boardId desc")
+@NamedQuery(name = "Board.findAll", query = "SELECT r FROM Board r order by boardId desc")
 public class Board extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
