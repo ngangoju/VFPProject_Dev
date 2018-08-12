@@ -17,184 +17,184 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 @Entity
 @Table(name = "Users")
-@NamedQuery(name = "Users.findAll",
-        query = "SELECT r FROM Users r order by userId desc")
-public class Users extends CommonDomain implements Serializable  {
+@NamedQuery(name = "Users.findAll", query = "SELECT r FROM Users r order by userId desc")
+public class Users extends CommonDomain implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue
-    @Column(name = "userId")
-    private int userId;
- 
-    /*this is for userName*/ 
-    @Column(name = "viewId",unique=true)
-    private String viewId;
-    
-   /*this is for pasword*/ 
-    @Column(name = "viewName")
-    private String viewName;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "userId")
+	private int userId;
 
-    @Column(name = "fname")
-    private String fname;
+	/* this is for userName */
+	@Column(name = "viewId", unique = true)
+	private String viewId;
 
-    @Column(name = "lname")
-    private String lname;
+	/* this is for pasword */
+	@Column(name = "viewName")
+	private String viewName;
 
-    @Column(name = "email")
-    private String email;
+	@Column(name = "fname")
+	private String fname;
 
-    @Column(name = "phone")
-    private String phone;
+	@Column(name = "lname")
+	private String lname;
 
-    @Column(name = "address")
-    private String address;
-    
-     @Column(name = "gender")
-    private String gender;
-     
-       @Column(name = "DateOfBirth", columnDefinition="DATETIME")
-   @Temporal(TemporalType.TIMESTAMP)
-    private Date DateOfBirth;
-     
-      @Column(name = "image")
-    private String image;
-    
-    @Column(name = "loginStatus")
-    private String loginStatus;
-    
-    @Column(name = "status")
-    private String status;
-    
-    @Column(name = "createdDate", columnDefinition="DATETIME")
-   @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+	@Column(name = "email")
+	private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "userCategory")
-    private UserCategory userCategory;
-    
-    
-    @ManyToOne
-    @JoinColumn(name = "village")
-    private Village village;
-   
-    public int getUserId() {
-        return userId;
-    }
+	@Column(name = "phone")
+	private String phone;
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+	@Column(name = "address")
+	private String address;
 
- 
+	@Column(name = "gender")
+	private String gender;
 
-    public UserCategory getUserCategory() {
-        return userCategory;
-    }
+	@Column(name = "DateOfBirth", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date DateOfBirth;
 
-    public void setUserCategory(UserCategory userCategory) {
-        this.userCategory = userCategory;
-    }
+	@Column(name = "image")
+	private String image;
 
-    public String getFname() {
-        return fname;
-    }
+	@Column(name = "loginStatus")
+	private String loginStatus;
 
-    public void setFname(String fname) {
-        this.fname = fname;
-    }
+	@Column(name = "status")
+	private String status;
 
-    public String getLname() {
-        return lname;
-    }
+	@Column(name = "createdDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
 
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
+	@ManyToOne
+	@JoinColumn(name = "userCategory")
+	private UserCategory userCategory;
 
-    public String getEmail() {
-        return email;
-    }
+	@ManyToOne
+	@JoinColumn(name = "village")
+	private Village village;
+	@ManyToOne
+	@JoinColumn(name = "board")
+	private Board board;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public int getUserId() {
+		return userId;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public UserCategory getUserCategory() {
+		return userCategory;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public void setUserCategory(UserCategory userCategory) {
+		this.userCategory = userCategory;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public String getFname() {
+		return fname;
+	}
 
-    public String getLoginStatus() {
-        return loginStatus;
-    }
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
 
-    public void setLoginStatus(String loginStatus) {
-        this.loginStatus = loginStatus;
-    }
+	public String getLname() {
+		return lname;
+	}
 
-    public String getStatus() {
-        return status;
-    }
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setUsers(Users us) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
+	public String getPhone() {
+		return phone;
+	}
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public String getImage() {
-        return image;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
+	public String getLoginStatus() {
+		return loginStatus;
+	}
 
-    public String getGender() {
-        return gender;
-    }
+	public void setLoginStatus(String loginStatus) {
+		this.loginStatus = loginStatus;
+	}
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public Date getDateOfBirth() {
-        return DateOfBirth;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public void setDateOfBirth(Date DateOfBirth) {
-        this.DateOfBirth = DateOfBirth;
-    }
+	public void setUsers(Users us) {
+		throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+																		// Tools | Templates.
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public Date getDateOfBirth() {
+		return DateOfBirth;
+	}
+
+	public void setDateOfBirth(Date DateOfBirth) {
+		this.DateOfBirth = DateOfBirth;
+	}
 
 	public Village getVillage() {
 		return village;
@@ -220,11 +220,4 @@ public class Users extends CommonDomain implements Serializable  {
 		this.viewName = viewName;
 	}
 
-  
-
-  
-
-
-    
-    
 }
