@@ -19,8 +19,13 @@
         <mapping class="tres.domain.LoginHistoric" />
         <mapping class="tres.domain.Cell" />
         <mapping class="tres.domain.Village" />
-        <mapping class="tres.domain.Village" />
-        <mapping class="tres.domain.Village" />
+        <mapping class="tres.domain.InstitutionRegistrationRequest" />
+		<mapping class="tres.domain.StrategicPlan" />
+		<mapping class="tres.domain.Task" />
+		<mapping class="tres.domain.Activity" />
+		<mapping class="tres.domain.Board" />
+		<mapping class="tres.domain.Contact" />
+		<mapping class="tres.domain.Institution" />
         
     </session-factory>
 </hibernate-configuration>
