@@ -27,6 +27,7 @@
 		<mapping class="tres.domain.Contact" />
 		<mapping class="tres.domain.Institution" />
 		<mapping class="tres.domain.Country" />
+               <mapping class="tres.domain. ListOfMenu" />
         
     </session-factory>
 </hibernate-configuration>
