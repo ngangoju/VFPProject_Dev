@@ -11,14 +11,16 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<h2>#{msg['massages.cmn.common.createTbale.header']}</h2>
+
+			   
+           <h2 >#{msg['massages.cmn.common.createTbale.header']}</h2>
 
 			<h:form>
 					<h:commandButton value="submit" type="submit"
 					action="#{createTables.cretaAllTable()}" />
 			</h:form>
-
-		</ui:define>
+              
+        	</ui:define>
 
 
 	</ui:composition>
