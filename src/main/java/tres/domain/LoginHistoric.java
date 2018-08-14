@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
 @Table(name = "LoginHistoric")
 @NamedQuery(name = "LoginHistoric.findAll",
         query = "SELECT r FROM LoginHistoric r order by historicId desc")
-public class LoginHistoric implements Serializable {
+public class LoginHistoric extends CommonDomain implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id

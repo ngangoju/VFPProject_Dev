@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "ListOfMenu")
 @NamedQuery(name = "ListOfMenu.findAll", query = "select r from ListOfMenu r order by menuId desc")
-public class ListOfMenu implements Serializable{
+public class ListOfMenu extends CommonDomain implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
@@ -44,7 +44,11 @@ public class ListOfMenu implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "listOfMenu")
 	private ListOfMenu listOfMenu;
-
+	
+	@ManyToOne
+	@JoinColumn(name = "menuGroup")
+	private MenuGroup menuGroup;
+	
 	public int getMenuId() {
 		return menuId;
 	}
@@ -99,6 +103,14 @@ public class ListOfMenu implements Serializable{
 
 	public void setDefaultMenu(String defaultMenu) {
 		this.defaultMenu = defaultMenu;
+	}
+
+	public MenuGroup getMenuGroup() {
+		return menuGroup;
+	}
+
+	public void setMenuGroup(MenuGroup menuGroup) {
+		this.menuGroup = menuGroup;
 	}
 	
 	
