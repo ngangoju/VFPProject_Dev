@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:body>
+<!--Created by Emmanuel -->
+	<ui:composition template="/template/common/commonLayout.xhtml">
+
+		<ui:define name="content">
+			<b:container>
+				<b:row>
+					<b:column>
+						<b:form style="padding:30px">
+							<b:panelGrid columns="2" col-md="8">
+								<b:column>
+									<b:formGroup>
+										<b:inputText fieldSize="sm" label="First name"
+											mediumScreen="10" />
+									</b:formGroup>
+								</b:column>
+								<b:column>
+									<b:formGroup>
+										<b:inputText fieldSize="sm" label="Last name"
+											mediumScreen="10" />
+									</b:formGroup>
+								</b:column>
+								<b:column>
+									<b:formGroup>
+										<b:dateTimePicker fieldSize="sm" label="DOB" mediumScreen="10" />
+									</b:formGroup>
+								</b:column>
+								<b:column>
+									<b:formGroup>
+										<b:selectOneMenu label="Gender" mediumScreen="10">
+											<f:selectItem itemLabel="Male" itemValue="Male" />
+											<f:selectItem itemLabel="Male" itemValue="Male" />
+										</b:selectOneMenu>
+									</b:formGroup>
+								</b:column>
+								<b:column>
+									<b:formGroup>
+										<b:selectOneMenu label="Country" mediumScreen="10">
+										</b:selectOneMenu>
+									</b:formGroup>
+								</b:column>
+								<b:column>
+									<b:formGroup>
+										<h:outputText value="Contact" style="margin-left:15px" />
+										<br />
+										<p:button icon="fa fa-plus" style="margin-left:15px"
+											type="button" onclick="PF('dlg1').show();" />
+									</b:formGroup>
+								</b:column>
+							</b:panelGrid>
+							<p:dialog header="Contact" widgetVar="dlg1" minHeight="40"
+								closable="true">
+								<b:form></b:form>
+
+							</p:dialog>
+						</b:form>
+					</b:column>
+				</b:row>
+			</b:container>
+		</ui:define>
+
+
+	</ui:composition>
+
+</h:body>
+
+</html>
