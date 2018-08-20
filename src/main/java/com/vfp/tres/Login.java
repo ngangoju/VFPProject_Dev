@@ -65,6 +65,8 @@ public class Login implements Serializable, DbConstant {
 				LOGGER.info("check username and password is correct:::");
 			} else {
 				isValidCredential = false;
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.validat.user.password"));
 				LOGGER.info("check username and password is incorrect:::");
 			}
 
@@ -132,7 +134,7 @@ public class Login implements Serializable, DbConstant {
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.validat.user.password"));
-			return "home.xhtml?faces-redirect=true";
+			return "";
 		}
 
 	}
