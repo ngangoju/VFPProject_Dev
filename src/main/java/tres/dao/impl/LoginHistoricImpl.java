@@ -8,37 +8,46 @@ package tres.dao.impl;
 import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.ILoginHistoric;
 import tres.domain.LoginHistoric;
+
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class LoginHistoricImpl extends AbstractDao<Long, LoginHistoric> implements ILoginHistoric {
-
+public class LoginHistoricImpl extends AbstractDao<Long, LoginHistoric> implements ILoginHistoric,Serializable {
+	private static final long  serialVersionUID = 1L;
 	public LoginHistoric saveLoginHistoric(LoginHistoric loginHistoric) {
-		// TODO Auto-generated method stub
-		return null;
+	    try {
+            return saveIntable(loginHistoric); //To change body of generated methods, choose Tools | Templates.
+        } catch (Exception ex) {
+            Logger.getLogger(LoginHistoricImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
 	}
 
 	public List<LoginHistoric> getListLoginHistoric() {
-		// TODO Auto-generated method stub
-		return null;
+		  return (List<LoginHistoric>) (Object) getModelList(); 
 	}
 
 	public LoginHistoric getLoginHistoricById(int loginHistoricId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+		   return (LoginHistoric) getModelById(loginHistoricId, primaryKeyclomunName);
 	}
 
 	public LoginHistoric UpdateLoginHistoric(LoginHistoric loginHistoric) {
-		// TODO Auto-generated method stub
-		return null;
+		   return updateIntable(loginHistoric);
 	}
 
 	public String getMachineIp() {
-		// TODO Auto-generated method stub
-		return null;
+	    String ip = null;
+        try {
+            InetAddress Ip = InetAddress.getLocalHost();
+            ip = Ip.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ip;
 	}
 
     

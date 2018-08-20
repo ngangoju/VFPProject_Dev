@@ -27,8 +27,6 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	@Column(name = "urlName", unique = true)
 	private String urlName;
 	
-	@Column(name = "defaultMenu")
-	private String defaultMenu;
 
 	@Column(name = "description")
 	private String description;
@@ -37,10 +35,6 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 
-	@ManyToOne
-	@JoinColumn(name = "userCategory")
-	private UserCategory userCategory;
-	
 	@ManyToOne
 	@JoinColumn(name = "listOfMenu")
 	private ListOfMenu listOfMenu;
@@ -81,14 +75,7 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 		this.creationDate = creationDate;
 	}
 
-	public UserCategory getUserCategory() {
-		return userCategory;
-	}
-
-	public void setUserCategory(UserCategory userCategory) {
-		this.userCategory = userCategory;
-	}
-
+	
 	public ListOfMenu getListOfMenu() {
 		return listOfMenu;
 	}
@@ -97,14 +84,7 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 		this.listOfMenu = listOfMenu;
 	}
 
-	public String getDefaultMenu() {
-		return defaultMenu;
-	}
-
-	public void setDefaultMenu(String defaultMenu) {
-		this.defaultMenu = defaultMenu;
-	}
-
+	
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
 	}

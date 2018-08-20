@@ -5,25 +5,17 @@
  */
 package tres.common;
 
-
-
-import tres.domain.Users;
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.inject.Inject;
+import java.util.Date;
 
 /**
  *
- * @author RTAP4
+ * @author Ngabo
  */
 public class Formating {
 
-    public String getCurrentMysqlDateFormt() {
+    public  static String getCurrentMysqlDateFormt() {
         try {
             java.util.Date dt = new java.util.Date();
             java.text.SimpleDateFormat sdf
@@ -34,7 +26,7 @@ public class Formating {
         }
         return null;
     }
-    public String getCurrentMysqlDateFormtNOTime() {
+    public static String getCurrentMysqlDateFormtNOTime() {
         try {
             java.util.Date dt = new java.util.Date();
             java.text.SimpleDateFormat sdf
@@ -45,7 +37,7 @@ public class Formating {
         }
         return null;
     }
-    public Date getCurrentDateFormtNOTime() {
+    public static Date getCurrentDateFormtNOTime() {
         java.text.SimpleDateFormat sdf
                     = new java.text.SimpleDateFormat("yyyy-MM-dd");
           java.util.Date dt = new java.util.Date();
@@ -60,7 +52,7 @@ public class Formating {
    return rdate;
 
     }
-public int daysBetween(Date d1, Date d2){
+public static int daysBetween(Date d1, Date d2){
              return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
      }
     public  Date getMysqlDateFormt(String dateValue) {
@@ -75,7 +67,7 @@ public int daysBetween(Date d1, Date d2){
         return datee;
     }
 
-    public  Date getMysqlTimeFormt(String timeValue) {
+    public static  Date getMysqlTimeFormt(String timeValue) {
         Date timee = null;
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss");
         try {
@@ -87,7 +79,7 @@ public int daysBetween(Date d1, Date d2){
         return timee;
     }
     
-    public  java.util.Date getFormtDateReturnMysqlFormat(String  inputDate) throws ParseException{
+    public static  java.util.Date getFormtDateReturnMysqlFormat(String  inputDate) throws ParseException{
            
 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 java.util.Date d=null;
@@ -103,7 +95,7 @@ return sdf.parse(sdf.format(d));
 
     }
     
-    public  Date getFormtTimeReturnMysqlFormat(String   inputTime) throws ParseException{
+    public static  Date getFormtTimeReturnMysqlFormat(String   inputTime) throws ParseException{
    SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm a");
 java.util.Date d2=null;
         try {

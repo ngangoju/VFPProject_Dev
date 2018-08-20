@@ -35,10 +35,13 @@ public class MenuGroup extends CommonDomain implements Serializable {
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
-
+	
+	
 	@ManyToOne
 	@JoinColumn(name = "userCategory")
 	private UserCategory userCategory;
+
+
 
 	public int getMenuGroupId() {
 		return menuGroupId;
@@ -79,7 +82,7 @@ public class MenuGroup extends CommonDomain implements Serializable {
 	public void setUserCategory(UserCategory userCategory) {
 		this.userCategory = userCategory;
 	}
-	
-	
+
+
 	
 }

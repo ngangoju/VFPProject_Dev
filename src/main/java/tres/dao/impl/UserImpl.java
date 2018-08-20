@@ -6,19 +6,21 @@
 
 package tres.dao.impl;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.logging.Logger;
 import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IUsers;
 import tres.domain.Users;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Emmanuel
  */
-public class UserImpl extends AbstractDao<Long, Users> implements IUsers {
-	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
+public class UserImpl extends AbstractDao<Long, Users> implements IUsers,Serializable {
+	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
+	private static final long  serialVersionUID = 1L;
 	public Users saveUsers(Users users) {
 		return saveIntable(users);
 	}
@@ -44,4 +46,11 @@ public class UserImpl extends AbstractDao<Long, Users> implements IUsers {
 		return null;
 	}
 
+	public String myNane() {
+		return"nBAGO ERIC";
+	}
+	
+	public UserImpl() {
+		
+	}
 }

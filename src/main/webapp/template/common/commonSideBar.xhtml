@@ -14,61 +14,42 @@
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
     
-         <span class="w3-left"><img src="resources/image/us.png" class="w3-circle" style="width:50%;margin: 5px" alt="userImage"/></span>
+         <span class="w3-left"><img src="#{loadUserInformationsController.getContextPath()}/resources/userImages/#{loadUserInformationsController.users.image}" class="w3-circle" style="width:50%;margin: 5px" alt="userImage"/></span>
         
-         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk">Test Fname</span></p> 
-         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk">Kigali Kimironko</span></p> 
-         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk">user category</span></p> 
-       
+         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText value="#{loadUserInformationsController.users.fname}"></h:outputText></span></p> 
+         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText value="#{loadUserInformationsController.users.lname}"></h:outputText></span></p> 
+         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText value="#{loadUserInformationsController.users.address}"></h:outputText></span></p> 
+       <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk" style="font-weight: bold;color:blue;"><h:outputText value="#{loadUserInformationsController.users.userCategory.usercategoryName}"></h:outputText></span></p> 
         </div>
       </div>
       <br/>
-      
+
       <!-- Accordion -->
-<div class="w3-card w3-round">
-							<div class="w3-white">
-								<button onclick="myFunction('Demo1')"
-									class="w3-button w3-block w3-theme-l1 w3-left-align">
-									<i class="glyphicon glyphicon-tasks fa-fw w3-margin-right"></i>
-									My Tasks
-								</button>
-								<div id="Demo1" class="w3-hide w3-container">
-
-									<div
-										style="margin: 4px; background-color: #edf8ff; color: withe; border-radius: 6px; color: white">
-										<a style="text-decoration: none; color: black"
-											class="glyphicon glyphicon-asterisk"
-											href="PageUrl">Task1</a>
-									</div>
-									<div
-										style="margin: 4px; background-color: #edf8ff; color: white; border-radius: 6px">
-										<a style="text-decoration: none; color: black"
-											class="glyphicon glyphicon-asterisk" href="PageUrl">Task2</a>
-									</div>
-									<div
-										style="margin: 4px; background-color: #edf8ff; color: white; border-radius: 6px">
-										<a style="text-decoration: none; color: black"
-											class="glyphicon glyphicon-asterisk"
-											href="PageUrl">Taks3</a>
-									</div>
-
-								</div>
-								<button onclick="myFunction('Demo2')"
-									class="w3-button w3-block w3-theme-l1 w3-left-align">
-									<i class="glyphicon glyphicon-file fa-fw w3-margin-right"></i>
-									My Report
-								</button>
-								<div id="Demo2" class="w3-hide w3-container">
-									<div
-										style="margin: 4px; background-color: #edf8ff; color: white; border-radius: 6px">
-										<a style="text-decoration: none; color: black"
-											class="glyphicon glyphicon-asterisk" href="PageUrl">Reports</a>
-									</div>
-
-								</div>
-
-							</div>
-				</div>
+  <div class="w3-card w3-round">
+		<div class="w3-white">
+			<ui:repeat value="#{loadUserInformationsController.getListMenuGroup()}" var="menuGp">
+						
+						<button onclick='myFunction("Demo#{menuGp.menuGroupId}")'
+								class="w3-button w3-block w3-theme-l1 w3-left-align">
+								<i class="glyphicon glyphicon-tasks fa-fw w3-margin-right"></i>
+									#{menuGp.menuGroupName}  
+						</button>
+					
+							<div id="Demo#{menuGp.menuGroupId}" class="w3-hide w3-container">
+								<ui:repeat value="#{loadUserInformationsController.menuAssignmentDetails}" var="menuAss">
+								   <h:panelGroup rendered="#{menuAss.listOfMenu.menuGroup.menuGroupId == menuGp.menuGroupId}">
+           								<div style="margin: 4px; background-color: #edf8ff; color: withe; border-radius: 6px; color: white">
+										       <a style="text-decoration: none; color: black"
+											   class="glyphicon glyphicon-asterisk"
+											   href="#{loadUserInformationsController.getContextPath()}#{menuAss.listOfMenu.urlName}">#{menuAss.listOfMenu.description} </a>
+									       </div>
+									         </h:panelGroup>
+									</ui:repeat>
+									
+							  </div>
+			  </ui:repeat>
+			</div>
+	</div>
 	
 	</ui:composition>
 

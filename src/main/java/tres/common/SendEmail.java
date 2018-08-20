@@ -9,7 +9,7 @@ package tres.common;
 import java.util.Date;
 import java.util.Properties;
 
- 
+import javax.inject.Inject;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -19,6 +19,8 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import tres.dao.impl.UserImpl;
 
 
 
@@ -61,18 +63,7 @@ public class SendEmail {
 	       
 	 
 	    }
-	       public static void main(String ... dddd){
-    String a="      \"dl_exam_question_validator_id\":34,\n" +
-"         \"l anguage\":\"RW\",\n" +
-"         \"user_id\":788,\n" +
-"         \"max_capacity\":180,\n" +
-"         \"available_seats\":179,\n" +
-"         \"used   _seats\":1,\n" +
-"         \"license_c ategory_name\":\"B\",\n" +
-"         \"exam_ce  nters\":[  ";
-            
-            a = a.replaceAll("\\s+","");
-            
-            System.out.println(a);
-    }
+    		
+	       
+	       
 }

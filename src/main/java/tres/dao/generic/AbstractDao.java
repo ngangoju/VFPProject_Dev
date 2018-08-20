@@ -148,7 +148,7 @@ int q = (Integer)session.createQuery(AnySQLQuerry).uniqueResult();
                 query.setParameter(i, value[i]);
             }
             if (!t.wasCommitted()) {
-                t.begin();
+            	  t.commit();
             }
           // session.close();
            // factory.close();
@@ -257,7 +257,7 @@ int i=0;
 
         } catch (HibernateException hibex) {
             if (!t.wasCommitted()) {
-                t.begin();
+            	  t.commit();
             }
            session.close();
             factory.close();
@@ -314,7 +314,7 @@ int i=0;
 
         } catch (HibernateException hibex) {
             if (!t.wasCommitted()) {
-                t.begin();
+            	  t.commit();
             }
            session.close();
             factory.close();

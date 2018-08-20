@@ -8,8 +8,8 @@ package tres.common;
 
 
 public  interface  DbConstant {
- public static final String USERNAME = "userName";   
- public static final String PASSWORD = "password";   
+ public static final String USERNAME = "viewId";   
+ public static final String PASSWORD = "viewName";   
  public static final String SELECT_USERS = "from Users";  
   public static final String SELECT_SECTORS = "from Sector";  
    public static final String SELECT_APPROVER = "from Approver"; 
@@ -50,6 +50,10 @@ public  interface  DbConstant {
  public static final String LIKE = "like";
  public static final String NEW = "New";
  public static final String APPOINTMENT_REQUEST = "APPOINTMENT REQUEST";
+ public static final String HOMEURL="/home.xhtml";
+ public static final String PUBLICPATH="/public/";
+ public static final String USERSESSION="userSession";
+ public static final String  JAVAFACERESOURCE="javax.faces.resource";
  
  
   
