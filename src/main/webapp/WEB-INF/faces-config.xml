@@ -8,6 +8,10 @@
    <base-name>com.vfp.tres.messages</base-name>
    <var>msg</var>
   </resource-bundle>
+    <resource-bundle>
+   <base-name>com.vfp.tres.validation</base-name>
+   <var>regex</var>
+  </resource-bundle>
  </application>
 </faces-config>
 

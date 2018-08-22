@@ -44,7 +44,7 @@
               <div style="height:340px;overflow: auto;">
             <div class="col-md-5" >
                                    <h3>#{msg['massages.cmn.common.how.we.are']}</h3>
-                                   <img src="resources/image/home1.jpg" style="width:100%;"/>
+                               <img src="resources/image/home1.jpg" style="width:100%;"/>
                                </div>
                   <br/>
                                <div class="col-md-5" >
@@ -108,8 +108,9 @@
                                         <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">User Name</label>
                                         <div class="col-md-4 col-sm-4 col-xs-4">
                                           
-							     <h:inputText  class="form-control" id="username" value="#{login.users.viewId}" required="true"  requiredMessage="#{msg['requiered.username.message']}"
-							     />
+							     <h:inputText  class="form-control" id="username" value="#{login.users.viewId}" required="true"    requiredMessage="#{msg['requiered.username.message']}"/>
+							          
+							  
 									
                                         </div>
                                      <h:message errorClass="errorMsg1" for="username"></h:message>
@@ -119,11 +120,11 @@
                                     <div class="form-group row">
                                         <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">Password</label>
                                         <div class="col-md-4 col-sm-4 col-xs-4">
-                                           	<h:inputSecret class="form-control" id="password" value="#{login.users.viewName}"></h:inputSecret>
+                                           	<h:inputSecret class="form-control"  required="true" requiredMessage="#{msg['requiered.username.password']}" id="password" value="#{login.users.viewName}"></h:inputSecret>
 		
                                         </div>
                                         
-                                      <h:message  for="password"></h:message>
+                                      <h:message errorClass="errorMsg1"  for="password"></h:message>
                                     </div> 
 
                                     <div class="form-group row">
