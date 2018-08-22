@@ -17,19 +17,23 @@
  
   
   <a href="javascript:void(0)"  data-toggle="modal" data-target=".bs-example-modal-lg"  class="glyphicon glyphicon-lock w3-bar-item w3-button  w3-right w3-padding-large w3-hover-white" title="Sign In">
-    <span>SIGN IN</span>
+    <span>#{msg['label.common.sign.in']}</span>
   </a>
   
    <a href="#" class="glyphicon glyphicon-edit w3-bar-item w3-button  w3-right w3-padding-large w3-hover-white" title="Sign Up">
-    <span>SIGN UP</span>
+    <span>#{msg['label.common.sign.up']}</span>
   </a>
  
  <div class="w3-dropdown-hover w3-right">
-    <button class="w3-button w3-padding-large" title="Internationalisation"><span class="w3-badge w3-right w3-small w3-green">English</span></button>     
+    <button class="w3-button w3-padding-large" title="Internationalisation"><span class="w3-badge w3-right w3-small w3-green">#{msg['label.language.massage.anglais']}</span></button>     
     <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
-      <a href="#" class="w3-bar-item w3-button"><img src="resources/image/en.png" style="width:10%;" alt="en"/>English</a>
-      <a href="#" class="w3-bar-item w3-button"><img src="resources/image/rw.jpg" style="width:10%;"/>Kinyarwanda</a>
-      <a href="#" class="w3-bar-item w3-button"><img src="resources/image/fr.png" style="width:10%;"/>Frensh</a>
+     <h:form id="form">
+ <f:loadBundle var="msg"
+  basename="messages"></f:loadBundle>
+      <h:commandLink action="#{manageLanguages.changeLanguage('en')}"  value="#{msg['label.language.massage.anglais']}"  class="w3-bar-item w3-button"><img src="resources/image/en.png" style="width:10%;" alt="en"/></h:commandLink>
+      <h:commandLink action="#{manageLanguages.changeLanguage('rw')}" value="#{msg['label.language.massage.kinya']}" class="w3-bar-item w3-button"><img src="resources/image/rw.jpg" style="width:10%;"/></h:commandLink>
+      <h:commandLink action="#{manageLanguages.changeLanguage('fr')}" value="#{msg['label.language.massage.french']}"  class="w3-bar-item w3-button"><img src="resources/image/fr.png" style="width:10%;"/></h:commandLink>
+   </h:form>
     </div>
   </div>
 

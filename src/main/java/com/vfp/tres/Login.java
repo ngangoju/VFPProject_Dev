@@ -3,6 +3,7 @@ package com.vfp.tres;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Logger;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -53,6 +54,8 @@ public class Login implements Serializable, DbConstant {
 
 	public String validateUsernamePassword() {
 		LOGGER.info(CLASSNAME + ":::step one");
+		HttpSession session = SessionUtils.getSession();
+		
 		Users user = new Users();
 		try {
 
@@ -86,9 +89,9 @@ public class Login implements Serializable, DbConstant {
 		}
 		// Check if the account is locked
 		if (isValidCredential) {
-
+			
 			try {
-				HttpSession session = SessionUtils.getSession();
+			
 
 				LOGGER.info(CLASSNAME + "LoginHistoric saving start for machine ip" + historic.getMachineIp());
 
@@ -116,7 +119,7 @@ public class Login implements Serializable, DbConstant {
 				JSFMessagers.addInfoMessage("com.server.side.internal.error");
 				ex.printStackTrace();
 			}
-
+		
 			if (user!=null && user.getUserCategory().getUserCatid() == 1) {// ADMIN
 
 				LOGGER.info(CLASSNAME + ":::ADMIN ");

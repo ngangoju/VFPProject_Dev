@@ -48,11 +48,7 @@
                                </div>
                   <br/>
                                <div class="col-md-5" >
-    <p>Project description Project description Project
-     description Project description Project description
-      Project description Project description Project description
-      Project description Project description Project description
-  </p>
+    <p>#{msg['vfp.project.description']}</p>
                       
                                </div>
               </div>  
@@ -71,7 +67,7 @@
                     <div class="modal-content">
                         <div class="panel panel-info" >
                             <!-- Default panel contents -->
-                            <div class="panel-heading"><center><span class="glyphicon glyphicon-lock"></span>Provide your Account Credentials to Login</center></div>
+                            <div class="panel-heading"><center><span class="glyphicon glyphicon-lock"></span>#{msg['message.header.login.info']}</center></div>
                             <div class="panel-body">
 
 	<h:form>
@@ -105,7 +101,7 @@
                                     <div style="display:none"> <input id="lat" name="lat" type="text" />
                                         <input id="long" name="long"  type="text" /></div>
                                     <div class="form-group row">
-                                        <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">User Name</label>
+                                        <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">#{msg['label.message.username']}</label>
                                         <div class="col-md-4 col-sm-4 col-xs-4">
                                           
 							     <h:inputText  class="form-control" id="username" value="#{login.users.viewId}" required="true"    requiredMessage="#{msg['requiered.username.message']}"/>
@@ -118,7 +114,7 @@
 
 
                                     <div class="form-group row">
-                                        <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">Password</label>
+                                        <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">#{msg['label.message.password']}</label>
                                         <div class="col-md-4 col-sm-4 col-xs-4">
                                            	<h:inputSecret class="form-control"  required="true" requiredMessage="#{msg['requiered.username.password']}" id="password" value="#{login.users.viewName}"></h:inputSecret>
 		
@@ -130,7 +126,7 @@
                                     <div class="form-group row">
                                         <label for="todate" class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
                                         <div class="col-sm-4">
-                                        	<h:commandButton class="btn btn-info btn-xlg btn-block" action="#{login.validateUsernamePassword}" value="Login" />
+                                        	<h:commandButton class="btn btn-info btn-xlg btn-block" action="#{login.validateUsernamePassword}" value="#{msg['label.subimit.message.login']}" />
                                         
                                         </div>
                                         <span class="text-danger" id="customeordererror"></span>

@@ -76,6 +76,8 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+
+	
 		
 	}
 @SuppressWarnings({ "unchecked" })

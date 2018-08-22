@@ -11,13 +11,24 @@
   <ui:composition>
 
 <!-- Navbar -->
-
+<span style="display: none">#{manageLanguages.getLang()}</span>
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class=""></i></a>
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="glyphicon glyphicon-home fa fa-home w3-margin-right"></i></a>
  
-  
-     	<h:form> <span style="color:white"><h:commandLink class="w3-bar-item w3-button  w3-right w3-padding-large w3-hover-white"  action="#{login.logout}" value="Logout"></h:commandLink></span></h:form>
- 
+    
+     	<h:form> <span style="color:white"><h:commandLink class="w3-bar-item w3-button  w3-right w3-padding-large w3-hover-white"  action="#{login.logout}" value="#{msg['label.logout.message']}"></h:commandLink></span></h:form>
+<div class="w3-dropdown-hover w3-right">
+    <button class="w3-button w3-padding-large" title="Internationalisation"><span class="w3-badge w3-right w3-small w3-green">#{manageLanguages.getLocale()}</span></button>     
+    <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
+     <h:form id="form">
+ <f:loadBundle var="msg"
+  basename="messages"></f:loadBundle>
+      <h:commandLink action="#{manageLanguages.changeLanguage('en')}"  value="#{msg['label.language.massage.anglais']}"  class="w3-bar-item w3-button"><img src="#{loadUserInformationsController.getContextPath()}/resources/image/en.png" style="width:10%;" alt="en"/></h:commandLink>
+      <h:commandLink action="#{manageLanguages.changeLanguage('rw')}" value="#{msg['label.language.massage.kinya']}" class="w3-bar-item w3-button"><img src="#{loadUserInformationsController.getContextPath()}/resources/image/rw.jpg" style="width:10%;"/></h:commandLink>
+      <h:commandLink action="#{manageLanguages.changeLanguage('fr')}" value="#{msg['label.language.massage.french']}"  class="w3-bar-item w3-button"><img src="#{loadUserInformationsController.getContextPath()}/resources/image/fr.png" style="width:10%;"/></h:commandLink>
+   </h:form>
+    </div>
+  </div>
  
 
 
