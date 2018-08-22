@@ -5,11 +5,11 @@
  http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
  <application>
   <resource-bundle>
-   <base-name>com.vfp.tres.messages</base-name>
+   <base-name>messages</base-name>
    <var>msg</var>
   </resource-bundle>
     <resource-bundle>
-   <base-name>com.vfp.tres.validation</base-name>
+   <base-name>validation</base-name>
    <var>regex</var>
   </resource-bundle>
  </application>
