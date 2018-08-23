@@ -18,7 +18,7 @@
     
      	<h:form> <span style="color:white"><h:commandLink class="w3-bar-item w3-button  w3-right w3-padding-large w3-hover-white"  action="#{login.logout}" value="#{msg['label.logout.message']}"></h:commandLink></span></h:form>
 <div class="w3-dropdown-hover w3-right">
-    <button class="w3-button w3-padding-large" title="Internationalisation"><span class="w3-badge w3-right w3-small w3-green">#{manageLanguages.getLocale()}</span></button>     
+    <button class="w3-button w3-padding-large" title="Internationalisation"><span class="w3-badge w3-right w3-small w3-green">#{msg[manageLanguages.getLocale()]}</span></button>     
     <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
      <h:form id="form">
  <f:loadBundle var="msg"

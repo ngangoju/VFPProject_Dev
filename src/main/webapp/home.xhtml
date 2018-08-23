@@ -12,8 +12,28 @@
 
 		<ui:define name="content">
 
-    
-    
+    	<h:form>
+    <h:panelGroup layout="block" rendered="#{not login.valid and not facesContext.validationFailed}">
+<ul>
+<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+<li class="alert alert-danger" style="list-style: none;background-color:#FF2400;color:white">
+<center><h:outputText value="#{facesMessage.summary}" escape="false" /></center>
+</li>
+</ui:repeat>
+</ul>
+</h:panelGroup>
+
+
+
+
+ <h:panelGroup layout="block" rendered="#{login.valid and  not facesContext.validationFailed}">
+        <ul>
+        <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+            <li class="alert alert-success"><h:outputText
+            value="#{facesMessage.summary}" escape="false" /></li>
+        </ui:repeat>
+        </ul>
+    </h:panelGroup>
   <div class="w3-col m6" >
     
       <div class="w3-row-padding">
@@ -52,7 +72,7 @@
                       
                                </div>
               </div>  
-               <div> <a href="patientRegistrationForm" class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['massages.cmn.common.partnership']}<b><span style="background-color: red;color: white" class="badge"></span></b></a></div>             
+               <div> <a href="default.xhtml" class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['massages.cmn.common.partnership']}<b><span style="background-color: red;color: white" class="badge"></span></b></a></div>             
             </div>
            
           </div>
@@ -70,35 +90,7 @@
                             <div class="panel-heading"><center><span class="glyphicon glyphicon-lock"></span>#{msg['message.header.login.info']}</center></div>
                             <div class="panel-body">
 
-	<h:form>
-	
-			
-<h:panelGroup layout="block" rendered="#{not login.valid and not facesContext.validationFailed}">
-<ul>
-<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
-<li class="alert alert-danger">
-<h:outputText value="#{facesMessage.summary}" escape="false" />
-</li>
-</ui:repeat>
-</ul>
-</h:panelGroup>
-
-
-
-
- <h:panelGroup layout="block" rendered="#{login.valid and  not facesContext.validationFailed}">
-        <ul>
-        <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
-            <li class="alert alert-success"><h:outputText
-            value="#{facesMessage.summary}" escape="false" /></li>
-        </ui:repeat>
-        </ul>
-    </h:panelGroup>
-    
-    
-        
-        
-                                    <div style="display:none"> <input id="lat" name="lat" type="text" />
+							 <div style="display:none"> <input id="lat" name="lat" type="text" />
                                         <input id="long" name="long"  type="text" /></div>
                                     <div class="form-group row">
                                         <label for="todate" class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black">#{msg['label.message.username']}</label>
@@ -131,7 +123,7 @@
                                         </div>
                                         <span class="text-danger" id="customeordererror"></span>
                                     </div>
-                              	</h:form>
+                              
                                
 
                             </div>
@@ -140,7 +132,7 @@
                     </div>
                 </div>
             </div>
-              
+              	</h:form>
         	</ui:define>
 	</ui:composition>
 

@@ -11,24 +11,11 @@
          
     <h:body>
     	
-    	<ui:composition template="template/common/commonLayout.xhtml">
+    	<ui:composition template="templateHome/common/commonLayout.xhtml">
     	 
     	 
     	 	<ui:define name="content">
-    		    	<h:form id="form">
- <f:loadBundle var="msg" basename="messages"></f:loadBundle>
- <h2>
- <h:outputText value="#{msg['messages.message']}" />
- </h2>
- <br />
-  <h:outputText value="#{msg['massages.cmn.common.first.fname']}" />
- <h:commandButton value="français"
- action="#{manageLanguages.changeLanguage('fr')}"
- rendered="#{manageLanguages.locale == 'en'}" />
- <h:commandButton value="English"
- action="#{manageLanguages.changeLanguage('en')}"
- rendered="#{manageLanguages.locale == 'fr'}" />
- </h:form>
+<center ><h1>partnership description here</h1></center>
     		</ui:define>
 </ui:composition>
     </h:body>
