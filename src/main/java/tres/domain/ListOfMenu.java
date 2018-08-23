@@ -23,6 +23,9 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	@GeneratedValue
 	@Column(name = "menuId")
 	private int menuId;
+	
+	@Column(name = "urlCode", unique = true)
+	private String urlCode;
 
 	@Column(name = "urlName", unique = true)
 	private String urlName;

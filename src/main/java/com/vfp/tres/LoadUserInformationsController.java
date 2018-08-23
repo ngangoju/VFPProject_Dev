@@ -84,6 +84,7 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 public List<MenuGroup>getListMenuGroup(){
 
 	try {
+		LOGGER.info("user::::>>>"+users.getUserCategory());
 		menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"},new Object[] {ACTIVE,users.getUserCategory()}, "MenuGroup", "menuGroupId asc");
 	} catch (Exception e) {
 		setValid(false);

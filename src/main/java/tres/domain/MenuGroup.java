@@ -24,7 +24,8 @@ public class MenuGroup extends CommonDomain implements Serializable {
 	@Column(name = "menuGroupId")
 	private int menuGroupId;
 
-	
+	@Column(name = "groupMenuCode", unique = true)
+	private String groupMenuCode;
 	
 	@Column(name = "defaulGrouptMenu")
 	private String defaulGrouptMenu;
@@ -81,6 +82,14 @@ public class MenuGroup extends CommonDomain implements Serializable {
 
 	public void setUserCategory(UserCategory userCategory) {
 		this.userCategory = userCategory;
+	}
+
+	public String getGroupMenuCode() {
+		return groupMenuCode;
+	}
+
+	public void setGroupMenuCode(String groupMenuCode) {
+		this.groupMenuCode = groupMenuCode;
 	}
 
 
