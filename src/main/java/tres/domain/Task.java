@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "Task")
 @NamedQuery(name = "Task.findAll", query = "select r from Task r order by v desc")
-public class Task  extends CommonDomain implements Serializable {
+public class Task extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -29,12 +29,19 @@ public class Task  extends CommonDomain implements Serializable {
 	@Column(name = "taskId")
 	private int taskId;
 
+	@Column(name = "taskName")
+	private String taskName;
+
 	@Column(name = "description")
 	private String description;
 
 	@Column(name = "startDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
+
+	@Column(name = "dueDate", columnDefinition = "DUETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dueDate;
 
 	@Column(name = "endDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -72,6 +79,14 @@ public class Task  extends CommonDomain implements Serializable {
 		this.startDate = startDate;
 	}
 
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
+
 	public Date getEndDate() {
 		return endDate;
 	}
@@ -96,6 +111,12 @@ public class Task  extends CommonDomain implements Serializable {
 		this.strategicPlan = strategicPlan;
 	}
 
+	public String getTaskName() {
+		return taskName;
+	}
 
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
 
 }
