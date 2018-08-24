@@ -6,28 +6,40 @@ insert into usercategory values(3,'Institution Representative');
 
 insert into usercategory values(4,'Superviser');
 
-insert into users values(0,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Mugabo','M','us.png','Jean','online','active','admin',md5('admin'),null,1,null);
+insert into users values(5,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Mugabo','M','us.png','Jean','online','active','admin',md5('admin'),null,1,null);
 
-insert into users values(0,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Kabera','M','us.png','Tito','online','active','staff',md5('admin'),null,2,null);
+insert into users values(6,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Kabera','M','us.png','Tito','online','active','staff',md5('admin'),null,2,null);
 
-insert into users values(0,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Mucyo','M','us.png','Ange','online','active','rep',md5('admin'),null,3,null);
+insert into users values(7,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Mucyo','M','us.png','Ange','online','active','rep',md5('admin'),null,3,null);
 
-insert into users values(0,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Manzi','M','us.png','Aline','online','active','super',md5('admin'),null,4,null);
+insert into users values(8,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Manzi','M','us.png','Aline','online','active','super',md5('admin'),null,4,null);
 
-insert into menugroup values(0,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',1);
+insert into menugroup values(3,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',1,'M001');
 
-insert into menugroup values(0,'admin',now(),'active',now(),now(),'admin',now(),'Reports','Reports',1);
+insert into menugroup values(4,'admin',now(),'active',now(),now(),'admin',now(),'Reports','Reports',1,'M002');
 
-insert into listofmenu values(0,'admin',now(),'active',now(),now(),'admin',now(),'Users List','/menu/ListOfUsers.xhtml',null,1);
+insert into listofmenu values(8,'admin',now(),'active',now(),now(),'admin',now(),'Users List','/menu/ListOfUsers.xhtml',null,3,'Url01');
 
-insert into listofmenu values(0,'admin',now(),'active',now(),now(),'admin',now(),'Login Users List','/menu/ListOfLoginUsers.xhtml',null,1);
+insert into listofmenu values(9,'admin',now(),'active',now(),now(),'admin',now(),'Login Users List','/menu/ListOfLoginUsers.xhtml',null,3,'Url02');
 
 SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='menuassignment';
 
-insert  menuassignment values(0,'admin',now(),'active',now(),now(),'admin',1,1,1);
+insert  menuassignment values(11,'admin',now(),'active',now(),now(),'admin',8,8,1);
 
-insert  menuassignment values(0,'admin',now(),'active',now(),now(),'admin',null,2,1);
+insert  menuassignment values(12,'admin',now(),'active',now(),now(),'admin',null,9,1);
 
 ==================BY Ngabo Eric=====================
 
 
+insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,3,'Url03');
+insert  menuassignment values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
+
+insert into listofmenu values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,3,'Url04');
+
+insert  menuassignment values(14,'admin',now(),'active',now(),now(),'admin',null,11,1);
+
+insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml',null,3,'Url05');
+
+insert  menuassignment values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
+
+=================BY Emmanuel Siborurema========================
