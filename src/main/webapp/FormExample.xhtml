@@ -57,7 +57,7 @@
             <h:selectOneMenu id="categoryId"  styleClass="form-control" required="true" value="formSampleController.users.lname" requiredMessage="#{msg['category.requiered.message']}"  >
                 <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true"   />
                 <f:selectItems value="#{formSampleController.menuGroupDetails}" var="option" itemValue="#{option}" itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
-           <!--  <a4j:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox()}" render="ReasonPanel"/>-->
+            <f:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox('Eric')}" render="ReasonPanel"/>
             </h:selectOneMenu>
                       </div>
                 <h:message for="categoryId" styleClass="help-block"></h:message>

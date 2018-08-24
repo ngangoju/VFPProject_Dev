@@ -81,9 +81,9 @@ public class FormSampleController implements Serializable, DbConstant {
 		JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 		
 	}
-	public void changeSelectBox() {
+	public void changeSelectBox(String name) {
 		
-		LOGGER.info("Ajax is working Fine::::::");
+		LOGGER.info("Ajax is working with listener::::::"+name);
 	}
 
 	public String getCLASSNAME() {
