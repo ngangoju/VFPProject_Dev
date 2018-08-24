@@ -10,7 +10,7 @@
        xmlns:b="http://bootsfaces.net/ui">
          
     <h:body>
-    	
+  
     	<ui:composition template="templateHome/common/commonLayout.xhtml">
     	 
     	 
@@ -19,7 +19,7 @@
                         <!-- Default panel contents -->
                         <div class="panel-heading" ><span style="color: #737373;font-size: 10pt">Fields marked with an asterisk <span style="color:red">(*)</span> are mandatory.</span><center ></center></div>
                         <div class="panel-body" style=" border: 0px solid blue;margin-top: 4px; height: 550px;font-family: Open Sans sans-serif !important;font-size: 14px !important; ">
-                          
+                    
 
     <h:form >
 						<h:panelGroup layout="block"
@@ -81,11 +81,12 @@
      </h:panelGroup> 
      
      
-     <h:panelGroup id="fromDatePanel" layout="block">             
+     <h:panelGroup id="fromDatePanel" layout="block"> 
+             
            <div class="form-group row">
             <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black">#{msg['form.sample.name']}<span style="color:red">*</span></label>
              <div class="col-md-6 col-sm-6 col-xs-6">
-              <h:inputText locale="#{facesContext.viewRoot.locale}" id="from_dob_date_id" binding="#{from_dob_date_id}" class="form-control" escape="true" value="#{formSampleController.users.dateOfBirth}"
+              <h:inputText locale="#{facesContext.viewRoot.locale}" autocomplete="off" id="from_dob_date_id" binding="#{from_dob_date_id}" class="form-control" escape="true" value="#{formSampleController.users.dateOfBirth}"
                maxlength="35" required="true" converterMessage="#{msg['validation.message.DATE_FORMAT']}" requiredMessage="#{msg['dob.message']}">
                <f:convertDateTime type="date" dateType="short" pattern="dd/MM/yyyy" />
                 <f:validateLength maximum="35" />
@@ -95,9 +96,11 @@
                 $('input[id*="from_dob_date_id"]').datepicker({
                     changeMonth: true,
                     changeYear: true,
+                    maxDate: 0,
+                    //minDate: 0,
                     dateFormat: "dd/mm/yy",
                     yearRange: "-100:+0",
-                    buttonImage: "/resources/images/calendar.png"
+                    buttonImage: "resources/image/calendar1.png"
                 });
             });
             </script>
@@ -105,6 +108,8 @@
       <h:message for="from_dob_date_id" styleClass="help-block"></h:message>
       </div> 
   </h:panelGroup>   
+  
+
   
   <h:panelGroup  id="surnamePanl" layout="block">                       
        <div class="form-group row">
