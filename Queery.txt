@@ -55,8 +55,8 @@ insert into listofmenu values(14,'admin',now(),'active',now(),now(),'admin',now(
 insert into listofmenu values(15,'admin',now(),'active',now(),now(),'admin',now(),'Create Activities','/menu/Activity.xhtml',null,13,'url13');
 
 
-insert  menuassignment values(10,'admin',now(),'active',now(),now(),'admin',null,9,4);
-insert  menuassignment values(21,'admin',now(),'active',now(),now(),'admin',null,12,3);
+insert  menuassignment values(10,'admin',now(),'active',now(),now(),'admin',null,13,4);
+insert  menuassignment values(21,'admin',now(),'active',now(),now(),'admin',null,14,3);
 insert  menuassignment values(25,'admin',now(),'active',now(),now(),'admin',null,15,2);
 
 ==================BY Ngango Junior=====================
