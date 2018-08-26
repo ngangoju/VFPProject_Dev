@@ -50,8 +50,8 @@ insert into menugroup values(7,'admin',now(),'active',now(),now(),'admin',now(),
 insert into menugroup values(11,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',3,'M014');
 insert into menugroup values(13,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',2,'M015');
 
-insert into listofmenu values(9,'admin',now(),'active',now(),now(),'admin',now(),'Create Tasks','/menu/Task.xhtml',null,7,'url07');
-insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(),'Create Strategic Plan','/menu/StrategicPlan.xhtml',null,11,'url11');
+insert into listofmenu values(13,'admin',now(),'active',now(),now(),'admin',now(),'Create Tasks','/menu/Task.xhtml',null,7,'url07');
+insert into listofmenu values(14,'admin',now(),'active',now(),now(),'admin',now(),'Create Strategic Plan','/menu/StrategicPlan.xhtml',null,11,'url11');
 insert into listofmenu values(15,'admin',now(),'active',now(),now(),'admin',now(),'Create Activities','/menu/Activity.xhtml',null,13,'url13');
 
 
