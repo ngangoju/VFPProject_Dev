@@ -73,7 +73,9 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 	
 	
+	public void changeUser() {
 	
+	}
 public  String saveContact() {
 	if (users == null) {
 		users = new Users();

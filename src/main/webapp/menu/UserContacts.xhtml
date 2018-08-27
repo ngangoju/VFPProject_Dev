@@ -108,7 +108,7 @@
 								   <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="userContactController.userId" requiredMessage="#{msg['category.requiered.message']}"  >
                 <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="true"  />
                 <f:selectItems value="#{userContactController.usersDetails}" var="option" itemValue="#{option.userId}" itemLabel="#{option.fname}" itemLabelEscaped="true" />
-            <f:ajax event="change" execute="@this"  listener="changeUser()"/>
+            <f:ajax event="change" execute="@this"  listener="userContactController.changeUser()"/>
             </h:selectOneMenu>
 
 							</div>
