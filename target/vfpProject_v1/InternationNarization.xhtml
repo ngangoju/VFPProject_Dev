@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:f="http://java.sun.com/jsf/core"
+ xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+ <title>VFP tres</title>
+</h:head>
+<h:body>
+ <h:form id="form">
+ <f:loadBundle var="msg"
+  basename="messages"></f:loadBundle>
+ <h2>
+ <h:outputText value="#{msg['massages.message']}" />
+ </h2>
+ <br />
+ <h:commandButton value="français"
+ action="#{manageLanguages.changeLanguage('fr')}"
+ rendered="#{manageLanguages.locale == 'en'}" />
+ <h:commandButton value="English"
+ action="#{manageLanguages.changeLanguage('en')}"
+ rendered="#{manageLanguages.locale == 'fr'}" />
+ </h:form>
+</h:body>
+</html>

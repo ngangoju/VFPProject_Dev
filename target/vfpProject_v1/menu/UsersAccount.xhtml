@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:body>
+
+	<ui:composition template="/template/common/commonLayout.xhtml">
+
+		<ui:define name="content">
+			<h:form>
+				<div class="panel panel-info">
+					<!-- Default panel contents -->
+					<div class="panel-heading">
+						<center>
+							<span class="glyphicon glyphicon-user"></span>#{msg['message.header.usersAccount.info']}
+						</center>
+					</div>
+					<div class="panel-body">
+
+						<div style="display: none">
+							<input id="lat" name="lat" type="text" /> <input id="long"
+								name="long" type="text" />
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['massages.cmn.common.first.fname']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control" id="fname" required="true"
+									requiredMessage="#{msg['requiered.fname.message']}" />
+
+
+
+							</div>
+							<h:message errorClass="errorMsg1" for="fname"></h:message>
+						</div>
+
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['massages.cmn.common.last.lname']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control" id="lname" required="true"
+									requiredMessage="#{msg['requiered.lname.message']}" />
+							</div>
+							<h:message errorClass="errorMsg1" for="lname"></h:message>
+						</div>
+
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.gender']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13"
+									id="gender" required="true"
+									requiredMessage="#{msg['requiered.gender.message']}">
+									<f:selectItem itemLabel="Male" itemValue="Male" />
+									<f:selectItem itemLabel="Female" itemValue="Female" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="gender"></h:message>
+						</div>
+
+
+						<div class="form-group row">
+							<label class="col-md-4 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.photo']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<p:fileUpload mode="simple" id="pict" skinSimple="true"
+									required="true"
+									requiredMessage="#{msg['requiered.picture.message']}" />
+
+							</div>
+							<h:message errorClass="errorMsg1" for="pict"></h:message>
+						</div>
+
+
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.addr']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control" id="add" required="true"
+									requiredMessage="#{msg['requiered.address.message']}" />
+							</div>
+							<h:message errorClass="errorMsg1" for="add"></h:message>
+						</div>
+						<h:panelGroup id="fromDatePanel" layout="block">
+							<div class="form-group row">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.dob']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText locale="#{facesContext.viewRoot.locale}"
+										autocomplete="off" id="from_dob_date_id"
+										binding="#{from_dob_date_id}" class="form-control"
+										escape="true"
+										value="#{formSampleController.users.dateOfBirth}"
+										maxlength="35" required="true"
+										converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+										requiredMessage="#{msg['dob.message']}">
+										<f:convertDateTime type="date" dateType="short"
+											pattern="dd/MM/yyyy" />
+										<f:validateLength maximum="35" />
+									</h:inputText>
+									<script>
+										$(function() {
+											$('input[id*="from_dob_date_id"]')
+													.datepicker(
+															{
+																changeMonth : true,
+																changeYear : true,
+																maxDate : 0,
+																//minDate: 0,
+																dateFormat : "dd/mm/yy",
+																yearRange : "-100:+0",
+																buttonImage : "resources/image/calendar1.png"
+															});
+										});
+									</script>
+								</div>
+								<h:message for="from_dob_date_id" styleClass="help-block"></h:message>
+							</div>
+						</h:panelGroup>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.username']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control" id="uname" required="true"
+									type="date"
+									requiredMessage="#{msg['requiered.username.message']}" />
+							</div>
+							<h:message errorClass="errorMsg1" for="uname"></h:message>
+						</div>
+
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.password']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control" id="pwd" required="true"
+									type="date"
+									requiredMessage="#{msg['requiered.username.password']}" />
+							</div>
+							<h:message errorClass="errorMsg1" for="pwd"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.catname']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13" id="cat"
+									required="true"
+									requiredMessage="#{msg['requiered.categoryname.message']}">
+									<!-- List of usercategory  goes here -->
+									<f:selectItems itemLabel="#" itemValue="#" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="cat"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.province']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13"
+									id="prov" required="true"
+									requiredMessage="#{msg['requiered.province.message']}">
+									<!-- List of province goes here -->
+									<f:selectItems itemLabel="#" itemValue="#" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="prov"></h:message>
+						</div>
+
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.district']}</label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13"
+									id="dist" required="true"
+									requiredMessage="#{msg['requiered.district.message']}">
+									<!-- List of district goes here -->
+									<f:selectItems itemLabel="#" itemValue="#" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="dist"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.sector']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13"
+									id="sect" required="true"
+									requiredMessage="#{msg['requiered.sector.message']}">
+									<!-- List of sector goes here -->
+									<f:selectItems itemLabel="#" itemValue="#" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="sect"></h:message>
+						</div>
+
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.cell']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13" id="cel"
+									required="true"
+									requiredMessage="#{msg['requiered.cel.message']}">
+									<!-- List of cell goes here -->
+									<f:selectItems itemLabel="#" itemValue="#" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="cel"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.village']}<span
+									style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<b:selectOneMenu class="form-control" mediumScreen="13" id="vil"
+									required="true"
+									requiredMessage="#{msg['requiered.village.message']}">
+									<!-- List of village goes here -->
+									<f:selectItems itemLabel="#" itemValue="#" />
+								</b:selectOneMenu>
+
+							</div>
+							<h:message errorClass="errorMsg1" for="vil"></h:message>
+						</div>
+						<div class="form-group row">
+							<label for="todate"
+								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+							<div class="col-sm-4">
+								<h:commandButton class="btn btn-info btn-xlg btn-block"
+									value="#{msg['label.subimit.message.submit']}" />
+
+							</div>
+							<span class="text-danger" id="customeordererror"></span>
+						</div>
+
+					</div>
+
+				</div>
+			</h:form>
+
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>
