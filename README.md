@@ -1,2 +1,0 @@
-# VFPProject_Dev
-VFP
