@@ -14,13 +14,13 @@ insert into users values(7,'admin',now(),'active',now(),now(),'none',now(),'Kiga
 
 insert into users values(8,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Manzi','M','us.png','Aline','online','active','super',md5('admin'),null,4,null);
 
-insert into menugroup values(3,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',1,'M001');
+insert into menugroup values(3,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M001','My Task',1);
 
-insert into menugroup values(4,'admin',now(),'active',now(),now(),'admin',now(),'Reports','Reports',1,'M002');
+insert into menugroup values(4,'admin',now(),'active',now(),now(),'admin',now(),'Reports','M002','Reports',1);
 
-insert into listofmenu values(8,'admin',now(),'active',now(),now(),'admin',now(),'Users List','/menu/ListOfUsers.xhtml',null,3,'Url01');
+insert into listofmenu values(8,'admin',now(),'active',now(),now(),'admin',now(),'Users List','/menu/ListOfUsers.xhtml','Url01',null,3);
 
-insert into listofmenu values(9,'admin',now(),'active',now(),now(),'admin',now(),'Login Users List','/menu/ListOfLoginUsers.xhtml',null,3,'Url02');
+insert into listofmenu values(9,'admin',now(),'active',now(),now(),'admin',now(),'Login Users List','/menu/ListOfLoginUsers.xhtml','Url02',null,3);
 
 SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='menuassignment';
 
@@ -31,14 +31,14 @@ insert  menuassignment values(12,'admin',now(),'active',now(),now(),'admin',null
 ==================BY Ngabo Eric=====================
 
 
-insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,3,'Url03');
+insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml','Url03',null,3);
 insert  menuassignment values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
 
-insert into listofmenu values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,3,'Url04');
+insert into listofmenu values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml','Url04',null,3);
 
 insert  menuassignment values(14,'admin',now(),'active',now(),now(),'admin',null,11,1);
 
-insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml',null,3,'Url05');
+insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml','Url05',null,3);
 
 insert  menuassignment values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
 
@@ -46,13 +46,13 @@ insert  menuassignment values(15,'admin',now(),'active',now(),now(),'admin',null
 
 
 
-insert into menugroup values(7,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',4,'M013');
-insert into menugroup values(11,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',3,'M014');
-insert into menugroup values(13,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','My Task',2,'M015');
+insert into menugroup values(7,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M013','My Task',4);
+insert into menugroup values(11,'admin',now(),'active',now(),now(),'admin',now(),'My Tasusks','M014','My Task',3);
+insert into menugroup values(13,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M015','My Task',2);
 
-insert into listofmenu values(13,'admin',now(),'active',now(),now(),'admin',now(),'Create Tasks','/menu/Task.xhtml',null,7,'url07');
-insert into listofmenu values(14,'admin',now(),'active',now(),now(),'admin',now(),'Create Strategic Plan','/menu/StrategicPlan.xhtml',null,11,'url11');
-insert into listofmenu values(15,'admin',now(),'active',now(),now(),'admin',now(),'Create Activities','/menu/Activity.xhtml',null,13,'url13');
+insert into listofmenu values(13,'admin',now(),'active',now(),now(),'admin',now(),'Create Tasks','url07','/menu/Task.xhtml',null,7);
+insert into listofmenu values(14,'admin',now(),'active',now(),now(),'admin',now(),'Create Strategic Plan','url11','/menu/StrategicPlan.xhtml',null,11);
+insert into listofmenu values(15,'admin',now(),'active',now(),now(),'admin',now(),'Create Activities','url13','/menu/Activity.xhtml',null,13);
 
 
 insert  menuassignment values(10,'admin',now(),'active',now(),now(),'admin',null,13,4);
@@ -60,4 +60,11 @@ insert  menuassignment values(21,'admin',now(),'active',now(),now(),'admin',null
 insert  menuassignment values(25,'admin',now(),'active',now(),now(),'admin',null,15,2);
 
 ==================BY Ngango Junior=====================
+
+
+insert into listofmenu values(16,'admin',now(),'active',now(),now(),'admin',now(),'Create Board','url08','/menu/board.xhtml',null,11);
+insert  menuassignment values(26,'admin',now(),'active',now(),now(),'admin',null,16,3);
+
+==================BY Gwiza Erick=====================
+
 
