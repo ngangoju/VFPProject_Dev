@@ -5,10 +5,12 @@ package tres.dao.interfc;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
+
 import tres.domain.Contact;
 
 public interface IContact {
-	public Contact saveContact(Contact contact);
+	public Contact saveContact(Contact contact) throws HibernateException;
 
 	public List<Contact> getListContacts();
 
