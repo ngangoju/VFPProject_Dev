@@ -42,6 +42,13 @@ insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(
 
 insert  menuassignment values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
 
+===>>We need to perform update query for those who have already perform the above query about urlName:/menu/UserAccount.xhtml
+
+update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=10;
+
+===>>>The reason for this it's bcse the Menu for New User is not working for you so update your urlname.
+
+
 =================BY Emmanuel Siborurema========================
 
 
