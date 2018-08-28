@@ -16,7 +16,7 @@
     <h:panelGroup layout="block" rendered="#{not login.valid and not facesContext.validationFailed}">
 <ul>
 <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
-<li class="alert alert-danger" style="list-style: none;background-color:#FF2400;color:white">
+<li class="alert alert-danger" style="list-style: none;background-color:#FF2400;color:white;margin-left: -3%">
 <center><h:outputText value="#{facesMessage.summary}" escape="false" /></center>
 </li>
 </ui:repeat>

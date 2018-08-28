@@ -15,22 +15,16 @@
 
 		<ui:define name="content">
 			<h:form>
-
-				<div class="panel panel-info">
-					<!-- Default panel contents -->
-					<div class="panel-heading">
-						<center>
-							<span class="glyphicon glyphicon-save"></span>#{msg['message.header.contactDetails.info']}
-						</center>
-					</div>
-					<div class="panel-body">
-					
-						<h:panelGroup layout="block"
+<div class="form-group row">
+							
+							<div class="col-md-12 col-sm-12 col-xs-12">
+							<!--error massage  -->
+							<h:panelGroup  layout="block"
 							rendered="#{not userContactController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li class="alert alert-danger"
+									<li class="alert"
 										style="list-style: none; background-color: #FF2400; color: white">
 										<center>
 											<h:outputText value="#{facesMessage.summary}" escape="false" />
@@ -39,18 +33,34 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						
-					<h:panelGroup layout="block"
+						<!--success massage  -->
+						<h:panelGroup  layout="block"
 							rendered="#{userContactController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li  style="list-style: none;" class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
+									var="facesMessage">	
+									<li  style="list-style: none; background-color:#32CD32; color: white;margin-left:-4.9%" class="alert"><center><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-<span style="color: #737373;font-size: 10pt">Fields marked with an asterisk <span style="color:red">(*)</span> are mandatory.</span>
+							</div>
+							
+						</div>
+				<div class="panel panel-info">
+					<!-- Default panel contents -->
+					<div class="panel-heading">
+						<center>
+							<span class="glyphicon glyphicon-save"></span>#{msg['message.header.contactDetails.info']}
+						</center>
+					</div>
+					<div class="panel-body">
+					<!-- Success and error massages from server -->
+					
+						
+						
+					
+			<span style="color: #737373;font-size: 10pt">Fields marked with an asterisk <span style="color:red">(*)</span> are mandatory.</span>
 						<div style="display: none">
 							<input id="lat" name="lat" type="text" /> <input id="long"
 								name="long" type="text" />
@@ -99,21 +109,19 @@
 							</div>
 							<h:message errorClass="errorMsg1" for="phone"></h:message>
 						</div>
-						
-						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['label.message.userInfo']}<span
-									style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
-								   <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="userContactController.userId" requiredMessage="#{msg['category.requiered.message']}"  >
-                <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="true"  />
-                <f:selectItems value="#{userContactController.usersDetails}" var="option" itemValue="#{option.userId}" itemLabel="#{option.fname}" itemLabelEscaped="true" />
-            <f:ajax event="change" execute="@this"  listener="userContactController.changeUser()"/>
-            </h:selectOneMenu>
-
-							</div>
-							<h:message errorClass="errorMsg1" for="userinfo"></h:message>
-						</div>					
+		<h:panelGroup id="userInfoPanel" layout="block">    
+			<div class="form-group row">
+				<label class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black" >#{msg['label.message.userInfo']}<span style="color: red">*</span></label>
+		         <div class="col-md-4 col-sm-4 col-xs-4">
+			        <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="#{userContactController.userIdNumber}" requiredMessage="#{msg['category.requiered.message']}"  >
+                		<f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="false"  />
+                        <f:selectItems value="#{userContactController.usersDetails}" var="option" itemValue="#{option.userId}" itemLabel="#{option.fname} #{option.lname}" itemLabelEscaped="true"  />
+            		   <!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+                    </h:selectOneMenu>
+				  </div>
+				<h:message errorClass="errorMsg1" for="userinfo"></h:message>
+			</div>
+		</h:panelGroup>					
 						<div class="form-group row">
 							<label for="todate"
 								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>

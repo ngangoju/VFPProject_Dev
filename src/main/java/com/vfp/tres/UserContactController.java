@@ -21,7 +21,6 @@ import tres.common.SessionUtils;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Contact;
-import tres.domain.MenuGroup;
 import tres.domain.Users;
 
 
@@ -37,7 +36,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private Contact contact;
 	private Users users;
 	private Users usersSession;
-	private int userId;
+	private  int   userIdNumber;
 	private List<Users> usersDetails = new ArrayList<Users>();
 	/*class injection*/
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -59,41 +58,35 @@ public class UserContactController implements Serializable, DbConstant {
 			users = new Users();
 		}
 		
+		
 		try {
-			usersDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","status"},new Object[] {ACTIVE,ACTIVE}, "Users", "fname asc");
+			usersDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","status"},new Object[] {ACTIVE,ACTIVE}, "Users", "userId desc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-
 	
 		
 	}
 	
 	
-	public void changeUser() {
-	
-	}
+
 public  String saveContact() {
-	if (users == null) {
-		users = new Users();
-	}
-	usersImpl.gettUserById(userId,"userId" );
-	LOGGER.info(CLASSNAME+":::Contact Details start"+userId);
 	try {
 		contact.setCreatedBy(usersSession.getViewId());
 		contact.setCrtdDtTime(timestamp);
 		contact.setGenericStatus(ACTIVE);
 		contact.setUpDtTime(timestamp);
-		contact.setUser(usersImpl.gettUserById(userId,"userId" ));
+		contact.setUser(usersImpl.gettUserById(userIdNumber, "userId"));
 		contact.setUpdatedBy(usersSession.getViewId());
 	contactImpl.saveContact(contact);
 	JSFMessagers.resetMessages();
 	setValid(true);
 	JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
 	LOGGER.info(CLASSNAME+":::Contact Details is saved");
+	clearContactFuileds();
 	return"";
 	}catch(HibernateException e) {
 		LOGGER.info(CLASSNAME+":::Contact Details is fail with HibernateException  error");
@@ -105,6 +98,10 @@ public  String saveContact() {
 		return"";	
 	}
 	
+}
+private void clearContactFuileds() {
+	contact=new Contact();
+	usersDetails=null;
 }
 
 	public String getCLASSNAME() {
@@ -140,6 +137,7 @@ public  String saveContact() {
 	}
 
 	public List<Users> getUsersDetails() {
+	
 		return usersDetails;
 	}
 
@@ -185,14 +183,19 @@ public  String saveContact() {
 
 
 
-	public int getUserId() {
-		return userId;
+	public int getUserIdNumber() {
+		return userIdNumber;
 	}
 
 
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserIdNumber(int userIdNumber) {
+		this.userIdNumber = userIdNumber;
 	}
-	
+
+
+
+
+
+
 }

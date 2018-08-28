@@ -28,10 +28,10 @@ public class Contact extends CommonDomain implements Serializable {
 	@Column(name = "contactDetails")
 	private String contactDetails;
 
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	private String email;
 
-	@Column(name = "phone")
+	@Column(name = "phone", unique = true)
 	private String phone;
 
 	@ManyToOne
