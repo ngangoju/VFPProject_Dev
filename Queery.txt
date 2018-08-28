@@ -31,7 +31,7 @@ insert  menuassignment values(12,'admin',now(),'active',now(),now(),'admin',null
 ==================BY Ngabo Eric=====================
 
 
-insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml','Url03',null,3);
+insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UsersAccount.xhtml','Url03',null,3);
 insert  menuassignment values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
 
 insert into listofmenu values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml','Url04',null,3);
