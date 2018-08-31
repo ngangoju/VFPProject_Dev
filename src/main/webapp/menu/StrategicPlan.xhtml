@@ -23,7 +23,7 @@
 
     <h:form >
 						<h:panelGroup layout="block"
-							rendered="#{not formSampleController.valid and not facesContext.validationFailed}">
+							rendered="#{not strategicPlanController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -38,15 +38,16 @@
 						</h:panelGroup>
 						
 					<h:panelGroup layout="block"
-							rendered="#{formSampleController.valid and  not facesContext.validationFailed}">
+							rendered="#{strategicPlanController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li class="alert alert-success"><h:outputText
+									<li style="list-style: none; background-color:#32CD32; color: white;margin-left:-4.9%" class="alert alert-success"><h:outputText
 											value="#{facesMessage.summary}" escape="false" /></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
+					
 						<fieldset>
       
        <legend>Strategic Plan Registration </legend>
@@ -56,7 +57,7 @@
              <div class="form-group row">
                 <label for="todate" class="col-md-4 col-sm-4 col-xs-4 control-label" style="color: black">#{msg['form.strategicPlan.details']}<span style="color:red">*</span> </label>
                   <div class="col-md-5 col-sm-5 col-xs-5">
-           <h:inputTextarea id="descriptionId"  styleClass="form-control" value="#{formSampleController.users.address}"  maxlength="150" required="true" requiredMessage="#{msg['plan.required.message']}" validatorMessage="#{msg['error.address.maxlength']}">
+           <h:inputTextarea id="descriptionId"  styleClass="form-control" value="#{strategicPlanController.strategicPlan.details}"  maxlength="150" required="true" requiredMessage="#{msg['plan.required.message']}" validatorMessage="#{msg['error.address.maxlength']}">
            <f:validateLength maximum="150" />
           </h:inputTextarea>
                  </div>
@@ -73,7 +74,7 @@
               <div class="form-group row">
                      <label for="todate" class="col-md-4 col-sm-4 col-xs-4 control-label" style="color: black"></label>
                         <div class="col-md-5 col-sm-5 col-xs-5">
-                         <h:commandButton class="btn btn-info btn-xlg btn-block" action="#{formSampleController.saveData}" value="#{msg['label.submit.message.save']}" />
+                         <h:commandButton class="btn btn-info btn-xlg btn-block" action="#{strategicPlanController.savePlan}" value="#{msg['label.submit.message.save']}" />
                                         
                         </div>
                         <span class="text-danger" id="err"></span>
