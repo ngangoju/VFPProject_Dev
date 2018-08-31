@@ -1,87 +1,59 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package tres.domain;
+package tres.vfp.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import tres.domain.Board;
+import tres.domain.UserCategory;
+import tres.domain.Users;
+import tres.domain.Village;
 
-/**
- *
- * @author Emmanuel
- */
-@Entity
-@Table(name = "Users")
-@NamedQuery(name = "Users.findAll", query = "SELECT r FROM Users r order by userId desc")
-public class Users extends CommonDomain implements Serializable {
-
+public class UserDto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue
-	@Column(name = "userId")
+	
 	private int userId;
 
 	/* this is for userName */
-	@Column(name = "viewId", unique = true)
+
 	private String viewId;
 
-	/* this is for pasword */
-	@Column(name = "viewName")
+
 	private String viewName;
 
-	@Column(name = "fname")
+
 	private String fname;
 
-	@Column(name = "lname")
+	
 	private String lname;
 
-
-
-	@Column(name = "address")
+	
 	private String address;
 
-	@Column(name = "gender")
+
 	private String gender;
 
-	@Column(name = "DateOfBirth", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	private Date DateOfBirth;
 
-	@Column(name = "image")
 	private String image;
 
-	@Column(name = "loginStatus")
+
 	private String loginStatus;
 
-	@Column(name = "status")
+
 	private String status;
 
-	@Column(name = "createdDate", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	private Date createdDate;
 
-	@ManyToOne
-	@JoinColumn(name = "userCategory")
+
 	private UserCategory userCategory;
 
-	@ManyToOne
-	@JoinColumn(name = "village")
+	
 	private Village village;
-	@ManyToOne
-	@JoinColumn(name = "board")
+
 	private Board board;
+	
+	private boolean editable;
 
 	public int getUserId() {
 		return userId;
@@ -202,6 +174,15 @@ public class Users extends CommonDomain implements Serializable {
 		this.viewName = viewName;
 	}
 
+
+	
+	public boolean isEditable() {
+		return editable;
+	}
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
 	public Board getBoard() {
 		return board;
 	}
@@ -209,6 +190,6 @@ public class Users extends CommonDomain implements Serializable {
 	public void setBoard(Board board) {
 		this.board = board;
 	}
-
+	
 	
 }

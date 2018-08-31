@@ -22,6 +22,8 @@ import tres.dao.impl.ContactImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Contact;
 import tres.domain.Users;
+import tres.vfp.dto.UserDto;
+
 
 
 @ManagedBean
@@ -35,9 +37,12 @@ public class UserContactController implements Serializable, DbConstant {
 	/*end  manage validation messages*/
 	private Contact contact;
 	private Users users;
+	private UserDto userDto;
 	private Users usersSession;
 	private  int   userIdNumber;
 	private List<Users> usersDetails = new ArrayList<Users>();
+	private List<UserDto> userDtoDetails = new ArrayList<UserDto>();
+	private List<UserDto> userDtofiltered = new ArrayList<UserDto>();
 	/*class injection*/
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -57,10 +62,24 @@ public class UserContactController implements Serializable, DbConstant {
 		if (users == null) {
 			users = new Users();
 		}
+		if (userDto == null) {
+			userDto = new UserDto();
+		}
 		
 		
 		try {
+			
 			usersDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","status"},new Object[] {ACTIVE,ACTIVE}, "Users", "userId desc");
+			for (Users user : usersDetails){
+				UserDto userDto = new UserDto();
+				userDto.setEditable(false);
+				userDto.setFname(user.getFname());
+				userDto.setLname(user.getLname());
+				userDto.setViewId(user.getViewId());
+				userDto.setAddress(user.getAddress());
+				userDto.setUserCategory(user.getUserCategory());
+				userDtoDetails.add(userDto);
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -104,6 +123,32 @@ private void clearContactFuileds() {
 	usersDetails=null;
 }
 
+public String saveAction() {
+    
+	//get all existing value but set "editable" to false 
+	for (UserDto user : userDtoDetails){
+		user.setEditable(false);
+	}
+	//return to current page
+	return null;
+	
+}
+
+public String cancel(UserDto user) {
+	user.setEditable(false);
+	//usersImpl.UpdateUsers(user);
+	return null;
+	
+	
+}
+
+public String editAction(UserDto user) {
+    
+	user.setEditable(true);
+	//usersImpl.UpdateUsers(user);
+	return null;
+}
+
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -136,14 +181,7 @@ private void clearContactFuileds() {
 		this.users = users;
 	}
 
-	public List<Users> getUsersDetails() {
 	
-		return usersDetails;
-	}
-
-	public void setUsersDetails(List<Users> usersDetails) {
-		this.usersDetails = usersDetails;
-	}
 
 	public JSFBoundleProvider getProvider() {
 		return provider;
@@ -189,9 +227,58 @@ private void clearContactFuileds() {
 
 
 
+	public UserDto getUserDto() {
+		return userDto;
+	}
+
+
+
+	public void setUserDto(UserDto userDto) {
+		this.userDto = userDto;
+	}
+
+
+
+	public List<Users> getUsersDetails() {
+		return usersDetails;
+	}
+
+
+
+	public void setUsersDetails(List<Users> usersDetails) {
+		this.usersDetails = usersDetails;
+	}
+
+
+
+	public List<UserDto> getUserDtoDetails() {
+		return userDtoDetails;
+	}
+
+
+
+	public void setUserDtoDetails(List<UserDto> userDtoDetails) {
+		this.userDtoDetails = userDtoDetails;
+	}
+
+
+
 	public void setUserIdNumber(int userIdNumber) {
 		this.userIdNumber = userIdNumber;
 	}
+
+
+
+	public List<UserDto> getUserDtofiltered() {
+		return userDtofiltered;
+	}
+
+
+
+	public void setUserDtofiltered(List<UserDto> userDtofiltered) {
+		this.userDtofiltered = userDtofiltered;
+	}
+
 
 
 
