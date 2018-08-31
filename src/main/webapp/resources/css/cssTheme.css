@@ -23,3 +23,108 @@
 .w3-hover-text-theme:hover {color:#607d8b !important}
 .w3-hover-border-theme:hover {border-color:#607d8b !important}
 .errorMsg1{color:red}
+.circle-tile-heading2 {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto -40px;
+    border: 3px solid rgba(205,255,255,0.3);
+    border-radius: 100%;
+    color: #fff;
+    transition: all ease-in-out .3s;
+     background-color:blue;
+}
+.circle-tile-heading2 .fa {
+    line-height: 80px;
+}
+
+
+.circle-tile-content2 {
+    padding-top: 50px;
+}
+.circle-tile-description2 {
+    text-transform: uppercase;
+}
+
+.text-faded2 {
+    color: rgba(205,255,255,0.7);
+}
+
+.circle-tile-number2 {
+    padding: 5px 0 15px;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.circle-tile-footer {
+    display: block;
+    padding: 5px;
+    color: rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0.1);
+    transition: all ease-in-out .3s;
+}
+
+.circle-tile-footer:hover {
+    text-decoration: none;
+    color: rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0.2);
+}
+@media (min-width: 768px){
+.circle-tile2 {
+    margin-bottom: 30px;
+}
+}
+
+.circle-tile2 {
+    margin-bottom: 15px;
+   
+    text-align: center;
+}
+
+ .dark-blue2 {
+    background-color: #34495e;
+}
+
+.green2 {
+    background-color: #16a085;
+}
+
+.blue2 {
+    background-color: #2980b9;
+}
+
+.orange2 {
+    background-color: #f39c12;
+}
+
+.red2 {
+    background-color: #e74c3c;
+}
+
+.purple2 {
+    background-color: #8e44ad;
+}
+
+.dark-gray2 {
+    background-color: #7f8c8d;
+}
+
+.gray2 {
+    background-color: #95a5a6;
+}
+
+.light-gray2 {
+    background-color: #bdc3c7;
+}
+
+.yellow2 {
+    background-color: #f1c40f;
+}
+.circle-tile-description2 {
+    text-transform: uppercase;
+}
+.circle-tile2 {
+    margin-bottom: 15px;
+    text-align: center;
+}

@@ -12,7 +12,34 @@
 
 <ui:define name="content">
 
-<h1>#{msg['label.message.welcome']} ::#{loadUserInformationsController.users.fname}</h1>
+<h4>#{loadUserInformationsController.users.userCategory.usercategoryName}  <span class="glyphicon glyphicon-dashboard"> #{msg['message.com.user.dashaboard']}</span> </h4>
+<div style="border-bottom:1.5px solid  #91DBFA;margin-bottom: 6px;width: 100%"></div>
+<div class="row" >
+<ui:repeat value="#{loadUserInformationsController.menuAssignmentDetails}" var="menuAss">
+             <div class="col-md-4 col-sm-6">
+                        <div class="circle-tile2">
+                            
+                                <div class="circle-tile-heading2 blue2">
+                                    <i class="glyphicon glyphicon-file fa-fw fa-3x"></i>
+                                </div>
+                          
+                            <div class="circle-tile-content2 blue2">
+                                <div class="circle-tile-description text-faded2">
+                                #{menuAss.listOfMenu.description}
+                                </div>
+                                <div class="circle-tile-number2 text-faded2">
+                              <span class="glyphicon glyphicon-cog"></span>
+                            
+                                    <span id="sparklineB"></span>
+                                </div>
+                                <a href="#{loadUserInformationsController.getContextPath()}#{menuAss.listOfMenu.urlName}" class="circle-tile-footer">More Info <i class="glyphicon glyphicon-chevron-right"></i></a>
+                            </div>
+                        </div>
+                       
+          </div>                   
+      
+         </ui:repeat>
+    </div>
 	</ui:define>
 	</ui:composition>
 
