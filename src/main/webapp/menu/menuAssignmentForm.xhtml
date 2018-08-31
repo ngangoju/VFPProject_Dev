@@ -65,7 +65,7 @@
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
 										<h:selectOneMenu id="categoryId" styleClass="form-control"
 											required="true" value="formSampleController.users.lname"
-											requiredMessage="#{msg['category.requiered.message']}">
+											requiredMessage="#{msg['menuassignment.usercategory.required']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" />
@@ -81,30 +81,31 @@
 									<h:message for="categoryId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-
 							<h:panelGroup id="ReasonPanel" layout="block">
 								<div class="form-group row">
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.menuassignment.listofmenu']}<span
-										style="color: red">*</span>
-									</label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
-										<h:inputText id="addressId" styleClass="form-control"
-											value="#{formSampleController.users.address}" maxlength="35"
-											required="true"
-											requiredMessage="#{msg['category.requiered.message']}"
-											validatorMessage="#{msg['error.address.maxlength']}">
-											<f:validateLength maximum="35" />
-										</h:inputText>
-										
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-6" style="">
+										<h:selectOneMenu id="categoryIds" styleClass="form-control"
+											required="true" value="formSampleController.users.lname"
+											requiredMessage="#{msg['menuassignment.menugroup.required']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems
+												value="#{formSampleController.menuGroupDetails}"
+												var="option" itemValue="#{option}"
+												itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
+											<f:ajax event="change" execute="@this"
+												listener="#{formSampleController.changeSelectBox('Eric')}"
+												render="ReasonPanel" />
+										</h:selectOneMenu>
 									</div>
-									<div class="col-md-1 col-sm-1 col-xs-1"></div>
-
-									<h:message for="addressId" styleClass="help-block"></h:message>
+									<h:message for="categoryIds" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-
 
 							<h:panelGroup id="surnamePanl3" layout="block">
 								<div class="form-group row">
@@ -119,7 +120,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['menuassignment.url.required']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />
@@ -142,7 +143,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['menuassignment.status.required']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />

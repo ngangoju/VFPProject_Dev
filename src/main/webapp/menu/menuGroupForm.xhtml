@@ -93,7 +93,7 @@
 										<h:inputText id="addressId" styleClass="form-control"
 											value="#{formSampleController.users.address}" maxlength="35"
 											required="true"
-											requiredMessage="#{msg['category.requiered.message']}"
+											requiredMessage="#{msg['groupMneu.name.requiered']}"
 											validatorMessage="#{msg['error.address.maxlength']}">
 											<f:validateLength maximum="35" />
 										</h:inputText>
@@ -121,7 +121,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['groupMneu.defaultmanu.requiered']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />
@@ -144,7 +144,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['groupMneu.manucode.requiered']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />
@@ -168,7 +168,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['groupMneu.status.requiered']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />

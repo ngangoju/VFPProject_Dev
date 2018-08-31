@@ -65,7 +65,7 @@
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
 										<h:selectOneMenu id="categoryId" styleClass="form-control"
 											required="true" value="formSampleController.users.lname"
-											requiredMessage="#{msg['category.requiered.message']}">
+											requiredMessage="#{msg['listofmenu.menugroup.required']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" />
@@ -93,7 +93,7 @@
 										<h:inputText id="addressId" styleClass="form-control"
 											value="#{formSampleController.users.address}" maxlength="35"
 											required="true"
-											requiredMessage="#{msg['category.requiered.message']}"
+											requiredMessage="#{msg['listofmenu.description.required']}"
 											validatorMessage="#{msg['error.address.maxlength']}">
 											<f:validateLength maximum="35" />
 										</h:inputText>
@@ -119,7 +119,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['listofmenu.url.required']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />
@@ -142,7 +142,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['listofmenu.urlcode.required']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />
@@ -166,7 +166,7 @@
 											required="true"
 											validatorMessage="#{msg['error.enter.invalid.surname']}"
 											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['surname.message']}">
+											requiredMessage="#{msg['listofmenu.status.required']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
 											<f:validateLength maximum="35" />
