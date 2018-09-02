@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "Institution")
 @NamedQuery(name = "Institution.findAll", query = "SELECT r FROM Institution r order by v desc")
-public class Institution  extends CommonDomain implements Serializable {
+public class Institution extends CommonDomain implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
@@ -31,26 +31,38 @@ public class Institution  extends CommonDomain implements Serializable {
 	@Column(name = "institutionName")
 	private String institutionName;
 
+	@Column(name = "institutionAddress")
+	private String institutionAddress;
+
 	@Column(name = "institutionRegDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date  institutionRegDate;
+	private Date institutionRegDate;
+	
+	
+
+	public String getInstitutionAddress() {
+		return institutionAddress;
+	}
+
+	public void setInstitutionAddress(String institutionAddress) {
+		this.institutionAddress = institutionAddress;
+	}
 
 	@Column(name = "institutionType")
 	private String institutionType;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "village")
 	private Village village;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "country")
 	private Country country;
-	
-	
+
 	@OneToOne
 	@JoinColumn
 	private Users institutionRepresenative;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "institution")
 	private Institution institution;
@@ -78,7 +90,6 @@ public class Institution  extends CommonDomain implements Serializable {
 	public void setInstitutionName(String institutionName) {
 		this.institutionName = institutionName;
 	}
-
 
 	public String getInstitutionType() {
 		return institutionType;
@@ -119,7 +130,5 @@ public class Institution  extends CommonDomain implements Serializable {
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
-	
-	
 
 }

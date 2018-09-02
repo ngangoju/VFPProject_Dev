@@ -30,201 +30,256 @@
 					</div>
 
 					<div class="panel-body">
-						<div class="container">
-							<div style="display: none">
-								<input id="lat" name="lat" type="text" /> <input id="long"
-									name="long" type="text" />
-							</div>
-							<h:panelGroup layout="block"
-								rendered="#{not login.valid and not facesContext.validationFailed}">
-								<ul>
-									<ui:repeat value="#{facesContext.messageList}"
-										var="facesMessage">
-										<li class="alert alert-danger"><h:outputText
-												required="true"
-												requiredMessage="#{msg['requiered.username.message']}"
-												value="" escape="false" id="name" /></li>
-									</ui:repeat>
-									<h:message errorClass="errorMsg1" for="name"></h:message>
-								</ul>
-							</h:panelGroup>
-							<h:panelGroup layout="block"
-								rendered="#{login.valid and  not facesContext.validationFailed}">
-								<ul>
-									<ui:repeat value="#{facesContext.messageList}"
-										var="facesMessage">
-										<li class="alert alert-success"><h:outputText
-												id="address" required="true"
-												requiredMessage="#{msg['requiered.username.message']}"
-												value="#{facesMessage.summary}" escape="false" /></li>
-									</ui:repeat>
-									<h:message errorClass="errorMsg1" for="address"></h:message>
-								</ul>
+						<!-- 						<div class="container"> -->
+						<h:panelGroup layout="block"
+							rendered="#{not institutionController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
 
-							</h:panelGroup>
-							<div style="display: none">
-								<input id="lat" name="lat" type="text" /> <input id="long"
-									name="long" type="text" />
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.name']}</label>
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:inputText class="form-control" id="username" required="true"
-										requiredMessage="#{msg['requiered.username.message']}" />
-
-
-
-								</div>
-								<h:message errorClass="errorMsg1" for="username"></h:message>
-
-
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.address']}</label>
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:inputText class="form-control" id="address" required="true"
-										requiredMessage="#{msg['requiered.username.message']}" />
-
-								</div>
-								<h:message errorClass="errorMsg1" for="username1"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.type']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="type"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="type"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.branchof']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="branch"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="branch"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.country']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="country"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="country"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.province']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="province"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="province"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.district']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="district"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="district"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.sector']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="sector"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="sector"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.cell']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="cell"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="cell"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['institutionForm.village']}</label>
-
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control" id="village"
-										value="#{login.users.viewId}" required="true"
-										requiredMessage="#{msg['requiered.username.message']}">
-
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="village"></h:message>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
-								<div class="col-sm-4">
-									<h:commandButton class="btn btn-info btn-xlg btn-block"
-										value="#{msg['institutionForm.save']}" />
-
-								</div>
-								<span class="text-danger" id="customeordererror"></span>
-							</div>
+						<h:panelGroup layout="block"
+							rendered="#{institutionController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li style="list-style: none;" class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+						<span style="color: #737373; font-size: 10pt">Fields marked
+							with an asterisk <span style="color: red">(*)</span> are
+							mandatory.
+						</span> <br /> <br />
+						<div style="display: none">
+							<input id="lat" name="lat" type="text" /> <input id="long"
+								name="long" type="text" />
 						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.name']} <span
+								style="color: red">*</span>
+							</label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control input-sm" id="name"
+									required="true"
+									requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+									value="#{institutionController.institution.institutionName}" />
+							</div>
+							<h:message errorClass="errorMsg1" for="name"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.address']} <span
+								style="color: red">*</span>
+							</label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText class="form-control input-sm" id="address"
+									required="true"
+									requiredMessage="#{msg['institutionForm.requiered.address.message']}"
+									value="#{institutionController.institution.institutionAddress}" />
+
+							</div>
+							<h:message errorClass="errorMsg1" for="address"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.type']} <span
+								style="color: red">*</span>
+							</label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4 ">
+
+								<h:selectOneMenu class="form-control input-sm" id="type"
+									required="true"
+									requiredMessage="#{msg['institutionForm.select.PLACEHOLDER']}"
+									value="#{institutionController.institution.institutionType}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItem itemLabel="Public" itemValue="Public" />
+									<f:selectItem itemLabel="Private" itemValue="Private" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="type"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.branchof']}
+							</label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4 ">
+
+								<h:selectOneMenu class="form-control input-sm" id="branch"
+									value="#{institutionController.institutionID}" required="false"
+									requiredMessage="#{msg['requiered.username.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.institutions}"
+										var="option" itemValue="#{option.institutionId}"
+										itemLabel="#{option.institutionName}" itemLabelEscaped="true" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="branch"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.country']} <span
+								style="color: red">*</span>
+							</label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4 ">
+
+								<h:selectOneMenu class="form-control input-sm" id="country"
+									value="#{institutionController.cntryId}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.country.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.countries}"
+										var="option" itemValue="#{option.taskId}"
+										itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="country"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.province']}
+								<span style="color: red">*</span>
+							</label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4 ">
+
+								<h:selectOneMenu class="form-control input-sm" id="province"
+									value="#{institutionController.pid}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.province.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.provinces}"
+										var="option" itemValue="#{option.provenceId}"
+										itemLabel="#{option.provenceName_en}" itemLabelEscaped="true" />
+									<f:ajax listener="#{institutionController.changeDistrict()}"
+										render="district" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="province"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.district']}
+								<span style="color: red">*</span>
+							</label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:selectOneMenu class="form-control input-sm" id="district"
+									value="#{institutionController.did}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.district.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.districts}"
+										var="option" itemValue="#{option.districtId}"
+										itemLabel="#{option.districtName_en}" itemLabelEscaped="true" />
+									<f:ajax listener="#{institutionController.changeSector()}"
+										render="sector" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="district"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.sector']} <span
+								style="color: red">*</span></label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:selectOneMenu class="form-control input-sm" id="sector"
+									value="#{institutionController.sid}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.sector.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.sectors}"
+										var="option" itemValue="#{option.sectorId}"
+										itemLabel="#{option.sectorName_en}" itemLabelEscaped="true" />
+									<f:ajax listener="#{institutionController.changeCell()}"
+										render="cell" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="sector"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.cell']} <span
+								style="color: red">*</span></label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:selectOneMenu class="form-control input-sm" id="cell"
+									value="#{institutionController.cid}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.cell.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.cells}"
+										var="option" itemValue="#{option.cellId}"
+										itemLabel="#{option.cellName_en}" itemLabelEscaped="true" />
+									<f:ajax listener="#{institutionController.changeVilages()}"
+										render="village" />
+
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="cell"></h:message>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['institutionForm.village']} <span
+								style="color: red">*</span>
+							</label>
+
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:selectOneMenu class="form-control input-sm" id="village"
+									value="#{institutionController.vid}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.village.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{institutionController.villages}"
+										var="option" itemValue="#{option.villageId}"
+										itemLabel="#{option.villageName_en}" itemLabelEscaped="true" />
+								</h:selectOneMenu>
+							</div>
+							<h:message errorClass="errorMsg1" for="village"></h:message>
+						</div>
+						<div class="form-group row ">
+							<label for="todate"
+								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+							<div class="col-sm-4">
+								<h:commandButton class="btn btn-info btn-xlg btn-block input-sm"
+									value="#{msg['institutionForm.save']}"
+									action="#{institutionController.saveInstitutionRequest()}"
+									ajax="false" />
+
+							</div>
+							<span class="text-danger" id="customeordererror"></span>
+						</div>
+						<!-- 						</div> -->
 					</div>
 				</div>
 			</h:form>
