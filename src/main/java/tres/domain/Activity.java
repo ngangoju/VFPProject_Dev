@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "Activity")
 @NamedQuery(name = "Activity.findAll", query = "select r from Activity r order by v desc")
-public class Activity implements Serializable {
+public class Activity extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
