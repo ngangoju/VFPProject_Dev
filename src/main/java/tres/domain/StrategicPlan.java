@@ -38,8 +38,8 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	
 	
 	@ManyToOne
-	@JoinColumn(name = "Board")
-	private Board Board;
+	@JoinColumn(name = "Users")
+	private Users users;
 	
 
 	public int getPlanId() {
@@ -66,14 +66,13 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 		this.recordedDate = recordedDate;
 	}
 
-	public Board getBoard() {
-		return Board;
+	public Users getUsers() {
+		return users;
 	}
 
-	public void setBoard(Board board) {
-		Board = board;
+	public void setUsers(Users users) {
+		this.users = users;
 	}
 
-	
 
 }
