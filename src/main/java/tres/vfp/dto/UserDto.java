@@ -8,6 +8,7 @@ import tres.domain.Users;
 import tres.domain.Village;
 
 public class UserDto implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	private int userId;
