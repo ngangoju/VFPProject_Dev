@@ -56,7 +56,7 @@
              <div class="form-group row">
                 <label for="todate" class="col-md-3 col-sm-3 col-xs-3 control-label" style="color: black">#{msg['form.task.description']}<span style="color:red">*</span> </label>
                   <div class="col-md-5 col-sm-5 col-xs-5">
-           <h:inputTextarea id="descriptionId"  styleClass="form-control" value="#{formSampleController.users.address}"  maxlength="150" required="true" requiredMessage="#{msg['description.required.message']}" validatorMessage="#{msg['error.address.maxlength']}">
+           <h:inputTextarea id="descriptionId"  styleClass="form-control" value="#{activityController.activity.description}"  maxlength="150" required="true" requiredMessage="#{msg['description.required.message']}" validatorMessage="#{msg['error.address.maxlength']}">
            <f:validateLength maximum="150" />
           </h:inputTextarea>
                  </div>
@@ -73,9 +73,9 @@
                   <div class="form-group row">
                     <label for="todate" class="col-md-3 col-sm-3 col-xs-3 control-label" style="color: black">#{msg['form.activity.status']}<span style="color:red">*</span></label>
                       <div class="col-md-5 col-sm-5 col-xs-5" style="">
-            <h:selectOneMenu id="categoryId"  styleClass="form-control" required="true" value="formSampleController.users.lname" requiredMessage="#{msg['status.required.message']}"  >
+            <h:selectOneMenu id="categoryId"  styleClass="form-control" required="true" value="#{activityController.activity.status}" requiredMessage="#{msg['status.required.message']}"  >
                 <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true"   />
-                <f:selectItems value="#{formSampleController.status}" var="option" itemValue="#{option}" itemLabelEscaped="true" />
+                <f:selectItems value="#{activityController.status}" var="option" itemValue="#{option}" itemLabelEscaped="true" />
             <f:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox('Eric')}" render="ReasonPanel"/>
             </h:selectOneMenu>
                       </div>
@@ -89,9 +89,9 @@
                   <div class="form-group row">
                     <label for="todate" class="col-md-3 col-sm-3 col-xs-3 control-label" style="color: black">#{msg['form.activity.weight']}<span style="color:red">*</span></label>
                       <div class="col-md-5 col-sm-5 col-xs-5" style="">
-            <h:selectOneMenu id="weightId"  styleClass="form-control" required="true" value="formSampleController.users.lname" requiredMessage="#{msg['weight.required.message']}"  >
+            <h:selectOneMenu id="weightId"  styleClass="form-control" required="true" value="#{activityController.activity.weight}" requiredMessage="#{msg['weight.required.message']}"  >
                 <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true"   />
-                <f:selectItems value="#{formSampleController.weight}" var="option" itemValue="#{option}" itemLabelEscaped="true" />
+                <f:selectItems value="#{activityController.weight}" var="option" itemValue="#{option}" itemLabelEscaped="true" />
             <f:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox('Eric')}" render="ReasonPanel"/>
             </h:selectOneMenu>
                       </div>

@@ -39,10 +39,6 @@ public class FormSampleController implements Serializable, DbConstant {
 	private MenuAssignment menuAssignment;
 	private MenuGroup menuGroup;
 	
-	private String[] status= {"Not Started","Approved","In Progress","completed"};
-	
-	private String[] weight= {"short","medium","long"};
-	
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
 	
 	/*class injection*/
@@ -180,22 +176,4 @@ public class FormSampleController implements Serializable, DbConstant {
 		this.timestamp = timestamp;
 	}
 
-	public String[] getStatus() {
-		return status;
-	}
-
-	public void setStatus(String[] status) {
-		this.status = status;
-	}
-
-	public String[] getWeight() {
-		return weight;
-	}
-
-	public void setWeight(String[] weight) {
-		this.weight = weight;
-	}
-	
-	
-	
 }

@@ -54,7 +54,12 @@ public  interface  DbConstant {
  public static final String PUBLICPATH="/public/";
  public static final String USERSESSION="userSession";
  public static final String  JAVAFACERESOURCE="javax.faces.resource";
- 
+
+ public static final String NOTSTARTED = "Not Started";
+ public static final String COMPLETED = "Completed";
+ public static final String SHORT = "Short";
+ public static final String MEDIUM = "Medium";
+ public static final String LONG = "Long"; 
  
   
  

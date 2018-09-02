@@ -16,31 +16,34 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
-import tres.dao.impl.StrategicPlanImpl;
+import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.UserImpl;
-import tres.domain.StrategicPlan;
+import tres.domain.Activity;
 import tres.domain.Users;
 
 @ManagedBean
 @ViewScoped
-public class StrategicPlanController implements Serializable, DbConstant {
+public class ActivityController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	private String CLASSNAME = "StrategicPlanController :: ";
+	private String CLASSNAME = "ActivityController :: ";
 	private static final long serialVersionUID = 1L;
 	/*to manage validation messages*/
 	private boolean isValid;
 	/*end  manage validation messages*/
 	private Users users;
 	private Users usersSession;
-	private  int   userIdNumber;
-	private StrategicPlan strategicPlan;
-	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
+	private Activity activity;
+	private List<Activity> activityDetails = new ArrayList<Activity>();
+
+	private String[] status= {NOTSTARTED,APPROVED,REJECT,INPROGRESS,COMPLETED};
+	
+	private String[] weight= {SHORT,MEDIUM,LONG};
 	
 	/*class injection*/
 	
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
-	StrategicPlanImpl strategicPlanImpl = new StrategicPlanImpl();
+	ActivityImpl activityImpl = new ActivityImpl();
 	
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -55,13 +58,13 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			users = new Users();
 		}
 		
-		if (strategicPlan == null) {
-			strategicPlan = new StrategicPlan();
+		if (activity == null) {
+			activity = new Activity();
 		}
 		
 		try {
 			
-			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "StrategicPlan", "planId asc");
+			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -75,23 +78,22 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	
 	public String savePlan() {
 		try {
-			strategicPlan.setCreatedBy(usersSession.getViewId());
-			strategicPlan.setCrtdDtTime(timestamp);
-			strategicPlan.setGenericStatus(ACTIVE);
-			strategicPlan.setUpDtTime(timestamp);
-			strategicPlan.setUsers(usersImpl.gettUserById(userIdNumber, "userId"));
-			strategicPlan.setUpdatedBy(usersSession.getViewId());
-			strategicPlan.setRecordedDate(timestamp);
-			strategicPlanImpl.saveStrategicPlan(strategicPlan);
+			activity.setCreatedBy(usersSession.getViewId());
+			activity.setCrtdDtTime(timestamp);
+			activity.setGenericStatus(ACTIVE);
+			activity.setUpDtTime(timestamp);
+			activity.setUpdatedBy(usersSession.getViewId());
+			activity.setDate(timestamp);
+			activityImpl.saveActivity(activity);
 			JSFMessagers.resetMessages();
 			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
-			LOGGER.info(CLASSNAME+":::StrategicPlan Details is saved");
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.activity"));
+			LOGGER.info(CLASSNAME+":::Activity Details is saved");
 			clearContactFuileds();
 			return"";
 			
 		} catch (Exception e) {
-			LOGGER.info(CLASSNAME+":::Strategic Plan Details is failling with HibernateException  error");
+			LOGGER.info(CLASSNAME+":::Activity Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -103,8 +105,8 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	}
 
 private void clearContactFuileds() {
-	strategicPlan=new StrategicPlan();
-	strategicPlanDetails=null;
+	activity=new Activity();
+	activityDetails=null;
 }
 
 	public void changeSelectBox(String name) {
@@ -128,22 +130,6 @@ private void clearContactFuileds() {
 		this.isValid = isValid;
 	}
 
-	public StrategicPlan getStrategicPlan() {
-		return strategicPlan;
-	}
-
-	public void setStrategicPlan(StrategicPlan strategicPlan) {
-		this.strategicPlan = strategicPlan;
-	}
-
-	public List<StrategicPlan> getStrategicPlanDetails() {
-		return strategicPlanDetails;
-	}
-
-	public void setStrategicPlanDetails(List<StrategicPlan> strategicPlanDetails) {
-		this.strategicPlanDetails = strategicPlanDetails;
-	}
-
 	public JSFBoundleProvider getProvider() {
 		return provider;
 	}
@@ -152,12 +138,44 @@ private void clearContactFuileds() {
 		this.provider = provider;
 	}
 
-	public StrategicPlanImpl getStrategicPlanImpl() {
-		return strategicPlanImpl;
+	public Activity getActivity() {
+		return activity;
 	}
 
-	public void setStrategicPlanImpl(StrategicPlanImpl strategicPlanImpl) {
-		this.strategicPlanImpl = strategicPlanImpl;
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
+
+	public List<Activity> getActivityDetails() {
+		return activityDetails;
+	}
+
+	public void setActivityDetails(List<Activity> activityDetails) {
+		this.activityDetails = activityDetails;
+	}
+
+	public ActivityImpl getActivityImpl() {
+		return activityImpl;
+	}
+
+	public void setActivityImpl(ActivityImpl activityImpl) {
+		this.activityImpl = activityImpl;
+	}
+
+	public String[] getStatus() {
+		return status;
+	}
+
+	public void setStatus(String[] status) {
+		this.status = status;
+	}
+
+	public String[] getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String[] weight) {
+		this.weight = weight;
 	}
 
 
