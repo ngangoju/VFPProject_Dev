@@ -95,7 +95,7 @@ insert  menuassignment values(19,'admin',now(),'active',now(),now(),'admin',null
 INSERT INTO menugroup (menuId,menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
 VALUES (3, 'admin',now(), 'active', now(), now(), 'admin', now(), 'Manage Institution', 'Manage Institution', 3);
 
-INSERT INTO listofmenu (createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
+INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
 VALUES (3, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Institution profile', '/menu/institutionRegistration.xhtml', null,3, null);
 
 INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory) 
