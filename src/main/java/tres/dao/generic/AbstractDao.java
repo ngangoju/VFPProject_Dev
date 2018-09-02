@@ -509,7 +509,7 @@ configConnection();
 
         } finally {
             if (!t.wasCommitted()) {
-                t.commit();
+               // t.commit();
             }
            // session.close();
             factory.close();
@@ -851,8 +851,20 @@ configConnection();
 
 
 	public T saveOrUpdate(T model) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		 try {
+		     configConnection();
+		     
+		     session.saveOrUpdate(model);
+		     session.flush();
+		      return model;
+		    } catch (HibernateException hibex) {
+		      LOGGER.info(hibex.getMessage()+ hibex.getCause());
+		   
+		    } catch (Exception ex) {
+		      LOGGER.info("System Error has occured."+ ex);
+		     
+		    }
+		return model;
 	}
 
 

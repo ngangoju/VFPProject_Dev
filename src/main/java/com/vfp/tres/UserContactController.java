@@ -77,6 +77,7 @@ public class UserContactController implements Serializable, DbConstant {
 				userDto.setLname(user.getLname());
 				userDto.setViewId(user.getViewId());
 				userDto.setAddress(user.getAddress());
+				userDto.setUserId(user.getUserId());
 				userDto.setUserCategory(user.getUserCategory());
 				userDtoDetails.add(userDto);
 			}
@@ -123,12 +124,23 @@ private void clearContactFuileds() {
 	usersDetails=null;
 }
 
-public String saveAction() {
-    
+
+public String saveAction(UserDto user) {
+	LOGGER.info("update  saveAction method");
 	//get all existing value but set "editable" to false 
-	for (UserDto user : userDtoDetails){
+	Users us=new Users();
+	us=new Users();
+	us=usersImpl.gettUserById(user.getUserId(), "userId");
+	
+	//for (UserDto user : userDtoDetails){
+		LOGGER.info("here update sart for "+user +" Object ");
+
 		user.setEditable(false);
-	}
+		us.setFname(user.getFname());
+		us.setFname(user.getLname());
+	
+			usersImpl.UpdateUsers(us);
+		
 	//return to current page
 	return null;
 	
