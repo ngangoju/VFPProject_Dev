@@ -49,6 +49,7 @@ update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=10;
 ===>>>The reason for this it's bcse the Menu for New User is not working for you so update your urlname.
 
 
+
 =================BY Emmanuel Siborurema========================
 
 
