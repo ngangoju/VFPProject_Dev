@@ -103,3 +103,30 @@ VALUES (4, 'admin',now(),'active',now(),now(),'admin', '/menu/institutionRegistr
 
 
 
+=======================================================================
+
+
+
+insert into Province ( provenceId,code,provenceName_en,provenceName_fr,provenceName_rw) values(1,'KGL001','KIGALI CITY','KIGALI CITY','KIGALI CITY');
+
+insert into Province ( provenceId,code,provenceName_en,provenceName_fr,provenceName_rw) values(2,'STH001 ','SOUTHERN','SOUTHERN','SOUTHERN');
+
+insert into district ( districtId,code,districtName_en,districtName_fr,districtName_rw,province) values(1,'NYSTR01','Nyarugenge','Nyarugenge','Nyarugenge',1);
+
+insert into district ( districtId,code,districtName_en,districtName_fr,districtName_rw,province) values(2,'GSBSTR02','Gasabo','Gasabo','Gasabo',1);
+
+insert into sector( sectorId,code,sectorName_en,sectorName_fr,sectorName_rw,distric) values(1,'KMHSTR02','Kimihurura','Kimihurura','Kimihurura',2);
+
+insert into sector( sectorId,code,sectorName_en,sectorName_, fr,sectorName_rw,distric) values(2,'NYMBSTR02','Nyamirambo','Nyamirambo','Nyamirambo',1);
+
+insert into Cell(cellId,code, cellName_en,cellName_fr,cellName_rw, sector) values(1,'RKRSTR01','Rukiri','Rukiri','Rukiri',1);
+ 
+insert into Cell(cellId,code, cellName_en,cellName_fr,cellName_rw, sector) values(2,'KVGSTR01','Kivugiza','Kivugiza','Kivugiza',2);
+ 
+insert into village( villageId,code,villageName_en,villageName_fr, villageName_rw,cell) values(1,'UMWZSTR02','Umwezi','Umwezi','Umwezi',1);
+ 
+insert into village( villageId,code,villageName_en,villageName_fr, villageName_rw,cell) values(2,'UBWZSTR02','Ubwiza','Ubwiza','Ubwiza',2);
+
+==================================By Emmanuel============================================================================================
+
+
