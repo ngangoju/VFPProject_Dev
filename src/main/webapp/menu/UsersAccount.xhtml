@@ -5,7 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:body>
 
@@ -13,6 +13,42 @@
 
 		<ui:define name="content">
 			<h:form>
+			
+			<div class="form-group row">
+
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<!--error massage  -->
+						<h:panelGroup layout="block"
+							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+						<!--success massage  -->
+						<h:panelGroup layout="block"
+							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert"><center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+					</div>
+
+				</div>
 				<div class="panel panel-info">
 					<!-- Default panel contents -->
 					<div class="panel-heading">
@@ -22,17 +58,22 @@
 					</div>
 					<div class="panel-body">
 
+						<span style="color: #737373; font-size: 10pt">Fields marked
+							with an asterisk <span style="color: red">(*)</span> are
+							mandatory.
+						</span>
+
 						<div style="display: none">
 							<input id="lat" name="lat" type="text" /> <input id="long"
 								name="long" type="text" />
 						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+						<div class="form-group row" style="margin-top: 18pt;">
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['massages.cmn.common.first.fname']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText class="form-control" id="fname" required="true"
+								<h:inputText class="form-control" id="fname" required="true" value="#{userAccountController.users.fname}"
 									requiredMessage="#{msg['requiered.fname.message']}" />
 
 
@@ -42,55 +83,74 @@
 						</div>
 
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['massages.cmn.common.last.lname']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText class="form-control" id="lname" required="true"
+								<h:inputText class="form-control" id="lname" required="true" value="#{userAccountController.users.lname}"
 									requiredMessage="#{msg['requiered.lname.message']}" />
 							</div>
 							<h:message errorClass="errorMsg1" for="lname"></h:message>
 						</div>
 
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.gender']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13"
-									id="gender" required="true"
+								<h:selectOneMenu class="form-control" mediumScreen="13"
+									id="gender" required="true" value="#{userAccountController.users.gender}"
 									requiredMessage="#{msg['requiered.gender.message']}">
 									<f:selectItem itemLabel="Male" itemValue="Male" />
 									<f:selectItem itemLabel="Female" itemValue="Female" />
-								</b:selectOneMenu>
+								</h:selectOneMenu>
 
 							</div>
 							<h:message errorClass="errorMsg1" for="gender"></h:message>
 						</div>
 
 
-						<div class="form-group row">
-							<label class="col-md-4 col-sm-2 col-xs-6 control-label"
+						<!-- <div class="form-group row">
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.photo']}<span
-									style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
+								style="color: red">*</span></label>
+							 <div class="col-md-4 col-sm-4 col-xs-4">
 								<p:fileUpload mode="simple" id="pict" skinSimple="true"
 									required="true"
 									requiredMessage="#{msg['requiered.picture.message']}" />
 
 							</div>
+
+							 <div class="col-md-4 col-sm-4 col-xs-4">
+								<div class="fileupload fileupload-new"
+									data-provides="fileupload">
+									<div class="fileupload-preview thumbnail"
+										style="width: 100%; height: 150px;"></div>
+									<div>
+										<span class="btn btn-file btn-success"><span
+											class="fileupload-new">Select image</span><span
+											class="fileupload-exists">Change</span> <p:fileUpload id="pict"
+												value="#" mode="simple"
+												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" /> </span> <a href="#"
+											class="btn btn-danger fileupload-exists"
+											data-dismiss="fileupload">Remove</a>
+
+									</div>
+								</div>
+
+							</div>
 							<h:message errorClass="errorMsg1" for="pict"></h:message>
 						</div>
-
+ -->
 
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.addr']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText class="form-control" id="add" required="true"
+								<h:inputText class="form-control" id="add" required="true" value="#{userAccountController.users.address}"
 									requiredMessage="#{msg['requiered.address.message']}" />
 							</div>
 							<h:message errorClass="errorMsg1" for="add"></h:message>
@@ -98,7 +158,7 @@
 						<h:panelGroup id="fromDatePanel" layout="block">
 							<div class="form-group row">
 								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									class="col-md-3 col-sm-2 col-xs-2 control-label"
 									style="color: black">#{msg['label.message.dob']}<span
 									style="color: red">*</span></label>
 								<div class="col-md-4 col-sm-4 col-xs-4">
@@ -106,7 +166,7 @@
 										autocomplete="off" id="from_dob_date_id"
 										binding="#{from_dob_date_id}" class="form-control"
 										escape="true"
-										value="#{formSampleController.users.dateOfBirth}"
+										value="#{userAccountController.users.dateOfBirth}"
 										maxlength="35" required="true"
 										converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 										requiredMessage="#{msg['dob.message']}">
@@ -125,7 +185,7 @@
 																//minDate: 0,
 																dateFormat : "dd/mm/yy",
 																yearRange : "-100:+0",
-																buttonImage : "resources/image/calendar1.png"
+																buttonImage : "./resources/image/calendar1.png"
 															});
 										});
 									</script>
@@ -134,12 +194,12 @@
 							</div>
 						</h:panelGroup>
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.username']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText class="form-control" id="uname" required="true"
+								<h:inputText class="form-control" id="uname" required="true" value="#{userAccountController.users.viewId}"
 									type="date"
 									requiredMessage="#{msg['requiered.username.message']}" />
 							</div>
@@ -147,113 +207,179 @@
 						</div>
 
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.password']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText class="form-control" id="pwd" required="true"
+								<h:inputText class="form-control" id="pwd" required="true" value="#{userAccountController.users.viewName}"
 									type="date"
 									requiredMessage="#{msg['requiered.username.password']}" />
 							</div>
 							<h:message errorClass="errorMsg1" for="pwd"></h:message>
 						</div>
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.catname']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13" id="cat"
+								<!-- <h:selectOneMenu class="form-control" mediumScreen="13" id="cat"
 									required="true"
 									requiredMessage="#{msg['requiered.categoryname.message']}">
-									<!-- List of usercategory  goes here -->
+									List of usercategory  goes here
 									<f:selectItems itemLabel="#" itemValue="#" />
-								</b:selectOneMenu>
+								</h:selectOneMenu> -->
+								<h:selectOneMenu id="cat" styleClass="form-control"
+									required="true" value="#{userAccountController.categoryId}"
+									requiredMessage="#{msg['requiered.categoryname.message']}">
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{userAccountController.catDetails}"
+										var="option" itemValue="#{option.userCatid}"
+										itemLabel="#{option.usercategoryName}" itemLabelEscaped="true" />
+									<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+								</h:selectOneMenu>
 
 							</div>
 							<h:message errorClass="errorMsg1" for="cat"></h:message>
 						</div>
+						
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['label.message.province']}<span
-									style="color: red">*</span></label>
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.board']}<span
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13"
-									id="prov" required="true"
-									requiredMessage="#{msg['requiered.province.message']}">
-									<!-- List of province goes here -->
-									<f:selectItems itemLabel="#" itemValue="#" />
-								</b:selectOneMenu>
+								<h:selectOneMenu id="board" styleClass="form-control"
+									 value="#{userAccountController.boardId}">
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<!-- <f:selectItems value="#"
+										var="option" itemValue="#"
+										itemLabel="#" itemLabelEscaped="true" /> -->
+								
+								</h:selectOneMenu>
 
+							</div>
+							<h:message errorClass="errorMsg1" for="board"></h:message>
+						</div>
+						
+						<div class="form-group row">
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.province']}<span
+								style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:selectOneMenu id="prov" styleClass="form-control"
+									required="true" value="#{userAccountController.provinceId}"
+									requiredMessage="#{msg['requiered.province.message']}">
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{userAccountController.provinceList}"
+										var="option" itemValue="#{option.provenceId}"
+										itemLabel="#{option.provenceName_en}" itemLabelEscaped="true" />
+									<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+
+									<f:ajax listener="#{userAccountController.changeDistrict()}"
+										render="dist" />
+								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="prov"></h:message>
 						</div>
 
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.district']}</label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13"
-									id="dist" required="true"
-									requiredMessage="#{msg['requiered.district.message']}">
-									<!-- List of district goes here -->
-									<f:selectItems itemLabel="#" itemValue="#" />
-								</b:selectOneMenu>
 
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:selectOneMenu id="dist" styleClass="form-control"
+									required="true" value="#{userAccountController.districtId}"
+									requiredMessage="#{msg['requiered.district.message']}">
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{userAccountController.districtByProv}"
+										var="option" itemValue="#{option.districtId}"
+										itemLabel="#{option.districtName_en}" itemLabelEscaped="true" />
+									<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+									<f:ajax listener="#{userAccountController.changeSector()}"
+										render="sect" />
+								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="dist"></h:message>
 						</div>
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.sector']}<span
-									style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13"
-									id="sect" required="true"
-									requiredMessage="#{msg['requiered.sector.message']}">
-									<!-- List of sector goes here -->
-									<f:selectItems itemLabel="#" itemValue="#" />
-								</b:selectOneMenu>
+								style="color: red">*</span></label>
 
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:selectOneMenu id="sect" styleClass="form-control"
+									required="true" value="#{userAccountController.sectorId}"
+									requiredMessage="#{msg['requiered.sector.message']}">
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems
+										value="#{userAccountController.sectorByDistrict}" var="option"
+										itemValue="#{option.sectorId}"
+										itemLabel="#{option.sectorName_en}" itemLabelEscaped="true" />
+									<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+									<f:ajax listener="#{userAccountController.changeCell()}"
+										render="cel" />
+
+								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="sect"></h:message>
 						</div>
 
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.cell']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13" id="cel"
-									required="true"
+								<h:selectOneMenu id="cel" styleClass="form-control"
+									required="true" value="#{userAccountController.cellId}"
 									requiredMessage="#{msg['requiered.cel.message']}">
-									<!-- List of cell goes here -->
-									<f:selectItems itemLabel="#" itemValue="#" />
-								</b:selectOneMenu>
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{userAccountController.cellBySector}"
+										var="option" itemValue="#{option.cellId}"
+										itemLabel="#{option.cellName_en}" itemLabelEscaped="true" />
+									<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+									<f:ajax listener="#{userAccountController.changeVillage()}"
+										render="vil" />
 
+								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="cel"></h:message>
 						</div>
 						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+							<label class="col-md-3 col-sm-2 col-xs-6 control-label"
 								style="color: black">#{msg['label.message.village']}<span
-									style="color: red">*</span></label>
+								style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
-								<b:selectOneMenu class="form-control" mediumScreen="13" id="vil"
-									required="true"
+								<h:selectOneMenu id="vil" styleClass="form-control"
+									required="true" value="#{userAccountController.villageId}"
 									requiredMessage="#{msg['requiered.village.message']}">
-									<!-- List of village goes here -->
-									<f:selectItems itemLabel="#" itemValue="#" />
-								</b:selectOneMenu>
-
+									<f:selectItem
+										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{userAccountController.villageByCell}"
+										var="option" itemValue="#{option.villageId}"
+										itemLabel="#{option.villageName_en}" itemLabelEscaped="true" />
+									<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="vil"></h:message>
 						</div>
 						<div class="form-group row">
 							<label for="todate"
-								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+								class="col-md-3 col-sm-2 col-xs-6  control-label"></label>
 							<div class="col-sm-4">
-								<h:commandButton class="btn btn-info btn-xlg btn-block"
+								<h:commandButton class="btn btn-info btn-xlg btn-block" action="#{userAccountController.saveUserInfo}"
 									value="#{msg['label.subimit.message.submit']}" />
 
 							</div>
