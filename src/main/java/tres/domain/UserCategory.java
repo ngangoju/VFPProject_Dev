@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Table(name = "UserCategory")
 @NamedQuery(name = "UserCategory.findAll",
         query = "SELECT r FROM UserCategory r order by userCatid desc")
-public class UserCategory implements Serializable {
+public class UserCategory extends CommonDomain implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
