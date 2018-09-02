@@ -7,7 +7,7 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IBoard;
 import tres.domain.Board;
 
-public abstract class BoardImpl extends AbstractDao<Long, Board> implements IBoard{
+public class BoardImpl extends AbstractDao<Long, Board> implements IBoard{
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
 	public Board saveBoards(Board board) {
@@ -32,6 +32,11 @@ public abstract class BoardImpl extends AbstractDao<Long, Board> implements IBoa
 		} catch (Exception ex) {
 			LOGGER.info("getUsersWithQuery  Query error ::::" + ex.getMessage());
 		}
+		return null;
+	}
+
+	public Board getBoardById(int boardId, String primaryKeyclomunName) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }
