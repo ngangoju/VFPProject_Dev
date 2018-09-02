@@ -76,7 +76,7 @@
             <h:selectOneMenu id="categoryId"  styleClass="form-control" required="true" value="#{activityController.activity.status}" requiredMessage="#{msg['status.required.message']}"  >
                 <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true"   />
                 <f:selectItems value="#{activityController.status}" var="option" itemValue="#{option}" itemLabelEscaped="true" />
-            <f:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox('Eric')}" render="ReasonPanel"/>
+            <f:ajax event="change" execute="@this" listener="#{activityController.changeSelectBox('Eric')}" render="ReasonPanel"/>
             </h:selectOneMenu>
                       </div>
                 <h:message for="categoryId" styleClass="help-block"></h:message>
@@ -92,7 +92,7 @@
             <h:selectOneMenu id="weightId"  styleClass="form-control" required="true" value="#{activityController.activity.weight}" requiredMessage="#{msg['weight.required.message']}"  >
                 <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true"   />
                 <f:selectItems value="#{activityController.weight}" var="option" itemValue="#{option}" itemLabelEscaped="true" />
-            <f:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox('Eric')}" render="ReasonPanel"/>
+            <f:ajax event="change" execute="@this" listener="#{activityController.changeSelectBox('Eric')}" render="ReasonPanel"/>
             </h:selectOneMenu>
                       </div>
                 <h:message for="weightId" styleClass="help-block"></h:message>
