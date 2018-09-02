@@ -31,16 +31,16 @@ insert  menuassignment values(12,'admin',now(),'active',now(),now(),'admin',null
 ==================BY Ngabo Eric=====================
 
 
-insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UsersAccount.xhtml','Url03',null,3);
-insert  menuassignment values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,3,'Url03');
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
 
-insert into listofmenu values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml','Url04',null,3);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,3,'Url04');
 
-insert  menuassignment values(14,'admin',now(),'active',now(),now(),'admin',null,11,1);
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(14,'admin',now(),'active',now(),now(),'admin',null,11,1);
 
-insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml','Url05',null,3);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml',null,3,'Url05');
 
-insert  menuassignment values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
 
 ===>>We need to perform update query for those who have already perform the above query about urlName:/menu/UserAccount.xhtml
 
