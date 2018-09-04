@@ -49,7 +49,7 @@
 						</h:panelGroup>
 						<fieldset>
       
-       <legend>Activity Registration </legend>
+       <legend>#{msg['form.activity.title']}</legend>
          
   
        <h:panelGroup id="ReasonPanel" layout="block">  
@@ -103,7 +103,7 @@
               <div class="form-group row">
                      <label for="todate" class="col-md-3 col-sm-3 col-xs-3 control-label" style="color: black"></label>
                         <div class="col-md-5 col-sm-5 col-xs-5">
-                         <h:commandButton class="btn btn-info btn-xlg btn-block" action="#{formSampleController.saveData}" value="#{msg['label.submit.message.save']}" />
+                         <h:commandButton class="btn btn-info btn-xlg btn-block" action="#{activityController.saveActivite}" value="#{msg['label.submit.message.save']}" />
                                         
                         </div>
                         <span class="text-danger" id="err"></span>

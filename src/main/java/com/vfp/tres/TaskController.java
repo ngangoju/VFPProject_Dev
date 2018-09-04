@@ -16,34 +16,32 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
-import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.StrategicPlanImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
-import tres.domain.Activity;
+import tres.domain.StrategicPlan;
+import tres.domain.Task;
 import tres.domain.Users;
 
 @ManagedBean
 @ViewScoped
-public class ActivityController implements Serializable, DbConstant {
+public class TaskController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	private String CLASSNAME = "ActivityController :: ";
+	private String CLASSNAME = "TaskController :: ";
 	private static final long serialVersionUID = 1L;
 	/*to manage validation messages*/
 	private boolean isValid;
 	/*end  manage validation messages*/
 	private Users users;
 	private Users usersSession;
-	private Activity activity;
-	private List<Activity> activityDetails = new ArrayList<Activity>();
-
-	private String[] status= {NOTSTARTED,APPROVED,REJECT,INPROGRESS,COMPLETED};
-	
-	private String[] weight= {SHORT,MEDIUM,LONG};
+	private Task task;
+	private List<Task> taskDetails = new ArrayList<Task>();
 	
 	/*class injection*/
 	
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
-	ActivityImpl activityImpl = new ActivityImpl();
+	TaskImpl taskImpl = new TaskImpl();
 	
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -58,13 +56,13 @@ public class ActivityController implements Serializable, DbConstant {
 			users = new Users();
 		}
 		
-		if (activity == null) {
-			activity = new Activity();
+		if (task == null) {
+			task = new Task();
 		}
 		
 		try {
 			
-			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
+			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Task", "taskId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -76,24 +74,23 @@ public class ActivityController implements Serializable, DbConstant {
 		
 	}
 	
-	public String saveActivite() {
+	public String saveTash() {
 		try {
-			activity.setCreatedBy(usersSession.getViewId());
-			activity.setCrtdDtTime(timestamp);
-			activity.setGenericStatus(ACTIVE);
-			activity.setUpDtTime(timestamp);
-			activity.setUpdatedBy(usersSession.getViewId());
-			activity.setDate(timestamp);
-			activityImpl.saveActivity(activity);
+			task.setCreatedBy(usersSession.getViewId());
+			task.setCrtdDtTime(timestamp);
+			task.setGenericStatus(ACTIVE);
+			task.setUpDtTime(timestamp);
+			task.setUpdatedBy(usersSession.getViewId());
+			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
 			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.activity"));
-			LOGGER.info(CLASSNAME+":::Activity Details is saved");
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
+			LOGGER.info(CLASSNAME+":::Task Details is saved");
 			clearContactFuileds();
 			return"";
 			
 		} catch (Exception e) {
-			LOGGER.info(CLASSNAME+":::Activity Details is failling with HibernateException  error");
+			LOGGER.info(CLASSNAME+":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -105,8 +102,8 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 private void clearContactFuileds() {
-	activity=new Activity();
-	activityDetails=null;
+	task=new Task();
+	taskDetails=null;
 }
 
 	public void changeSelectBox(String name) {
@@ -138,44 +135,28 @@ private void clearContactFuileds() {
 		this.provider = provider;
 	}
 
-	public Activity getActivity() {
-		return activity;
+	public Task getTask() {
+		return task;
 	}
 
-	public void setActivity(Activity activity) {
-		this.activity = activity;
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
-	public List<Activity> getActivityDetails() {
-		return activityDetails;
+	public List<Task> getTaskDetails() {
+		return taskDetails;
 	}
 
-	public void setActivityDetails(List<Activity> activityDetails) {
-		this.activityDetails = activityDetails;
+	public void setTaskDetails(List<Task> taskDetails) {
+		this.taskDetails = taskDetails;
 	}
 
-	public ActivityImpl getActivityImpl() {
-		return activityImpl;
+	public TaskImpl getTaskImpl() {
+		return taskImpl;
 	}
 
-	public void setActivityImpl(ActivityImpl activityImpl) {
-		this.activityImpl = activityImpl;
-	}
-
-	public String[] getStatus() {
-		return status;
-	}
-
-	public void setStatus(String[] status) {
-		this.status = status;
-	}
-
-	public String[] getWeight() {
-		return weight;
-	}
-
-	public void setWeight(String[] weight) {
-		this.weight = weight;
+	public void setTaskImpl(TaskImpl taskImpl) {
+		this.taskImpl = taskImpl;
 	}
 
 

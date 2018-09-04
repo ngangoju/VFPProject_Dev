@@ -49,14 +49,14 @@
 						</h:panelGroup>
 						<fieldset>
       
-       <legend>Task Registration </legend>
+       <legend>#{msg['form.task.title']}</legend>
          
   
   <h:panelGroup  id="surnamePanl" layout="block">                       
        <div class="form-group row">
           <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black">#{msg['form.task.name']}<span style="color:red">*</span></label>
              <div class="col-md-6 col-sm-6 col-xs-6">
-             <h:inputText id="tasknameId" binding="#{surnameId}" styleClass="form-control" value="#{formSampleController.users.fname}" maxlength="80"  required="true" 
+             <h:inputText id="tasknameId" binding="#{surnameId}" styleClass="form-control" value="#{taskcontroller.}" maxlength="80"  required="true" 
 			validatorMessage="#{msg['error.enter.invalid.surname']}" converterMessage="#{msg['error.enter.invalid.surname']}" requiredMessage="#{msg['tname.required.message']}">
               <f:validateRegex pattern="#{regex['regex.string.Validation']}" />
               <f:validateLength maximum="35" />
@@ -70,7 +70,7 @@
              <div class="form-group row">
                 <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black">#{msg['form.task.description']}<span style="color:red">*</span> </label>
                   <div class="col-md-6 col-sm-6 col-xs-6">
-           <h:inputTextarea id="descriptionId"  styleClass="form-control" value="#{formSampleController.users.address}"  maxlength="150" required="true" requiredMessage="#{msg['description.required.message']}" validatorMessage="#{msg['error.address.maxlength']}">
+           <h:inputTextarea id="descriptionId"  styleClass="form-control" value="#{taskcontroller.task.description}"  maxlength="150" required="true" requiredMessage="#{msg['description.required.message']}" validatorMessage="#{msg['error.address.maxlength']}">
            <f:validateLength maximum="150" />
           </h:inputTextarea>
                  </div>
@@ -88,7 +88,7 @@
            <div class="form-group row">
             <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black">#{msg['form.task.startDate']}<span style="color:red">*</span></label>
              <div class="col-md-6 col-sm-6 col-xs-6">
-              <h:inputText locale="#{facesContext.viewRoot.locale}" autocomplete="off" id="from_start_date_id" binding="#{from_dob_date_id}" class="form-control" escape="true" value="#{formSampleController.users.dateOfBirth}"
+              <h:inputText locale="#{facesContext.viewRoot.locale}" autocomplete="off" id="from_start_date_id" binding="#{from_dob_date_id}" class="form-control" escape="true" value="#{taskcontroller.task.startDate}"
                maxlength="35" required="true" converterMessage="#{msg['validation.message.DATE_FORMAT']}" requiredMessage="#{msg['startDate.required.message']}">
                <f:convertDateTime type="date" dateType="short" pattern="dd/MM/yyyy" />
                 <f:validateLength maximum="35" />
@@ -117,7 +117,7 @@
            <div class="form-group row">
             <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black">#{msg['form.task.dueDate']}<span style="color:red">*</span></label>
              <div class="col-md-6 col-sm-6 col-xs-6">
-              <h:inputText locale="#{facesContext.viewRoot.locale}" autocomplete="off" id="from_due_date_id" binding="#{from_due_date_id}" class="form-control" escape="true" value="#{formSampleController.users.dateOfBirth}"
+              <h:inputText locale="#{facesContext.viewRoot.locale}" autocomplete="off" id="from_due_date_id" binding="#{from_due_date_id}" class="form-control" escape="true" value="#{taskcontroller.task.dueDate}"
                maxlength="35" required="true" converterMessage="#{msg['validation.message.DATE_FORMAT']}" requiredMessage="#{msg['dueDate.required.message']}">
                <f:convertDateTime type="date" dateType="short" pattern="dd/MM/yyyy" />
                 <f:validateLength maximum="35" />
@@ -144,7 +144,7 @@
               <div class="form-group row">
                      <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black"></label>
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                         <h:commandButton class="btn btn-info btn-xlg btn-block" action="#{formSampleController.saveData}" value="#{msg['label.submit.message.save']}" />
+                         <h:commandButton class="btn btn-info btn-xlg btn-block" action="#{taskcontroller.saveTash}" value="#{msg['label.submit.message.save']}" />
                                         
                         </div>
                         <span class="text-danger" id="err"></span>
