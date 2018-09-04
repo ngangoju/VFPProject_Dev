@@ -105,8 +105,8 @@ public class Login implements Serializable, DbConstant {
 				his.setUsers(user);
 				session.setAttribute("userSession", user);
 
-				Object a = historic.saveLoginHistoric(his);
-				session.setAttribute("loginID", a);
+			   Object a = historic.saveLoginHistoric(his);
+				//session.setAttribute("loginID", a);
 				LOGGER.info(CLASSNAME + "Loging Save Login Historic");
 				LOGGER.info("step 111");
 				user.setLoginStatus(ONLINE);

@@ -76,11 +76,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 
 		try {
 
-			userCategory.setCreatedBy(usersSession.getViewId());
+			/*userCategory.setCreatedBy(usersSession.getViewId());
 			userCategory.setCrtdDtTime(timestamp);
 			userCategory.setGenericStatus(ACTIVE);
 			userCategory.setUpdatedBy(usersSession.getViewId());
-			userCategory.setUpDtTime(timestamp);
+			userCategory.setUpDtTime(timestamp);*/
 			userCatImpl.saveUsercategory(userCategory);
 			JSFMessagers.resetMessages();
 			setValid(true);

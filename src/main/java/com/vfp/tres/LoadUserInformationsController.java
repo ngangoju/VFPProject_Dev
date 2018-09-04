@@ -24,6 +24,7 @@ import tres.dao.impl.MenuGroupImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
+import tres.domain.UserCategory;
 import tres.domain.Users;
 
 @ManagedBean
@@ -36,6 +37,7 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	private boolean isValid;
 	/*end  manage validation messages*/
 	private Users users;
+	private UserCategory userCategory;
 	private MenuAssignment menuAssignment;
 	private MenuGroup menuGroup;
 	
@@ -52,6 +54,7 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	
+	
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -66,11 +69,20 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 			menuGroup = new MenuGroup();
 		}
 		
-		users= (Users) session.getAttribute("userSession");
+		if (userCategory == null) {
+			userCategory = new UserCategory();
+		}
+		
 	
+		
+		users= (Users) session.getAttribute("userSession");
+	LOGGER.info("HHH>>"+users.getUserCategory().getUsercategoryName());
+	userCategory=users.getUserCategory();
 		try {
 			menuAssignmentDetails=menuAssignmentImpl.getGenericListWithHQLParameter(new String[] { "userCategory", "genericStatus"},new Object[] {users.getUserCategory(),ACTIVE}, "MenuAssignment", "menuAssgnId asc");
+			LOGGER.info("menu size ::>>"+menuAssignmentDetails.size());
 		} catch (Exception e) {
+			LOGGER.info("error loading generic menu:::");
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
@@ -169,6 +181,7 @@ public String getContextPath() {
 	}
 
 	public List<MenuAssignment> getMenuAssignmentDetails() {
+		
 		return menuAssignmentDetails;
 	}
 
@@ -198,6 +211,12 @@ public String getContextPath() {
 
 	public void setMenuAssignmentImpl(MenuAssignmentImpl menuAssignmentImpl) {
 		this.menuAssignmentImpl = menuAssignmentImpl;
+	}
+	public UserCategory getUserCategory() {
+		return userCategory;
+	}
+	public void setUserCategory(UserCategory userCategory) {
+		this.userCategory = userCategory;
 	}
 	
 	
