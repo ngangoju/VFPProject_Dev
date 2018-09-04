@@ -37,23 +37,22 @@ insert  menuassignment(menuAssgnId,crtdDtTime, genericStatus,defaultMenuUrl,list
 ==================BY Ngabo Eric=====================
 
 
-insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,3,'Url03');
-insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(3,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,1,'Url03');
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(3,'admin',now(),'active',now(),now(),'admin',null,3,3);
 
-insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,3,'Url04');
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(4,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,1,'Url04');
 
-insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(14,'admin',now(),'active',now(),now(),'admin',null,11,1);
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(4,'admin',now(),'active',now(),now(),'admin',null,4,3);
 
-insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml',null,3,'Url05');
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(5,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml',null,1,'Url05');
 
-insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(5,'admin',now(),'active',now(),now(),'admin',null,5,3);
 
 ===>>We need to perform update query for those who have already perform the above query about urlName:/menu/UserAccount.xhtml
 
-update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=10;
+update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=3;
 
 ===>>>The reason for this it's bcse the Menu for New User is not working for you so update your urlname.
-
 
 
 =================BY Emmanuel Siborurema========================
@@ -122,7 +121,7 @@ insert into district ( districtId,code,districtName_en,districtName_fr,districtN
 
 insert into sector( sectorId,code,sectorName_en,sectorName_fr,sectorName_rw,distric) values(1,'KMHSTR02','Kimihurura','Kimihurura','Kimihurura',2);
 
-insert into sector( sectorId,code,sectorName_en,sectorName_, fr,sectorName_rw,distric) values(2,'NYMBSTR02','Nyamirambo','Nyamirambo','Nyamirambo',1);
+insert into sector( sectorId,code,sectorName_en,sectorName_fr,sectorName_rw,distric) values(2,'NYMBSTR02','Nyamirambo','Nyamirambo','Nyamirambo',1);
 
 insert into Cell(cellId,code, cellName_en,cellName_fr,cellName_rw, sector) values(1,'RKRSTR01','Rukiri','Rukiri','Rukiri',1);
  
@@ -132,6 +131,22 @@ insert into village( villageId,code,villageName_en,villageName_fr, villageName_r
  
 insert into village( villageId,code,villageName_en,villageName_fr, villageName_rw,cell) values(2,'UBWZSTR02','Ubwiza','Ubwiza','Ubwiza',2);
 
+
 ==================================By Emmanuel============================================================================================
 
 
+===>>we need to update our script some list of menu appeared from super admin  are  changed under institution Representative
+ 
+----->update menuassignment set usercategory=3 where listofmenu=3;
+
+------> update menuassignment set usercategory=3 where listofmenu=4;
+
+-------> update menuassignment set usercategory=3 where listofmenu=5;
+
+-------> update listofmenu set menugroup=11 where menuid=3;
+
+-------> update listofmenu set menugroup=11 where menuid=4;
+
+-------> update listofmenu set menugroup=11 where menuid=5;
+
+==================================By Emmanuel============================================================================================
