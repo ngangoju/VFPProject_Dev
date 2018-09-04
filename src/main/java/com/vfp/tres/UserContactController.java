@@ -132,8 +132,7 @@ public String saveAction(UserDto user) {
 	us=new Users();
 	us=usersImpl.gettUserById(user.getUserId(), "userId");
 	
-	//for (UserDto user : userDtoDetails){
-		LOGGER.info("here update sart for "+user +" Object ");
+		LOGGER.info("here update sart for "+us +" useriD "+us.getUserId());
 
 		user.setEditable(false);
 		us.setFname(user.getFname());

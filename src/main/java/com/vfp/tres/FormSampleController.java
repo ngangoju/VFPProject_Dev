@@ -64,7 +64,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		
 		try {
-			menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "MenuGroup", "menuGroupId asc");
+			//menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "MenuGroup", "menuGroupId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));

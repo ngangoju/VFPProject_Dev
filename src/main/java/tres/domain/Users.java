@@ -7,6 +7,8 @@ package tres.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -79,6 +81,7 @@ public class Users extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "village")
 	private Village village;
+	
 	@ManyToOne
 	@JoinColumn(name = "board")
 	private Board board;

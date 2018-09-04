@@ -1,50 +1,56 @@
-insert into usercategory values(1,'Super Admin');
+drop database  tresscore;
 
-insert into usercategory values(2,'Staff');
+create database tresscore;
 
-insert into usercategory values(3,'Institution Representative');
+use tresscore;
 
-insert into usercategory values(4,'Superviser');
 
-insert into users values(5,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Mugabo','M','us.png','Jean','online','active','admin',md5('admin'),null,1,null);
+insert into usercategory (userCatid,usercategoryName) values(1,'Super Admin');
 
-insert into users values(6,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Kabera','M','us.png','Tito','online','active','staff',md5('admin'),null,2,null);
+insert into usercategory (userCatid,usercategoryName) values(2,'Staff');
 
-insert into users values(7,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Mucyo','M','us.png','Ange','online','active','rep',md5('admin'),null,3,null);
+insert into usercategory (userCatid,usercategoryName) values(3,'Institution Representative');
 
-insert into users values(8,'admin',now(),'active',now(),now(),'none',now(),'Kigali',now(),'Manzi','M','us.png','Aline','online','active','super',md5('admin'),null,4,null);
+insert into usercategory (userCatid,usercategoryName) values(4,'Superviser');
 
-insert into menugroup values(3,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M001','My Task',1);
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('admin',md5('admin'),1,'Kigali','Mugabo','Jean','us.png','offline','active',now(),'active');
 
-insert into menugroup values(4,'admin',now(),'active',now(),now(),'admin',now(),'Reports','M002','Reports',1);
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('staff',md5('admin'),2,'Kigali','Ange','Mutesi','us.png','offline','active',now(),'active');
 
-insert into listofmenu values(8,'admin',now(),'active',now(),now(),'admin',now(),'Users List','/menu/ListOfUsers.xhtml','Url01',null,3);
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('rep',md5('admin'),3,'Kigali','Patrick','Nshuti','us.png','offline','active',now(),'active');
 
-insert into listofmenu values(9,'admin',now(),'active',now(),now(),'admin',now(),'Login Users List','/menu/ListOfLoginUsers.xhtml','Url02',null,3);
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('super',md5('admin'),4,'Kigali','Kabera','Nepo','us.png','offline','active',now(),'active');
 
-SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='menuassignment';
+insert into menugroup(menuGroupId,crtdDtTime,genericStatus,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(1,now(),'active','My Tasks','M001','My Task',1);
+insert into menugroup(menuGroupId,crtdDtTime,genericStatus,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(2,now(),'active','Reports','M002','Reports',1);
 
-insert  menuassignment values(11,'admin',now(),'active',now(),now(),'admin',8,8,1);
 
-insert  menuassignment values(12,'admin',now(),'active',now(),now(),'admin',null,9,1);
+insert into listofmenu(menuId,crtdDtTime,genericStatus,description,urlCode,urlName,listOfMenu,menuGroup) values(1,now(),'active','Users List','Url01','/menu/ListOfUsers.xhtml',null,1);
+
+insert into listofmenu(menuId,crtdDtTime,genericStatus,description,urlCode,urlName,listOfMenu,menuGroup) values(2,now(),'active','Login Users List','Url02','/menu/ListOfLoginUsers.xhtml',null,1);
+
+
+insert  menuassignment(menuAssgnId,crtdDtTime, genericStatus,defaultMenuUrl,listOfMenu,userCategory) values(1,now(),'active',null,1,1);
+insert  menuassignment(menuAssgnId,crtdDtTime, genericStatus,defaultMenuUrl,listOfMenu,userCategory) values(2,now(),'active',null,2,1);
+
 
 ==================BY Ngabo Eric=====================
 
 
-insert into listofmenu values(10,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UsersAccount.xhtml','Url03',null,3);
-insert  menuassignment values(13,'admin',now(),'active',now(),now(),'admin',null,10,1);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(3,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,1,'Url03');
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(3,'admin',now(),'active',now(),now(),'admin',null,3,3);
 
-insert into listofmenu values(11,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml','Url04',null,3);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(4,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,1,'Url04');
 
-insert  menuassignment values(14,'admin',now(),'active',now(),now(),'admin',null,11,1);
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(4,'admin',now(),'active',now(),now(),'admin',null,4,3);
 
-insert into listofmenu values(12,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml','Url05',null,3);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(5,'admin',now(),'active',now(),now(),'admin',now(),'Add User Contact','/menu/UserContacts.xhtml',null,1,'Url05');
 
-insert  menuassignment values(15,'admin',now(),'active',now(),now(),'admin',null,12,1);
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(5,'admin',now(),'active',now(),now(),'admin',null,5,3);
 
 ===>>We need to perform update query for those who have already perform the above query about urlName:/menu/UserAccount.xhtml
 
-update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=10;
+update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=3;
 
 ===>>>The reason for this it's bcse the Menu for New User is not working for you so update your urlname.
 
@@ -115,7 +121,7 @@ insert into district ( districtId,code,districtName_en,districtName_fr,districtN
 
 insert into sector( sectorId,code,sectorName_en,sectorName_fr,sectorName_rw,distric) values(1,'KMHSTR02','Kimihurura','Kimihurura','Kimihurura',2);
 
-insert into sector( sectorId,code,sectorName_en,sectorName_, fr,sectorName_rw,distric) values(2,'NYMBSTR02','Nyamirambo','Nyamirambo','Nyamirambo',1);
+insert into sector( sectorId,code,sectorName_en,sectorName_fr,sectorName_rw,distric) values(2,'NYMBSTR02','Nyamirambo','Nyamirambo','Nyamirambo',1);
 
 insert into Cell(cellId,code, cellName_en,cellName_fr,cellName_rw, sector) values(1,'RKRSTR01','Rukiri','Rukiri','Rukiri',1);
  
@@ -125,6 +131,22 @@ insert into village( villageId,code,villageName_en,villageName_fr, villageName_r
  
 insert into village( villageId,code,villageName_en,villageName_fr, villageName_rw,cell) values(2,'UBWZSTR02','Ubwiza','Ubwiza','Ubwiza',2);
 
+
 ==================================By Emmanuel============================================================================================
 
 
+===>>we need to update our script some list of menu appeared from super admin  are  changed under institution Representative
+ 
+----->update menuassignment set usercategory=3 where listofmenu=3;
+
+------> update menuassignment set usercategory=3 where listofmenu=4;
+
+-------> update menuassignment set usercategory=3 where listofmenu=5;
+
+-------> update listofmenu set menugroup=11 where menuid=3;
+
+-------> update listofmenu set menugroup=11 where menuid=4;
+
+-------> update listofmenu set menugroup=11 where menuid=5;
+
+==================================By Emmanuel============================================================================================

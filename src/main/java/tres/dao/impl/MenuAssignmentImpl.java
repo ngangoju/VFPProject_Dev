@@ -1,12 +1,13 @@
 package tres.dao.impl;
 
+
 import java.util.List;
 import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IMenuAssignment;
 import tres.domain.MenuAssignment;
 
-public class MenuAssignmentImpl extends AbstractDao<Long, MenuAssignment> implements IMenuAssignment{
-
+public class MenuAssignmentImpl extends AbstractDao<Long, MenuAssignment> implements IMenuAssignment {
+	 
 	public MenuAssignment saveMenuAssignment(MenuAssignment menuAssignment) {
 		return saveIntable(menuAssignment); 
 	}

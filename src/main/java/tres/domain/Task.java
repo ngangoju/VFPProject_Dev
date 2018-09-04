@@ -39,7 +39,7 @@ public class Task extends CommonDomain implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
 
-	@Column(name = "dueDate", columnDefinition = "DUETIME")
+	@Column(name = "dueDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dueDate;
 

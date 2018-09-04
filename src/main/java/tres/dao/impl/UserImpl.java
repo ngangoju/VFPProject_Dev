@@ -18,9 +18,9 @@ import tres.domain.Users;
  * @author Emmanuel
  */
 
-public class UserImpl extends AbstractDao<Long, Users> implements IUsers,Serializable {
+public class UserImpl extends AbstractDao<Long, Users> implements IUsers{
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	private static final long  serialVersionUID = 1L;
+	
 	public Users saveUsers(Users users) {
 		return saveIntable(users);
 	}

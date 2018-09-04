@@ -8,6 +8,8 @@ package tres.domain;
 import java.util.Date;
 
 import java.io.Serializable;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +44,7 @@ public class LoginHistoric extends CommonDomain implements Serializable {
     @Column(name="IpAddress")
     private String IpAddress;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "users")
     private Users users;
 

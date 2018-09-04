@@ -143,23 +143,24 @@ int q = (Integer)session.createQuery(AnySQLQuerry).uniqueResult();
 
             Query query = session.createQuery(
                     strQuery.toString());
-
+LOGGER.info( "the querry ::"+strQuery.toString());
             for (int i = 0; i < value.length; i++) {
                 query.setParameter(i, value[i]);
             }
             if (!t.wasCommitted()) {
             	  t.commit();
             }
-          // session.close();
-           // factory.close();
+           //session.close();
+          // factory.close();
+            LOGGER.info("list size :::"+query.list().size());
             return query.list();
 
         } catch (HibernateException hibex) {
             if (!t.wasCommitted()) {
                 t.begin();
             }
-           session.close();
-            factory.close();
+           //session.close();
+            //factory.close();
             LOGGER.info(hibex.getMessage()+ hibex.getCause());
             throw new Exception(
                     hibex);
@@ -454,7 +455,7 @@ configConnection();
             }
         } finally {
             if (!t.wasCommitted()) {
-                t.commit();
+              //  t.commit();
             }
 
             session.close();
@@ -493,7 +494,7 @@ configConnection();
         configConnection();
         Transaction t = session.beginTransaction();
         try {
-            System.out.println("Transaction Started.. for update config");
+            LOGGER.info("Transaction Started.. for update config");
 
             session.update(model);
             t.commit();
@@ -502,16 +503,16 @@ configConnection();
 
         } catch (Exception j) {
             if (!t.wasCommitted()) {
-                t.commit();
-            }
-           // session.close();
-            factory.close();
-
-        } finally {
-            if (!t.wasCommitted()) {
                // t.commit();
             }
            // session.close();
+            //factory.close();
+
+        } finally {
+            if (!t.wasCommitted()) {
+               //t.commit();
+            }
+            session.close();
             factory.close();
         }
 
@@ -536,13 +537,13 @@ configConnection();
                 t.commit();
             }
            // session.close();
-            factory.close();
+            //factory.close();
 
         } finally {
             if (!t.wasCommitted()) {
                 t.commit();
             }
-           // session.close();
+            session.close();
             factory.close();
         }
 
