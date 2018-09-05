@@ -60,7 +60,9 @@ public  interface  DbConstant {
  public static final String SHORT = "Short";
  public static final String MEDIUM = "Medium";
  public static final String LONG = "Long"; 
- 
+ public static final String PENDING = "pending";
+ public static final String ACCEPTED = "acepted";
+ public static final String REJECTED = "rejected";
   
  
     

@@ -127,9 +127,9 @@
 									<f:selectItem
 										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
 										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-									<f:selectItems value="#{institutionController.institutions}"
-										var="option" itemValue="#{option.institutionId}"
-										itemLabel="#{option.institutionName}" itemLabelEscaped="true" />
+									<f:selectItems value="#{institutionController.validInstitution}"
+										var="option" itemValue="#{option.institution.institutionId}"
+										itemLabel="#{option.institution.institutionName}" itemLabelEscaped="true" />
 								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="branch"></h:message>

@@ -17,6 +17,7 @@ import org.hibernate.HibernateException;
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
+import tres.common.SendEmail;
 import tres.common.SessionUtils;
 import tres.dao.impl.CellImpl;
 import tres.dao.impl.ContactImpl;
@@ -42,7 +43,7 @@ import tres.domain.Village;
 @ManagedBean
 @ViewScoped
 
-public class InstitutionController implements DbConstant {
+public class InstitutionController extends SendEmail implements DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "Institution :: InstitutionRequest ";
 	private static final long serialVersionUID = 1L;
@@ -60,6 +61,7 @@ public class InstitutionController implements DbConstant {
 	private District district;
 	private Sector sector;
 	private Cell cell;
+	private Contact contact;
 	private int institutionID;
 	private int pid;
 	private int did;
@@ -74,7 +76,10 @@ public class InstitutionController implements DbConstant {
 	private List<Sector> sectors = new ArrayList<Sector>();
 	private List<Cell> cells = new ArrayList<Cell>();
 	private List<Village> villages = new ArrayList<Village>();
+	private List<InstitutionRegistrationRequest> Confirmedinstitutions = new ArrayList<InstitutionRegistrationRequest>();
 	private List<Institution> institutions = new ArrayList<Institution>();
+	private List<InstitutionRegistrationRequest> requests = new ArrayList<InstitutionRegistrationRequest>();
+	private List<InstitutionRegistrationRequest> validInstitution = new ArrayList<InstitutionRegistrationRequest>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -87,6 +92,7 @@ public class InstitutionController implements DbConstant {
 	CellImpl cellImpl = new CellImpl();
 	VillageImpl villageImpl = new VillageImpl();
 	CountryImpl countryImpl = new CountryImpl();
+	ContactImpl contactImpl = new ContactImpl();
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -123,15 +129,24 @@ public class InstitutionController implements DbConstant {
 
 			village = new Village();
 		}
+		if (contact == null) {
+			contact = new Contact();
+		}
 		try {
-			// usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] {
-			// "genericStatus", "status" },
-			// new Object[] { ACTIVE, ACTIVE }, "Users", "userId desc");
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
 			institutions = institutionImpl.getGenericListWithHQLParameter(
 					new String[] { "institutionRepresenative_userId" }, new Object[] { usersSession }, "Institution",
 					"institutionName asc");
+			requests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			// institution = institutionImpl.getModelWithMyHQL(new String[] {
+			// "institutionRepresenative_userId" },
+			// new Object[] { usersSession }, "Institution");
+			validInstitution = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -168,7 +183,7 @@ public class InstitutionController implements DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not sent");
-			// clearContactFuileds();
+			clearInstitutionFuileds();
 			return "";
 		} catch (HibernateException e) {
 			LOGGER.info(CLASSNAME + ":::Institution request not sent with HibernateException  error");
@@ -184,12 +199,6 @@ public class InstitutionController implements DbConstant {
 
 	public void changeDistrict() {
 		try {
-			/*
-			 * String code = String.valueOf(provinceId);
-			 * System.out.println("Province Id goes here:-------------------->>>" +
-			 * provinceId); LOGGER.info(provinceId + ":::Province Details");
-			 */
-
 			province = provImpl.getProvinceById(pid, "provenceId");
 			districts = districtImpl.getGenericListWithHQLParameter(new String[] { "province" },
 					new Object[] { province }, "District", "code asc");
@@ -203,12 +212,6 @@ public class InstitutionController implements DbConstant {
 
 	public void changeSector() {
 		try {
-			/*
-			 * String code = String.valueOf(provinceId);
-			 * System.out.println("Province Id goes here:-------------------->>>" +
-			 * provinceId); LOGGER.info(provinceId + ":::Province Details");
-			 */
-
 			district = districtImpl.getDistrictById(did, "districtId");
 			sectors = sectorImpl.getGenericListWithHQLParameter(new String[] { "distric" }, new Object[] { district },
 					"Sector", "code asc");
@@ -222,12 +225,6 @@ public class InstitutionController implements DbConstant {
 
 	public void changeCell() {
 		try {
-			/*
-			 * String code = String.valueOf(provinceId);
-			 * System.out.println("Province Id goes here:-------------------->>>" +
-			 * provinceId); LOGGER.info(provinceId + ":::Province Details");
-			 */
-
 			sector = sectorImpl.getSectorById(sid, "sectorId");
 			cells = sectorImpl.getGenericListWithHQLParameter(new String[] { "sector" }, new Object[] { sector },
 					"Cell", "Code asc");
@@ -241,15 +238,49 @@ public class InstitutionController implements DbConstant {
 
 	public void changeVilages() {
 		try {
-			/*
-			 * String code = String.valueOf(provinceId);
-			 * System.out.println("Province Id goes here:-------------------->>>" +
-			 * provinceId); LOGGER.info(provinceId + ":::Province Details");
-			 */
-
 			cell = cellImpl.getCellById(cid, "cellId");
 			villages = sectorImpl.getGenericListWithHQLParameter(new String[] { "cell" }, new Object[] { cell },
 					"Village", "Code asc");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void institutonConfirmation(InstitutionRegistrationRequest reqst) {
+		try {
+			reqst.setInstRegReqstStatus(ACCEPTED);
+			requestImpl.UpdateInstitRegReqsts(reqst);
+//			sendEmail(contact.getEmail(), "request rejected",
+//			"Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.confirm.message"));
+			LOGGER.info(CLASSNAME + ":::Institution request not updated");
+			clearInstitutionFuileds();
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void institutonRejected(InstitutionRegistrationRequest reqst) {
+		try {
+			reqst.setInstRegReqstStatus(REJECTED);
+			reqst.setGenericStatus(DESACTIVE);
+			requestImpl.UpdateInstitRegReqsts(reqst);
+			contact = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[] { usersSession }, "Contact");
+//			sendEmail(contact.getEmail(), "request rejected",
+//					"Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.reject.message"));
+			LOGGER.info(CLASSNAME + ":::Institution request not updated");
+			clearInstitutionFuileds();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -573,6 +604,30 @@ public class InstitutionController implements DbConstant {
 
 	public void setCntryId(int cntryId) {
 		this.cntryId = cntryId;
+	}
+
+	public List<InstitutionRegistrationRequest> getRequests() {
+		return requests;
+	}
+
+	public void setRequests(List<InstitutionRegistrationRequest> requests) {
+		this.requests = requests;
+	}
+
+	public List<InstitutionRegistrationRequest> getConfirmedinstitutions() {
+		return Confirmedinstitutions;
+	}
+
+	public void setConfirmedinstitutions(List<InstitutionRegistrationRequest> confirmedinstitutions) {
+		Confirmedinstitutions = confirmedinstitutions;
+	}
+
+	public List<InstitutionRegistrationRequest> getValidInstitution() {
+		return validInstitution;
+	}
+
+	public void setValidInstitution(List<InstitutionRegistrationRequest> validInstitution) {
+		this.validInstitution = validInstitution;
 	}
 
 }

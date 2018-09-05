@@ -23,8 +23,8 @@ public class InstitutionImpl extends AbstractDao<Long, Institution> implements I
 		return (Institution) getModelById(institutionId, primaryKeyclomunName);
 	}
 
-	public Institution UpdateInstitution(Institution district) {
-		return updateIntable(district);
+	public Institution UpdateInstitution(Institution institution) {
+		return updateIntable(institution);
 	}
 
 }
