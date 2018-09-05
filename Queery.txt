@@ -59,18 +59,18 @@ update  listofmenu set urlname='/menu/UsersAccount.xhtml' where menuId=3;
 
 
 
-insert into menugroup values(7,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M013','My Task',4);
-insert into menugroup values(11,'admin',now(),'active',now(),now(),'admin',now(),'My Tasusks','M014','My Task',3);
-insert into menugroup values(13,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M015','My Task',2);
+insert into menugroup (menuGroupId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(7,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M013','My Task',4);
+insert into menugroup (menuGroupId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(11,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M014','My Task',3);
+insert into menugroup (menuGroupId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(13,'admin',now(),'active',now(),now(),'admin',now(),'My Tasks','M015','My Task',2);
 
-insert into listofmenu values(13,'admin',now(),'active',now(),now(),'admin',now(),'Create Tasks','url07','/menu/Task.xhtml',null,7);
-insert into listofmenu values(14,'admin',now(),'active',now(),now(),'admin',now(),'Create Strategic Plan','url11','/menu/StrategicPlan.xhtml',null,11);
-insert into listofmenu values(15,'admin',now(),'active',now(),now(),'admin',now(),'Create Activities','url13','/menu/Activity.xhtml',null,13);
+insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(13,'admin',now(),'active',now(),now(),'admin',now(),'Create Tasks','url07','/menu/Task.xhtml',null,7);
+insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(14,'admin',now(),'active',now(),now(),'admin',now(),'Create Strategic Plan','url11','/menu/StrategicPlan.xhtml',null,11);
+insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(15,'admin',now(),'active',now(),now(),'admin',now(),'Create Activities','url13','/menu/Activity.xhtml',null,13);
 
 
-insert  menuassignment values(10,'admin',now(),'active',now(),now(),'admin',null,13,4);
-insert  menuassignment values(21,'admin',now(),'active',now(),now(),'admin',null,14,3);
-insert  menuassignment values(25,'admin',now(),'active',now(),now(),'admin',null,15,2);
+insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(10,'admin',now(),'active',now(),now(),'admin',null,13,4);
+insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(21,'admin',now(),'active',now(),now(),'admin',null,14,3);
+insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(25,'admin',now(),'active',now(),now(),'admin',null,15,2);
 
 ==================BY Ngango Junior=====================
 
