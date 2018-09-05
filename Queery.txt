@@ -102,11 +102,11 @@ INSERT INTO menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLoc
 VALUES (3, 'admin',now(), 'active', now(), now(), 'admin', now(), 'Manage Institution', 'Manage Institution', 3);
 
 INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
-VALUES (3, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Institution profile', '/menu/institutionRegistration.xhtml', null,3, null);
+VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Institution profile', '/menu/institutionRegistration.xhtml', null,3, null);
 
 INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory)
  
-VALUES (4, 'admin',now(),'active',now(),now(),'admin', null, 3, 3);
+VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 18, 3);
 =======================================================================
 
 
@@ -150,3 +150,13 @@ insert into village( villageId,code,villageName_en,villageName_fr, villageName_r
 -------> update listofmenu set menugroup=11 where menuid=5;
 
 ==================================By Emmanuel============================================================================================
+___________________________________@james__________________________________________
+insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw) 
+values(0,'AFR01','RWANDA','RWANDA','RWANDA');
+
+insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw)
+ values(0,'AFR02','UGANDA','UGANDA','UGANDA');
+
+insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw)
+ values(0,'AFR03','TANZANIA','TANZANIE','TANZANIYA');
+_______________________________________James_________________________________________
