@@ -43,7 +43,7 @@ import tres.domain.Village;
 @ManagedBean
 @ViewScoped
 
-public class InstitutionController extends SendEmail implements DbConstant {
+public class InstitutionController implements DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "Institution :: InstitutionRequest ";
 	private static final long serialVersionUID = 1L;
@@ -141,6 +141,7 @@ public class InstitutionController extends SendEmail implements DbConstant {
 			requests = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
 					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+
 			// institution = institutionImpl.getModelWithMyHQL(new String[] {
 			// "institutionRepresenative_userId" },
 			// new Object[] { usersSession }, "Institution");
@@ -149,6 +150,7 @@ public class InstitutionController extends SendEmail implements DbConstant {
 					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 		} catch (Exception e) {
 			setValid(false);
+			e.printStackTrace();
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
@@ -253,8 +255,8 @@ public class InstitutionController extends SendEmail implements DbConstant {
 		try {
 			reqst.setInstRegReqstStatus(ACCEPTED);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-//			sendEmail(contact.getEmail(), "request rejected",
-//			"Your request have been rejected due to certain condition. try again later");
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.confirm.message"));
@@ -274,8 +276,8 @@ public class InstitutionController extends SendEmail implements DbConstant {
 			reqst.setGenericStatus(DESACTIVE);
 			requestImpl.UpdateInstitRegReqsts(reqst);
 			contact = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[] { usersSession }, "Contact");
-//			sendEmail(contact.getEmail(), "request rejected",
-//					"Your request have been rejected due to certain condition. try again later");
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.reject.message"));
