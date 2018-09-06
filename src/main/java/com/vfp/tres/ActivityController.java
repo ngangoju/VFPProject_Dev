@@ -20,6 +20,8 @@ import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Users;
+import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -34,6 +36,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private Users usersSession;
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
+	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 
 	private String[] status= {NOTSTARTED,APPROVED,REJECT,INPROGRESS,COMPLETED};
 	
@@ -65,6 +68,17 @@ public class ActivityController implements Serializable, DbConstant {
 		try {
 			
 			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
+			for (Activity activity : activityDetails){
+				ActivityDto activityDto = new ActivityDto();
+				activityDto.setEditable(false);
+				activityDto.setDescription(activity.getDescription());
+				activityDto.setStatus(activity.getStatus());
+				activityDto.setWeight(activity.getWeight());
+				activityDto.setCreatedDate(activity.getCrtdDtTime());
+				activityDto.setTask(activity.getTask());
+				activityDto.setGenericstatus(activity.getGenericStatus());
+				activityDtoDetails.add(activityDto);
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -112,6 +126,40 @@ private void clearContactFuileds() {
 	public void changeSelectBox(String name) {
 		
 		LOGGER.info("Ajax is working with listener::::::"+name);
+	}
+	public String saveAction(ActivityDto activity) {
+		LOGGER.info("update  saveAction method");
+		//get all existing value but set "editable" to false 
+		Activity act=new Activity();
+		act=new Activity();
+		act=activityImpl.getActivityById(activity.getActivityId(), "activityId");
+		
+			LOGGER.info("here update sart for "+act +" activityiD "+act.getActivityId());
+
+			activity.setEditable(false);
+			act.setDescription(activity.getDescription());
+			act.setStatus(activity.getStatus());
+		
+			activityImpl.UpdateActivity(act);
+			
+		//return to current page
+		return null;
+		
+	}
+
+	public String cancel(ActivityDto activity) {
+		activity.setEditable(false);
+		//usersImpl.UpdateUsers(user);
+		return null;
+		
+		
+	}
+
+	public String editAction(ActivityDto activity) {
+	    
+		activity.setEditable(true);
+		//usersImpl.UpdateUsers(user);
+		return null;
 	}
 
 	public String getCLASSNAME() {
@@ -176,6 +224,14 @@ private void clearContactFuileds() {
 
 	public void setWeight(String[] weight) {
 		this.weight = weight;
+	}
+
+	public List<ActivityDto> getActivityDtoDetails() {
+		return activityDtoDetails;
+	}
+
+	public void setActivityDtoDetails(List<ActivityDto> activityDtoDetails) {
+		this.activityDtoDetails = activityDtoDetails;
 	}
 
 

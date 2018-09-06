@@ -31,6 +31,7 @@ public class TaskController implements Serializable, DbConstant {
 	private static final long serialVersionUID = 1L;
 	/*to manage validation messages*/
 	private boolean isValid;
+	private int taskID;
 	/*end  manage validation messages*/
 	private Users users;
 	private Users usersSession;
@@ -81,6 +82,7 @@ public class TaskController implements Serializable, DbConstant {
 			task.setGenericStatus(ACTIVE);
 			task.setUpDtTime(timestamp);
 			task.setUpdatedBy(usersSession.getViewId());
+			task.setSubTask(taskImpl.getTaskById(taskID, "taskId"));
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -125,6 +127,14 @@ private void clearContactFuileds() {
 
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
+	}
+
+	public int getTaskID() {
+		return taskID;
+	}
+
+	public void setTaskID(int taskID) {
+		this.taskID = taskID;
 	}
 
 	public JSFBoundleProvider getProvider() {
