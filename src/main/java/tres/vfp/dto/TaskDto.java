@@ -6,8 +6,7 @@ import tres.domain.StrategicPlan;
 import tres.domain.Task;
 
 
-public class TaskDto implements Serializable {
-	
+public class TaskDto implements Serializable {	
 	private static final long serialVersionUID = 1L;
 	
 	private int taskId;

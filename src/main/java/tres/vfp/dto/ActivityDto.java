@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import tres.domain.Task;
 
-public class ActivityDto implements Serializable {
-	
+public class ActivityDto implements Serializable {	
 	private static final long serialVersionUID = 1L;
 	
 	private int activityId;
