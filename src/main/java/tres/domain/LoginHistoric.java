@@ -44,7 +44,7 @@ public class LoginHistoric extends CommonDomain implements Serializable {
     @Column(name="IpAddress")
     private String IpAddress;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "users")
     private Users users;
 

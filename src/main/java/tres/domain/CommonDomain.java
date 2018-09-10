@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @MappedSuperclass
 public abstract class CommonDomain implements Serializable {
-private static final long serialVersionUID = -3333275582900585701L;
+private static final long serialVersionUID =  -6665275582900585705L;
 public CommonDomain() {
 
   }
@@ -22,7 +22,7 @@ public CommonDomain() {
   @Column(name = "crtdDtTime")
   private Timestamp crtdDtTime;
 
-  @Version
+  
   @Column(name = "optLock")
   private Timestamp optLock;
 

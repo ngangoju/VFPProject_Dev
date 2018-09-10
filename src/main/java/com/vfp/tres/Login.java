@@ -102,6 +102,7 @@ public class Login implements Serializable, DbConstant {
 				his.setLoginTimeIn(new Date());
 				his.setCreatedBy(user.getFname() + " " + user.getLname());
 				his.setUpDtTime(timestamp);
+			
 				his.setUsers(user);
 				session.setAttribute("userSession", user);
 
