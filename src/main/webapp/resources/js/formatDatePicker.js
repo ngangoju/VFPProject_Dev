@@ -5,6 +5,5 @@ $(document).ready(function() {
 		changeYear: true,
 		yearRange: "1960:2017"
 	});
-	 $("#table1").DataTable();  
-	 alert("table");
+	
 });

@@ -199,7 +199,7 @@
 										var="option" itemValue="#{option.districtId}"
 										itemLabel="#{option.districtName_en}" itemLabelEscaped="true" />
 									<f:ajax listener="#{institutionController.changeSector()}"
-										render="sector" />
+										render="sector"  onevent="showProgress"/>
 								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="district"></h:message>
@@ -221,7 +221,7 @@
 										var="option" itemValue="#{option.sectorId}"
 										itemLabel="#{option.sectorName_en}" itemLabelEscaped="true" />
 									<f:ajax listener="#{institutionController.changeCell()}"
-										render="cell" />
+										render="cell" onevent="showProgress" />
 								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="sector"></h:message>
