@@ -77,17 +77,14 @@ background:url("#{loadUserInformationsController.getContextPath()}/resources/ima
               						<div class="container-2">
     					 				<div id="page-wrappe"> 
     					 				<!-- Loding functionality -->
-				<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
- 						<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" style="width:8%" >
-    							<p:graphicImage name="/image/preload_waiting.gif" style="width:95%" />
-						</p:dialog>
+				
 				<!-- The Modal -->
 				<div id="myModal" class="modal">
 
  				 <!-- Modal content -->
   				<div class="modal-content">
   
-     				<p:graphicImage id="loadingImage" name="/image/preload_waiting.gif"  style="width:95%" />
+     				<p:graphicImage id="loadingImage" name="/image/preload_waiting.gif"  style="width:99%" />
      
   				</div>
 
