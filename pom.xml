@@ -82,10 +82,9 @@
   <scope>compile</scope>
 </dependency>
 <dependency>
-  <groupId>org.primefaces</groupId>
-  <artifactId>primefaces</artifactId>
-  <version>6.1</version>
-  <scope>compile</scope>
+    <groupId>org.primefaces</groupId>
+    <artifactId>primefaces</artifactId>
+    <version>6.2</version>
 </dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -134,7 +133,6 @@
 			<scope>provided</scope>
 		</dependency>
 		
-	
 
 
 	</dependencies>

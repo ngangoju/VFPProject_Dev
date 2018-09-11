@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	>
+    xmlns:p="http://primefaces.org/ui">
 	
 
 <h:head>
@@ -29,8 +28,10 @@
 		<!--End  For date Picker -->
 	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet"/>
 	
-	<h:outputStylesheet name="bootstrap-fileupload.min.css" library="css" />
- <h:outputScript library="js" name="bootstrap-fileupload.js" />
+	<!--<h:outputStylesheet name="bootstrap-fileupload.min.css" library="css" />
+ <h:outputScript library="js" name="bootstrap-fileupload.js" />-->
+ <h:outputStylesheet name="loading.css" library="css" />
+  <h:outputScript library="js" name="loading.js" />
 	<style>
 html, body, h1, h2, h3, h4, h5 {
 	font-family: "Open Sans", sans-serif
@@ -74,8 +75,26 @@ background:url("#{loadUserInformationsController.getContextPath()}/resources/ima
          				 <div class="w3-card w3-round w3-white">
            						 <div class="w3-container w3-padding">
               						<div class="container-2">
-    					 				<div id="page-wrappe">  
-		
+    					 				<div id="page-wrappe"> 
+    					 				<!-- Loding functionality -->
+				<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+ 						<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" style="width:8%" >
+    							<p:graphicImage name="/image/preload_waiting.gif" style="width:95%" />
+						</p:dialog>
+				<!-- The Modal -->
+				<div id="myModal" class="modal">
+
+ 				 <!-- Modal content -->
+  				<div class="modal-content">
+  
+     				<p:graphicImage id="loadingImage" name="/image/preload_waiting.gif"  style="width:95%" />
+     
+  				</div>
+
+				</div>
+ 
+
+              <!--End loading  -->
 											<ui:insert name="content">
 												<ui:include src="/template/common/commonContent.xhtml" />
 											</ui:insert>

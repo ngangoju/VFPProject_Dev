@@ -5,13 +5,13 @@ create database tresscore;
 use tresscore;
 
 
-insert into usercategory (userCatid,usercategoryName) values(1,'Super Admin');
+insert into usercategory (userCatid,usercategoryName,genericStatus) values(1,'Super Admin','active');
 
-insert into usercategory (userCatid,usercategoryName) values(2,'Staff');
+insert into usercategory (userCatid,usercategoryName,genericStatus) values(2,'Staff','active');
 
-insert into usercategory (userCatid,usercategoryName) values(3,'Institution Representative');
+insert into usercategory (userCatid,usercategoryName,genericStatus) values(3,'Institution Representative','active');
 
-insert into usercategory (userCatid,usercategoryName) values(4,'Superviser');
+insert into usercategory (userCatid,usercategoryName,genericStatus) values(4,'Superviser','active');
 
 insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('admin',md5('admin'),1,'Kigali','Mugabo','Jean','us.png','offline','active',now(),'active');
 

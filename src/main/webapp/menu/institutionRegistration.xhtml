@@ -19,7 +19,10 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-
+   
+     
+ 
+   
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
@@ -173,7 +176,7 @@
 										var="option" itemValue="#{option.provenceId}"
 										itemLabel="#{option.provenceName_en}" itemLabelEscaped="true" />
 									<f:ajax listener="#{institutionController.changeDistrict()}"
-										render="district" />
+										render="district"   onevent="showProgress" />
 								</h:selectOneMenu>
 							</div>
 							<h:message errorClass="errorMsg1" for="province"></h:message>

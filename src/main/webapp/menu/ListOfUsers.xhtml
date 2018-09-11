@@ -13,10 +13,15 @@
 
 		<ui:define name="content">
 
+
+ 
+
+
+<h:panelGroup id="userConatactPanel">
 	<h:form>
-    	  <p:dataTable  value="#{userContactController.userDtoDetails}" var="user"  
-    	 
-                    >
+
+	 
+    	  <p:dataTable  value="#{userContactController.userDtoDetails}" var="user" >
 
             
             <p:column  headerText="fname"   >
@@ -57,15 +62,17 @@
     	<h:commandLink style="color:white" class="btn btn-success 	glyphicon glyphicon-edit" value="Edit" action="#{userContactController.editAction(user)}" 
                                        rendered="#{not user.editable}" />
     				<h:commandLink  style="margin-left:2px;color:white" class="btn btn-danger 	glyphicon glyphicon-remove" value="Cancel" action="#{userContactController.cancel(user)}" rendered="#{user.editable}"/>
-    					  <h:commandButton value="Save Changes" class="btn btn-primary" action="#{userContactController.saveAction(user)}" rendered="#{user.editable}" />		
+    					
+    				
+    					  <p:commandButton value="Save Changes"   class="btn btn-primary" action="#{userContactController.saveAction(user)}" rendered="#{user.editable}" render="userConatactPanel"  />
     	     </p:column>
 
     	 </p:dataTable>
     		<br/>
 
-    		
+    		   
       </h:form>
-    
+     </h:panelGroup>
         	</ui:define>
 	</ui:composition>
 

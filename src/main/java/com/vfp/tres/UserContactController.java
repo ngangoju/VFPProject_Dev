@@ -121,7 +121,8 @@ public  String saveContact() {
 }
 private void clearContactFuileds() {
 	contact=new Contact();
-	usersDetails=null;
+	userIdNumber=0;
+	//usersDetails=null;
 }
 
 
@@ -136,12 +137,12 @@ public String saveAction(UserDto user) {
 
 		user.setEditable(false);
 		us.setFname(user.getFname());
-		us.setFname(user.getLname());
+		us.setLname(user.getLname());
 	
 			usersImpl.UpdateUsers(us);
 		
 	//return to current page
-	return null;
+	return "/menu/ListOfUsers.xhtml?faces-redirect=true";
 	
 }
 

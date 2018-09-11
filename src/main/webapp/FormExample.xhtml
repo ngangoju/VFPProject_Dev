@@ -136,8 +136,30 @@
          
                 </fieldset>
               
-             </h:form>        
-        
+             </h:form>  
+             
+              
+        <h:form>
+    <h:panelGrid columns="3">
+        <h:outputLabel for="input1" value="Input 1" />
+        <h:inputText id="input1" value="#{formSampleController.users.fname}" required="true">
+            <f:ajax event="blur" render="input1_message" onevent="showProgress" />
+        </h:inputText>
+        <h:message id="input1_message" for="input1" />
+
+        <h:outputLabel for="input2" value="Input 2" />
+        <h:inputText id="input2" value="#{formSampleController.users.lname}" required="true">
+            <f:ajax event="blur" render="input2_message" onevent="showProgress" />
+        </h:inputText>
+        <h:message id="input2_message" for="input2" />
+
+        <h:panelGroup />
+        <h:commandButton value="Submit" action="#{formSampleController.saveData}">
+            <f:ajax execute="@form" render="@form" />
+        </h:commandButton>
+        <h:messages globalOnly="true" layout="table" />
+    </h:panelGrid>
+</h:form>
 
     </div>
 </div> 
