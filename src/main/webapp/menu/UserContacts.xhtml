@@ -113,7 +113,7 @@
 			        <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="#{userContactController.userIdNumber}" requiredMessage="#{msg['category.requiered.message']}"  >
                 		<f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="false"  />
                         <f:selectItems value="#{userContactController.usersDetails}" var="option" itemValue="#{option.userId}" itemLabel="#{option.fname} #{option.lname}" itemLabelEscaped="true"  />
-            		   <!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+            		  <f:ajax event="change" execute="@this"  />
                     </h:selectOneMenu>
 				  </div>
 				<h:message errorClass="errorMsg1" for="userinfo"></h:message>
@@ -124,8 +124,9 @@
 								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
 							<div class="col-sm-4">
 								<h:commandButton class="btn btn-info btn-xlg btn-block"
-									action="#{userContactController.saveContact}" value="#{msg['label.subimit.message.submit']}" />
-
+									action="#{userContactController.saveContact}" value="#{msg['label.subimit.message.submit']}" >
+							<f:ajax render="@form" execute="@form"  onevent="showProgress"/>
+</h:commandButton>
 							</div>
 							<span class="text-danger" id="customeordererror"></span>
 						</div>
