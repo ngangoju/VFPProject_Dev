@@ -63,7 +63,8 @@ public  interface  DbConstant {
  public static final String PENDING = "pending";
  public static final String ACCEPTED = "acepted";
  public static final String REJECTED = "rejected";
-  
+ public static final String SELECT_LISTOFMENU= "from ListOfMenu";
+ public static final String SELECT_MENUGROUP = "from MenuGroup";
  
     
   

@@ -95,6 +95,14 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	public void setMenuGroup(MenuGroup menuGroup) {
 		this.menuGroup = menuGroup;
 	}
+
+	public String getUrlCode() {
+		return urlCode;
+	}
+
+	public void setUrlCode(String urlCode) {
+		this.urlCode = urlCode;
+	}
 	
 	
 }

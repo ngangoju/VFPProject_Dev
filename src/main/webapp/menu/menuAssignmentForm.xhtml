@@ -29,7 +29,7 @@
 
 					<h:form>
 						<h:panelGroup layout="block"
-							rendered="#{not formSampleController.valid and not facesContext.validationFailed}">
+							rendered="#{not groupOfMenuController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -44,7 +44,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup layout="block"
-							rendered="#{formSampleController.valid and  not facesContext.validationFailed}">
+							rendered="#{groupOfMenuController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -56,29 +56,27 @@
 						<fieldset>
 
 							<legend>Menu Assignment Form </legend>
-							<h:panelGroup id="categoryPanel" layout="block">
+							<h:panelGroup id="categoryPanelp" layout="block">
 								<div class="form-group row">
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['form.menuassignment.usercategory']}<span
+										style="color: black">#{msg['form.groupmenu.usercategory']}<span
 										style="color: red">*</span></label>
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
-										<h:selectOneMenu id="categoryId" styleClass="form-control"
-											required="true" value="formSampleController.users.lname"
-											requiredMessage="#{msg['menuassignment.usercategory.required']}">
+										<h:selectOneMenu id="categoryIdp" styleClass="form-control"
+											required="true" value="#{groupOfMenuController.categoryId}"
+											requiredMessage="#{msg['category.requiered.message']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" />
 											<f:selectItems
-												value="#{formSampleController.menuGroupDetails}"
-												var="option" itemValue="#{option}"
-												itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
-											<f:ajax event="change" execute="@this"
-												listener="#{formSampleController.changeSelectBox('Eric')}"
-												render="ReasonPanel" />
+												value="#{groupOfMenuController.userCategoryDetails}"
+												var="option" itemValue="#{option.userCatid}"
+												itemLabel="#{option.usercategoryName}" itemLabelEscaped="true" />
+											
 										</h:selectOneMenu>
 									</div>
-									<h:message for="categoryId" styleClass="help-block"></h:message>
+									<h:message for="categoryIdp" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
 							<h:panelGroup id="ReasonPanel" layout="block">
@@ -89,78 +87,29 @@
 										style="color: red">*</span></label>
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
 										<h:selectOneMenu id="categoryIds" styleClass="form-control"
-											required="true" value="formSampleController.users.lname"
+											required="true" value="#{groupOfMenuController.listOfMenuId}"
 											requiredMessage="#{msg['menuassignment.menugroup.required']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" />
 											<f:selectItems
-												value="#{formSampleController.menuGroupDetails}"
-												var="option" itemValue="#{option}"
-												itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
-											<f:ajax event="change" execute="@this"
-												listener="#{formSampleController.changeSelectBox('Eric')}"
-												render="ReasonPanel" />
+												value="#{groupOfMenuController.listOfMenuDetails}"
+												var="option" itemValue="#{option.menuId}"
+												itemLabel="#{option.description}" itemLabelEscaped="true" />
+											
 										</h:selectOneMenu>
 									</div>
 									<h:message for="categoryIds" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
 
-
-
-							<h:panelGroup id="surnamePanl3" layout="block">
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['form.menuassignment.defaultgroupmenu']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
-										<h:inputText id="surnameId3" binding="#{surnameId3}"
-											styleClass="form-control"
-											value="#{formSampleController.users.fname}" maxlength="35"
-											required="true"
-											validatorMessage="#{msg['error.enter.invalid.surname']}"
-											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['menuassignment.url.required']}">
-											<f:validateRegex
-												pattern="#{regex['regex.string.Validation']}" />
-											<f:validateLength maximum="35" />
-										</h:inputText>
-									</div>
-									<h:message for="surnameId3" styleClass="help-block"></h:message>
-								</div>
-							</h:panelGroup>
-
-							<h:panelGroup id="surnamePanl1" layout="block">
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['form.menuassignment.genericstatus']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
-										<h:inputText id="surnameId1" binding="#{surnameId}"
-											styleClass="form-control"
-											value="#{formSampleController.users.fname}" maxlength="35"
-											required="true"
-											validatorMessage="#{msg['error.enter.invalid.surname']}"
-											converterMessage="#{msg['error.enter.invalid.surname']}"
-											requiredMessage="#{msg['menuassignment.status.required']}">
-											<f:validateRegex
-												pattern="#{regex['regex.string.Validation']}" />
-											<f:validateLength maximum="35" />
-										</h:inputText>
-									</div>
-									<h:message for="surnameId1" styleClass="help-block"></h:message>
-								</div>
-							</h:panelGroup>
 							<div class="form-group row">
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-2 control-label"
 									style="color: black"></label>
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
-										action="#{formSampleController.saveData}"
+										action="#{groupOfMenuController.saveMenuAssignmentInfo}"
 										value="#{msg['form.menuassignment.create']}" />
 
 								</div>
