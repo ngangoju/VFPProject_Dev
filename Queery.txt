@@ -173,3 +173,12 @@ VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 19, 1);
 
 ========because menugroup id is auto genereted, before saving  listofmenu check primarikey of menuegroup to place it in listofmenu same on menueassignment=========
 ________________________________________@james______________________________________
+
+
+
+
+insert into menugroup(menuGroupId,crtdDtTime,genericStatus,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(14,now(),'active','Profile','M003','Profile',3);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(19,'admin',now(),'active',now(),now(),'admin',now(),'View Profile','/menu/ViewProfile.xhtml',null,14,'Url010');
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(28,'admin',now(),'active',now(),now(),'admin',null,19,3);
+
+====================================By Emmanuel /12/09/2018========================================================================================================
