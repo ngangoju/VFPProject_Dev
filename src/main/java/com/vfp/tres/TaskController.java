@@ -19,9 +19,12 @@ import tres.common.SessionUtils;
 import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Activity;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.Users;
+import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.TaskDto;
 
 @ManagedBean
 @ViewScoped
@@ -37,6 +40,7 @@ public class TaskController implements Serializable, DbConstant {
 	private Users usersSession;
 	private Task task;
 	private List<Task> taskDetails = new ArrayList<Task>();
+	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
 	
 	/*class injection*/
 	
@@ -64,6 +68,20 @@ public class TaskController implements Serializable, DbConstant {
 		try {
 			
 			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Task", "taskId asc");
+			for (Task task : taskDetails){
+				TaskDto taskDto = new TaskDto();
+				taskDto.setTaskId(task.getTaskId());
+				taskDto.setEditable(false);
+				taskDto.setDescription(task.getDescription());
+				taskDto.setTaskName(task.getTaskName());
+				taskDto.setStartDate(task.getStartDate());
+				taskDto.setCreatedDate(task.getCrtdDtTime());
+				taskDto.setTask(task.getSubTask());
+				taskDto.setGenericstatus(task.getGenericStatus());
+				taskDto.setDueDate(task.getDueDate());
+				taskDto.setStatus(task.getGenericStatus());
+				taskDtoDetails.add(taskDto);
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -74,7 +92,7 @@ public class TaskController implements Serializable, DbConstant {
 	
 		
 	}
-	
+
 	public String saveTash() {
 		try {
 			task.setCreatedBy(usersSession.getViewId());
@@ -83,13 +101,14 @@ public class TaskController implements Serializable, DbConstant {
 			task.setUpDtTime(timestamp);
 			task.setUpdatedBy(usersSession.getViewId());
 			task.setSubTask(taskImpl.getTaskById(taskID, "taskId"));
+			task.setEndDate(task.getDueDate());
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
 			LOGGER.info(CLASSNAME+":::Task Details is saved");
 			clearContactFuileds();
-			return"";
+			return"/menu/Task.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME+":::Task Details is failling with HibernateException  error");
@@ -108,9 +127,48 @@ private void clearContactFuileds() {
 	taskDetails=null;
 }
 
+public String newTask() {
+	return "/menu/InsertTask.xhtml?faces-redirect=true";
+}
+
 	public void changeSelectBox(String name) {
 		
 		LOGGER.info("Ajax is working with listener::::::"+name);
+	}
+
+	public String saveAction(TaskDto task) {
+		LOGGER.info("update  saveAction method");
+		//get all existing value but set "editable" to false 
+		Task act=new Task();
+		act=new Task();
+		act=taskImpl.getTaskById(task.getTaskId(), "taskId");
+		
+			LOGGER.info("here update sart for "+act +" taskiD "+act.getTaskId());
+
+			task.setEditable(false);
+			act.setDescription(task.getDescription());
+			act.setTaskName(task.getTaskName());
+		
+			taskImpl.UpdateTask(act);
+			
+		//return to current page
+		return null;
+		
+	}
+
+	public String cancel(TaskDto task) {
+		task.setEditable(false);
+		//usersImpl.UpdateUsers(user);
+		return null;
+		
+		
+	}
+
+	public String editAction(TaskDto task) {
+	    
+		task.setEditable(true);
+		//usersImpl.UpdateUsers(user);
+		return null;
 	}
 
 	public String getCLASSNAME() {
@@ -167,6 +225,14 @@ private void clearContactFuileds() {
 
 	public void setTaskImpl(TaskImpl taskImpl) {
 		this.taskImpl = taskImpl;
+	}
+
+	public List<TaskDto> getTaskDtoDetails() {
+		return taskDtoDetails;
+	}
+
+	public void setTaskDtoDetails(List<TaskDto> taskDtoDetails) {
+		this.taskDtoDetails = taskDtoDetails;
 	}
 
 

@@ -22,12 +22,17 @@
                     
 
     <h:form >
-						<h:panelGroup layout="block"
+						
+<div class="form-group row">
+							
+							<div class="col-md-12 col-sm-12 col-xs-12">
+							<!--error message  -->
+							<h:panelGroup  layout="block"
 							rendered="#{not strategicPlanController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li class="alert alert-danger"
+									<li class="alert"
 										style="list-style: none; background-color: #FF2400; color: white">
 										<center>
 											<h:outputText value="#{facesMessage.summary}" escape="false" />
@@ -36,18 +41,20 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						
-					<h:panelGroup layout="block"
+						<!--success message  -->
+						<h:panelGroup  layout="block"
 							rendered="#{strategicPlanController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li style="list-style: none; background-color:#32CD32; color: white;margin-left:-4.9%" class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
+									var="facesMessage">	
+									<li  style="list-style: none; background-color:#32CD32; color: white;margin-left:-4.9%" class="alert"><center><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-					
+							</div>
+							
+						</div>
 						<fieldset>
       
        <legend>#{msg['form.strategicPlan.title']} </legend>

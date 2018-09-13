@@ -70,6 +70,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
 			for (Activity activity : activityDetails){
 				ActivityDto activityDto = new ActivityDto();
+				activityDto.setActivityId(activity.getActivityId());
 				activityDto.setEditable(false);
 				activityDto.setDescription(activity.getDescription());
 				activityDto.setStatus(activity.getStatus());
@@ -104,7 +105,7 @@ public class ActivityController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.activity"));
 			LOGGER.info(CLASSNAME+":::Activity Details is saved");
 			clearContactFuileds();
-			return"";
+			return"/menu/Activity.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME+":::Activity Details is failling with HibernateException  error");
@@ -121,6 +122,10 @@ public class ActivityController implements Serializable, DbConstant {
 private void clearContactFuileds() {
 	activity=new Activity();
 	activityDetails=null;
+}
+
+public String newActivity() {
+	return "/menu/InsertActivity.xhtml?faces-redirect=true";
 }
 
 	public void changeSelectBox(String name) {
