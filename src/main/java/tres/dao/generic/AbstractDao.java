@@ -665,8 +665,8 @@ configConnection();
             if (!t.wasCommitted()) {
                 t.commit();
             }
-            factory.close();
-           session.close();
+           // factory.close();
+           //session.close();
 
         }
         return ite;

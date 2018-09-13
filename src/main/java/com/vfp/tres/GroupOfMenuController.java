@@ -91,8 +91,8 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 			
 			//userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 				//	new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
-			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
-			listOfMenuDetails = listOfMenuImpl.getListWithHQL(SELECT_LISTOFMENU);
+			userCategoryDetails = userCategoryImpl.getListUsercategory();
+			listOfMenuDetails = listOfMenuImpl.getListListOfMenus();
 			
 		} catch (Exception e) {
 			setValid(false);
