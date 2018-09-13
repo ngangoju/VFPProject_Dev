@@ -65,7 +65,7 @@ public  interface  DbConstant {
  public static final String REJECTED = "rejected";
  public static final String SELECT_LISTOFMENU= "from ListOfMenu";
  public static final String SELECT_MENUGROUP = "from MenuGroup";
- 
+ public static final String SELECT_PROVINCE = "from Province";
     
   
   

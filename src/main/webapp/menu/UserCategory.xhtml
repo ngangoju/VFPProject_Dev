@@ -95,7 +95,9 @@
 							<div class="col-sm-4">
 								<h:commandButton class="btn btn-info btn-xlg btn-block"
 									action="#{userCategoryController.SaveUserCategory()}"
-									value="#{msg['label.subimit.message.submit']}" />
+									value="#{msg['label.subimit.message.submit']}" >
+									<f:ajax render="@form" execute="@form"  onevent="showProgress"/>
+									</h:commandButton>
 							</div>
 							<span class="text-danger" id="customeordererror"></span>
 						</div>

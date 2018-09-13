@@ -25,6 +25,8 @@ import tres.dao.impl.UserImpl;
 import tres.domain.Contact;
 import tres.domain.UserCategory;
 import tres.domain.Users;
+import tres.vfp.dto.UserCategoryDto;
+import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -38,6 +40,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 	private UserCategory userCategory;
 	private Users usersSession;
 	private List<UserCategory> categoryDetails = new ArrayList<UserCategory>();
+	private List<UserCategoryDto> categoryDtoDetails = new ArrayList<UserCategoryDto>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -57,12 +60,14 @@ public class UserCategoryController implements Serializable, DbConstant {
 		}
 
 		try {
-			categoryDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status" },
-					new Object[] { ACTIVE, ACTIVE }, "Users", "userId desc");
-
-			categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
-
+			categoryDetails = userCatImpl.getListWithHQL(SELECT_USERCATEGORY);
+				for(UserCategory userCat:categoryDetails) {
+					UserCategoryDto catDto= new UserCategoryDto();
+					catDto.setEditable(false);
+					catDto.setUserCatid(userCat.getUserCatid());
+					catDto.setUsercategoryName(userCat.getUsercategoryName());
+					categoryDtoDetails.add(catDto);
+				}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -75,17 +80,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 	public String SaveUserCategory() {
 
 		try {
-
-			/*userCategory.setCreatedBy(usersSession.getViewId());
-			userCategory.setCrtdDtTime(timestamp);
-			userCategory.setGenericStatus(ACTIVE);
-			userCategory.setUpdatedBy(usersSession.getViewId());
-			userCategory.setUpDtTime(timestamp);*/
 			userCatImpl.saveUsercategory(userCategory);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.usercategory"));
-			LOGGER.info(CLASSNAME+"::UserCategory Details is saved");
+			LOGGER.info(CLASSNAME + "::UserCategory Details is saved");
 			clearCategoryFuileds();
 			return "";
 		} catch (HibernateException e) {
@@ -99,10 +98,45 @@ public class UserCategoryController implements Serializable, DbConstant {
 		}
 		return "";
 	}
+
 	private void clearCategoryFuileds() {
-		userCategory=new UserCategory();
-		categoryDetails=null;
+		userCategory = new UserCategory();
+		categoryDetails = null;
 	}
+	public String saveAction(UserCategoryDto cat) {
+		LOGGER.info("update  saveAction method");
+		//get all existing value but set "editable" to false 
+		
+		LOGGER.info("UserCat:++++++++++++++++++++++++++"+cat.getUserCatid());
+		UserCategory usercat= new  UserCategory();
+		usercat=new UserCategory();
+		usercat=userCatImpl.getUserCategoryById(cat.getUserCatid(),"userCatid" );
+		
+			LOGGER.info("here update sart for "+usercat +" useriD "+usercat.getUserCatid());
+
+			cat.setEditable(false);
+			usercat.setUsercategoryName(cat.getUsercategoryName());
+		
+			userCatImpl.UpdateUsercategory(usercat);
+			
+		//return to current page
+		return "/menu/ListOfUserCategory.xhtml?faces-redirect=true";
+		
+	}
+	public String addNewCategory() {
+		
+		return"/menu/UserCategory.xhtml?faces-redirect=true";
+	}
+	public String cancel(UserCategoryDto cat) {
+		cat.setEditable(false);
+		return null;	
+	}
+	public String editAction(UserCategoryDto cat) {
+	    
+		cat.setEditable(true);
+		return null;
+	}
+
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -157,6 +191,30 @@ public class UserCategoryController implements Serializable, DbConstant {
 
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public List<UserCategory> getCategoryDetails() {
+		return categoryDetails;
+	}
+
+	public void setCategoryDetails(List<UserCategory> categoryDetails) {
+		this.categoryDetails = categoryDetails;
+	}
+
+	public List<UserCategoryDto> getCategoryDtoDetails() {
+		return categoryDtoDetails;
+	}
+
+	public void setCategoryDtoDetails(List<UserCategoryDto> categoryDtoDetails) {
+		this.categoryDtoDetails = categoryDtoDetails;
+	}
+
+	public UserCategoryImpl getUserCatImpl() {
+		return userCatImpl;
+	}
+
+	public void setUserCatImpl(UserCategoryImpl userCatImpl) {
+		this.userCatImpl = userCatImpl;
 	}
 
 }

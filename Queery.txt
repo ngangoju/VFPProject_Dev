@@ -185,3 +185,11 @@ insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLoc
   update listofmenu set iconImage='glyphicon glyphicon-cog', menuColor='blue2';
  update menugroup set iconImage='glyphicon glyphicon-menu-hamburger', menuColor='gray2';
  ========Ngabo Eric=====================
+
+update listofmenu set description='View Users',urlname='/menu/ViewUsersList.xhtml' where menuid=3;
+
+update listofmenu set description='View Users',urlname='/menu/ListOfUserCategory.xhtml' where menuid=4;
+
+update listofmenu set description='View Users Contacts',urlname='/menu/ViewUsersContacts.xhtml' where menuid=5;
+====================================By Emmanuel /13/09/2018========================================================================================================
+

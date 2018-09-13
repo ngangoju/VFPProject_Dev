@@ -8,53 +8,51 @@ import tres.domain.Users;
 import tres.domain.Village;
 
 public class UserDto implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private int userId;
 
 	/* this is for userName */
 
 	private String viewId;
 
-
 	private String viewName;
-
 
 	private String fname;
 
-	
 	private String lname;
 
-	
 	private String address;
-
 
 	private String gender;
 
-	
 	private Date DateOfBirth;
 
 	private String image;
 
-
 	private String loginStatus;
-
 
 	private String status;
 
-	
 	private Date createdDate;
-
 
 	private UserCategory userCategory;
 
-	
 	private Village village;
 
 	private Board board;
-	
+
 	private boolean editable;
+	private String action;
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
 
 	public int getUserId() {
 		return userId;
@@ -87,8 +85,6 @@ public class UserDto implements Serializable {
 	public void setLname(String lname) {
 		this.lname = lname;
 	}
-
-
 
 	public String getAddress() {
 		return address;
@@ -175,11 +171,10 @@ public class UserDto implements Serializable {
 		this.viewName = viewName;
 	}
 
-
-	
 	public boolean isEditable() {
 		return editable;
 	}
+
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
@@ -191,6 +186,5 @@ public class UserDto implements Serializable {
 	public void setBoard(Board board) {
 		this.board = board;
 	}
-	
-	
+
 }

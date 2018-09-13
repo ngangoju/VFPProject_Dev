@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/common/commonLayout.xhtml">
+
+		<ui:define name="content">
+			<h:panelGroup id="userConatactPanel" style="font-family:Times New Roman">
+				<h:form>
+					<p:outputPanel>
+						<h:commandLink style="color:white;"
+							class="btn btn-success 	glyphicon glyphicon-user"
+							value=" Add New Category" action="#{userCategoryController.addNewCategory()}" />
+
+					</p:outputPanel>
+					<p:dataTable value="#{userCategoryController.categoryDtoDetails}"
+						var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
+						sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}"
+						style="width:80%; margin-top:10px;">
+						<p:column headerText="CategoryNo">
+
+							<h:outputText value="#{row+1}" />
+						</p:column>
+						<p:column headerText="CategoryName">
+
+							<h:inputText value="#{cat.usercategoryName}" size="20"
+								rendered="#{cat.editable}" />
+
+							<h:outputText value="#{cat.usercategoryName}"
+								rendered="#{not cat.editable}" />
+						</p:column>
+						<p:column headerText="Action">
+							<h:commandLink style="color:white"
+								class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+								action="#{userCategoryController.editAction(cat)}"
+								rendered="#{not cat.editable}" />
+							<h:commandLink style="margin-left:2px;color:white"
+								class="btn btn-danger 	glyphicon glyphicon-remove"
+								value="Cancel" action="#{userCategoryController.cancel(cat)}"
+								rendered="#{cat.editable}" />
+							<h:commandButton value="Save Changes" class="btn btn-primary"
+								action="#{userCategoryController.saveAction(cat)}"
+								rendered="#{cat.editable}" render="userConatactPanel" />
+						</p:column>
+
+					</p:dataTable>
+					<br />
+				</h:form>
+			</h:panelGroup>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

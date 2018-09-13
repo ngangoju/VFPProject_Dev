@@ -7,6 +7,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +32,7 @@ import tres.common.SessionUtils;
 import tres.dao.impl.BoardImpl;
 import tres.dao.impl.CellImpl;
 import tres.dao.impl.DistrictImpl;
+import tres.dao.impl.LoginImpl;
 import tres.dao.impl.ProvinceImpl;
 import tres.dao.impl.SectorImpl;
 import tres.dao.impl.UserCategoryImpl;
@@ -45,6 +47,7 @@ import tres.domain.Sector;
 import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.domain.Village;
+import tres.vfp.dto.UserDto;
 
 @SuppressWarnings("unused")
 @ManagedBean
@@ -76,7 +79,9 @@ public class UserAccountController implements Serializable, DbConstant {
 	private int villageId;
 	private int categoryId;
 	private int boardId;
-
+	private String password;
+	private String confirmPswd;
+	private UserDto userDto;
 	private List<Users> usersDetails = new ArrayList<Users>();
 	private List<UserCategory> catDetails = new ArrayList<UserCategory>();
 	private List<Province> provinceList = new ArrayList<Province>();
@@ -90,6 +95,8 @@ public class UserAccountController implements Serializable, DbConstant {
 	private List<Sector> sectorByDistrict = new ArrayList<Sector>();
 	private List<Cell> cellBySector = new ArrayList<Cell>();
 	private List<Village> villageByCell = new ArrayList<Village>();
+	private List<UserDto> userDtoDetails = new ArrayList<UserDto>();
+	private List<UserDto> userDtosDetails = new ArrayList<UserDto>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -99,8 +106,9 @@ public class UserAccountController implements Serializable, DbConstant {
 	CellImpl cellImpl = new CellImpl();
 	VillageImpl villageImpl = new VillageImpl();
 	UserCategoryImpl catImpl = new UserCategoryImpl();
-	
+	BoardImpl boardImpl = new BoardImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+	LoginImpl loginImpl = new LoginImpl();
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -138,27 +146,54 @@ public class UserAccountController implements Serializable, DbConstant {
 
 			board = new Board();
 		}
+		if (userDto == null) {
+			userDto = new UserDto();
+		}
 		try {
-			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status" },
-					new Object[] { ACTIVE, ACTIVE }, "Users", "userId desc");
-			catDetails = catImpl.getListUsercategory();
+			catDetails = catImpl.getListWithHQL(SELECT_USERCATEGORY);
+			provinceList = provImpl.getListWithHQL(SELECT_PROVINCE);
+			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "Board", "boardId desc");
+			Users user = usersImpl.gettUserById(usersSession.getUserId(), "userId");
 
-			/*
-			 * provinceList = provImpl.getGenericListWithHQLParameter(new String[] {
-			 * "genericStatus" }, new Object[] { ACTIVE }, "Province", "provenceId asc");
-			 */
+			UserDto userDto = new UserDto();
+			userDto.setEditable(false);
+			userDto.setFname(user.getFname());
+			userDto.setLname(user.getLname());
+			userDto.setViewId(user.getViewId());
+			userDto.setAddress(user.getAddress());
+			userDto.setUserId(user.getUserId());
+			userDto.setUserCategory(user.getUserCategory());
+			userDtoDetails.add(userDto);
+			// below list concern list of all users by changing their status
+			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "Users", "userId desc");
+			for (Users users : usersDetails) {
+				UserDto userDtos = new UserDto();
+				userDtos.setEditable(false);
+				userDtos.setFname(users.getFname());
+				userDtos.setLname(users.getLname());
+				userDtos.setViewId(users.getViewId());
+				userDtos.setAddress(users.getAddress());
+				userDtos.setUserId(users.getUserId());
+				userDtos.setUserCategory(users.getUserCategory());
+				userDtos.setStatus(users.getStatus());
+				if (users.getStatus().equals(ACTIVE)) {
+					userDtos.setAction(DESACTIVE);
 
-			provinceList = provImpl.getListWithHQL("select f from Province f");
-			districtList = districtImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "District", "districtId asc");
-			sectorList = sectorImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Sector", "sectorId asc");
+				} else if (users.getStatus().equals(DESACTIVE)) {
 
-			celList = cellImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" }, new Object[] { ACTIVE },
-					"Cell", "cellId asc");
+					userDtos.setAction(ACTIVE);
+					users.setStatus(DESACTIVE);
 
-			villageList = villageImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Village", "villageId asc");
+				} else {
+					userDtos.setAction(DESACTIVE);
+					users.setStatus(ACTIVE);
+
+				}
+				userDtosDetails.add(userDtos);
+
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -172,15 +207,9 @@ public class UserAccountController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public void changeDistrict() {
 		try {
-			/*
-			 * String code = String.valueOf(provinceId);
-			 * System.out.println("Province Id goes here:-------------------->>>" +
-			 * provinceId); LOGGER.info(provinceId + ":::Province Details");
-			 */
-
 			province = provImpl.getProvinceById(provinceId, "provenceId");
-			districtByProv = districtImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "province" },
-					new Object[] { ACTIVE, province }, "District", "districtId asc");
+			districtByProv = districtImpl.getGenericListWithHQLParameter(new String[] { "province" },
+					new Object[] { province }, "District", "districtId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -196,8 +225,8 @@ public class UserAccountController implements Serializable, DbConstant {
 		try {
 
 			district = districtImpl.getDistrictById(districtId, "districtId");
-			sectorByDistrict = sectorImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "distric" },
-					new Object[] { ACTIVE, district }, "Sector", "sectorId asc");
+			sectorByDistrict = sectorImpl.getGenericListWithHQLParameter(new String[] { "distric" },
+					new Object[] { district }, "Sector", "sectorId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -215,8 +244,8 @@ public class UserAccountController implements Serializable, DbConstant {
 		try {
 
 			sector = sectorImpl.getSectorById(sectorId, "sectorId");
-			cellBySector = cellImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "sector" },
-					new Object[] { ACTIVE, sector }, "Cell", "cellId asc");
+			cellBySector = cellImpl.getGenericListWithHQLParameter(new String[] { "sector" }, new Object[] { sector },
+					"Cell", "cellId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -233,8 +262,8 @@ public class UserAccountController implements Serializable, DbConstant {
 		try {
 
 			cell = cellImpl.getCellById(cellId, "cellId");
-			villageByCell = villageImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "cell" },
-					new Object[] { ACTIVE, cell }, "Village", "villageId asc");
+			villageByCell = villageImpl.getGenericListWithHQLParameter(new String[] { "cell" }, new Object[] { cell },
+					"Village", "villageId asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -244,36 +273,37 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
-	public String saveUserInfo() throws IOException {
+	public String saveUserInfo() throws IOException, NoSuchAlgorithmException {
 		String url = getContextPath();
-		System.out.print("+++++++++++++++++:" + url + "/");
+		// System.out.print("+++++++++++++++++:" + url + "/");
 		try {
-			/*if (imageUpload != null) {
-				if (imageUpload.getContentType().startsWith("image")) {
 
-					InputStream input = imageUpload.getInputstream();
-					imageName = UUID.randomUUID().toString() + "." + imageUpload.getFileName();
-					Path path = Paths.get(url + "/resources/image/" + imageName);
-					Files.copy(input, path);*/
-					users.setImage("us.png");
-					users.setCreatedBy(usersSession.getViewId());
-					users.setCrtdDtTime(timestamp);
-					users.setCreatedDate(timestamp);
-					users.setGenericStatus(ACTIVE);
-					users.setUpdatedBy(usersSession.getViewId());
-					users.setCrtdDtTime(timestamp);
-					users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
-					users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-					usersImpl.saveUsers(users);
+			if (password.equalsIgnoreCase(confirmPswd)) {
+				users.setImage("us.png");
+				users.setCreatedBy(usersSession.getViewId());
+				users.setCrtdDtTime(timestamp);
+				users.setCreatedDate(timestamp);
+				users.setGenericStatus(ACTIVE);
+				users.setUpdatedBy(usersSession.getViewId());
+				users.setCrtdDtTime(timestamp);
+				users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
+				users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+				users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+				users.setViewName(loginImpl.criptPassword(password));
+				users.setStatus(DESACTIVE);
+				usersImpl.saveUsers(users);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+				LOGGER.info(CLASSNAME + ":::User Details is saved");
+				clearUserFuileds();
+				return "";
 
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::User Details is saved");
-					clearUserFuileds();
-					return "";
-			/*	}
-			}*/
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.pswdMatch"));
+			}
 
 		} catch (HibernateException ex) {
 			LOGGER.info(CLASSNAME + ":::User Details is fail with HibernateException  error");
@@ -298,6 +328,100 @@ public class UserAccountController implements Serializable, DbConstant {
 				.getRequest();
 
 		return request.getContextPath();
+	}
+
+	public String cancel(UserDto user) {
+		user.setEditable(false);
+		// usersImpl.UpdateUsers(user);
+		return null;
+
+	}
+
+	public String editAction(UserDto user) {
+
+		user.setEditable(true);
+		// usersImpl.UpdateUsers(user);
+		return null;
+	}
+
+	public String saveAction(UserDto user) {
+		LOGGER.info("update  saveAction method");
+		/* System.out.println("**************update  saveAction method"); */
+		// get all existing value but set "editable" to false
+
+		if (user != null) {
+
+			Users us = new Users();
+			us = new Users();
+			us = usersImpl.gettUserById(user.getUserId(), "userId");
+
+			LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
+			System.out.println("++++++++++++++++++++++++++here update sart for " + us + " useriD " + us.getUserId());
+			user.setEditable(false);
+			us.setFname(user.getFname());
+			us.setLname(user.getLname());
+			us.setAddress(user.getAddress());
+			usersImpl.UpdateUsers(us);
+
+			// return to current page
+			return null;
+		} else {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userprofile"));
+			return null;
+		}
+
+	}
+
+	public String newAction(UserDto user) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		Users us = new Users();
+		us = new Users();
+		us = usersImpl.gettUserById(user.getUserId(), "userId");
+
+		LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
+
+		user.setEditable(false);
+		us.setFname(user.getFname());
+		us.setLname(user.getLname());
+		us.setUserCategory(user.getUserCategory());
+		usersImpl.UpdateUsers(us);
+
+		// return to current page
+		return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+
+	}
+
+	public String addNewUser() {
+
+		return "/menu/UsersAccount.xhtml?faces-redirect=true";
+
+	}
+
+	public String updateStatus(UserDto user) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		Users us = new Users();
+		us = new Users();
+		us = usersImpl.gettUserById(user.getUserId(), "userId");
+
+		LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
+
+		if (user.getStatus().equals(ACTIVE)) {
+
+			us.setStatus(DESACTIVE);
+			usersImpl.UpdateUsers(us);
+		} else {
+
+			us.setStatus(ACTIVE);
+		}
+		usersImpl.UpdateUsers(us);
+
+		// return to current page
+		return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+
 	}
 
 	public String getCLASSNAME() {
@@ -626,6 +750,62 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setBoard(Board board) {
 		this.board = board;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getConfirmPswd() {
+		return confirmPswd;
+	}
+
+	public void setConfirmPswd(String confirmPswd) {
+		this.confirmPswd = confirmPswd;
+	}
+
+	public List<UserDto> getUserDtoDetails() {
+		return userDtoDetails;
+	}
+
+	public void setUserDtoDetails(List<UserDto> userDtoDetails) {
+		this.userDtoDetails = userDtoDetails;
+	}
+
+	public List<UserDto> getUserDtosDetails() {
+		return userDtosDetails;
+	}
+
+	public void setUserDtosDetails(List<UserDto> userDtosDetails) {
+		this.userDtosDetails = userDtosDetails;
+	}
+
+	public UserDto getUserDto() {
+		return userDto;
+	}
+
+	public void setUserDto(UserDto userDto) {
+		this.userDto = userDto;
+	}
+
+	public BoardImpl getBoardImpl() {
+		return boardImpl;
+	}
+
+	public void setBoardImpl(BoardImpl boardImpl) {
+		this.boardImpl = boardImpl;
+	}
+
+	public LoginImpl getLoginImpl() {
+		return loginImpl;
+	}
+
+	public void setLoginImpl(LoginImpl loginImpl) {
+		this.loginImpl = loginImpl;
 	}
 
 }

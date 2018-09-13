@@ -19,6 +19,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -48,8 +49,6 @@ public class Users extends CommonDomain implements Serializable {
 
 	@Column(name = "lname")
 	private String lname;
-
-
 
 	@Column(name = "address")
 	private String address;
@@ -81,10 +80,12 @@ public class Users extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "village")
 	private Village village;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "board")
 	private Board board;
+	@Transient
+	private String action;
 
 	public int getUserId() {
 		return userId;
@@ -117,8 +118,6 @@ public class Users extends CommonDomain implements Serializable {
 	public void setLname(String lname) {
 		this.lname = lname;
 	}
-
-
 
 	public String getAddress() {
 		return address;
@@ -213,5 +212,12 @@ public class Users extends CommonDomain implements Serializable {
 		this.board = board;
 	}
 
-	
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
 }
