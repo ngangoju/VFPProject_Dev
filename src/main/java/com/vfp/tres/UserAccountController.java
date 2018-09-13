@@ -141,8 +141,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		try {
 			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status" },
 					new Object[] { ACTIVE, ACTIVE }, "Users", "userId desc");
-			catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+			catDetails = catImpl.getListUsercategory();
 
 			/*
 			 * provinceList = provImpl.getGenericListWithHQLParameter(new String[] {

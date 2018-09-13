@@ -33,6 +33,12 @@ public class MenuGroup extends CommonDomain implements Serializable {
 
 	@Column(name = "menuGroupName")
 	private String menuGroupName;
+	
+	@Column(name = "iconImage")
+	private String iconImage;
+	
+	@Column(name = "menuColor")
+	private String menuColor;
 
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -91,6 +97,22 @@ public class MenuGroup extends CommonDomain implements Serializable {
 
 	public void setGroupMenuCode(String groupMenuCode) {
 		this.groupMenuCode = groupMenuCode;
+	}
+
+	public String getIconImage() {
+		return iconImage;
+	}
+
+	public void setIconImage(String iconImage) {
+		this.iconImage = iconImage;
+	}
+
+	public String getMenuColor() {
+		return menuColor;
+	}
+
+	public void setMenuColor(String menuColor) {
+		this.menuColor = menuColor;
 	}
 
 

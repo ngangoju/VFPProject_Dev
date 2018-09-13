@@ -25,7 +25,7 @@
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
 									<li class="alert"
-										style="list-style: none; background-color: #FF2400; color: white">
+										style="list-style: none; background-color: #FF2400; color: white;margin-left:-4.9%">
 										<center>
 											<h:outputText value="#{facesMessage.summary}" escape="false" />
 										</center>
@@ -71,12 +71,27 @@
 
 								<h:inputText value="#{userContactController.contact.contactDetails}" class="form-control" id="contDetails"
 									required="true"
-									requiredMessage="#{msg['requiered.contactDetails.message']}" />
-
+									converterMessage="#{msg['error.enter.invalid.conatactDetails']}" validatorMessage="#{msg['error.enter.invalid.conatactDetails']}" requiredMessage="#{msg['requiered.contactDetails.message']}" >
+									<f:validateRegex pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}"/>
+									 <f:validateLength maximum="100" />
+									</h:inputText>
 
 
 							</div>
-							<h:message errorClass="errorMsg1" for="contDetails"></h:message>
+							<div class="col-md-4">
+								<span class="tooltips-input-main"><a
+									class="tooltips-input"> <h:panelGroup
+											id="tooltips-contactDetails" layout="block">
+											<img
+												src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+												style="width: 8%" alt="question" />
+										</h:panelGroup> <p:tooltip id="toolTipContent" for="tooltips-contactDetails"
+											position="bottom">
+											<span> #{msg['help.coantDetails.message']} </span>
+										</p:tooltip>
+								</a></span>
+								<h:message errorClass="errorMsg1" for="contDetails"></h:message>
+							</div>
 						</div>
 
 						<div class="form-group row">
@@ -88,6 +103,7 @@
 								<h:inputText  value="#{userContactController.contact.email}" class="form-control" id="email" required="true"
 									validatorMessage="#{msg['error.enter.invalid.email']}" converterMessage="#{msg['error.enter.invalid.email']}" requiredMessage="#{msg['error.enter.required.email']}" >
 									  <f:validateRegex pattern="#{regex['regex.validation.email']}" />
+									   <f:validateLength maximum="100" />
 									</h:inputText>
 
 
@@ -102,7 +118,10 @@
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
 								<h:inputText value="#{userContactController.contact.phone}" class="form-control" id="phone" required="true"
-									requiredMessage="#{msg['requiered.phone.message']}" />
+									converterMessage="#{msg['error.enter.invalid.phone']}" requiredMessage="#{msg['requiered.phone.message']}" validatorMessage="#{msg['error.enter.invalid.phone']}" >
+									<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+									 <f:validateLength maximum="25" />
+									</h:inputText>
 							</div>
 							<h:message errorClass="errorMsg1" for="phone"></h:message>
 						</div>
@@ -110,7 +129,7 @@
 			<div class="form-group row">
 				<label class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black" >#{msg['label.message.userInfo']}<span style="color: red">*</span></label>
 		         <div class="col-md-4 col-sm-4 col-xs-4">
-			        <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="#{userContactController.userIdNumber}" requiredMessage="#{msg['category.requiered.message']}"  >
+			        <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="#{userContactController.userIdNumber}" converterMessage="#{msg['requiered.username.invalid']}" requiredMessage="#{msg['requiered.username.message']}"  >
                 		<f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="false"  />
                         <f:selectItems value="#{userContactController.usersDetails}" var="option" itemValue="#{option.userId}" itemLabel="#{option.fname} #{option.lname}" itemLabelEscaped="true"  />
             		  <f:ajax event="change" execute="@this"  />

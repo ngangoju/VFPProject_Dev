@@ -5,13 +5,13 @@ create database tresscore;
 use tresscore;
 
 
-insert into usercategory (userCatid,usercategoryName,genericStatus) values(1,'Super Admin','active');
+insert into usercategory (userCatid,usercategoryName) values(1,'Super Admin');
 
-insert into usercategory (userCatid,usercategoryName,genericStatus) values(2,'Staff','active');
+insert into usercategory (userCatid,usercategoryName) values(2,'Staff');
 
-insert into usercategory (userCatid,usercategoryName,genericStatus) values(3,'Institution Representative','active');
+insert into usercategory (userCatid,usercategoryName) values(3,'Institution Representative');
 
-insert into usercategory (userCatid,usercategoryName,genericStatus) values(4,'Superviser','active');
+insert into usercategory (userCatid,usercategoryName) values(4,'Superviser');
 
 insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('admin',md5('admin'),1,'Kigali','Mugabo','Jean','us.png','offline','active',now(),'active');
 
@@ -137,17 +137,17 @@ insert into village( villageId,code,villageName_en,villageName_fr, villageName_r
 
 ===>>we need to update our script some list of menu appeared from super admin  are  changed under institution Representative
  
------>update menuassignment set usercategory=3 where listofmenu=3;
+update menuassignment set usercategory=3 where listofmenu=3;
 
-------> update menuassignment set usercategory=3 where listofmenu=4;
+update menuassignment set usercategory=3 where listofmenu=4;
 
--------> update menuassignment set usercategory=3 where listofmenu=5;
+update menuassignment set usercategory=3 where listofmenu=5;
 
--------> update listofmenu set menugroup=11 where menuid=3;
+update listofmenu set menugroup=11 where menuid=3;
 
--------> update listofmenu set menugroup=11 where menuid=4;
+ update listofmenu set menugroup=11 where menuid=4;
 
--------> update listofmenu set menugroup=11 where menuid=5;
+ update listofmenu set menugroup=11 where menuid=5;
 
 ==================================By Emmanuel============================================================================================
 ___________________________________@james__________________________________________

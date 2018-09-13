@@ -95,6 +95,42 @@ public class UserContactController implements Serializable, DbConstant {
 
 public  String saveContact() {
 	try {
+		
+		try {
+			
+			Contact ct=new Contact();
+			ct=contactImpl.getModelWithMyHQL(new String[] { "email"},
+					new Object[] {contact.getEmail()}, "from Contact");
+			if(null!=ct) {
+				
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
+				LOGGER.info(CLASSNAME+"sivaserside validation :: email already  recorded in the system! ");
+				return null;
+			}
+			ct=contactImpl.getModelWithMyHQL(new String[] { "phone"},
+					new Object[] {contact.getPhone()}, "from Contact");
+			if(null!=ct) {
+				
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
+				LOGGER.info(CLASSNAME+"sivaserside validation :: phone number already  recorded in the system! ");
+				return null;
+			}
+			
+			
+			
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(CLASSNAME+""+e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		
 		contact.setCreatedBy(usersSession.getViewId());
 		contact.setCrtdDtTime(timestamp);
 		contact.setGenericStatus(ACTIVE);

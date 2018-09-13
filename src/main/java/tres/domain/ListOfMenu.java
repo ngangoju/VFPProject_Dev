@@ -38,6 +38,12 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 
+	
+	@Column(name = "iconImage")
+	private String iconImage;
+	
+	@Column(name = "menuColor")
+	private String menuColor;
 	@ManyToOne
 	@JoinColumn(name = "listOfMenu")
 	private ListOfMenu listOfMenu;
@@ -102,6 +108,22 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 
 	public void setUrlCode(String urlCode) {
 		this.urlCode = urlCode;
+	}
+
+	public String getIconImage() {
+		return iconImage;
+	}
+
+	public void setIconImage(String iconImage) {
+		this.iconImage = iconImage;
+	}
+
+	public String getMenuColor() {
+		return menuColor;
+	}
+
+	public void setMenuColor(String menuColor) {
+		this.menuColor = menuColor;
 	}
 	
 	
