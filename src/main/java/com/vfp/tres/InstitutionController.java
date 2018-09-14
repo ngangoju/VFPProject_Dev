@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -39,11 +40,14 @@ import tres.domain.Province;
 import tres.domain.Sector;
 import tres.domain.Users;
 import tres.domain.Village;
+import tres.vfp.dto.InstitutionDto;
+import tres.vfp.dto.UserDto;
 
+@SuppressWarnings("unchecked")
 @ManagedBean
 @ViewScoped
 
-public class InstitutionController implements DbConstant {
+public class InstitutionController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "Institution :: InstitutionRequest ";
 	private static final long serialVersionUID = 1L;
@@ -55,6 +59,8 @@ public class InstitutionController implements DbConstant {
 	private Users usersSession;
 	private int userIdNumber;
 	private int institutionId;
+	private Date from;
+	private Date to;
 	private Country country;
 	private Village village;
 	private Province province;
@@ -63,6 +69,7 @@ public class InstitutionController implements DbConstant {
 	private Cell cell;
 	private Contact contact;
 	private int institutionID;
+	private InstitutionDto institutionDto;
 	private int pid;
 	private int did;
 	private int cid;
@@ -76,6 +83,7 @@ public class InstitutionController implements DbConstant {
 	private List<Sector> sectors = new ArrayList<Sector>();
 	private List<Cell> cells = new ArrayList<Cell>();
 	private List<Village> villages = new ArrayList<Village>();
+	private List<InstitutionDto> institutionDtos = new ArrayList<InstitutionDto>();
 	private List<InstitutionRegistrationRequest> Confirmedinstitutions = new ArrayList<InstitutionRegistrationRequest>();
 	private List<Institution> institutions = new ArrayList<Institution>();
 	private List<InstitutionRegistrationRequest> requests = new ArrayList<InstitutionRegistrationRequest>();
@@ -141,16 +149,40 @@ public class InstitutionController implements DbConstant {
 			requests = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
 					"InstitutionRegistrationRequest", "instRegReqstDate desc");
-
-			// institution = institutionImpl.getModelWithMyHQL(new String[] {
-			// "institutionRepresenative_userId" },
-			// new Object[] { usersSession }, "Institution");
 			validInstitution = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
+					"instRegReqstDate desc");
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		try
+
+		{
+
+			requests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
+					"instRegReqstDate asc");
+			for (InstitutionRegistrationRequest inst : requests) {
+				InstitutionDto institutionDto = new InstitutionDto();
+				institutionDto.setEditable(false);
+				institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
+				institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
+				institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
+				institutionDto.setInstitution(inst.getInstitution());
+				institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
+				institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
+				institutionDto.setCountry(inst.getInstitution().getCountry());
+				institutionDto.setVillage(inst.getInstitution().getVillage());
+				institutionDtos.add(institutionDto);
+			}
+		} catch (Exception e) {
+			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
@@ -164,7 +196,7 @@ public class InstitutionController implements DbConstant {
 			institution.setCrtdDtTime(timestamp);
 			institution.setGenericStatus(ACTIVE);
 			institution.setUpDtTime(timestamp);
-			institution.setInstitutionRepresenative(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
+			institution.setInstitutionRepresenative(usersSession);
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitution(institutionImpl.getInstitutionById(institutionID, "institutionId"));
 			institution.setCountry(countryImpl.getCountryById(cntryId, "taskId"));
@@ -294,6 +326,48 @@ public class InstitutionController implements DbConstant {
 	private void clearInstitutionFuileds() {
 		institution = new Institution();
 		request = new InstitutionRegistrationRequest();
+	}
+
+	public void setInstitutionDto(InstitutionDto institutionDto) {
+		this.institutionDto = institutionDto;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public String cancel(InstitutionDto institutionDto) {
+		institutionDto.setEditable(true);
+		return "/menu/ViewInstitutionProfile.xhtml";
+
+	}
+
+	public String editAction(InstitutionDto institutionDto) {
+		institutionDto.setEditable(true);
+		return null;
+	}
+
+	public String saveAction(InstitutionDto dto) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		Institution insti = new Institution();
+		insti = new Institution();
+		insti = institutionImpl.getInstitutionById(dto.getInstitutionId(), "institutionId");
+		LOGGER.info("here update sart for " + dto + " Institution id " + dto.getInstitutionId());
+		dto.setEditable(false);
+		insti.setInstitutionName(dto.getInstitutionName());
+		insti.setCountry(dto.getCountry());
+		insti.setUpdatedBy(usersSession.getViewId());
+		insti.setUpDtTime(getTimestamp());
+		insti.setVillage(dto.getVillage());
+		insti.setInstitutionAddress(dto.getInstitutionAddress());
+		insti.setInstitutionName(dto.getInstitutionName());
+		institutionImpl.UpdateInstitution(insti);
+		return null;
 	}
 
 	public String getCLASSNAME() {
@@ -630,6 +704,42 @@ public class InstitutionController implements DbConstant {
 
 	public void setValidInstitution(List<InstitutionRegistrationRequest> validInstitution) {
 		this.validInstitution = validInstitution;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	public InstitutionDto getInstitutionDto() {
+		return institutionDto;
+	}
+
+	public List<InstitutionDto> getInstitutionDtos() {
+		return institutionDtos;
+	}
+
+	public void setInstitutionDtos(List<InstitutionDto> institutionDtos) {
+		this.institutionDtos = institutionDtos;
+	}
+
+	public Date getFrom() {
+		return from;
+	}
+
+	public void setFrom(Date from) {
+		this.from = from;
+	}
+
+	public Date getTo() {
+		return to;
+	}
+
+	public void setTo(Date to) {
+		this.to = to;
 	}
 
 }

@@ -1,22 +1,33 @@
 package tres.vfp.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import tres.domain.Country;
 import tres.domain.Institution;
+import tres.domain.Users;
+import tres.domain.Village;
 
-public class InstitutionDto {
+public class InstitutionDto implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	private int instRegReqstId;
+	private int institutionId;
 
-	private String instRegReqstStatus;
+	private String institutionName;
 
-	private String instRegReqstType;
+	private String institutionAddress;
 
-	private Date instRegReqstDate;
+	private Date institutionRegDate;
 
 	private Institution institution;
 
+	private Country country;
+
+	private Village village;
+
+	private Users user;
+	
 	private boolean editable;
 
 	public boolean isEditable() {
@@ -27,36 +38,36 @@ public class InstitutionDto {
 		this.editable = editable;
 	}
 
-	public int getInstRegReqstId() {
-		return instRegReqstId;
+	public int getInstitutionId() {
+		return institutionId;
 	}
 
-	public void setInstRegReqstId(int instRegReqstId) {
-		this.instRegReqstId = instRegReqstId;
+	public void setInstitutionId(int institutionId) {
+		this.institutionId = institutionId;
 	}
 
-	public String getInstRegReqstStatus() {
-		return instRegReqstStatus;
+	public String getInstitutionName() {
+		return institutionName;
 	}
 
-	public void setInstRegReqstStatus(String instRegReqstStatus) {
-		this.instRegReqstStatus = instRegReqstStatus;
+	public void setInstitutionName(String institutionName) {
+		this.institutionName = institutionName;
 	}
 
-	public String getInstRegReqstType() {
-		return instRegReqstType;
+	public String getInstitutionAddress() {
+		return institutionAddress;
 	}
 
-	public void setInstRegReqstType(String instRegReqstType) {
-		this.instRegReqstType = instRegReqstType;
+	public void setInstitutionAddress(String institutionAddress) {
+		this.institutionAddress = institutionAddress;
 	}
 
-	public Date getInstRegReqstDate() {
-		return instRegReqstDate;
+	public Date getInstitutionRegDate() {
+		return institutionRegDate;
 	}
 
-	public void setInstRegReqstDate(Date instRegReqstDate) {
-		this.instRegReqstDate = instRegReqstDate;
+	public void setInstitutionRegDate(Date institutionRegDate) {
+		this.institutionRegDate = institutionRegDate;
 	}
 
 	public Institution getInstitution() {
@@ -65,6 +76,35 @@ public class InstitutionDto {
 
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public Village getVillage() {
+		return village;
+	}
+
+	public void setVillage(Village village) {
+		this.village = village;
+	}
+
+	@Override
+	public String toString() {
+		return "InstitutionDto [institutionName=" + institutionName + "]";
 	}
 
 }

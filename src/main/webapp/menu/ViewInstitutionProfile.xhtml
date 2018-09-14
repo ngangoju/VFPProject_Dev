@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/common/commonLayout.xhtml">
+		<ui:define name="content">
+
+			<h:form>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<table>
+							<tr>
+								<td>
+									<div>
+										<a href="institutionRegistration.xhtml"
+											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['institutionForm.addButton']}<b><span
+												style="background-color: red; color: white" class="badge"></span></b>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body">
+
+						<h:panelGroup layout="block"
+							rendered="#{not institutionController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							rendered="#{institutionController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li style="list-style: none;" class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+						<p:dataTable value="#{institutionController.institutionDtos}"
+							var="ls" rowIndexVar="index" style="padding-top: 2px">
+							<p:column style="width:30px">
+								<f:facet name="header">
+									<h:outputText value="#" />
+								</f:facet>
+								<h:outputText value="#{index + 1}" />
+							</p:column>
+							<p:column headerText="#{msg['institutionForm.name']}">
+
+								<h:inputText value="#{ls.institutionName}" size="10"
+									rendered="#{ls.editable}" />
+
+								<h:outputText value="#{ls.institutionName}"
+									rendered="#{not ls.editable}" />
+							</p:column>
+
+
+							<p:column headerText="#{msg['institutionForm.branchof']}"> 
+                             #{ls.institution.institution.getInstitutionName()}
+						</p:column>
+
+							<p:column headerText="#{msg['institutionForm.startDate']}">
+								<h:outputText value="#{ls.institutionRegDate}">
+									<f:convertDateTime pattern="yyyy dd MMM hh:mm" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="#{msg['institutionForm.country']}"> 
+								#{ls.institution.country.countryName_en}
+						</p:column>
+							<p:column headerText="#{msg['institutionForm.address']}">
+
+								<h:inputText value="#{ls.institutionAddress}" size="10"
+									rendered="#{ls.editable}" />
+
+								<h:outputText value="#{ls.institutionAddress}"
+									rendered="#{not ls.editable}" />
+							</p:column>
+							<p:column headerText="Action">
+								<h:commandLink style="color:white"
+									class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+									action="#{institutionController.editAction(ls)}"
+									rendered="#{not ls.editable}" />
+								<h:commandLink style="margin-left:2px;color:white"
+									class="btn btn-danger 	glyphicon glyphicon-remove"
+									value="Cancel" action="#{institutionController.cancel(ls)}"
+									rendered="#{ls.editable}" />
+								<h:commandButton value="Save Changes" class="btn btn-primary"
+									action="#{institutionController.saveAction(ls)}"
+									rendered="#{ls.editable}" />
+							</p:column>
+						</p:dataTable>
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
