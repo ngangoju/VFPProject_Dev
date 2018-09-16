@@ -164,9 +164,8 @@ _______________________________________James____________________________________
 insert into menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
 values(0,'admin',now(),'active',now(),now(),'admin',now(),'Institution Requests',1,'Institution Requests','001');
 
-INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
-VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Manage request', '/menu/manageInstitutionRegistration.xhtml', null,14, null);
-
+insert into menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
+values(0,'admin',now(),'active',now(),now(),'admin',now(),'Institution Requests','Institution Requests',1);
 INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory)
  
 VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 19, 1);
