@@ -40,13 +40,15 @@
 					var="act">
 
 
-					<p:column headerText="#{msg['form.activity.description']}">
+					<p:column headerText="#{msg['form.activity.description']}" id="descriptionId">
 
 						<h:inputText value="#{act.description}" styleClass="form-control"
 							size="10" rendered="#{act.editable}" />
 
 						<h:outputText value="#{act.description}"
-							rendered="#{not act.editable}" />
+							rendered="#{not act.editable}" >
+							<h:message for="descriptionId" styleClass="help-block"></h:message>
+							</h:outputText>
 					</p:column>
 
 

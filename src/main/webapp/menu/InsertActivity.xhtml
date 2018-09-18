@@ -14,13 +14,12 @@
 
 
 		<ui:define name="content">
-			<div class="panel panel-default">
+			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-					<span style="color: #737373; font-size: 10pt">Fields marked
-						with an asterisk <span style="color: red">(*)</span> are
-						mandatory.
-					</span>
+					<span style="color: #fff; font-size: 10pt">#{msg['header.title.fieldmarked']}
+							<span style="color: red">#{msg['header.title.asteriks']}</span>#{msg['header.title.mandatory']}
+						</span>
 					<center></center>
 				</div>
 				<div class="panel-body"
@@ -64,7 +63,6 @@
 										</h:inputTextarea>
 									</div>
 									<div class="col-md-1 col-sm-1 col-xs-1"></div>
-
 									<h:message for="descriptionId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
