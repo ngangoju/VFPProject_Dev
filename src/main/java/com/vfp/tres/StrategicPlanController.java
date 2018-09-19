@@ -18,8 +18,11 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Activity;
 import tres.domain.StrategicPlan;
 import tres.domain.Users;
+import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.StrategicPlanDto;
 
 @ManagedBean
 @ViewScoped
@@ -32,9 +35,10 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	/*end  manage validation messages*/
 	private Users users;
 	private Users usersSession;
-	private  int   userIdNumber;
 	private StrategicPlan strategicPlan;
 	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
+	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
+	
 	
 	/*class injection*/
 	
@@ -62,6 +66,16 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		try {
 			
 			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "StrategicPlan", "planId asc");
+			for(StrategicPlan strategicPlan: strategicPlanDetails) {
+				StrategicPlanDto strategicPlanDto = new StrategicPlanDto();
+				strategicPlanDto.setStrategicPlanId(strategicPlan.getPlanId());
+				strategicPlanDto.setEditable(false);
+				strategicPlanDto.setDetails(strategicPlan.getDetails());
+				strategicPlanDto.setRecordedDate(strategicPlan.getRecordedDate());
+				strategicPlanDto.setGenericStatus(strategicPlan.getGenericStatus());
+				strategicPlanDto.setUsers(strategicPlan.getUsers());
+				strategicPlanDtoDetails.add(strategicPlanDto);
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -79,7 +93,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			strategicPlan.setCrtdDtTime(timestamp);
 			strategicPlan.setGenericStatus(ACTIVE);
 			strategicPlan.setUpDtTime(timestamp);
-			strategicPlan.setUsers(usersImpl.gettUserById(userIdNumber, "userId"));
+			strategicPlan.setUsers(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
 			strategicPlan.setUpdatedBy(usersSession.getViewId());
 			strategicPlan.setRecordedDate(timestamp);
 			strategicPlanImpl.saveStrategicPlan(strategicPlan);
@@ -88,7 +102,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
 			LOGGER.info(CLASSNAME+":::StrategicPlan Details is saved");
 			clearContactFuileds();
-			return"";
+			return"/menu/StrategicPlan.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME+":::Strategic Plan Details is failling with HibernateException  error");
@@ -107,9 +121,46 @@ private void clearContactFuileds() {
 	strategicPlanDetails=null;
 }
 
+public String newPlan() {
+	return "/menu/InsertStrategicPlan.xhtml?faces-redirect=true";
+}
+
 	public void changeSelectBox(String name) {
 		
 		LOGGER.info("Ajax is working with listener::::::"+name);
+	}
+	public String saveAction(StrategicPlanDto strategicPlanDto) {
+		LOGGER.info("update  saveAction method");
+		//get all existing value but set "editable" to false 
+		StrategicPlan act=new StrategicPlan();
+		act=new StrategicPlan();
+		act=strategicPlanImpl.getStrategicPlanById(strategicPlanDto.getStrategicPlanId(), "planId");
+		
+			LOGGER.info("here update sart for "+act +" strategicPlaniD "+act.getPlanId());
+
+			strategicPlanDto.setEditable(false);
+			act.setDetails(strategicPlanDto.getDetails());
+		
+			strategicPlanImpl.UpdateStrategicPlan(act);
+			
+		//return to current page
+		return null;
+		
+	}
+
+	public String cancel(StrategicPlanDto strategicPlanDto) {
+		strategicPlanDto.setEditable(false);
+		//usersImpl.UpdateUsers(user);
+		return null;
+		
+		
+	}
+
+	public String editAction(StrategicPlanDto strategicPlanDto) {
+	    
+		strategicPlanDto.setEditable(true);
+		//usersImpl.UpdateUsers(user);
+		return null;
 	}
 
 	public String getCLASSNAME() {
@@ -142,6 +193,14 @@ private void clearContactFuileds() {
 
 	public void setStrategicPlanDetails(List<StrategicPlan> strategicPlanDetails) {
 		this.strategicPlanDetails = strategicPlanDetails;
+	}
+
+	public List<StrategicPlanDto> getStrategicPlanDtoDetails() {
+		return strategicPlanDtoDetails;
+	}
+
+	public void setStrategicPlanDtoDetails(List<StrategicPlanDto> strategicPlanDtoDetails) {
+		this.strategicPlanDtoDetails = strategicPlanDtoDetails;
 	}
 
 	public JSFBoundleProvider getProvider() {
