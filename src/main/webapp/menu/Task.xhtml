@@ -30,20 +30,28 @@
 
 			<h:form>
 				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
-					<h:commandLink class="btn btn-primary" action="#{taskController.newTask()}">
+					<h:commandLink class="btn btn-primary"
+						action="#{taskController.newTask()}">
 						<i class="glyphicon glyphicon-plus-sign"></i>#{msg['form.task.new']}
 					</h:commandLink>
 				</div>
 				<br />
 				<br />
 				<br />
-				<p:dataTable value="#{taskController.taskDtoDetails}"
-					var="act">
+				<p:dataTable value="#{taskController.taskDtoDetails}" var="act">
 
 					<p:column headerText="#{msg['form.task.name']}">
 
-						<h:inputText value="#{act.taskName}" styleClass="form-control"
-							size="10" rendered="#{act.editable}" />
+						<h:inputText id="tasknameId" binding="#{surnameId}"
+							value="#{act.taskName}" styleClass="form-control" size="10"
+							rendered="#{act.editable}" maxlength="80" required="true"
+							validatorMessage="#{msg['error.enter.invalid.surname']}"
+							converterMessage="#{msg['error.enter.invalid.surname']}"
+							requiredMessage="#{msg['tname.required.message']}">
+							<f:validateRegex pattern="#{regex['regex.string.Validation']}" />
+							<f:validateLength maximum="35" />
+						</h:inputText>
+						<h:message for="tasknameId" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.taskName}"
 							rendered="#{not act.editable}" />
@@ -52,26 +60,89 @@
 
 					<p:column headerText="#{msg['form.activity.description']}">
 
-						<h:inputText value="#{act.description}" styleClass="form-control"
-							size="10" rendered="#{act.editable}" />
+						<h:inputTextarea id="descriptionId" value="#{act.description}"
+							styleClass="form-control" size="10" rendered="#{act.editable}"
+							maxlength="250" required="true"
+							requiredMessage="#{msg['description.required.message']}"
+							validatorMessage="#{msg['error.address.maxlength']}">
+							<f:validateLength maximum="150" />
+						</h:inputTextarea>
+						<h:message for="descriptionId" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.description}"
 							rendered="#{not act.editable}" />
 					</p:column>
 
-					
-					<p:column headerText="#{msg['form.task.startDate']}">
 
-						<h:outputText value="#{act.startDate}" />
+					<p:column headerText="#{msg['form.task.startDate']}">
+						<h:inputText locale="#{facesContext.viewRoot.locale}"
+							autocomplete="off" id="from_start_date_id"
+							binding="#{from_dob_date_id}" class="form-control" escape="true"
+							value="#{act.startDate}" maxlength="35" required="true"
+							rendered="#{act.editable}"
+							converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+							requiredMessage="#{msg['startDate.required.message']}">
+							<f:convertDateTime type="date" dateType="short"
+								pattern="dd/MM/yyyy" />
+							<f:validateLength maximum="35" />
+						</h:inputText>
+						<script>
+											$(function() {
+												$(
+														'input[id*="from_start_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+						<h:message for="from_start_date_id" styleClass="help-block"></h:message>
+						<h:outputText value="#{act.startDate}"
+							rendered="#{not act.editable}" />
 
 					</p:column>
 
 					<p:column headerText="#{msg['form.task.dueDate']}">
+						<h:inputText locale="#{facesContext.viewRoot.locale}"
+							autocomplete="off" id="from_due_date_id"
+							binding="#{from_due_date_id}" class="form-control" escape="true"
+							value="#{taskController.task.dueDate}" maxlength="35"
+							required="true" rendered="#{act.editable}"
+							converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+							requiredMessage="#{msg['dueDate.required.message']}">
+							<f:convertDateTime type="date" dateType="short"
+								pattern="dd/MM/yyyy" />
+							<f:validateLength maximum="35" />
+						</h:inputText>
+						<script>
+											$(function() {
+												$(
+														'input[id*="from_due_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+						<h:message for="from_due_date_id" styleClass="help-block"></h:message>
 
-						<h:outputText value="#{act.dueDate}" />
+						<h:outputText value="#{act.dueDate}"
+							rendered="#{not act.editable}" />
 
 					</p:column>
-					
+
 					<p:column headerText="Action">
 
 						<h:commandLink style="color:white"
@@ -80,8 +151,7 @@
 							rendered="#{not act.editable}" />
 						<h:commandLink style="margin-left:2px;color:white"
 							class="btn btn-danger 	glyphicon glyphicon-remove" value="Cancel"
-							action="#{taskController.cancel(act)}"
-							rendered="#{act.editable}" />
+							action="#{taskController.cancel(act)}" rendered="#{act.editable}" />
 						<h:commandButton value="Save Changes" class="btn btn-primary"
 							action="#{taskController.saveAction(act)}"
 							rendered="#{act.editable}" />

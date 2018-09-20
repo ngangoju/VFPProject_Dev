@@ -18,8 +18,8 @@
 				<!-- Default panel contents -->
 				<div class="panel-heading">
 					<span style="color: #fff; font-size: 10pt">#{msg['header.title.fieldmarked']}
-							<span style="color: red">#{msg['header.title.asteriks']}</span>#{msg['header.title.mandatory']}
-						</span>
+						<span style="color: red">#{msg['header.title.asteriks']}</span>#{msg['header.title.mandatory']}
+					</span>
 					<center></center>
 				</div>
 				<div class="panel-body"
@@ -127,7 +127,7 @@
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{activityController.saveActivite}"
 										value="#{msg['label.submit.message.save']}">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 									</h:commandButton>
 
 								</div>
