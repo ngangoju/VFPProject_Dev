@@ -37,7 +37,7 @@ insert  menuassignment(menuAssgnId,crtdDtTime, genericStatus,defaultMenuUrl,list
 ==================BY Ngabo Eric=====================
 
 
-insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(3,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UserAccount.xhtml',null,1,'Url03');
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(3,'admin',now(),'active',now(),now(),'admin',now(),'New User','/menu/UsersAccount.xhtml',null,1,'Url03');
 insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(3,'admin',now(),'active',now(),now(),'admin',null,3,3);
 
 insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(4,'admin',now(),'active',now(),now(),'admin',now(),'User Category','/menu/UserCategory.xhtml',null,1,'Url04');
@@ -81,19 +81,19 @@ insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,up
 
 ==================BY Gwiza Erick=====================
 
-insert into menugroup values(4,'admin',now(),'active',now(),now(),'admin',now(),'Menus',1,'Menu Creation','001');
+insert into menugroup(menuGroupId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(4,'admin',now(),'active',now(),now(),'admin',now(),'Menus','001','Menu Creation',1);
 
-insert into listofmenu values(13,'admin',now(),'active',now(),now(),'admin',now(),'Menu Group',null,'/menu/menuGroupForm.xhtml',13,5);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(21,'admin',now(),'active',now(),now(),'admin',now(),'Menu Group',null,'/menu/menuGroupForm.xhtml',21,4);
 
-insert into listofmenu values(14,'admin',now(),'active',now(),now(),'admin',now(),'List of Menu',null,'/menu/listOfMenuForm.xhtml',14,5);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(22,'admin',now(),'active',now(),now(),'admin',now(),'List of Menu',null,'/menu/listOfMenuForm.xhtml',22,4);
 
-insert into listofmenu values(15,'admin',now(),'active',now(),now(),'admin',now(),'Menu Assignment',null,'/menu/menuAssignmentForm.xhtml',15,5);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(23,'admin',now(),'active',now(),now(),'admin',now(),'Menu Assignment',null,'/menu/menuAssignmentForm.xhtml',23,4);
 
-insert  menuassignment values(17,'admin',now(),'active',now(),now(),'admin',null,13,1);
+insert into  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(17,'admin',now(),'active',now(),now(),'admin',null,21,1);
 
-insert  menuassignment values(18,'admin',now(),'active',now(),now(),'admin',null,14,1);
+insert into  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(18,'admin',now(),'active',now(),now(),'admin',null,22,1);
 
-insert  menuassignment values(19,'admin',now(),'active',now(),now(),'admin',null,15,1);
+insert into  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(19,'admin',now(),'active',now(),now(),'admin',null,23,1);
 
 ==================BY Emile=====================
 
@@ -106,7 +106,7 @@ VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Institution pr
 
 INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory)
  
-VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 18, 3);
+VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 17, 3);
 =======================================================================
 
 
@@ -162,10 +162,11 @@ insert into country( countryId,code,countryName_en,countryName_fr, countryName_r
 _______________________________________James_________________________________________
 _______________________________________James_______________________________________
 insert into menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
-values(0,'admin',now(),'active',now(),now(),'admin',now(),'Institution Requests',1,'Institution Requests','001');
-
-insert into menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
 values(0,'admin',now(),'active',now(),now(),'admin',now(),'Institution Requests','Institution Requests',1);
+
+INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
+VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Manage request', '/menu/manageInstitutionRegistration.xhtml', null,14, null);
+
 INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory)
  
 VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 19, 1);
@@ -176,9 +177,9 @@ ________________________________________@james__________________________________
 
 
 
-insert into menugroup(menuGroupId,crtdDtTime,genericStatus,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(14,now(),'active','Profile','M003','Profile',3);
-insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(19,'admin',now(),'active',now(),now(),'admin',now(),'View Profile','/menu/ViewProfile.xhtml',null,14,'Url010');
-insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(28,'admin',now(),'active',now(),now(),'admin',null,19,3);
+insert into menugroup(menuGroupId,crtdDtTime,genericStatus,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory) values(15,now(),'active','Profile','M003','Profile',3);
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlName,listOfMenu,menuGroup,urlCode) values(20,'admin',now(),'active',now(),now(),'admin',now(),'View Profile','/menu/ViewProfile.xhtml',null,15,'Url010');
+insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(28,'admin',now(),'active',now(),now(),'admin',null,20,3);
 
 ====================================By Emmanuel /12/09/2018========================================================================================================
   update listofmenu set iconImage='glyphicon glyphicon-cog', menuColor='blue2';
@@ -191,6 +192,13 @@ update listofmenu set description='View Users',urlname='/menu/ListOfUserCategory
 
 update listofmenu set description='View Users Contacts',urlname='/menu/ViewUsersContacts.xhtml' where menuid=5;
 ====================================By Emmanuel /13/09/2018========================================================================================================
+
+
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(24,'admin',now(),'active',now(),now(),'admin',now(),'View Menu Group',null,'/menu/ViewMenuGroup.xhtml',24,4);
+
+insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(20,'admin',now(),'active',now(),now(),'admin',null,24,1);
+
+====================================By Emile /15/09/2018========================================================================================================
 
 update listofmenu set description='Instituion Profiles',urlname='/menu/ViewInstitutionProfile.xhtml' where menuid=18;
 =======================================@james========================================================================

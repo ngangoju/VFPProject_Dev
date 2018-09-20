@@ -25,6 +25,8 @@ import tres.domain.ListOfMenu;
 import tres.domain.MenuGroup;
 import tres.domain.UserCategory;
 import tres.domain.Users;
+import tres.vfp.dto.ListOfMenuDto;
+import tres.vfp.dto.MenuGroupDto;;
 
 @SuppressWarnings("unused")
 @ManagedBean
@@ -47,6 +49,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	private String urlCode;
 	private MenuGroup menuGroup;
 	private ListOfMenu listOfMenu;
+	private ListOfMenuDto listOfMenuDto;
 	private Users userSession;
 	private Users users;
 	private int groupId;
@@ -55,6 +58,8 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	
 	private List<ListOfMenu> listOfMenuDetails = new ArrayList<ListOfMenu>();
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
+	
+	private List<ListOfMenuDto> listOfMenuDtoDetails = new ArrayList<ListOfMenuDto>();
 	
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	ListOfMenuImpl listOfMenuImpl = new ListOfMenuImpl();
@@ -69,12 +74,42 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		if (listOfMenu == null) {
 			listOfMenu = new ListOfMenu();
 		}
+		if (listOfMenuDto == null) {
+			listOfMenuDto = new ListOfMenuDto();
+		}
 		
 		try {
 			
 			//userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 				//	new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
-			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);
+			
+			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);//This is for saving
+			listOfMenuDetails = listOfMenuImpl.getListWithHQL(SELECT_LISTOFMENU);//This is for View
+			
+			for (ListOfMenu listOfMenus : listOfMenuDetails) {
+				ListOfMenuDto listOfMenuDtos = new ListOfMenuDto();
+				listOfMenuDtos.setMenuId(listOfMenus.getMenuId());
+				listOfMenuDtos.setEditable(false);
+				listOfMenuDtos.setDescription(listOfMenus.getDescription());
+				listOfMenuDtos.setUrlName(listOfMenus.getUrlName());
+				listOfMenuDtos.setMenuGroup(listOfMenus.getMenuGroup());
+				listOfMenuDtos.setGenericStatus(listOfMenus.getGenericStatus());
+				if (listOfMenus.getGenericStatus().equals(ACTIVE)) {
+					listOfMenuDtos.setAction(DESACTIVE);
+
+				} else if (listOfMenus.getGenericStatus().equals(DESACTIVE)) {
+
+					listOfMenuDtos.setAction(ACTIVE);
+					listOfMenus.setGenericStatus(DESACTIVE);
+
+				} else {
+					listOfMenuDtos.setAction(DESACTIVE);
+					listOfMenus.setGenericStatus(ACTIVE);
+
+				}
+				listOfMenuDtoDetails.add(listOfMenuDtos);
+
+			}
 			
 		} catch (Exception e) {
 			setValid(false);
@@ -118,8 +153,97 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		return "";
 	}
 	
+	public String cancel(ListOfMenuDto list) {
+		list.setEditable(false);
+		// usersImpl.UpdateUsers(user);
+		return null;
+
+	}
+
+	public String editAction(ListOfMenuDto list) {
+
+		list.setEditable(true);
+		// usersImpl.UpdateUsers(user);
+		return null;
+	}
 	
+	public String saveAction(ListOfMenuDto list) {
+		LOGGER.info("update  saveAction method");
+		
+		if (list != null) {
+
+			ListOfMenu lists = new ListOfMenu();
+			lists = new ListOfMenu();
+			lists = listOfMenuImpl.getListOfMenuById(list.getMenuId(), "menuId");
+
+			LOGGER.info("here update sart for " + lists + " menuId " + lists.getMenuId());
+			System.out.println("++++++++++++++++++++++++++here update sart for " + lists + " menuGroupId " + lists.getMenuId());
+			list.setEditable(false);
+			lists.setDescription(list.getDescription());
+			lists.setUrlName(list.getUrlName());
+			lists.setMenuGroup(list.getMenuGroup());
+			listOfMenuImpl.updateListOfMenu(lists);
+
+			// return to current page
+			return null;
+		} else {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userprofile"));
+			return null;
+		}
+
+	}
 	
+	public String newAction(ListOfMenuDto list) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		ListOfMenu lists = new ListOfMenu();
+		lists = new ListOfMenu();
+		lists = listOfMenuImpl.getListOfMenuById(list.getMenuId(), "menuId");
+
+		LOGGER.info("here update sart for " + lists + " menuGroupId " + lists.getMenuId());
+
+		list.setEditable(false);
+		lists.setDescription(list.getDescription());
+		lists.setUrlName(list.getUrlName());
+		lists.setMenuGroup(list.getMenuGroup());
+		listOfMenuImpl.updateListOfMenu(lists);
+
+		// return to current page
+		return "/menu/ViewListOfMenu.xhtml?faces-redirect=true";
+
+	}
+	
+	public String updateStatus(ListOfMenuDto list) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		ListOfMenu lists = new ListOfMenu();
+		lists = new ListOfMenu();
+		lists = listOfMenuImpl.getListOfMenuById(list.getMenuId(), "menuId");
+
+		LOGGER.info("here update sart for " + lists + " menuGroupId " + lists.getMenuId());
+
+		if (list.getGenericStatus().equals(ACTIVE)) {
+
+			lists.setGenericStatus(DESACTIVE);
+			listOfMenuImpl.updateListOfMenu(lists);
+		} else {
+
+			lists.setGenericStatus(ACTIVE);
+		}
+		listOfMenuImpl.updateListOfMenu(lists);
+
+		// return to current page
+		return "/menu/ViewListOfMenu.xhtml?faces-redirect=true";
+
+	}
+	
+	public String addNewListOfMenu() {
+
+		return "/menu/listOfMenuForm.xhtml?faces-redirect=true";
+
+	}
 
 	private void clearUserFuileds() {
 		listOfMenu = new ListOfMenu();
@@ -271,6 +395,22 @@ public class ListOfMenuController implements Serializable, DbConstant{
 
 	public void setUsers(Users users) {
 		this.users = users;
+	}
+
+	public ListOfMenuDto getListOfMenuDto() {
+		return listOfMenuDto;
+	}
+
+	public void setListOfMenuDto(ListOfMenuDto listOfMenuDto) {
+		this.listOfMenuDto = listOfMenuDto;
+	}
+
+	public List<ListOfMenuDto> getListOfMenuDtoDetails() {
+		return listOfMenuDtoDetails;
+	}
+
+	public void setListOfMenuDtoDetails(List<ListOfMenuDto> listOfMenuDtoDetails) {
+		this.listOfMenuDtoDetails = listOfMenuDtoDetails;
 	}
 	
 	

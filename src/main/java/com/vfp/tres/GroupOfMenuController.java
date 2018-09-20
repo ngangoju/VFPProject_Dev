@@ -27,6 +27,8 @@ import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
 import tres.domain.UserCategory;
 import tres.domain.Users;
+import tres.vfp.dto.MenuGroupDto;
+import tres.vfp.dto.UserDto;
 
 
 @SuppressWarnings("unused")
@@ -46,8 +48,10 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 	private String menuGroupName;
 	private String menuGroupCode;
 	private UserCategory userCategory;
-	private Users userSession;
+	private Users userSessions;
 	private MenuGroup menuGroup;
+	private MenuGroup menuGroupSession;
+	private MenuGroupDto menuGroupDto;
 	private int categoryId;
 	private int menuGroupId;
 	
@@ -67,6 +71,8 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 	private List<MenuAssignment> menuAssignmentDetails = new ArrayList<MenuAssignment>();
 	private List<ListOfMenu> listOfMenuDetails = new ArrayList<ListOfMenu>();
 	
+	private List<MenuGroupDto> menuGroupDtoDetails = new ArrayList<MenuGroupDto>();
+	
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserCategoryImpl userCategoryImpl = new UserCategoryImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
@@ -78,13 +84,70 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
-		userSession = (Users) session.getAttribute("userSession");
-
+		userSessions = (Users) session.getAttribute("userSession");
+		
+		menuGroupSession=(MenuGroup)session.getAttribute("menuGroupSession");
+		
 		if (menuGroup == null) {
 			menuGroup = new MenuGroup();
 		}
 		if (menuAssignment == null) {
 			menuAssignment = new MenuAssignment();
+		}
+		if (userCategory == null) {
+			userCategory = new UserCategory();
+
+		}
+		if (menuGroupDto == null) {
+			menuGroupDto = new MenuGroupDto();
+		}
+		
+		try {
+			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
+			//MenuGroup menu = new MenuGroup();
+			//menu = new MenuGroup();
+//			MenuGroup menu = menuGroupImpl.getMenuGroupById(menuGroupSession.getMenuGroupId(), "menuGroupId");
+//			
+//			MenuGroupDto menuGroupDto = new MenuGroupDto();
+//			menuGroupDto.setEditable(false);
+//			menuGroupDto.setMenuGroupName(menu.getMenuGroupName());
+//			menuGroupDto.setDefaultGroupMenu(menu.getDefaulGrouptMenu());
+//			menuGroupDto.setUserCategory(menu.getUserCategory());
+//			menuGroupDtoDetails.add(menuGroupDto);
+//			// below list concern list of all users by changing their status
+			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);
+			
+			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
+			
+			for (MenuGroup menuGroups : menuGroupDetails) {
+				MenuGroupDto menuGroupDtos = new MenuGroupDto();
+				menuGroupDtos.setMenuGroupId(menuGroups.getMenuGroupId());
+				menuGroupDtos.setEditable(false);
+				menuGroupDtos.setMenuGroupName(menuGroups.getMenuGroupName());
+				menuGroupDtos.setDefaultGroupMenu(menuGroups.getDefaulGrouptMenu());
+				menuGroupDtos.setUserCategory(menuGroups.getUserCategory());
+				menuGroupDtos.setGenericStatus(menuGroups.getGenericStatus());
+				if (menuGroups.getGenericStatus().equals(ACTIVE)) {
+					menuGroupDtos.setAction(DESACTIVE);
+
+				} else if (menuGroups.getGenericStatus().equals(DESACTIVE)) {
+
+					menuGroupDtos.setAction(ACTIVE);
+					menuGroups.setGenericStatus(DESACTIVE);
+
+				} else {
+					menuGroupDtos.setAction(DESACTIVE);
+					menuGroups.setGenericStatus(ACTIVE);
+
+				}
+				menuGroupDtoDetails.add(menuGroupDtos);
+
+			}
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 		}
 		
 		try {
@@ -114,11 +177,11 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 			menuGroupImpl.getModelWithMyHQL(new String[] { "groupMenuCode" },
 						new Object[] {menuGroup.getGroupMenuCode() }, "from MenuGroup ");
 			
-					menuGroup.setCreatedBy(userSession.getViewId());
+					menuGroup.setCreatedBy(userSessions.getViewId());
 					menuGroup.setCrtdDtTime(timestamp);
 					menuGroup.setCreationDate(timestamp);
 					menuGroup.setGenericStatus(ACTIVE);
-					menuGroup.setUpdatedBy(userSession.getViewId());
+					menuGroup.setUpdatedBy(userSessions.getViewId());
 					menuGroup.setCrtdDtTime(timestamp);
 					menuGroup.setUpDtTime(timestamp);
 				
@@ -149,10 +212,10 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		System.out.print("+++++++++++++++++:" + url + "/");
 		try {
 			
-					menuAssignment.setCreatedBy(userSession.getViewId());
+					menuAssignment.setCreatedBy(userSessions.getViewId());
 					menuAssignment.setCrtdDtTime(timestamp);
 					menuAssignment.setGenericStatus(ACTIVE);
-					menuAssignment.setUpdatedBy(userSession.getViewId());
+					menuAssignment.setUpdatedBy(userSessions.getViewId());
 					menuAssignment.setCrtdDtTime(timestamp);
 					menuAssignment.setUpDtTime(timestamp);
 					menuAssignment.setListOfMenu(listOfMenuImpl.getListOfMenuById( listOfMenuId, "menuId"));
@@ -176,6 +239,101 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		}
 		return "";
 	}
+	
+	public String cancel(MenuGroupDto menu) {
+		menu.setEditable(false);
+		// usersImpl.UpdateUsers(user);
+		return null;
+
+	}
+
+	public String editAction(MenuGroupDto menu) {
+
+		menu.setEditable(true);
+		// usersImpl.UpdateUsers(user);
+		return null;
+	}
+	
+	public String saveAction(MenuGroupDto menu) {
+		LOGGER.info("update  saveAction method");
+		/* System.out.println("**************update  saveAction method"); */
+		// get all existing value but set "editable" to false
+
+		if (menu != null) {
+
+			MenuGroup menus = new MenuGroup();
+			menus = new MenuGroup();
+			menus = menuGroupImpl.getMenuGroupById(menu.getMenuGroupId(), "menuGroupId");
+
+			LOGGER.info("here update sart for " + menus + " menuGroupId " + menus.getMenuGroupId());
+			System.out.println("++++++++++++++++++++++++++here update sart for " + menus + " menuGroupId " + menus.getMenuGroupId());
+			menu.setEditable(false);
+			menus.setMenuGroupName(menu.getMenuGroupName());
+			menus.setDefaulGrouptMenu(menu.getDefaultGroupMenu());
+			menus.setUserCategory(menu.getUserCategory());
+			menuGroupImpl.updateMenuGroup(menus);
+
+			// return to current page
+			return null;
+		} else {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userprofile"));
+			return null;
+		}
+
+	}
+	
+	public String newAction(MenuGroupDto menu) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		MenuGroup menus = new MenuGroup();
+		menus = new MenuGroup();
+		menus = menuGroupImpl.getMenuGroupById(menu.getMenuGroupId(), "menuGroupId");
+
+		LOGGER.info("here update sart for " + menus + " menuGroupId " + menus.getMenuGroupId());
+
+		menu.setEditable(false);
+		menus.setMenuGroupName(menu.getMenuGroupName());
+		menus.setDefaulGrouptMenu(menu.getDefaultGroupMenu());
+		menus.setUserCategory(menu.getUserCategory());
+		menuGroupImpl.updateMenuGroup(menus);
+
+		// return to current page
+		return "/menu/ViewMenuGroup.xhtml?faces-redirect=true";
+
+	}
+	
+	public String updateStatus(MenuGroupDto menu) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		MenuGroup menus = new MenuGroup();
+		menus = new MenuGroup();
+		menus = menuGroupImpl.getMenuGroupById(menu.getMenuGroupId(), "menuGroupId");
+
+		LOGGER.info("here update sart for " + menus + " menuGroupId " + menus.getMenuGroupId());
+
+		if (menu.getGenericStatus().equals(ACTIVE)) {
+
+			menus.setGenericStatus(DESACTIVE);
+			menuGroupImpl.updateMenuGroup(menus);
+		} else {
+
+			menus.setGenericStatus(ACTIVE);
+		}
+		menuGroupImpl.updateMenuGroup(menus);
+
+		// return to current page
+		return "/menu/ViewMenuGroup.xhtml?faces-redirect=true";
+
+	}
+	
+	public String addNewMenuGroup() {
+
+		return "/menu/menuGroupForm.xhtml?faces-redirect=true";
+
+	}
+	
 	public void clearUserFuileds() {
 
 		menuGroup = new MenuGroup();
@@ -269,12 +427,12 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		CLASSNAME = cLASSNAME;
 	}
 
-	public Users getUserSession() {
-		return userSession;
+	public Users getuserSessions() {
+		return userSessions;
 	}
 
-	public void setUserSession(Users userSession) {
-		this.userSession = userSession;
+	public void setuserSessions(Users userSessions) {
+		this.userSessions = userSessions;
 	}
 
 	public MenuGroup getMenuGroup() {
@@ -403,6 +561,30 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 
 	public void setMenuGroupId(int menuGroupId) {
 		this.menuGroupId = menuGroupId;
+	}
+
+	public List<MenuGroupDto> getMenuGroupDtoDetails() {
+		return menuGroupDtoDetails;
+	}
+
+	public void setMenuGroupDtoDetails(List<MenuGroupDto> menuGroupDtoDetails) {
+		this.menuGroupDtoDetails = menuGroupDtoDetails;
+	}
+
+	public MenuGroup getMenuGroupSession() {
+		return menuGroupSession;
+	}
+
+	public void setMenuGroupSession(MenuGroup menuGroupSession) {
+		this.menuGroupSession = menuGroupSession;
+	}
+
+	public MenuGroupDto getMenuGroupDto() {
+		return menuGroupDto;
+	}
+
+	public void setMenuGroupDto(MenuGroupDto menuGroupDto) {
+		this.menuGroupDto = menuGroupDto;
 	}
 	
 	
