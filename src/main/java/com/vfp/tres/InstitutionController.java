@@ -2,6 +2,7 @@ package com.vfp.tres;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.hibernate.HibernateException;
 
 import tres.common.DbConstant;
+import tres.common.Formating;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SendEmail;
@@ -160,6 +162,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+
 		try
 
 		{
@@ -368,6 +371,54 @@ public class InstitutionController implements Serializable, DbConstant {
 		insti.setInstitutionName(dto.getInstitutionName());
 		institutionImpl.UpdateInstitution(insti);
 		return null;
+	}
+
+	public String institutionViewBydate() {
+		try {
+			if (to.after(from)) {
+				try
+
+				{
+					SimpleDateFormat dft = new SimpleDateFormat("MM/dd/yyyy");
+					requests = requestImpl.getListByDateBewteen("instRegReqstDate",
+							Formating.getFormtDateReturnMysqlFormat(dft.format(from)),
+							Formating.getFormtDateReturnMysqlFormat(dft.format(to)));
+					// requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
+					// from, to,
+					// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+					// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
+					for (InstitutionRegistrationRequest inst : requests) {
+						InstitutionDto institutionDto = new InstitutionDto();
+						institutionDto.setEditable(false);
+						institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
+						institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
+						institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
+						institutionDto.setInstitution(inst.getInstitution());
+						institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
+						institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
+						institutionDtos.add(institutionDto);
+					}
+					return "ViewInstitutionProfile";
+				} catch (Exception e) {
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+					LOGGER.info(e.getMessage());
+					e.printStackTrace();
+					return "";
+				}
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
+				return "";
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	public String getCLASSNAME() {
