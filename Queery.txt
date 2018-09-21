@@ -207,3 +207,11 @@ update listofmenu set description='Instituion Profiles',urlname='/menu/ViewInsti
 update listofmenu set description='User contacts' where menuid=5;
 update listofmenu set description='User category' where menuid=4;
 =======================@Emmanuel===================================
+
+
+update listofmenu set description='Manage MenuGroup',urlname='/menu/ViewMenuGroup.xhtml' where menuid=21;
+
+update listofmenu set description='Manage List of Menu',urlname='/menu/ViewListOfMenu.xhtml' where menuid=22;
+
+=======================================By Emile 21/09/2018========================================================================
+
