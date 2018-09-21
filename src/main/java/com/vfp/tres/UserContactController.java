@@ -151,7 +151,7 @@ public class UserContactController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
 			LOGGER.info(CLASSNAME + ":::Contact Details is saved");
 			clearContactFuileds();
-			return "";
+			return "/menu/ViewUsersContacts.xhtml?faces-redirect=true";
 		} catch (HibernateException e) {
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
 			JSFMessagers.resetMessages();

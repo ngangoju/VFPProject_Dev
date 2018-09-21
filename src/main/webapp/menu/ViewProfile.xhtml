@@ -102,25 +102,54 @@
 
 									</tr>
 									<tr>
-										<td>FirstName:</td>
+										<td><br />FirstName:</td>
 										<td><h:inputText value="#{user.fname}" size="20"
-												rendered="#{user.editable}" id="d" /> <h:outputText
-												value="#{user.fname}" rendered="#{not user.editable}" /></td>
+												required="true" rendered="#{user.editable}" id="fname"
+												requiredMessage="#{msg['requiered.fname.message']}"
+												converterMessage="#{msg['error.enter.invalid.fname']}"
+												validatorMessage="#{msg['error.enter.invalid.fname']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+												<f:validateLength maximum="100"></f:validateLength>
 
-
+											</h:inputText> <br /> <h:message errorClass="errorMsg1" for="fname"
+												style="font-size:12px;font-family:Time New Roman;"></h:message>
+											<h:outputText value="#{user.fname}"
+												rendered="#{not user.editable}" /></td>
 									</tr>
 									<tr>
-										<td>LastName:</td>
+										<td><br />LastName:</td>
 										<td><h:inputText value="#{user.lname}" size="20"
-												rendered="#{user.editable}" /> <h:outputText
-												value="#{user.lname}" rendered="#{not user.editable}" /></td>
-
+												id="lname" rendered="#{user.editable}" required="true"
+												requiredMessage="#{msg['requiered.lname.message']}"
+												converterMessage="#{msg['error.enter.invalid.lname']}"
+												validatorMessage="#{msg['error.enter.invalid.lname']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+												<f:validateLength maximum="100"></f:validateLength>
+											</h:inputText><br />
+										<h:message errorClass="errorMsg1" for="lname"
+												style="font-size:12px;font-family:Time New Roman;"></h:message>
+											<h:outputText value="#{user.lname}"
+												rendered="#{not user.editable}" /></td>
 									</tr>
 									<tr>
-										<td>Address:</td>
-										<td><h:inputText value="#{user.address}" size="20"
-												rendered="#{user.editable}" /> <h:outputText
-												value="#{user.address}" rendered="#{not user.editable}" /></td>
+										<td><br/>Address:</td>
+										<td><h:inputText value="#{user.address}" size="20" id="addr"
+												rendered="#{user.editable}" required="true"
+												requiredMessage="#{msg['requiered.address.message']}"
+												converterMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
+												validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+												<f:validateLength maximum="100"></f:validateLength>
+												</h:inputText>
+												<br/>
+												<h:message errorClass="errorMsg1" for="addr"
+												style="font-size:12px;font-family:Time New Roman;"></h:message>												
+												 <h:outputText value="#{user.address}" rendered="#{not user.editable}" />
+												
+												</td>
 
 									</tr>
 

@@ -202,3 +202,8 @@ insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,up
 
 update listofmenu set description='Instituion Profiles',urlname='/menu/ViewInstitutionProfile.xhtml' where menuid=18;
 =======================================@james========================================================================
+
+
+update listofmenu set description='User contacts' where menuid=5;
+update listofmenu set description='User category' where menuid=4;
+=======================@Emmanuel===================================

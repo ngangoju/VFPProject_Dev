@@ -277,6 +277,27 @@ public class UserAccountController implements Serializable, DbConstant {
 		String url = getContextPath();
 		// System.out.print("+++++++++++++++++:" + url + "/");
 		try {
+			try {
+				Users user= new Users();
+				user= usersImpl.getModelWithMyHQL(new String[] {"viewId"}, new Object[] { users.getViewId() },
+						"from Users");
+				if(null!=user) {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.viewId"));
+					LOGGER.info(
+							CLASSNAME + "sivaserside validation :: User Name already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
 
 			if (password.equalsIgnoreCase(confirmPswd)) {
 				users.setImage("us.png");
@@ -297,7 +318,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
 				LOGGER.info(CLASSNAME + ":::User Details is saved");
 				clearUserFuileds();
-				return "";
+				return "/menu/ViewUsersList.xhtml?faces-redirect=true";
 
 			} else {
 				JSFMessagers.resetMessages();
@@ -356,7 +377,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			us = usersImpl.gettUserById(user.getUserId(), "userId");
 
 			LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
-			System.out.println("++++++++++++++++++++++++++here update sart for " + us + " useriD " + us.getUserId());
+			LOGGER.info("++++++++++++++++++++++++++here update sart for " + us + " useriD " + us.getUserId());
 			user.setEditable(false);
 			us.setFname(user.getFname());
 			us.setLname(user.getLname());

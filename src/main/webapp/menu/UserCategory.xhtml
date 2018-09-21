@@ -63,8 +63,8 @@
 
 						<!-- Success and error message from the server -->
 
-						<span style="color: #737373; font-size: 10pt;">Fields marked
-							with an asterisk <span style="color: red">(*)</span> are
+						<span style="color: #737373; font-size: 10pt;">Fields
+							marked with an asterisk <span style="color: red">(*)</span> are
 							mandatory.
 						</span>
 
@@ -80,12 +80,15 @@
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
 								<h:inputText
-									value="#{userCategoryController.userCategory. usercategoryName}"
+									value="#{userCategoryController.userCategory.usercategoryName}"
 									class="form-control" id="catname" required="true"
-									requiredMessage="#{msg['requiered.categoryname.message']}" />
-
-
-
+									requiredMessage="#{msg['requiered.categoryname.message']}" converterMessage="#{msg['error.enter.invalid.catname']}"
+								validatorMessage="#{msg['error.enter.invalid.catname']}">
+									<f:validateRegex
+									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+								<f:validateLength maximum="100"></f:validateLength>
+									
+								</h:inputText>
 							</div>
 							<h:message errorClass="errorMsg1" for="catname"></h:message>
 						</div>
@@ -95,9 +98,9 @@
 							<div class="col-sm-4">
 								<h:commandButton class="btn btn-info btn-xlg btn-block"
 									action="#{userCategoryController.SaveUserCategory()}"
-									value="#{msg['label.subimit.message.submit']}" >
-									<f:ajax render="@form" execute="@form"  onevent="showProgress"/>
-									</h:commandButton>
+									value="#{msg['label.subimit.message.submit']}">
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandButton>
 							</div>
 							<span class="text-danger" id="customeordererror"></span>
 						</div>

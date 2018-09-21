@@ -12,31 +12,43 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<h:panelGroup id="userConatactPanel" style="font-family:Times New Roman">
+			<h:panelGroup id="userConatactPanel"
+				style="font-family:Times New Roman">
 				<h:form>
 					<p:outputPanel>
 						<h:commandLink style="color:white;"
 							class="btn btn-success 	glyphicon glyphicon-user"
-							value=" Add New Category" action="#{userCategoryController.addNewCategory()}" />
+							value=" Add New Category"
+							action="#{userCategoryController.addNewCategory()}" />
 
 					</p:outputPanel>
 					<p:dataTable value="#{userCategoryController.categoryDtoDetails}"
 						var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
 						sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}"
-						style="width:80%; margin-top:10px;">
-						<p:column headerText="CategoryNo">
+						style="width:70%; margin-top:10px;">
+						<p:column headerText="No" style="width:10%;">
 
 							<h:outputText value="#{row+1}" />
 						</p:column>
-						<p:column headerText="CategoryName">
+						<p:column headerText="CategoryName" style="width:35%;">
 
 							<h:inputText value="#{cat.usercategoryName}" size="20"
-								rendered="#{cat.editable}" />
+								rendered="#{cat.editable}" required="true" id="catname"
+								requiredMessage="#{msg['requiered.categoryname.message']}"
+								converterMessage="#{msg['error.enter.invalid.catname']}"
+								validatorMessage="#{msg['error.enter.invalid.catname']}">
+								<f:validateRegex
+									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+								<f:validateLength maximum="100"></f:validateLength>
 
+							</h:inputText>
+							<br/><h:message errorClass="errorMsg1" for="catname"
+								style="font-size:12px;font-family:Time New Roman;"></h:message>
 							<h:outputText value="#{cat.usercategoryName}"
 								rendered="#{not cat.editable}" />
+
 						</p:column>
-						<p:column headerText="Action">
+						<p:column headerText="Action" style="width:30%;">
 							<h:commandLink style="color:white"
 								class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
 								action="#{userCategoryController.editAction(cat)}"
