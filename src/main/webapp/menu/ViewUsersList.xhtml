@@ -22,7 +22,8 @@
 					<p:outputPanel>
 						<h:commandLink style="color:white;float:left;"
 							class="btn btn-success 	glyphicon glyphicon-user"
-							value=" Add New User" action="#{userAccountController.addNewUser()}" />
+							value=" Add New User"
+							action="#{userAccountController.addNewUser()}" />
 
 					</p:outputPanel>
 					<p:dataTable value="#{userAccountController.userDtosDetails}"
@@ -41,22 +42,39 @@
 
 						<p:column headerText="fname">
 
-							<h:inputText value="#{user.fname}" size="10"
-								rendered="#{user.editable}" />
+							<h:inputText value="#{user.fname}" size="10" id="fname"
+								rendered="#{user.editable}" required="true"
+								requiredMessage="#{msg['requiered.fname.message']}"
+								converterMessage="#{msg['error.enter.invalid.fname']}"
+								validatorMessage="#{msg['error.enter.invalid.fname']}">
+								<f:validateRegex
+									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+								<f:validateLength maximum="100"></f:validateLength>
+							</h:inputText>
 
 							<h:outputText value="#{user.fname}"
 								rendered="#{not user.editable}" />
+							<h:message errorClass="errorMsg1" for="fname"
+								style="font-size:12px;font-family:Time New Roman;"></h:message>
 						</p:column>
 
 
 						<p:column headerText="Last Name">
 
 
-							<h:inputText value="#{user.lname}" size="10"
-								rendered="#{user.editable}" />
-
+							<h:inputText value="#{user.lname}" size="10" id="lname"
+								rendered="#{user.editable}" required="true"
+								requiredMessage="#{msg['requiered.lname.message']}"
+								converterMessage="#{msg['error.enter.invalid.lname']}"
+								validatorMessage="#{msg['error.enter.invalid.lname']}">
+								<f:validateRegex
+									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+								<f:validateLength maximum="100"></f:validateLength>
+							</h:inputText>
 							<h:outputText value="#{user.lname}"
 								rendered="#{not user.editable}" />
+							<h:message errorClass="errorMsg1" for="lname"
+								style="font-size:12px;font-family:Time New Roman;"></h:message>
 
 						</p:column>
 
@@ -82,16 +100,19 @@
 
 							<h:outputText value="#{user.userCategory.usercategoryName}"
 								rendered="#{not user.editable}" />
-
+							<h:message errorClass="errorMsg1" for="cat"
+								style="font-size:12px;font-family:Time New Roman;"></h:message>
 						</p:column>
 						<p:column headerText="User Status">
 							<h:outputText value="#{user.status}" />
 
 						</p:column>
 						<p:column headerText=" Change Status">
-							
+
 							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{user.action}" action="#{userAccountController.updateStatus(user)}" />
+								class="btn btn-success 	glyphicon glyphicon-refresh"
+								value="#{user.action}"
+								action="#{userAccountController.updateStatus(user)}" />
 						</p:column>
 						<p:column headerText="Action">
 

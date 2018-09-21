@@ -61,13 +61,13 @@ public class UserCategoryController implements Serializable, DbConstant {
 
 		try {
 			categoryDetails = userCatImpl.getListWithHQL(SELECT_USERCATEGORY);
-				for(UserCategory userCat:categoryDetails) {
-					UserCategoryDto catDto= new UserCategoryDto();
-					catDto.setEditable(false);
-					catDto.setUserCatid(userCat.getUserCatid());
-					catDto.setUsercategoryName(userCat.getUsercategoryName());
-					categoryDtoDetails.add(catDto);
-				}
+			for (UserCategory userCat : categoryDetails) {
+				UserCategoryDto catDto = new UserCategoryDto();
+				catDto.setEditable(false);
+				catDto.setUserCatid(userCat.getUserCatid());
+				catDto.setUsercategoryName(userCat.getUsercategoryName());
+				categoryDtoDetails.add(catDto);
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -80,13 +80,35 @@ public class UserCategoryController implements Serializable, DbConstant {
 	public String SaveUserCategory() {
 
 		try {
+			try {
+				UserCategory userCat= new UserCategory();
+				userCat= userCatImpl.getModelWithMyHQL(new String[] {"usercategoryName"}, new Object[] { userCategory.getUsercategoryName() },
+						"from UserCategory");
+				if(null!=userCat) {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.categoryname"));
+					LOGGER.info(
+							CLASSNAME + "sivaserside validation ::  Category Name already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+
 			userCatImpl.saveUsercategory(userCategory);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.usercategory"));
 			LOGGER.info(CLASSNAME + "::UserCategory Details is saved");
 			clearCategoryFuileds();
-			return "";
+			return "/menu/ListOfUserCategory.xhtml?faces-redirect=true";
 		} catch (HibernateException e) {
 			// TODO: handle exception
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
@@ -103,36 +125,40 @@ public class UserCategoryController implements Serializable, DbConstant {
 		userCategory = new UserCategory();
 		categoryDetails = null;
 	}
+
 	public String saveAction(UserCategoryDto cat) {
 		LOGGER.info("update  saveAction method");
-		//get all existing value but set "editable" to false 
-		
-		LOGGER.info("UserCat:++++++++++++++++++++++++++"+cat.getUserCatid());
-		UserCategory usercat= new  UserCategory();
-		usercat=new UserCategory();
-		usercat=userCatImpl.getUserCategoryById(cat.getUserCatid(),"userCatid" );
-		
-			LOGGER.info("here update sart for "+usercat +" useriD "+usercat.getUserCatid());
+		// get all existing value but set "editable" to false
 
-			cat.setEditable(false);
-			usercat.setUsercategoryName(cat.getUsercategoryName());
-		
-			userCatImpl.UpdateUsercategory(usercat);
-			
-		//return to current page
+		LOGGER.info("UserCat:++++++++++++++++++++++++++" + cat.getUserCatid());
+		UserCategory usercat = new UserCategory();
+		usercat = new UserCategory();
+		usercat = userCatImpl.getUserCategoryById(cat.getUserCatid(), "userCatid");
+
+		LOGGER.info("here update sart for " + usercat + " useriD " + usercat.getUserCatid());
+
+		cat.setEditable(false);
+		usercat.setUsercategoryName(cat.getUsercategoryName());
+
+		userCatImpl.UpdateUsercategory(usercat);
+
+		// return to current page
 		return "/menu/ListOfUserCategory.xhtml?faces-redirect=true";
-		
+
 	}
+
 	public String addNewCategory() {
-		
-		return"/menu/UserCategory.xhtml?faces-redirect=true";
+
+		return "/menu/UserCategory.xhtml?faces-redirect=true";
 	}
+
 	public String cancel(UserCategoryDto cat) {
 		cat.setEditable(false);
-		return null;	
+		return null;
 	}
+
 	public String editAction(UserCategoryDto cat) {
-	    
+
 		cat.setEditable(true);
 		return null;
 	}

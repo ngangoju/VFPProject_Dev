@@ -12,45 +12,68 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<h:panelGroup id="userConatactPanel" style="font-family:Times New Roman">
+			<h:panelGroup id="userConatactPanel"
+				style="font-family:Times New Roman">
 				<h:form>
 					<p:outputPanel>
 						<h:commandLink style="color:white;"
 							class="btn btn-success 	glyphicon glyphicon-plus-sign"
-							value=" Add New Contact" action="#{userContactController.addNewContact()}" />
+							value=" Add New Contact"
+							action="#{userContactController.addNewContact()}" />
 
 					</p:outputPanel>
 					<p:dataTable value="#{userContactController.contactDtoDetails}"
 						var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
 						sortOrder="ASCENDING" rowKey="#{cont.contactDetails}"
 						style="width:100%; margin-top:10px;">
-						<p:column headerText="ContactNo">
+						<p:column headerText="No" style="width:5%;">
 
 							<h:outputText value="#{row+1}" />
 						</p:column>
-						<p:column headerText="ContactDetails">
+						<p:column headerText="Contact Details">
 
 							<h:inputText value="#{cont.contactDetails}" size="15"
-								rendered="#{cont.editable}" />
-
+								id="contDetails" rendered="#{cont.editable}" required="true"
+								converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
+								validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
+								requiredMessage="#{msg['requiered.contactDetails.message']}">
+								<f:validateRegex
+									pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+								<f:validateLength maximum="100" />
+							</h:inputText>
+							<h:message errorClass="errorMsg1" for="contDetails"
+								style="font-size:12px;font-family:Time New Roman;"></h:message>
 							<h:outputText value="#{cont.contactDetails}"
 								rendered="#{not cont.editable}" />
 						</p:column>
 						<p:column headerText="Email">
 
 							<h:inputText value="#{cont.email}" size="15"
-								rendered="#{cont.editable}" />
+								rendered="#{cont.editable}" id="email" required="true"
+								validatorMessage="#{msg['error.enter.invalid.email']}"
+								converterMessage="#{msg['error.enter.invalid.email']}"
+								requiredMessage="#{msg['error.enter.required.email']}">
+								<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+								<f:validateLength maximum="100" />
+							</h:inputText>
+							<h:message errorClass="errorMsg1" for="email"
+								style="font-size:12px;font-family:Time New Roman;"></h:message>
 
 							<h:outputText value="#{cont.email}"
 								rendered="#{not cont.editable}" />
 						</p:column>
 						<p:column headerText="Phone">
 
-							<h:inputText value="#{cont.phone}" size="15"
-								rendered="#{cont.editable}" />
-
-							<h:outputText value="#{cont.phone}"
-								rendered="#{not cont.editable}" />
+							<h:inputText value="#{cont.phone}" size="15" id="phone"
+								rendered="#{cont.editable}" required="true"
+								converterMessage="#{msg['error.enter.invalid.phone']}"
+								requiredMessage="#{msg['requiered.phone.message']}"
+								validatorMessage="#{msg['error.enter.invalid.phone']}">
+								<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+								<f:validateLength maximum="25" />
+							</h:inputText>
+							<h:message errorClass="errorMsg1" for="phone" style="font-size:12px;font-family:Time New Roman;"></h:message>
+							<h:outputText value="#{cont.phone}" rendered="#{not cont.editable}" />
 						</p:column>
 						<p:column headerText="User Names">
 
@@ -63,7 +86,8 @@
 								rendered="#{not cont.editable}" />
 							<h:commandLink style="margin-left:2px;color:white"
 								class="btn btn-danger 	glyphicon glyphicon-remove"
-								value="Cancel" action="#{userContactController.cancelContact(cont)}"
+								value="Cancel"
+								action="#{userContactController.cancelContact(cont)}"
 								rendered="#{cont.editable}" />
 							<h:commandButton value="Save Changes" class="btn btn-primary"
 								action="#{userContactController.saveContactAction(cont)}"

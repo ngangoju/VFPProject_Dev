@@ -50,7 +50,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	private MenuGroup menuGroup;
 	private ListOfMenu listOfMenu;
 	private ListOfMenuDto listOfMenuDto;
-	private Users userSession;
+	private Users userSessions;
 	private Users users;
 	private int groupId;
 	
@@ -69,13 +69,16 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
-		userSession = (Users) session.getAttribute("userSession");
+		userSessions = (Users) session.getAttribute("userSession");
 
 		if (listOfMenu == null) {
 			listOfMenu = new ListOfMenu();
 		}
 		if (listOfMenuDto == null) {
 			listOfMenuDto = new ListOfMenuDto();
+		}
+		if (menuGroup == null) {
+			menuGroup = new MenuGroup();
 		}
 		
 		try {
@@ -125,11 +128,11 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		System.out.print("+++++++++++++++++:" + url + "/");
 		try {
 			
-					listOfMenu.setCreatedBy(userSession.getViewId());
+					listOfMenu.setCreatedBy(userSessions.getViewId());
 					listOfMenu.setCrtdDtTime(timestamp);
 					listOfMenu.setCreationDate(timestamp);
 					listOfMenu.setGenericStatus(ACTIVE);
-					listOfMenu.setUpdatedBy(userSession.getViewId());
+					listOfMenu.setUpdatedBy(userSessions.getViewId());
 					listOfMenu.setCrtdDtTime(timestamp);
 					listOfMenu.setUpDtTime(timestamp);
 					listOfMenu.setMenuGroup(menuGroupImpl.getMenuGroupById(groupId, "menuGroupId"));
@@ -313,12 +316,12 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		this.listOfMenu = listOfMenu;
 	}
 
-	public Users getUserSession() {
-		return userSession;
+	public Users getuserSessions() {
+		return userSessions;
 	}
 
-	public void setUserSession(Users userSession) {
-		this.userSession = userSession;
+	public void setuserSessions(Users userSessions) {
+		this.userSessions = userSessions;
 	}
 
 	public int getGroupId() {

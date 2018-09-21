@@ -29,26 +29,31 @@
 
 			<h:form>
 				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
-					<h:commandLink class="btn btn-primary" action="#{activityController.newActivity()}">
-						<i class="glyphicon glyphicon-plus-sign"></i>#{msg['form.activity.new']}
+					<h:commandLink class="btn btn-primary"
+						action="#{activityController.newActivity()}">
+						<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']}
 					</h:commandLink>
 				</div>
 				<br />
 				<br />
 				<br />
-				<p:dataTable value="#{activityController.activityDtoDetails}"
-					var="act">
+				<p:dataTable id="example" class="display" cellspacing="0"
+					value="#{activityController.activityDtoDetails}" var="act">
 
 
-					<p:column headerText="#{msg['form.activity.description']}" id="descriptionId">
+					<p:column headerText="#{msg['form.activity.description']}">
 
-						<h:inputText value="#{act.description}" styleClass="form-control"
-							size="10" rendered="#{act.editable}" />
+						<h:inputTextarea id="descriptionId" value="#{act.description}"
+							styleClass="form-control" size="10" rendered="#{act.editable}"
+							maxlength="250" required="true"
+							requiredMessage="#{msg['description.required.message']}"
+							validatorMessage="#{msg['error.address.maxlength']}">
+							<f:validateLength maximum="150" />
+						</h:inputTextarea>
+						<h:message for="descriptionId" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.description}"
-							rendered="#{not act.editable}" >
-							<h:message for="descriptionId" styleClass="help-block"></h:message>
-							</h:outputText>
+							rendered="#{not act.editable}" />
 					</p:column>
 
 
@@ -68,6 +73,7 @@
 								listener="#{activityController.changeSelectBox('Junior')}"
 								render="ReasonPanel" />
 						</h:selectOneMenu>
+						<h:message for="categoryId" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.status}" rendered="#{not act.editable}" />
 
@@ -88,6 +94,7 @@
 								listener="#{activityController.changeSelectBox('Junior')}"
 								render="ReasonPanel" />
 						</h:selectOneMenu>
+						<h:message for="weightId" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.weight}" rendered="#{not act.editable}" />
 
@@ -104,14 +111,14 @@
 
 
 						<h:commandLink style="color:white"
-							class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+							class="btn btn-success 	glyphicon glyphicon-edit" value=" Edit"
 							action="#{activityController.editAction(act)}"
 							rendered="#{not act.editable}" />
 						<h:commandLink style="margin-left:2px;color:white"
-							class="btn btn-danger 	glyphicon glyphicon-remove" value="Cancel"
-							action="#{activityController.cancel(act)}"
+							class="btn btn-danger 	glyphicon glyphicon-remove"
+							value=" Cancel" action="#{activityController.cancel(act)}"
 							rendered="#{act.editable}" />
-						<h:commandButton value="Save Changes" class="btn btn-primary"
+						<h:commandButton value=" Save Changes" class="btn btn-primary"
 							action="#{activityController.saveAction(act)}"
 							rendered="#{act.editable}" />
 					</p:column>
