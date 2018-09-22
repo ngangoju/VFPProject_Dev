@@ -87,21 +87,20 @@
 							<f:validateLength maximum="35" />
 						</h:inputText>
 						<script>
-											$(function() {
-												$(
-														'input[id*="from_start_date_id"]')
-														.datepicker(
-																{
-																	changeMonth : true,
-																	changeYear : true,
-																	//maxDate: 0,
-																	minDate : 0,
-																	dateFormat : "dd/mm/yy",
-																	yearRange : "-100:+0",
-																	buttonImage : "/resources/image/calendar1.png"
-																});
-											});
-										</script>
+							$(function() {
+								$('input[id*="from_start_date_id"]')
+										.datepicker(
+												{
+													changeMonth : true,
+													changeYear : true,
+													//maxDate: 0,
+													minDate : 0,
+													dateFormat : "dd/mm/yy",
+													yearRange : "-100:+0",
+													buttonImage : "/resources/image/calendar1.png"
+												});
+							});
+						</script>
 						<h:message for="from_start_date_id" styleClass="help-block"></h:message>
 						<h:outputText value="#{act.startDate}"
 							rendered="#{not act.editable}" />
@@ -112,7 +111,7 @@
 						<h:inputText locale="#{facesContext.viewRoot.locale}"
 							autocomplete="off" id="from_due_date_id"
 							binding="#{from_due_date_id}" class="form-control" escape="true"
-							value="#{taskController.task.dueDate}" maxlength="35"
+							value="#{act.dueDate}" maxlength="35"
 							required="true" rendered="#{act.editable}"
 							converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 							requiredMessage="#{msg['dueDate.required.message']}">
@@ -121,21 +120,20 @@
 							<f:validateLength maximum="35" />
 						</h:inputText>
 						<script>
-											$(function() {
-												$(
-														'input[id*="from_due_date_id"]')
-														.datepicker(
-																{
-																	changeMonth : true,
-																	changeYear : true,
-																	//maxDate: 0,
-																	minDate : 0,
-																	dateFormat : "dd/mm/yy",
-																	yearRange : "-100:+0",
-																	buttonImage : "/resources/image/calendar1.png"
-																});
-											});
-										</script>
+							$(function() {
+								$('input[id*="from_due_date_id"]')
+										.datepicker(
+												{
+													changeMonth : true,
+													changeYear : true,
+													//maxDate: 0,
+													minDate : 0,
+													dateFormat : "dd/mm/yy",
+													yearRange : "-100:+0",
+													buttonImage : "/resources/image/calendar1.png"
+												});
+							});
+						</script>
 						<h:message for="from_due_date_id" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.dueDate}"

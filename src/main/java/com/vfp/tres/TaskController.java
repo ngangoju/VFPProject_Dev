@@ -76,7 +76,7 @@ public class TaskController implements Serializable, DbConstant {
 				taskDto.setTaskName(task.getTaskName());
 				taskDto.setStartDate(task.getStartDate());
 				taskDto.setCreatedDate(task.getCrtdDtTime());
-				taskDto.setTask(task.getSubTask());
+				taskDto.setTask(task.getParentTask());
 				taskDto.setGenericstatus(task.getGenericStatus());
 				taskDto.setDueDate(task.getDueDate());
 				taskDto.setStatus(task.getGenericStatus());
@@ -100,7 +100,7 @@ public class TaskController implements Serializable, DbConstant {
 			task.setGenericStatus(ACTIVE);
 			task.setUpDtTime(timestamp);
 			task.setUpdatedBy(usersSession.getViewId());
-			task.setSubTask(taskImpl.getTaskById(taskID, "taskId"));
+			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
