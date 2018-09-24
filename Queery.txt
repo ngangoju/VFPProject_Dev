@@ -98,15 +98,12 @@ insert into  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLo
 ==================BY Emile=====================
 
 ==================@James=======================
-INSERT INTO menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
-VALUES (3, 'admin',now(), 'active', now(), now(), 'admin', now(), 'Manage Institution', 'Manage Institution', 3);
+INSERT INTO menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory) VALUES (3, 'admin',now(), 'active', now(), now(), 'admin', now(), 'Manage Institution', 'Manage Institution', 3);
 
-INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
-VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Institution profile', '/menu/institutionRegistration.xhtml', null,3, null);
+INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Institution profile', '/menu/institutionRegistration.xhtml', null,3, null);
 
-INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory)
- 
-VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 17, 3);
+INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory) VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 17, 3);
+
 =======================================================================
 
 
@@ -145,31 +142,24 @@ update menuassignment set usercategory=3 where listofmenu=5;
 
 update listofmenu set menugroup=11 where menuid=3;
 
- update listofmenu set menugroup=11 where menuid=4;
+update listofmenu set menugroup=11 where menuid=4;
 
- update listofmenu set menugroup=11 where menuid=5;
+update listofmenu set menugroup=11 where menuid=5;
 
 ==================================By Emmanuel============================================================================================
 ___________________________________@james__________________________________________
-insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw) 
-values(0,'AFR01','RWANDA','RWANDA','RWANDA');
+insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw) values(0,'AFR01','RWANDA','RWANDA','RWANDA');
 
-insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw)
- values(0,'AFR02','UGANDA','UGANDA','UGANDA');
+insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw) values(0,'AFR02','UGANDA','UGANDA','UGANDA');
 
-insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw)
- values(0,'AFR03','TANZANIA','TANZANIE','TANZANIYA');
+insert into country( countryId,code,countryName_en,countryName_fr, countryName_rw) values(0,'AFR03','TANZANIA','TANZANIE','TANZANIYA');
 _______________________________________James_________________________________________
 _______________________________________James_______________________________________
-insert into menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory)
-values(0,'admin',now(),'active',now(),now(),'admin',now(),'Institution Requests','Institution Requests',1);
+insert into menugroup (menuGroupId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, creationDate, defaulGrouptMenu, menuGroupName, userCategory) values(0,'admin',now(),'active',now(),now(),'admin',now(),'Institution Requests','Institution Requests',1);
 
-INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) 
-VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Manage request', '/menu/manageInstitutionRegistration.xhtml', null,14, null);
+INSERT INTO listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime, updatedBy, creationDate, description, urlName, listOfMenu, menuGroup, urlCode) VALUES (0, 'admin', now(), 'active',now(),now(), 'admin', now(), 'Manage request', '/menu/manageInstitutionRegistration.xhtml', null,14, null);
 
-INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory)
- 
-VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 19, 1);
+INSERT INTO menuassignment (menuAssgnId, createdBy, crtdDtTime, genericStatus, optLock, upDtTime, updatedBy, defaultMenuUrl, listOfMenu, userCategory) VALUES (0, 'admin',now(),'active',now(),now(),'admin', null, 19, 1);
 
 ========because menugroup id is auto genereted, before saving  listofmenu check primarikey of menuegroup to place it in listofmenu same on menueassignment=========
 ________________________________________@james______________________________________
@@ -182,7 +172,7 @@ insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTim
 insert into menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(28,'admin',now(),'active',now(),now(),'admin',null,20,3);
 
 ====================================By Emmanuel /12/09/2018========================================================================================================
-  update listofmenu set iconImage='glyphicon glyphicon-cog', menuColor='blue2';
+update listofmenu set iconImage='glyphicon glyphicon-cog', menuColor='blue2';
  update menugroup set iconImage='glyphicon glyphicon-menu-hamburger', menuColor='gray2';
  ========Ngabo Eric=====================
 
