@@ -48,8 +48,8 @@ public class Task extends CommonDomain implements Serializable {
 	private Date endDate;
 
 	@ManyToOne
-	@JoinColumn(name = "subTask")
-	private Task subTask;
+	@JoinColumn(name = "parentTask")
+	private Task parentTask;
 
 	@ManyToOne
 	@JoinColumn(name = "strategicPlan")
@@ -99,16 +99,16 @@ public class Task extends CommonDomain implements Serializable {
 		return strategicPlan;
 	}
 
-	public Task getSubTask() {
-		return subTask;
-	}
-
-	public void setSubTask(Task subTask) {
-		this.subTask = subTask;
-	}
-
 	public void setStrategicPlan(StrategicPlan strategicPlan) {
 		this.strategicPlan = strategicPlan;
+	}
+
+	public Task getParentTask() {
+		return parentTask;
+	}
+
+	public void setParentTask(Task parentTask) {
+		this.parentTask = parentTask;
 	}
 
 	public String getTaskName() {

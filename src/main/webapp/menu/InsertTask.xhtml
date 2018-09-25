@@ -46,6 +46,31 @@
 							<legend>#{msg['form.task.title']}</legend>
 
 
+							<h:panelGroup id="categoryPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.task.parent']}</label>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<h:selectOneMenu id="categoryId" styleClass="form-control"
+											required="false" value="#{taskController.taskID}"
+											requiredMessage="#{msg['parent.task.required']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+									<f:selectItems
+										value="#{taskController.taskDetails}" var="option"
+										itemValue="#{option.taskId}"
+										itemLabel="#{option.taskName}"
+										itemLabelEscaped="true" />
+<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
+										</h:selectOneMenu>
+									</div>
+									<h:message for="categoryId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+
 							<h:panelGroup id="surnamePanl" layout="block">
 								<div class="form-group row">
 									<label for="todate"
