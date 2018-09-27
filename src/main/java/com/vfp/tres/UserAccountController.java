@@ -109,6 +109,9 @@ public class UserAccountController implements Serializable, DbConstant {
 	BoardImpl boardImpl = new BoardImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	LoginImpl loginImpl = new LoginImpl();
+	private String choice;
+	private boolean rendered;
+	private boolean renderForeignCountry;
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -278,15 +281,14 @@ public class UserAccountController implements Serializable, DbConstant {
 		// System.out.print("+++++++++++++++++:" + url + "/");
 		try {
 			try {
-				Users user= new Users();
-				user= usersImpl.getModelWithMyHQL(new String[] {"viewId"}, new Object[] { users.getViewId() },
+				Users user = new Users();
+				user = usersImpl.getModelWithMyHQL(new String[] { "viewId" }, new Object[] { users.getViewId() },
 						"from Users");
-				if(null!=user) {
+				if (null != user) {
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.viewId"));
-					LOGGER.info(
-							CLASSNAME + "sivaserside validation :: User Name already  recorded in the system! ");
+					LOGGER.info(CLASSNAME + "sivaserside validation :: User Name already  recorded in the system! ");
 					return null;
 				}
 
@@ -307,18 +309,32 @@ public class UserAccountController implements Serializable, DbConstant {
 				users.setGenericStatus(ACTIVE);
 				users.setUpdatedBy(usersSession.getViewId());
 				users.setCrtdDtTime(timestamp);
-				users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
-				users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-				users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
-				users.setViewName(loginImpl.criptPassword(password));
-				users.setStatus(DESACTIVE);
-				usersImpl.saveUsers(users);
-				JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-				LOGGER.info(CLASSNAME + ":::User Details is saved");
-				clearUserFuileds();
-				return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+				if (choice.equalsIgnoreCase(country_rw)) {
+					users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
+					users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+					users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+					users.setViewName(loginImpl.criptPassword(password));
+					users.setStatus(DESACTIVE);
+					usersImpl.saveUsers(users);
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+					LOGGER.info(CLASSNAME + ":::User Details is saved");
+					clearUserFuileds();
+					return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+				} else {
+					users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+					users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+					users.setViewName(loginImpl.criptPassword(password));
+					users.setStatus(DESACTIVE);
+					usersImpl.saveUsers(users);
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+					LOGGER.info(CLASSNAME + ":::User Details is saved");
+					clearUserFuileds();
+					return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+				}
 
 			} else {
 				JSFMessagers.resetMessages();
@@ -442,6 +458,18 @@ public class UserAccountController implements Serializable, DbConstant {
 
 		// return to current page
 		return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+
+	}
+
+	public void updateTable() throws Exception {
+		if (choice.equalsIgnoreCase(country_rw)) {
+
+			rendered = true;
+			renderForeignCountry = true;
+		} else {
+			rendered = false;
+			renderForeignCountry = true;
+		}
 
 	}
 
@@ -827,6 +855,30 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setLoginImpl(LoginImpl loginImpl) {
 		this.loginImpl = loginImpl;
+	}
+
+	public String getChoice() {
+		return choice;
+	}
+
+	public void setChoice(String choice) {
+		this.choice = choice;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public boolean isRenderForeignCountry() {
+		return renderForeignCountry;
+	}
+
+	public void setRenderForeignCountry(boolean renderForeignCountry) {
+		this.renderForeignCountry = renderForeignCountry;
 	}
 
 }

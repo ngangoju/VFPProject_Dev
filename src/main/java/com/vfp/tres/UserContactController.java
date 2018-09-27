@@ -44,6 +44,9 @@ public class UserContactController implements Serializable, DbConstant {
 	private List<UserDto> userDtofiltered = new ArrayList<UserDto>();
 	private List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 	private List<Contact> contactDetails = new ArrayList<Contact>();
+	private String choice;
+	private boolean rendered;
+	private boolean renderForeignCountry=true;
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -103,7 +106,7 @@ public class UserContactController implements Serializable, DbConstant {
 
 	}
 
-	public String saveContact() {
+	public String saveContact() throws Exception {
 		try {
 
 			try {
@@ -143,7 +146,11 @@ public class UserContactController implements Serializable, DbConstant {
 			contact.setCrtdDtTime(timestamp);
 			contact.setGenericStatus(ACTIVE);
 			contact.setUpDtTime(timestamp);
-			contact.setUser(usersImpl.gettUserById(userIdNumber, "userId"));
+			Users user= new Users();
+			user = usersImpl.getModelWithMyHQL(new String[] { "viewId","genericstatus" }, new Object[] { choice,ACTIVE }, "from Users");
+			
+			LOGGER.info(user.getUserId() + ":::------->>>>>>User searched founded");
+			contact.setUser(usersImpl.gettUserById(user.getUserId(), "userId"));
 			contact.setUpdatedBy(usersSession.getViewId());
 			contactImpl.saveContact(contact);
 			JSFMessagers.resetMessages();
@@ -239,9 +246,31 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 
 	public String addNewContact() {
-		
-		return"/menu/UserContacts.xhtml?faces-redirect=true";
+
+		return "/menu/UserContacts.xhtml?faces-redirect=true";
 	}
+
+	public void updateTable() throws Exception {
+
+		Users user = new Users();
+		user = usersImpl.getModelWithMyHQL(new String[] { "viewId","genericstatus" }, new Object[] { choice,ACTIVE }, "from Users");
+		if (null != user) {
+			rendered = true;
+			renderForeignCountry=false;
+			JSFMessagers.resetMessages();
+			setValid(true);
+			// JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.message.viewid"));
+			LOGGER.info(CLASSNAME + "sivaserside validation :: username found in the system! ");
+		} else {
+			rendered = false;
+			renderForeignCountry=true;
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.message.viewid"));
+		}
+
+	}
+
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -360,6 +389,30 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void setContactDetails(List<Contact> contactDetails) {
 		this.contactDetails = contactDetails;
+	}
+
+	public String getChoice() {
+		return choice;
+	}
+
+	public void setChoice(String choice) {
+		this.choice = choice;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public boolean isRenderForeignCountry() {
+		return renderForeignCountry;
+	}
+
+	public void setRenderForeignCountry(boolean renderForeignCountry) {
+		this.renderForeignCountry = renderForeignCountry;
 	}
 
 }
