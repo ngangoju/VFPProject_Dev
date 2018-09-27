@@ -16,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 
 import tres.common.DbConstant;
+import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
@@ -42,7 +43,7 @@ public class FormSampleController implements Serializable, DbConstant {
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
 	
 	/*class injection*/
-	
+	GenerateNotificationTemplete gen =new GenerateNotificationTemplete();
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	MenuAssignmentImpl menuAssignmentImpl=new MenuAssignmentImpl();
@@ -76,6 +77,32 @@ public class FormSampleController implements Serializable, DbConstant {
 		
 	}
 	
+	public  void sendMailTest() {
+		/*sending content in a table example*/
+		String name="Mukamana";
+		String fname="Eric";
+		
+		String msg=  "<p>Kindly refer to the  below status.</p>"
+	      + "<table width=\"50%\" border=\"5px\">\n"
+         + "  <tbody>\n"
+         + "	<tr>\n"
+         + "      <td class=\"labelbold\">Fname</td>\n"
+         + "      <td>\n"
+         + "		  " +name+ "\n"
+         + "	  </td>\n"
+         + "    </tr>\n"
+         + "	<tr>\n"
+         + "      <td class=\"labelbold\">Lname</td>\n"
+         + "      <td>\n"
+         + "		  " +fname+ "\n"
+         + "	  </td>\n"
+      
+         + "  </tbody>\n"
+         + "</table>\n";
+		/*End send content in table sample*/
+		gen.sendEmailNotification("ngaboericngabo2@gmail.com","Ngabo Eric","Test Email",msg);
+		LOGGER.info("::: notidficatio sent   ");
+	}
 	public void saveData() {
 		LOGGER.info(CLASSNAME + "testing save methode ");
 		JSFMessagers.resetMessages();

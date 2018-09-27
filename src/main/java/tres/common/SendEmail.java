@@ -23,10 +23,10 @@ import javax.mail.internet.MimeMessage;
 
 /**
  *
- * @author RTAP4
+ * @author Ngabo
  */
 public class SendEmail {
-    	 public   void sendEmail( String toAddress,String subject, String message) throws AddressException,MessagingException {
+    	 public    void sendEmail( String toAddress,String subject, String message) throws AddressException,MessagingException {
          
 
 	        Properties properties = new Properties();
@@ -39,7 +39,7 @@ public class SendEmail {
 	        Authenticator auth = new Authenticator() {
                     @Override
 	            public PasswordAuthentication getPasswordAuthentication() {
-	                return new PasswordAuthentication("cardiovasculary5y5@gmail.com", "cardiovasculary5y5.");
+	                return new PasswordAuthentication("tresMailSender@gmail.com", "tres@2018");
 	            }
 	        };
 	 
@@ -48,7 +48,7 @@ public class SendEmail {
 	        // creates a new e-mail message
 	        Message msg = new MimeMessage(session);
 	 
-	        msg.setFrom(new InternetAddress("cardiovasculary5y5@gmail.com"));
+	        msg.setFrom(new InternetAddress("tresMailSender@gmail.com"));
 	        InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
 	        msg.setRecipients(Message.RecipientType.TO, toAddresses);
 	        msg.setSubject(subject);

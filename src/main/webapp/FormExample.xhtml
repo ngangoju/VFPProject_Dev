@@ -138,7 +138,13 @@
               
              </h:form>  
              
-              
+               <h:form>
+       <h:commandButton class="btn btn-success btn-xlg btn-small"
+			action="#{formSampleController.sendMailTest}"
+				value="Send  Email">
+			<f:ajax render="@form" execute="@form" onevent="showProgress" />
+		</h:commandButton>											
+ </h:form> 
    
 
     </div>
