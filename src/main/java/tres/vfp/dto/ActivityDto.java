@@ -18,6 +18,8 @@ public class ActivityDto implements Serializable {
 	private Date date;
 
 	private Task task;
+	
+	private String createdBy;
 
 	private String genericstatus;
 	
@@ -95,6 +97,14 @@ public class ActivityDto implements Serializable {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 	
 }

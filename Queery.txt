@@ -205,3 +205,14 @@ update listofmenu set description='Manage List of Menu',urlname='/menu/ViewListO
 
 =======================================By Emile 21/09/2018========================================================================
 
+
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('alain',md5('admin'),2,'Kigali','Alain','Muhire','us.png','offline','active',now(),'active');
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('ngenzi',md5('admin'),3,'Kigali','Bosco','Ngenzi','us.png','offline','active',now(),'active');
+insert into users(viewId,viewName,userCategory,address,fname,lname,image,loginStatus,genericStatus,crtdDtTime,status) values('alice',md5('admin'),4,'Kigali','Alice','Gihozo','us.png','offline','active',now(),'active');
+
+insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup,menuColor,iconImage) values(33,'admin',now(),'active',now(),now(),'admin',now(),'Manage Tasks','url33','/menu/ManageTask.xhtml',null,11,'purple2','glyphicon glyphicon-edit');
+insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup,menuColor,iconImage) values(35,'admin',now(),'active',now(),now(),'admin',now(),'Manage Activities','url35','/menu/ManageActivity.xhtml',null,7,'purple2','glyphicon glyphicon-edit');
+insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(30,'admin',now(),'active',now(),now(),'admin',null,33,3);
+insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(31,'admin',now(),'active',now(),now(),'admin',null,35,4);
+
+==================BY Ngango Junior=====================

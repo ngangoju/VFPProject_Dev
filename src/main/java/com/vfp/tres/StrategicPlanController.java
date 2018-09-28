@@ -65,7 +65,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		
 		try {
 			
-			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "StrategicPlan", "planId asc");
+			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "StrategicPlan", "planId asc");
 			for(StrategicPlan strategicPlan: strategicPlanDetails) {
 				StrategicPlanDto strategicPlanDto = new StrategicPlanDto();
 				strategicPlanDto.setStrategicPlanId(strategicPlan.getPlanId());
@@ -101,7 +101,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
 			LOGGER.info(CLASSNAME+":::StrategicPlan Details is saved");
-			clearContactFuileds();
+			clearPlanFuileds();
 			return"/menu/StrategicPlan.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
@@ -116,7 +116,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		
 	}
 
-private void clearContactFuileds() {
+private void clearPlanFuileds() {
 	strategicPlan=new StrategicPlan();
 	strategicPlanDetails=null;
 }
