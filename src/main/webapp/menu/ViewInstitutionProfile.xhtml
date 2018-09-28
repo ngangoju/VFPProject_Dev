@@ -14,7 +14,7 @@
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<table>
+						<table style="color:black">
 							<tr>
 								<td>
 									<div>
@@ -24,6 +24,18 @@
 										</a>
 									</div>
 								</td>
+								<td>
+									<div style="width: 600px"></div>
+								</td>
+								<td><div style="float: right;">
+										<h:inputText id="name" value="#{institutionController.key}"
+											size="30">
+											<p:ajax update="table"
+												listener="#{institutionController.searchKey()}"
+												event="keyup" />
+											<f:ajax render="table" onevent="showProgress" />
+										</h:inputText>
+									</div></td>
 							</tr>
 						</table>
 					</div>
@@ -56,7 +68,7 @@
 						</h:panelGroup>
 
 						<p:dataTable value="#{institutionController.institutionDtos}"
-							var="ls" rowIndexVar="index" style="padding-top: 2px">
+							var="ls" rowIndexVar="index" style="padding-top: 2px" id="table">
 							<p:column style="width:30px">
 								<f:facet name="header">
 									<h:outputText value="#" />
@@ -82,18 +94,6 @@
 							<p:column headerText="#{msg['institutionForm.branchof']}">
 								<h:outputText
 									value="#{ls.institution.institution.getInstitutionName()}" />
-								<!-- 								<h:panelGroup rendered="#{ls.editable}"> -->
-								<!-- 									<h:selectOneMenu class="form-control input-sm" -->
-								<!-- 										value="#{institutionController.institutionDto.institutionID}" -->
-								<!-- 										required="true" -->
-								<!-- 										requiredMessage="#{msg['institutionForm.requiered.country.message']}"> -->
-								<!-- 										<f:selectItems -->
-								<!-- 											value="#{institutionController.validInstitution}" -->
-								<!-- 											var="option" itemValue="#{option.institution.institutionId}" -->
-								<!-- 											itemLabel="#{option.institution.institutionName}" -->
-								<!-- 											itemLabelEscaped="true" /> -->
-								<!-- 									</h:selectOneMenu> -->
-								<!-- 								</h:panelGroup> -->
 
 							</p:column>
 

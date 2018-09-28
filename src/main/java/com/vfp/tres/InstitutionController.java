@@ -55,6 +55,9 @@ public class InstitutionController implements Serializable, DbConstant {
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
 	private boolean isValid;
+	private boolean nextpage = false;
+	private boolean rendered;
+	private String key;
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
@@ -171,19 +174,7 @@ public class InstitutionController implements Serializable, DbConstant {
 					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
 					"instRegReqstDate asc");
-			for (InstitutionRegistrationRequest inst : requests) {
-				InstitutionDto institutionDto = new InstitutionDto();
-				institutionDto.setEditable(false);
-				institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
-				institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
-				institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
-				institutionDto.setInstitution(inst.getInstitution());
-				institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
-				institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
-				institutionDto.setCountry(inst.getInstitution().getCountry());
-				institutionDto.setVillage(inst.getInstitution().getVillage());
-				institutionDtos.add(institutionDto);
-			}
+			institutionDtos = display(requests);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -218,6 +209,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			requestImpl.saveInstitutionRegRequest(request);
 			JSFMessagers.resetMessages();
 			setValid(true);
+			nextpage = false;
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not sent");
 			clearInstitutionFuileds();
@@ -331,29 +323,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		request = new InstitutionRegistrationRequest();
 	}
 
-	public void setInstitutionDto(InstitutionDto institutionDto) {
-		this.institutionDto = institutionDto;
-	}
-
-	public ContactImpl getContactImpl() {
-		return contactImpl;
-	}
-
-	public void setContactImpl(ContactImpl contactImpl) {
-		this.contactImpl = contactImpl;
-	}
-
-	public String cancel(InstitutionDto institutionDto) {
-		institutionDto.setEditable(true);
-		return "/menu/ViewInstitutionProfile.xhtml";
-
-	}
-
-	public String editAction(InstitutionDto institutionDto) {
-		institutionDto.setEditable(true);
-		return null;
-	}
-
 	public String saveAction(InstitutionDto dto) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -380,9 +349,7 @@ public class InstitutionController implements Serializable, DbConstant {
 
 				{
 					SimpleDateFormat dft = new SimpleDateFormat("MM/dd/yyyy");
-					requests = requestImpl.getListByDateBewteen("instRegReqstDate",
-							Formating.getFormtDateReturnMysqlFormat(dft.format(from)),
-							Formating.getFormtDateReturnMysqlFormat(dft.format(to)));
+					requests = requestImpl.getListByDateBewteen("instRegReqstDate", from, to);
 					// requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
 					// from, to,
 					// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
@@ -419,6 +386,86 @@ public class InstitutionController implements Serializable, DbConstant {
 			e.printStackTrace();
 			return "";
 		}
+	}
+
+	public void renderProvMethod() {
+		try {
+			if (countryImpl.getCountryById(cntryId, "taskId").getCountryName_en().equals("RWANDA")) {
+				rendered = true;
+			} else {
+				rendered = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void searchKey() {
+		try {
+			List<InstitutionDto> list = new ArrayList<InstitutionDto>();
+
+			if (key.length() > 0) {
+				for (InstitutionDto dto : institutionDtos) {
+
+					if (dto.getInstitutionName().contains(key)
+							|| dto.getInstitution().getInstitutionName().contains(key)
+							|| dto.getCountry().getCountryName_en().contains(key)
+							|| dto.getInstitutionAddress().contains(key)) {
+						list.add(dto);
+					}
+
+				}
+				institutionDtos = list;
+			} else {
+				institutionDtos = display(requests);
+			}
+		} catch (Exception e) {
+
+		}
+	}
+
+	public List<InstitutionDto> display(List<InstitutionRegistrationRequest> institutionRegistrationRequests) {
+
+		try
+
+		{
+			List<InstitutionDto> dtos = new ArrayList<InstitutionDto>();
+			for (InstitutionRegistrationRequest inst : institutionRegistrationRequests) {
+				InstitutionDto institutionDto = new InstitutionDto();
+				institutionDto.setEditable(false);
+				institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
+				institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
+				institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
+				institutionDto.setInstitution(inst.getInstitution());
+				institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
+				institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
+				institutionDto.setCountry(inst.getInstitution().getCountry());
+				institutionDto.setVillage(inst.getInstitution().getVillage());
+				dtos.add(institutionDto);
+			}
+			return dtos;
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			return null;
+		}
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public void renderNext() {
+		nextpage = true;
+	}
+
+	public void renderBack() {
+		nextpage = false;
 	}
 
 	public String getCLASSNAME() {
@@ -791,6 +838,45 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setTo(Date to) {
 		this.to = to;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public void setInstitutionDto(InstitutionDto institutionDto) {
+		this.institutionDto = institutionDto;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public String cancel(InstitutionDto institutionDto) {
+		institutionDto.setEditable(true);
+		return "/menu/ViewInstitutionProfile.xhtml";
+
+	}
+
+	public String editAction(InstitutionDto institutionDto) {
+		institutionDto.setEditable(true);
+		return null;
+	}
+
+	public boolean isNextpage() {
+		return nextpage;
+	}
+
+	public void setNextpage(boolean nextpage) {
+		this.nextpage = nextpage;
 	}
 
 }
