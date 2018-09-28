@@ -40,7 +40,9 @@ public class TaskController implements Serializable, DbConstant {
 	private Users usersSession;
 	private Task task;
 	private List<Task> taskDetails = new ArrayList<Task>();
+	private List<Task> taskDetail = new ArrayList<Task>();
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
+	private List<TaskDto> taskDtoDetail = new ArrayList<TaskDto>();
 	
 	/*class injection*/
 	
@@ -66,8 +68,23 @@ public class TaskController implements Serializable, DbConstant {
 		}
 		
 		try {
-			
-			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Task", "taskId asc");
+			taskDetail=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Task", "taskId asc");
+			for (Task task : taskDetail){
+				TaskDto taskDto = new TaskDto();
+				taskDto.setTaskId(task.getTaskId());
+				taskDto.setEditable(false);
+				taskDto.setDescription(task.getDescription());
+				taskDto.setTaskName(task.getTaskName());
+				taskDto.setStartDate(task.getStartDate());
+				taskDto.setCreatedDate(task.getCrtdDtTime());
+				taskDto.setTask(task.getParentTask());
+				taskDto.setGenericstatus(task.getGenericStatus());
+				taskDto.setDueDate(task.getDueDate());
+				taskDto.setStatus(task.getGenericStatus());
+				taskDto.setCreatedBy(task.getCreatedBy());
+				taskDtoDetail.add(taskDto);
+			}
+			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Task", "taskId asc");
 			for (Task task : taskDetails){
 				TaskDto taskDto = new TaskDto();
 				taskDto.setTaskId(task.getTaskId());
@@ -82,6 +99,7 @@ public class TaskController implements Serializable, DbConstant {
 				taskDto.setStatus(task.getGenericStatus());
 				taskDtoDetails.add(taskDto);
 			}
+			
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -107,7 +125,7 @@ public class TaskController implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
 			LOGGER.info(CLASSNAME+":::Task Details is saved");
-			clearContactFuileds();
+			clearTaskFuileds();
 			return"/menu/Task.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
@@ -122,7 +140,46 @@ public class TaskController implements Serializable, DbConstant {
 		
 	}
 
-private void clearContactFuileds() {
+	public void taskApproval(Task act) {
+		try {
+			act.setGenericStatus(APPROVED);
+			taskImpl.UpdateTask(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
+			LOGGER.info(CLASSNAME + ":::Task Status is updated");
+			clearTaskFuileds();
+			} catch (Exception e) {
+			LOGGER.info(CLASSNAME+":::Task GenericStatus is failling with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void taskRejection(Task act) {
+		try {
+			act.setGenericStatus(REJECTED);
+			taskImpl.UpdateTask(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.reject.form"));
+			LOGGER.info(CLASSNAME + ":::Task GenericStatus is updated");
+			clearTaskFuileds();
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+private void clearTaskFuileds() {
 	task=new Task();
 	taskDetails=null;
 }
@@ -233,6 +290,22 @@ public String newTask() {
 
 	public void setTaskDtoDetails(List<TaskDto> taskDtoDetails) {
 		this.taskDtoDetails = taskDtoDetails;
+	}
+
+	public List<Task> getTaskDetail() {
+		return taskDetail;
+	}
+
+	public void setTaskDetail(List<Task> taskDetail) {
+		this.taskDetail = taskDetail;
+	}
+
+	public List<TaskDto> getTaskDtoDetail() {
+		return taskDtoDetail;
+	}
+
+	public void setTaskDtoDetail(List<TaskDto> taskDtoDetail) {
+		this.taskDtoDetail = taskDtoDetail;
 	}
 
 

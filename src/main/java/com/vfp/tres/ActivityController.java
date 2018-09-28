@@ -19,6 +19,7 @@ import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
+import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.UserDto;
@@ -35,8 +36,10 @@ public class ActivityController implements Serializable, DbConstant {
 	private Users users;
 	private Users usersSession;
 	private Activity activity;
+	private List<Activity> activityDetail = new ArrayList<Activity>();
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
+	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
 
 	private String[] status= {NOTSTARTED,APPROVED,REJECT,INPROGRESS,COMPLETED};
 	
@@ -67,7 +70,7 @@ public class ActivityController implements Serializable, DbConstant {
 		
 		try {
 			
-			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
+			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Activity", "activityId asc");
 			for (Activity activity : activityDetails){
 				ActivityDto activityDto = new ActivityDto();
 				activityDto.setActivityId(activity.getActivityId());
@@ -87,6 +90,30 @@ public class ActivityController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+		try {
+			activityDetail=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
+			for (Activity activity : activityDetail){
+				ActivityDto activityDto = new ActivityDto();
+				activityDto.setActivityId(activity.getActivityId());
+				activityDto.setEditable(false);
+				activityDto.setDescription(activity.getDescription());
+				activityDto.setStatus(activity.getStatus());
+				activityDto.setWeight(activity.getWeight());
+				activityDto.setCreatedDate(activity.getCrtdDtTime());
+				activityDto.setTask(activity.getTask());
+				activityDto.setGenericstatus(activity.getGenericStatus());
+				activityDto.setCreatedBy(activity.getCreatedBy());
+				activityDtoDetail.add(activityDto);}
+			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Activity", "activityId asc");
+			
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+
+	
 	
 		
 	}
@@ -104,7 +131,7 @@ public class ActivityController implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.activity"));
 			LOGGER.info(CLASSNAME+":::Activity Details is saved");
-			clearContactFuileds();
+			clearActivityFuileds();
 			return"/menu/Activity.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
@@ -119,7 +146,47 @@ public class ActivityController implements Serializable, DbConstant {
 		
 	}
 
-private void clearContactFuileds() {
+	public void activityApproval(Activity act) {
+		try {
+			act.setStatus(APPROVED);
+			activityImpl.UpdateActivity(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
+			LOGGER.info(CLASSNAME + ":::Activity Status is updated");
+			clearActivityFuileds();
+			} catch (Exception e) {
+			LOGGER.info(CLASSNAME+":::Activity Status is failling with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void activityRejection(Activity act) {
+		try {
+			act.setStatus(REJECTED);
+			act.setGenericStatus(DESACTIVE);
+			activityImpl.UpdateActivity(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.reject.form"));
+			LOGGER.info(CLASSNAME + ":::Activity Status is updated");
+			clearActivityFuileds();
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+private void clearActivityFuileds() {
 	activity=new Activity();
 	activityDetails=null;
 }
@@ -231,12 +298,28 @@ public String newActivity() {
 		this.weight = weight;
 	}
 
+	public List<Activity> getActivityDetail() {
+		return activityDetail;
+	}
+
+	public void setActivityDetail(List<Activity> activityDetail) {
+		this.activityDetail = activityDetail;
+	}
+
 	public List<ActivityDto> getActivityDtoDetails() {
 		return activityDtoDetails;
 	}
 
 	public void setActivityDtoDetails(List<ActivityDto> activityDtoDetails) {
 		this.activityDtoDetails = activityDtoDetails;
+	}
+
+	public List<ActivityDto> getActivityDtoDetail() {
+		return activityDtoDetail;
+	}
+
+	public void setActivityDtoDetail(List<ActivityDto> activityDtoDetail) {
+		this.activityDtoDetail = activityDtoDetail;
 	}
 
 
