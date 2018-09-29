@@ -70,6 +70,7 @@ public class ActivityController implements Serializable, DbConstant {
 		
 		try {
 			
+			activityDetail=activityImpl.getListWithHQL(SELECT_ACTIVITY);
 			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Activity", "activityId asc");
 			for (Activity activity : activityDetails){
 				ActivityDto activityDto = new ActivityDto();
@@ -89,31 +90,6 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-
-		try {
-			activityDetail=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Activity", "activityId asc");
-			for (Activity activity : activityDetail){
-				ActivityDto activityDto = new ActivityDto();
-				activityDto.setActivityId(activity.getActivityId());
-				activityDto.setEditable(false);
-				activityDto.setDescription(activity.getDescription());
-				activityDto.setStatus(activity.getStatus());
-				activityDto.setWeight(activity.getWeight());
-				activityDto.setCreatedDate(activity.getCrtdDtTime());
-				activityDto.setTask(activity.getTask());
-				activityDto.setGenericstatus(activity.getGenericStatus());
-				activityDto.setCreatedBy(activity.getCreatedBy());
-				activityDtoDetail.add(activityDto);}
-			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Activity", "activityId asc");
-			
-		} catch (Exception e) {
-			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-			LOGGER.info(e.getMessage());
-			e.printStackTrace();
-		}
-
-	
 	
 		
 	}
@@ -149,6 +125,8 @@ public class ActivityController implements Serializable, DbConstant {
 	public void activityApproval(Activity act) {
 		try {
 			act.setStatus(APPROVED);
+			//if(act.getGenericStatus().equals(DESACTIVE))
+			act.setGenericStatus(ACTIVE);
 			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");

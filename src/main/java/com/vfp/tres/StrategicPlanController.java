@@ -116,7 +116,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		
 	}
 
-private void clearPlanFuileds() {
+public void clearPlanFuileds() {
 	strategicPlan=new StrategicPlan();
 	strategicPlanDetails=null;
 }

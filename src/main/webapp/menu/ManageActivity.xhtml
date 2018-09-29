@@ -48,7 +48,7 @@
 				<!-- 					</h:commandLink> -->
 				<!-- 				</div> -->
 				<p:dataTable id="example" class="display" cellspacing="0"
-					value="#{activityController.activityDtoDetail}" var="act">
+					value="#{activityController.activityDetail}" var="act">
 
 
 					<p:column headerText="#{msg['form.activity.description']}">
@@ -71,7 +71,7 @@
 
 					<p:column headerText="#{msg['form.groupmenu.creationdate']}">
 
-						<h:outputText value="#{act.createdDate}" />
+						<h:outputText value="#{act.crtdDtTime}" />
 
 					</p:column>
 

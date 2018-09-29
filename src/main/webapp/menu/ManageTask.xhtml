@@ -15,7 +15,7 @@
 
 		<ui:define name="content">
 			<h:panelGroup layout="block"
-				rendered="#{activityController.valid and  not facesContext.validationFailed}">
+				rendered="#{taskController.valid and  not facesContext.validationFailed}">
 				<ul>
 					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 						<li
@@ -26,7 +26,7 @@
 				</ul>
 			</h:panelGroup>
 			<h:panelGroup layout="block"
-				rendered="#{not activityController.valid and not facesContext.validationFailed}">
+				rendered="#{not taskController.valid and not facesContext.validationFailed}">
 				<ul>
 					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 						<li class="alert alert-danger"
@@ -48,7 +48,7 @@
 <!-- 						<i class="glyphicon glyphicon-plus-sign"></i>#{msg['form.task.new']} -->
 <!-- 					</h:commandLink> -->
 <!-- 				</div> -->
-				<p:dataTable value="#{taskController.taskDtoDetail}" var="act">
+				<p:dataTable value="#{taskController.taskDetail}" var="act">
 
 					<p:column headerText="#{msg['form.task.name']}">
 
@@ -80,16 +80,21 @@
 						<h:outputText value="#{act.createdBy}"/>
 					</p:column>
 
+					<p:column headerText="#{msg['form.task.genericStatus']}">
+
+						<h:outputText value="#{act.genericStatus}"/>
+					</p:column>
+
 
 					<p:column headerText="Action">
 					
 						<h:commandLink style="color:white"
 							class="btn btn-success 	glyphicon glyphicon-ok" value=" Approve"
-							action="#{activityController.taskApproval(act)}" />
+							action="#{taskController.taskApproval(act)}" />
 						<h:commandLink style="margin-left:2px;color:white"
 							class="btn btn-danger 	glyphicon glyphicon-remove"
 							value=" Reject"
-							action="#{activityController.taskRejection(act)}" />
+							action="#{taskController.taskRejection(act)}" />
 					</p:column>
 
 				</p:dataTable>

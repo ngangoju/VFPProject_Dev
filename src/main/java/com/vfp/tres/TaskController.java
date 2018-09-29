@@ -68,22 +68,7 @@ public class TaskController implements Serializable, DbConstant {
 		}
 		
 		try {
-			taskDetail=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "Task", "taskId asc");
-			for (Task task : taskDetail){
-				TaskDto taskDto = new TaskDto();
-				taskDto.setTaskId(task.getTaskId());
-				taskDto.setEditable(false);
-				taskDto.setDescription(task.getDescription());
-				taskDto.setTaskName(task.getTaskName());
-				taskDto.setStartDate(task.getStartDate());
-				taskDto.setCreatedDate(task.getCrtdDtTime());
-				taskDto.setTask(task.getParentTask());
-				taskDto.setGenericstatus(task.getGenericStatus());
-				taskDto.setDueDate(task.getDueDate());
-				taskDto.setStatus(task.getGenericStatus());
-				taskDto.setCreatedBy(task.getCreatedBy());
-				taskDtoDetail.add(taskDto);
-			}
+			taskDetail=taskImpl.getListWithHQL(SELECT_TASK);
 			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Task", "taskId asc");
 			for (Task task : taskDetails){
 				TaskDto taskDto = new TaskDto();
@@ -142,7 +127,7 @@ public class TaskController implements Serializable, DbConstant {
 
 	public void taskApproval(Task act) {
 		try {
-			act.setGenericStatus(APPROVED);
+			act.setGenericStatus(ACTIVE);
 			taskImpl.UpdateTask(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
@@ -163,7 +148,7 @@ public class TaskController implements Serializable, DbConstant {
 
 	public void taskRejection(Task act) {
 		try {
-			act.setGenericStatus(REJECTED);
+			act.setGenericStatus(DESACTIVE);
 			taskImpl.UpdateTask(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");

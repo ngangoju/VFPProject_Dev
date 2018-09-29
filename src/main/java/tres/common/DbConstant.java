@@ -68,5 +68,8 @@ public  interface  DbConstant {
  public static final String SELECT_PROVINCE = "from Province";
  public static final String country_rw="Rwanda";   
   
+ public static final String SELECT_ACTIVITY="from Activity";
+ public static final String SELECT_TASK="from Task";
+ public static final String SELECT_STRATEGIC_PLAN="from StrategicPlan";
   
 }
