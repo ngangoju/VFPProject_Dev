@@ -14,14 +14,14 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<div class="panel panel-default">
+			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-					<span style="color: #737373; font-size: 10pt">Fields marked
-						with an asterisk <span style="color: red">(*)</span> are
-						mandatory.
+				<center>
+					<span style="color: #fff; font-size: 10pt; align:center">#{msg['header.title.fieldmarked']}
+						with an asterisk <span style="color: red">#{msg['header.title.asteriks']}</span> #{msg['header.title.mandatory']}
 					</span>
-					<center></center>
+					</center>
 				</div>
 				<div class="panel-body"
 					style="border: 0px solid blue; margin-top: 4px; height: 550px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
@@ -36,7 +36,7 @@
 									<li class="alert alert-danger"
 										style="list-style: none; background-color: #FF2400; color: white">
 										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
+											<h:outputText value="Not Saved" escape="false" />
 										</center>
 									</li>
 								</ui:repeat>
@@ -48,8 +48,9 @@
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
+									<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"	
+									 class="alert alert-success"><center><h:outputText
+											value="#{msg['listOfmenu.successfullsaved']}" escape="false" /></center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
@@ -139,11 +140,11 @@
 											styleClass="form-control"
 											value="#{listOfMenuController.listOfMenu.urlCode}" maxlength="35"
 											required="true"
-											validatorMessage="#{msg['error.enter.invalid.surname']}"
-											converterMessage="#{msg['error.enter.invalid.surname']}"
+											validatorMessage="#{msg['listofmenug.listofMenuGroupCode']}"
+											converterMessage="#{msg['listofmenug.listofMenuGroupCode']}"
 											requiredMessage="#{msg['listofmenu.urlcode.required']}">
 											<f:validateRegex
-												pattern="#{regex['regex.string.Validation']}" />
+												pattern="#{regex['regex.string.NumValidation']}" />
 											<f:validateLength maximum="35" />
 										</h:inputText>
 									</div>
@@ -158,7 +159,9 @@
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{listOfMenuController.saveListMenuInfo}"
-										value="#{msg['form.listofmenu.create']}" />
+										value="#{msg['form.listofmenu.create']}" >
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="err"></span>

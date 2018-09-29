@@ -17,15 +17,14 @@
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-					<span style="color: #737373; font-size: 10pt">#{msg['header.title.fieldmarked']}
+				<center>
+					<span style="color: #fff; font-size: 10pt; align:center">#{msg['header.title.fieldmarked']}
 						with an asterisk <span style="color: red">#{msg['header.title.asteriks']}</span> #{msg['header.title.mandatory']}
 					</span>
-					<center></center>
+					</center>
 				</div>
 				<div class="panel-body">
-					<span style="color: #737373; font-size: 10pt">#{msg['header.title.fieldmarked']}
-							<span style="color: red">#{msg['header.title.asteriks']}</span>#{msg['header.title.mandatory']}
-						</span>
+					
 
 					<h:form>
 						<h:panelGroup layout="block"
@@ -36,7 +35,7 @@
 									<li class="alert alert-danger"
 										style="list-style: none; background-color: #FF2400; color: white">
 										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
+											<h:outputText value="Failled to record" escape="false" />
 										</center>
 									</li>
 								</ui:repeat>
@@ -48,8 +47,9 @@
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
+									<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"	
+									 class="alert alert-success"><center><h:outputText
+											value="#{msg['menugroup.successfullsaved']}" escape="false" /></center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
@@ -117,11 +117,11 @@
 											styleClass="form-control"
 											value="#{groupOfMenuController.menuGroup.defaulGrouptMenu}" maxlength="35"
 											required="true"
-											validatorMessage="#{msg['error.enter.invalid.surname']}"
-											converterMessage="#{msg['error.enter.invalid.surname']}"
+											validatorMessage="#{msg['menugroup.defaultyMenuGroup']}"
+											converterMessage="#{msg['menugroup.defaultyMenuGroup']}"
 											requiredMessage="#{msg['groupMneu.defaultmanu.requiered']}">
 											<f:validateRegex
-												pattern="#{regex['regex.string.Validation']}" />
+												pattern="#{regex['regex.string.NumValidation']}" />
 											<f:validateLength maximum="35" />
 										</h:inputText>
 									</div>
@@ -140,11 +140,11 @@
 											styleClass="form-control"
 											value="#{groupOfMenuController.menuGroup.groupMenuCode}" maxlength="35"
 											required="true"
-											validatorMessage="#{msg['error.enter.invalid.surname']}"
-											converterMessage="#{msg['error.enter.invalid.surname']}"
+											validatorMessage="#{msg['menugroup.MenuGroupCode']}"
+											converterMessage="#{msg['menugroup.MenuGroupCode']}"
 											requiredMessage="#{msg['groupMneu.manucode.requiered']}">
 											<f:validateRegex
-												pattern="#{regex['regex.string.Validation']}" />
+												pattern="#{regex['regex.string.NumValidation']}" />
 											<f:validateLength maximum="35" />
 										</h:inputText>
 									</div>
@@ -159,7 +159,9 @@
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{groupOfMenuController.saveMenuGroupInfo}"
-										value="#{msg['form.groupmenu.groupmenucreate']}" />
+										value="#{msg['form.groupmenu.groupmenucreate']}" >
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="err"></span>

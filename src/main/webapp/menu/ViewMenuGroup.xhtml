@@ -22,7 +22,9 @@
 					<p:outputPanel>
 						<h:commandLink style="color:white;float:top;"
 							class="btn btn-success 	glyphicon glyphicon-user"
-							value=" Add New MenuGroup" action="#{groupOfMenuController.addNewMenuGroup()}" />
+							value=" Add New MenuGroup" action="#{groupOfMenuController.addNewMenuGroup()}" >
+							<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandLink>
 
 					</p:outputPanel>
 					<p:dataTable value="#{groupOfMenuController.menuGroupDtoDetails}"
@@ -88,7 +90,9 @@
 						<p:column headerText=" Change Status">
 							
 							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{menu.action}" action="#{groupOfMenuController.updateStatus(menu)}" />
+								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{menu.action}" action="#{groupOfMenuController.updateStatus(menu)}" >
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
 						</p:column>
 						<p:column headerText="Action">
 
@@ -106,7 +110,9 @@
 
 							<h:commandButton value="Save Changes" class="btn btn-primary"
 								action="#{groupOfMenuController.newAction(menu)}"
-								rendered="#{menu.editable}" render="menuGroupPanel" />
+								rendered="#{menu.editable}" render="menuGroupPanel" >
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandButton>
 						</p:column>
 
 					</p:dataTable>
