@@ -92,6 +92,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private List<InstitutionRegistrationRequest> Confirmedinstitutions = new ArrayList<InstitutionRegistrationRequest>();
 	private List<Institution> institutions = new ArrayList<Institution>();
 	private List<InstitutionRegistrationRequest> requests = new ArrayList<InstitutionRegistrationRequest>();
+	private List<InstitutionRegistrationRequest> pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 	private List<InstitutionRegistrationRequest> validInstitution = new ArrayList<InstitutionRegistrationRequest>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -151,13 +152,14 @@ public class InstitutionController implements Serializable, DbConstant {
 			institutions = institutionImpl.getGenericListWithHQLParameter(
 					new String[] { "institutionRepresenative_userId" }, new Object[] { usersSession }, "Institution",
 					"institutionName asc");
-			requests = requestImpl.getGenericListWithHQLParameter(
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
 					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 			validInstitution = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
 					"instRegReqstDate desc");
+
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -348,24 +350,14 @@ public class InstitutionController implements Serializable, DbConstant {
 				try
 
 				{
-					SimpleDateFormat dft = new SimpleDateFormat("MM/dd/yyyy");
-					requests = requestImpl.getListByDateBewteen("instRegReqstDate", from, to);
-					// requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
-					// from, to,
-					// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-					// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
-					for (InstitutionRegistrationRequest inst : requests) {
-						InstitutionDto institutionDto = new InstitutionDto();
-						institutionDto.setEditable(false);
-						institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
-						institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
-						institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
-						institutionDto.setInstitution(inst.getInstitution());
-						institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
-						institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
-						institutionDtos.add(institutionDto);
-					}
-					return "ViewInstitutionProfile";
+					Formating fmt = new Formating();
+					requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
+							fmt.getMysqlDateFormt(from + ""), fmt.getMysqlDateFormt(to + ""),
+							new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+							new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
+
+					institutionDtos = display(requests);
+					return "/menu/ViewInstitutionProfile.xhtml?faces-redirect=true";
 				} catch (Exception e) {
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -398,30 +390,10 @@ public class InstitutionController implements Serializable, DbConstant {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+		/* clear fields */
+		institution.setInstitutionType(null);
+		/* end clear field */
 
-	public void searchKey() {
-		try {
-			List<InstitutionDto> list = new ArrayList<InstitutionDto>();
-
-			if (key.length() > 0) {
-				for (InstitutionDto dto : institutionDtos) {
-
-					if (dto.getInstitutionName().contains(key)
-							|| dto.getInstitution().getInstitutionName().contains(key)
-							|| dto.getCountry().getCountryName_en().contains(key)
-							|| dto.getInstitutionAddress().contains(key)) {
-						list.add(dto);
-					}
-
-				}
-				institutionDtos = list;
-			} else {
-				institutionDtos = display(requests);
-			}
-		} catch (Exception e) {
-
-		}
 	}
 
 	public List<InstitutionDto> display(List<InstitutionRegistrationRequest> institutionRegistrationRequests) {
@@ -877,6 +849,14 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setNextpage(boolean nextpage) {
 		this.nextpage = nextpage;
+	}
+
+	public List<InstitutionRegistrationRequest> getPendinGrequests() {
+		return pendinGrequests;
+	}
+
+	public void setPendinGrequests(List<InstitutionRegistrationRequest> pendinGrequests) {
+		this.pendinGrequests = pendinGrequests;
 	}
 
 }
