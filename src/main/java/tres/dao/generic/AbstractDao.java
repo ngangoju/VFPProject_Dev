@@ -330,19 +330,17 @@ public class AbstractDao<K, T> implements IRootDao<K, T> {
 				t.commit();
 			}
 
-			session.close();
-			factory.close();
+			
 			return cr.list();
 		} catch (Exception mm) {
 			mm.printStackTrace();
 			if (!t.wasCommitted()) {
 				t.commit();
 			}
+			
+		} finally {
 			session.close();
 			factory.close();
-		} finally {
-			//session.close();
-			//factory.close();
 		}
 		return null;
 	}
