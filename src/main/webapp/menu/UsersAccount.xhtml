@@ -346,7 +346,7 @@
 													autocomplete="off" id="from_dob_date_id"
 													binding="#{from_dob_date_id}" class="form-control"
 													escape="true"
-													value="#{userAccountController.users.dateOfBirth}"
+													value="#{userAccountController.dateofBirth}"
 													maxlength="35" required="true"
 													converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 													requiredMessage="#{msg['dob.message']}">
@@ -371,6 +371,20 @@
 													});
 												</script>
 											</div>
+											<div class="col-md-2">
+											<span class="tooltips-input-main"><a
+												class="tooltips-input"> <h:panelGroup
+														id="tooltips-contactDetails" layout="block">
+														<img
+															src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+															style="width: 8%" alt="question" />
+													</h:panelGroup> <p:tooltip id="toolTipContent"
+														for="tooltips-contactDetails" position="bottom">
+														<span> #{msg['help.userdob.message']} </span>
+													</p:tooltip>
+											</a></span>
+
+										</div>
 											<h:message for="from_dob_date_id" styleClass="help-block"></h:message>
 										</div>
 									</h:panelGroup>

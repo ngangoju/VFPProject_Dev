@@ -9,8 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -26,6 +28,7 @@ import org.hibernate.HibernateException;
 import org.primefaces.model.UploadedFile;
 
 import tres.common.DbConstant;
+import tres.common.Formating;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
@@ -112,6 +115,9 @@ public class UserAccountController implements Serializable, DbConstant {
 	private String choice;
 	private boolean rendered;
 	private boolean renderForeignCountry;
+	private Date dateofBirth;
+	private int age;
+	private int days;
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -276,6 +282,7 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings("static-access")
 	public String saveUserInfo() throws IOException, NoSuchAlgorithmException {
 		String url = getContextPath();
 		// System.out.print("+++++++++++++++++:" + url + "/");
@@ -300,47 +307,73 @@ public class UserAccountController implements Serializable, DbConstant {
 				e.printStackTrace();
 				return null;
 			}
+			
+			  Formating fmt = new Formating(); 
+			 /* Date today = fmt.getCurrentDateFormtNOTime(); 
+			  Date dob = fmt.getMysqlTimeFormt(dateofBirth);
+			  age=fmt.daysBetween(dob, today);
+			 LOGGER.info(":::::::::::::::::::::::::::::");
+			 LOGGER.info("today Founded::--------------->:"+today);
+			 LOGGER.info("dob Founded::--------------->:"+dateofBirth);*/
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			if (password.equalsIgnoreCase(confirmPswd)) {
-				users.setImage("us.png");
-				users.setCreatedBy(usersSession.getViewId());
-				users.setCrtdDtTime(timestamp);
-				users.setCreatedDate(timestamp);
-				users.setGenericStatus(ACTIVE);
-				users.setUpdatedBy(usersSession.getViewId());
-				users.setCrtdDtTime(timestamp);
-				if (choice.equalsIgnoreCase(country_rw)) {
-					users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
-					users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-					users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
-					users.setViewName(loginImpl.criptPassword(password));
-					users.setStatus(DESACTIVE);
-					usersImpl.saveUsers(users);
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::User Details is saved");
-					clearUserFuileds();
-					return "/menu/ViewUsersList.xhtml?faces-redirect=true";
-				} else {
-					users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-					users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
-					users.setViewName(loginImpl.criptPassword(password));
-					users.setStatus(DESACTIVE);
-					usersImpl.saveUsers(users);
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::User Details is saved");
-					clearUserFuileds();
-					return "/menu/ViewUsersList.xhtml?faces-redirect=true";
-				}
+			Date today = fmt.getCurrentDateFormtNOTime(); 
+//			simpleDateFormat.format(today);
+			simpleDateFormat.format(dateofBirth);
+			 days=fmt.daysBetween(dateofBirth, today);
+			 age=days/365;
+			 LOGGER.info(":::::::::::::::::::::::::::::");
+			 LOGGER.info("Age Founded::--------------->:"+age);
+				
+			 LOGGER.info(":::::::::::::::::::::::::::::");
+			 if(age>=16) {		 
+				 if (password.equalsIgnoreCase(confirmPswd)) {
+						users.setImage("us.png");
+						users.setCreatedBy(usersSession.getViewId());
+						users.setCrtdDtTime(timestamp);
+						users.setCreatedDate(timestamp);
+						users.setGenericStatus(ACTIVE);
+						users.setUpdatedBy(usersSession.getViewId());
+						users.setCrtdDtTime(timestamp);
+						users.setDateOfBirth(new java.sql.Date(dateofBirth.getTime()));
+						if (choice.equalsIgnoreCase(country_rw)) {
+							users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
+							users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+							users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+							users.setViewName(loginImpl.criptPassword(password));
+							users.setStatus(DESACTIVE);
+							usersImpl.saveUsers(users);
+							JSFMessagers.resetMessages();
+							setValid(true);
+							JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+							LOGGER.info(CLASSNAME + ":::User Details is saved");
+							clearUserFuileds();
+							return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+						} else {
+							users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+							users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+							users.setViewName(loginImpl.criptPassword(password));
+							users.setStatus(DESACTIVE);
+							usersImpl.saveUsers(users);
+							JSFMessagers.resetMessages();
+							setValid(true);
+							JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+							LOGGER.info(CLASSNAME + ":::User Details is saved");
+							clearUserFuileds();
+							return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+						}
 
-			} else {
-				JSFMessagers.resetMessages();
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.pswdMatch"));
-			}
+					} else {
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.pswdMatch"));
+					}
+			 }else {
+				 JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("help.userdob.message"));
+			 }
+			
 
 		} catch (HibernateException ex) {
 			LOGGER.info(CLASSNAME + ":::User Details is fail with HibernateException  error");
@@ -428,12 +461,6 @@ public class UserAccountController implements Serializable, DbConstant {
 
 		// return to current page
 		return "/menu/ViewUsersList.xhtml?faces-redirect=true";
-
-	}
-
-	public String addNewUser() {
-
-		return "/menu/UsersAccount.xhtml?faces-redirect=true";
 
 	}
 
@@ -879,6 +906,30 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setRenderForeignCountry(boolean renderForeignCountry) {
 		this.renderForeignCountry = renderForeignCountry;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public Date getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(Date dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+
+	public int getDays() {
+		return days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
 	}
 
 }

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -10,22 +9,55 @@
 <h:body>
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
-
 		<ui:define name="content">
-			<h:panelGroup id="userConatactPanel"
-				style="font-family:Times New Roman">
-				<h:form>
-					<p:outputPanel>
-						<h:commandLink style="color:white;"
-							class="btn btn-success 	glyphicon glyphicon-user"
-							value=" Add New Category"
-							action="#{userCategoryController.addNewCategory()}" />
 
-					</p:outputPanel>
-					<p:dataTable value="#{userCategoryController.categoryDtoDetails}"
+			<h:form>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<table>
+							<tr>
+								<td>
+									<div>
+										<a href="UserCategory.xhtml" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserCatForm.addButton']}<b><span
+												style="background-color: red; color: white" class="badge"></span></b>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body">
+
+						<h:panelGroup layout="block"
+							rendered="#{not userCategoryController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							rendered="#{userCategoryController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li style="list-style: none;" class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+						<p:dataTable value="#{userCategoryController.categoryDtoDetails}" style="width:70%; margin-top:10px;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 						var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
 						sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}"
-						style="width:70%; margin-top:10px;">
+						>
 						<p:column headerText="No" style="width:10%;">
 
 							<h:outputText value="#{row+1}" />
@@ -49,26 +81,24 @@
 
 						</p:column>
 						<p:column headerText="Action" style="width:30%;">
-							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+							<h:commandLink style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+								class="btn btn-success glyphicon glyphicon-pencil" value="#{msg['UserCategoryView.editButton']}"
 								action="#{userCategoryController.editAction(cat)}"
 								rendered="#{not cat.editable}" />
-							<h:commandLink style="margin-left:2px;color:white"
-								class="btn btn-danger 	glyphicon glyphicon-remove"
-								value="Cancel" action="#{userCategoryController.cancel(cat)}"
+							<h:commandLink style=" font-size: 14px !important;margin-left:2px;color:white;"
+								class="btn btn-danger glyphicon glyphicon-remove"
+								value="#{msg['UserCategoryView.cancelButton']}" action="#{userCategoryController.cancel(cat)}"
 								rendered="#{cat.editable}" />
-							<h:commandButton value="Save Changes" class="btn btn-primary"
+							<h:commandButton value="#{msg['UserCategoryView.savechangeButton']}" class="btn btn-primary" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 								action="#{userCategoryController.saveAction(cat)}"
 								rendered="#{cat.editable}" render="userConatactPanel" />
 						</p:column>
 
 					</p:dataTable>
-					<br />
-				</h:form>
-			</h:panelGroup>
+					</div>
+				</div>
+			</h:form>
 		</ui:define>
 	</ui:composition>
-
 </h:body>
-
 </html>
