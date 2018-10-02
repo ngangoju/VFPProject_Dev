@@ -1,6 +1,7 @@
 package tres.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -12,8 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
 
 @Entity
 @Table(name = "PaymentRecords")
@@ -28,21 +28,39 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 	@Column(name = "paymentCode", unique = true)
 	private String paymentCode;
 	
-	@Column(name = "institution")
+    @Column(name = "paymentDate")
+	private Timestamp paymentDate;
+	  
+	@Column(name = "paymentExpiretionDate")
+	private Timestamp paymentExpiretionDate;
+	
+	@Column(name = "amount")
+    private double  amount;
+	   
+	   
+	@Column(name = "currency")
+	private String   currency;
+	    
+	@Column(name = "paymentChanel")
+	private String   paymentChanel;
+	  
+	  
+    @Column(name = "paymentStatus")
+	private String  paymentStatus;
+	
+    @Column(name = "bankRefernceNo")
+   	private String  bankRefernceNo;
+    
+    @Column(name = "comment")
+   	private String  comment;
+ 
+    @ManyToOne
+    @JoinColumn(name = "paymentApprovedBy")
+	private Users paymentApprovedBy;
+	
+    @ManyToOne
+    @JoinColumn(name = "institution")
 	private Institution institution;
-	
-	@Column(name = "paymentDate", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date paymentDate;
-	
-	
-	@ManyToOne
-	@JoinColumn(name = "amount")
-	private UserCategory amount;
-
-	@ManyToOne
-	@JoinColumn(name = "paymentApproved")
-	private UserCategory paymentApproved;
 
 	public int getPaymentId() {
 		return paymentId;
@@ -60,6 +78,78 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.paymentCode = paymentCode;
 	}
 
+	public Timestamp getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Timestamp paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	public Timestamp getPaymentExpiretionDate() {
+		return paymentExpiretionDate;
+	}
+
+	public void setPaymentExpiretionDate(Timestamp paymentExpiretionDate) {
+		this.paymentExpiretionDate = paymentExpiretionDate;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public String getPaymentChanel() {
+		return paymentChanel;
+	}
+
+	public void setPaymentChanel(String paymentChanel) {
+		this.paymentChanel = paymentChanel;
+	}
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public String getBankRefernceNo() {
+		return bankRefernceNo;
+	}
+
+	public void setBankRefernceNo(String bankRefernceNo) {
+		this.bankRefernceNo = bankRefernceNo;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public Users getPaymentApprovedBy() {
+		return paymentApprovedBy;
+	}
+
+	public void setPaymentApprovedBy(Users paymentApprovedBy) {
+		this.paymentApprovedBy = paymentApprovedBy;
+	}
+
 	public Institution getInstitution() {
 		return institution;
 	}
@@ -68,30 +158,7 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.institution = institution;
 	}
 
-	public Date getPaymentDate() {
-		return paymentDate;
-	}
 
-	public void setPaymentDate(Date paymentDate) {
-		this.paymentDate = paymentDate;
-	}
-
-	public UserCategory getAmount() {
-		return amount;
-	}
-
-	public void setAmount(UserCategory amount) {
-		this.amount = amount;
-	}
-
-	public UserCategory getPaymentApproved() {
-		return paymentApproved;
-	}
-
-	public void setPaymentApproved(UserCategory paymentApproved) {
-		this.paymentApproved = paymentApproved;
-	}
-	
 	
 	
 	
