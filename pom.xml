@@ -81,11 +81,13 @@
   <version>1.2.0</version>
   <scope>compile</scope>
 </dependency>
+<!-- https://mvnrepository.com/artifact/org.primefaces.extensions/primefaces-extensions -->
 <dependency>
-    <groupId>org.primefaces</groupId>
-    <artifactId>primefaces</artifactId>
+    <groupId>org.primefaces.extensions</groupId>
+    <artifactId>primefaces-extensions</artifactId>
     <version>6.2</version>
 </dependency>
+
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap</artifactId>
