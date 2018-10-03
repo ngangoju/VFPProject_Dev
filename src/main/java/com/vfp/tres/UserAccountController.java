@@ -3,7 +3,6 @@ package com.vfp.tres;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -118,6 +117,8 @@ public class UserAccountController implements Serializable, DbConstant {
 	private Date dateofBirth;
 	private int age;
 	private int days;
+	private Date to;
+	private Date from;
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -175,7 +176,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setUserCategory(user.getUserCategory());
 			userDtoDetails.add(userDto);
 			// below list concern list of all users by changing their status
-			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+
+		/*	usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Users", "userId desc");
 			for (Users users : usersDetails) {
 				UserDto userDtos = new UserDto();
@@ -202,7 +204,8 @@ public class UserAccountController implements Serializable, DbConstant {
 				}
 				userDtosDetails.add(userDtos);
 
-			}
+			}*/
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -307,73 +310,73 @@ public class UserAccountController implements Serializable, DbConstant {
 				e.printStackTrace();
 				return null;
 			}
-			
-			  Formating fmt = new Formating(); 
-			 /* Date today = fmt.getCurrentDateFormtNOTime(); 
-			  Date dob = fmt.getMysqlTimeFormt(dateofBirth);
-			  age=fmt.daysBetween(dob, today);
-			 LOGGER.info(":::::::::::::::::::::::::::::");
-			 LOGGER.info("today Founded::--------------->:"+today);
-			 LOGGER.info("dob Founded::--------------->:"+dateofBirth);*/
+
+			Formating fmt = new Formating();
+			/*
+			 * Date today = fmt.getCurrentDateFormtNOTime(); Date dob =
+			 * fmt.getMysqlTimeFormt(dateofBirth); age=fmt.daysBetween(dob, today);
+			 * LOGGER.info(":::::::::::::::::::::::::::::");
+			 * LOGGER.info("today Founded::--------------->:"+today);
+			 * LOGGER.info("dob Founded::--------------->:"+dateofBirth);
+			 */
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			Date today = fmt.getCurrentDateFormtNOTime(); 
-//			simpleDateFormat.format(today);
+			Date today = fmt.getCurrentDateFormtNOTime();
+			// simpleDateFormat.format(today);
 			simpleDateFormat.format(dateofBirth);
-			 days=fmt.daysBetween(dateofBirth, today);
-			 age=days/365;
-			 LOGGER.info(":::::::::::::::::::::::::::::");
-			 LOGGER.info("Age Founded::--------------->:"+age);
-				
-			 LOGGER.info(":::::::::::::::::::::::::::::");
-			 if(age>=16) {		 
-				 if (password.equalsIgnoreCase(confirmPswd)) {
-						users.setImage("us.png");
-						users.setCreatedBy(usersSession.getViewId());
-						users.setCrtdDtTime(timestamp);
-						users.setCreatedDate(timestamp);
-						users.setGenericStatus(ACTIVE);
-						users.setUpdatedBy(usersSession.getViewId());
-						users.setCrtdDtTime(timestamp);
-						users.setDateOfBirth(new java.sql.Date(dateofBirth.getTime()));
-						if (choice.equalsIgnoreCase(country_rw)) {
-							users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
-							users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-							users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
-							users.setViewName(loginImpl.criptPassword(password));
-							users.setStatus(DESACTIVE);
-							usersImpl.saveUsers(users);
-							JSFMessagers.resetMessages();
-							setValid(true);
-							JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-							LOGGER.info(CLASSNAME + ":::User Details is saved");
-							clearUserFuileds();
-							return "/menu/ViewUsersList.xhtml?faces-redirect=true";
-						} else {
-							users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-							users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
-							users.setViewName(loginImpl.criptPassword(password));
-							users.setStatus(DESACTIVE);
-							usersImpl.saveUsers(users);
-							JSFMessagers.resetMessages();
-							setValid(true);
-							JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-							LOGGER.info(CLASSNAME + ":::User Details is saved");
-							clearUserFuileds();
-							return "/menu/ViewUsersList.xhtml?faces-redirect=true";
-						}
+			days = fmt.daysBetween(dateofBirth, today);
+			age = days / 365;
+			LOGGER.info(":::::::::::::::::::::::::::::");
+			LOGGER.info("Age Founded::--------------->:" + age);
 
-					} else {
+			LOGGER.info(":::::::::::::::::::::::::::::");
+			if (age >= 16) {
+				if (password.equalsIgnoreCase(confirmPswd)) {
+					users.setImage("us.png");
+					users.setCreatedBy(usersSession.getViewId());
+					users.setCrtdDtTime(timestamp);
+					users.setCreatedDate(timestamp);
+					users.setGenericStatus(ACTIVE);
+					users.setUpdatedBy(usersSession.getViewId());
+					users.setCrtdDtTime(timestamp);
+					users.setDateOfBirth(new java.sql.Date(dateofBirth.getTime()));
+					if (choice.equalsIgnoreCase(country_rw)) {
+						users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
+						users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+						users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+						users.setViewName(loginImpl.criptPassword(password));
+						users.setStatus(DESACTIVE);
+						usersImpl.saveUsers(users);
 						JSFMessagers.resetMessages();
-						setValid(false);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.pswdMatch"));
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+						LOGGER.info(CLASSNAME + ":::User Details is saved");
+						clearUserFuileds();
+						return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+					} else {
+						users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
+						users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+						users.setViewName(loginImpl.criptPassword(password));
+						users.setStatus(DESACTIVE);
+						usersImpl.saveUsers(users);
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+						LOGGER.info(CLASSNAME + ":::User Details is saved");
+						clearUserFuileds();
+						return "/menu/ViewUsersList.xhtml?faces-redirect=true";
 					}
-			 }else {
-				 JSFMessagers.resetMessages();
+
+				} else {
+					JSFMessagers.resetMessages();
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("help.userdob.message"));
-			 }
-			
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.pswdMatch"));
+				}
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("help.userdob.message"));
+			}
 
 		} catch (HibernateException ex) {
 			LOGGER.info(CLASSNAME + ":::User Details is fail with HibernateException  error");
@@ -500,6 +503,56 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
+	
+	public void displayUsersByDateBetween() {
+		try {
+			if (to.after(from)) {
+				Formating fmt = new Formating();
+				LOGGER.info("Here We are :--------------->>");
+				usersDetails = usersImpl.getListByDateBewteenOtherCriteria("createdDate",from ,to,
+						new String[] { "genericStatus", "createdBy" },
+						new Object[] { ACTIVE, usersSession.getViewId() });
+				for (Users users : usersDetails) {
+					UserDto userDtos = new UserDto();
+					userDtos.setEditable(false);
+					userDtos.setFname(users.getFname());
+					userDtos.setLname(users.getLname());
+					userDtos.setViewId(users.getViewId());
+					userDtos.setAddress(users.getAddress());
+					userDtos.setUserId(users.getUserId());
+					userDtos.setUserCategory(users.getUserCategory());
+					userDtos.setStatus(users.getStatus());
+					if (users.getStatus().equals(ACTIVE)) {
+						userDtos.setAction(DESACTIVE);
+
+					} else if (users.getStatus().equals(DESACTIVE)) {
+
+						userDtos.setAction(ACTIVE);
+						users.setStatus(DESACTIVE);
+					} else {
+						userDtos.setAction(DESACTIVE);
+						users.setStatus(ACTIVE);
+
+					}
+					userDtosDetails.add(userDtos);
+				}
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	 
+
+	/**
+	 * @return
+	 */
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -930,6 +983,22 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setDays(int days) {
 		this.days = days;
+	}
+
+	public Date getTo() {
+		return to;
+	}
+
+	public void setTo(Date to) {
+		this.to = to;
+	}
+
+	public Date getFrom() {
+		return from;
+	}
+
+	public void setFrom(Date from) {
+		this.from = from;
 	}
 
 }
