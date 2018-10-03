@@ -5,8 +5,12 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
  
 import org.apache.commons.io.FilenameUtils;
@@ -16,6 +20,7 @@ import org.apache.commons.io.FilenameUtils;
  
 public class FileUploadController implements Serializable{
 	 
+	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	
 	    private static final long serialVersionUID = 1L;
 	 
@@ -37,15 +42,22 @@ public class FileUploadController implements Serializable{
 	    public void setName(String name) {
 	        this.name = name;
 	    }
-	 
+	    //return the context path of the project like /VfpProject_Dev
+	    public String getContextPath() {
+
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+					.getRequest();
+
+			return request.getContextPath();
+		}
 	//Processing of  file uploading.
 	 
 	    public String processFileUpload() throws IOException{
 	 
 	        Part uploadedFile=getFile();
-	 
-	         final Path destination = Paths.get("c:/temp/"+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
-	 
+	        	String url=getContextPath();
+	         final Path destination = Paths.get(url+"/resources/upload/"+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
+	         LOGGER.info("Uploaded File name::------------>>>>>>"+FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
 	         //When using servlet 3.1
 	          //final Path destination = Paths.get("c:/temp/"+ FilenameUtils.getName(uploadedFile.getSubmittedFileName()));
 	 
