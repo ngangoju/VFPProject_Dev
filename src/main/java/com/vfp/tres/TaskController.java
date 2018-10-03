@@ -69,7 +69,7 @@ public class TaskController implements Serializable, DbConstant {
 		
 		try {
 			taskDetail=taskImpl.getListWithHQL(SELECT_TASK);
-			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Task", "taskId asc");
+			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getFname()+" "+ usersSession.getLname()}, "Task", "taskId asc");
 			for (Task task : taskDetails){
 				TaskDto taskDto = new TaskDto();
 				taskDto.setTaskId(task.getTaskId());
@@ -98,11 +98,11 @@ public class TaskController implements Serializable, DbConstant {
 
 	public String saveTash() {
 		try {
-			task.setCreatedBy(usersSession.getViewId());
+			task.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			task.setCrtdDtTime(timestamp);
 			task.setGenericStatus(ACTIVE);
 			task.setUpDtTime(timestamp);
-			task.setUpdatedBy(usersSession.getViewId());
+			task.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
 			taskImpl.saveTask(task);

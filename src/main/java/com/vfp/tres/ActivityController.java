@@ -71,7 +71,7 @@ public class ActivityController implements Serializable, DbConstant {
 		try {
 			
 			activityDetail=activityImpl.getListWithHQL(SELECT_ACTIVITY);
-			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "Activity", "activityId asc");
+			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getFname()+" "+ usersSession.getLname()}, "Activity", "activityId asc");
 			for (Activity activity : activityDetails){
 				ActivityDto activityDto = new ActivityDto();
 				activityDto.setActivityId(activity.getActivityId());
@@ -96,11 +96,11 @@ public class ActivityController implements Serializable, DbConstant {
 	
 	public String saveActivite() {
 		try {
-			activity.setCreatedBy(usersSession.getViewId());
+			activity.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			activity.setCrtdDtTime(timestamp);
 			activity.setGenericStatus(ACTIVE);
 			activity.setUpDtTime(timestamp);
-			activity.setUpdatedBy(usersSession.getViewId());
+			activity.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			activity.setDate(timestamp);
 			activityImpl.saveActivity(activity);
 			JSFMessagers.resetMessages();

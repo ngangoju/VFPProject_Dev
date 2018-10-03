@@ -89,12 +89,12 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	
 	public String savePlan() {
 		try {
-			strategicPlan.setCreatedBy(usersSession.getViewId());
+			strategicPlan.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			strategicPlan.setCrtdDtTime(timestamp);
 			strategicPlan.setGenericStatus(ACTIVE);
 			strategicPlan.setUpDtTime(timestamp);
 			strategicPlan.setUsers(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
-			strategicPlan.setUpdatedBy(usersSession.getViewId());
+			strategicPlan.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			strategicPlan.setRecordedDate(timestamp);
 			strategicPlanImpl.saveStrategicPlan(strategicPlan);
 			JSFMessagers.resetMessages();
