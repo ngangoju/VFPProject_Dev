@@ -216,6 +216,7 @@ insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,u
 insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(31,'admin',now(),'active',now(),now(),'admin',null,35,4);
 
 ==================BY Ngango Junior=====================
+
 insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listofMenu,menuGroup) 
                  values(36,'admin',now(),'active',now(),now(),'admin',now(),'Generate Report','url36','/menu/generalReport.xhtml',null,4);
 
