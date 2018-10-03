@@ -30,6 +30,7 @@
         <mapping class="tres.domain.ListOfMenu"/>
 	    <mapping class="tres.domain.MenuGroup"/>
         <mapping class="tres.domain.MenuAssignment"/>
+        <mapping class="tres.domain.Evaluation"/>
     </session-factory>
 </hibernate-configuration>
 
