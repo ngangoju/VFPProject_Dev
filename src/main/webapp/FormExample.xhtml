@@ -22,20 +22,7 @@
                     
 
     <h:form >
-						<h:panelGroup layout="block"
-							rendered="#{not formSampleController.valid and not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
-										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center>
-									</li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
+					
 						
 					<h:panelGroup layout="block"
 							rendered="#{formSampleController.valid and  not facesContext.validationFailed}">
@@ -50,19 +37,7 @@
 						<fieldset>
       
        <legend>Application Form </legend>
-          <h:panelGroup id="categoryPanel" layout="block">       
-                  <div class="form-group row">
-                    <label for="todate" class="col-md-2 col-sm-2 col-xs-2 control-label" style="color: black">#{msg['form.sample.name']}<span style="color:red">*</span></label>
-                      <div class="col-md-6 col-sm-6 col-xs-6" style="">
-            <h:selectOneMenu id="categoryId"  styleClass="form-control" required="true" value="#{formSampleController.users.lname}" requiredMessage="#{msg['category.requiered.message']}"  >
-                <f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="true"  />
-                <f:selectItems value="#{formSampleController.menuGroupDetails}" var="option" itemValue="#{option}" itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
-            <f:ajax event="change" execute="@this" listener="#{formSampleController.changeSelectBox('Eric')}" render="ReasonPanel"/>
-            </h:selectOneMenu>
-                      </div>
-                <h:message for="categoryId" styleClass="help-block"></h:message>
-                    </div>    
-         </h:panelGroup> 
+       
                       
        <h:panelGroup id="ReasonPanel" layout="block">  
              <div class="form-group row">
@@ -117,7 +92,7 @@
              <div class="col-md-6 col-sm-6 col-xs-6">
              <h:inputText id="surnameId" binding="#{surnameId}" styleClass="form-control" value="#{formSampleController.users.fname}" maxlength="35"  required="true" 
 			validatorMessage="#{msg['error.enter.invalid.surname']}" converterMessage="#{msg['error.enter.invalid.surname']}" requiredMessage="#{msg['surname.message']}">
-              <f:validateRegex pattern="^(//menu//)+(\\[a-z_\-\s0-9\.]+)+\.(xhtml)$" />
+             
               <f:validateLength maximum="35" />
             </h:inputText>
             </div>
@@ -151,9 +126,10 @@
 <center><div style="border-bottom:2px solid blue;width:200px">Report Sample</div></center>
   
 <h:panelGrid columns="3" columnClasses="left,right" style="width:100%">
-    <p:chart type="line" model="#{chartPresentationController.animatedModel1}" style="width:350px;" />
-    <p:chart type="bar" model="#{chartPresentationController.animatedModel2}" style="width:350px;" />
+    <p:chart type="pie" model="#{chartPresentationController.pieModel1}" style="width:350px;height:300px" />
     <p:chart type="pie" model="#{chartPresentationController.pieModel2}" style="width:350px;height:300px" />
+     <p:chart type="bar" model="#{chartPresentationController.animatedModel2}" style="width:350px;" />
+  
 </h:panelGrid>
 
 

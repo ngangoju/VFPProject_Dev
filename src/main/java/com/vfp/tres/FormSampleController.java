@@ -5,8 +5,10 @@ package com.vfp.tres;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,6 +18,7 @@ import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 
 import tres.common.DbConstant;
+import tres.common.Formating;
 import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
@@ -100,11 +103,27 @@ public class FormSampleController implements Serializable, DbConstant {
          + "  </tbody>\n"
          + "</table>\n";
 		/*End send content in table sample*/
-		gen.sendEmailNotification("ngaboericngabo2@gmail.com","Ngabo Eric","Test Email",msg);
+		gen.sendEmailNotification("dujam7@outlook.com","test","Test Email",msg);
 		LOGGER.info("::: notidficatio sent   ");
 	}
 	public void saveData() {
 		LOGGER.info(CLASSNAME + "testing save methode ");
+		Formating fmt=new Formating();
+		 UserImpl usImpl=new UserImpl();
+		Date to=new Date();
+		LOGGER.info("before format" );
+		
+		   try {
+			for (Object[] data:  usImpl.reportList("select us.fname,us.lname from Contact co right  join  co.user us where us.createdDate between '"+fmt.getMysqlFormatV2(users.getDateOfBirth())+"' and  '"+fmt.getMysqlFormatV2(to)+"'   and co.user is null")){
+			        
+			      	LOGGER.info("users::>>"+data[0]+":: "+data[1]+"");
+			              }
+		} catch (ParseException e) {
+			LOGGER.info("dateformt parse exeption ::::::::::::" );
+			e.printStackTrace();
+		}
+	
+	
 		JSFMessagers.resetMessages();
 		setValid(false);
 		JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
