@@ -504,14 +504,18 @@ public class UserAccountController implements Serializable, DbConstant {
 	}
 
 	
+	@SuppressWarnings("static-access")
 	public void displayUsersByDateBetween() {
 		try {
 			if (to.after(from)) {
 				Formating fmt = new Formating();
 				LOGGER.info("Here We are :--------------->>");
-				usersDetails = usersImpl.getListByDateBewteenOtherCriteria("createdDate",from ,to,
+				/*usersDetails = usersImpl.getListByDateBewteenOtherCriteria("createdDate",from ,to,
 						new String[] { "genericStatus", "createdBy" },
-						new Object[] { ACTIVE, usersSession.getViewId() });
+						new Object[] { ACTIVE, usersSession.getViewId() });*/
+				usersImpl.getListByDateBewteenOtherCriteria("createdDate",fmt.getFormtDateReturnMysqlFormat("04/09/2018"+"") ,fmt.getFormtDateReturnMysqlFormat("13/09/2018"+""),
+						new String[] { "genericStatus"},
+						new Object[] { ACTIVE});
 				for (Users users : usersDetails) {
 					UserDto userDtos = new UserDto();
 					userDtos.setEditable(false);

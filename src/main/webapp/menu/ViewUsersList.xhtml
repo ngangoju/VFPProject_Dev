@@ -18,7 +18,8 @@
 							<tr>
 								<td>
 									<div>
-										<a href="UsersAccount.xhtml" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										<a href="UsersAccount.xhtml"
+											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserRegForm.addButton']}<b><span
 												style="background-color: red; color: white" class="badge"></span></b>
 										</a>
@@ -30,7 +31,7 @@
 					<div class="panel-body">
 
 						<h:panelGroup layout="block"
-							rendered="#{not userCategoryController.valid and not facesContext.validationFailed}">
+							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -45,7 +46,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup layout="block"
-							rendered="#{userCategoryController.valid and  not facesContext.validationFailed}">
+							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -54,113 +55,223 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-					<p:dataTable value="#{userAccountController.userDtosDetails}"
-						var="user" rows="10" paginator="true"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15" id="tables" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-						<!-- <f:facet name="header">
-							<p:outputPanel style="margin-left:250px;">
-								<h:outputText value="Search all fields:" />
-								<h:inputText style="width:180px;"
-									placeholder="Enter keyword" value="{userContactController.keySearch}" >
-									  <p:ajax listener="{userContactController.searchAllFields()}" update="tables" event="keyup"/>	
+
+						<fieldset>
+							<legend
+								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
+								#{msg['message.header.userFilter.info']}</legend>
+							<div class="panel-body">
+
+								<div style="display: none">
+									<input id="lat" name="lat" type="text" /> <input id="long"
+										name="long" type="text" />
+								</div>
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">From<span style="color: red">*</span></label>
+									<div class="col-md-4 col-sm-3 col-xs-4">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from" binding="#{from}"
+											class="form-control input-sm" escape="true"
+											value="#{userAccountController.from}" maxlength="35"
+											required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['strartdate_institution.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$('input[id*="from"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	maxDate : 0,
+																	//minDate: 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup
+													id="tooltips-contactDetails" layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 15%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent"
+													for="tooltips-contactDetails" position="bottom">
+													<span> #{msg['help.userFilter.message']} </span>
+												</p:tooltip>
+										</a></span>
+
+									</div>
+									<h:message for="from" styleClass="help-block"></h:message>
+								</div>
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">To<span style="color: red">*</span></label>
+									<div class="col-md-4 col-sm-3 col-xs-4">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="to" binding="#{to}"
+											class="form-control input-sm" escape="true"
+											value="#{userAccountController.to}" maxlength="35"
+											required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['enddate_institution.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+
+									</div>
+									<h:message for="to" styleClass="help-block"></h:message>
+								</div>
+								<script>
+									$(function() {
+										$('input[id*="to"]')
+												.datepicker(
+														{
+															changeMonth : true,
+															changeYear : true,
+															maxDate : 0,
+															//minDate:$msg,
+															dateFormat : "dd/mm/yy",
+															yearRange : "-100:+0",
+															buttonImage : "/resources/image/calendar1.png"
+														});
+									});
+								</script>
+							</div>
+							<div class="form-group row">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+								<div class="col-sm-4">
+									<h:commandButton class="btn btn-info btn-sm btn-block"
+										action="#{userAccountController.displayUsersByDateBetween()}"
+										value="Submit">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandButton>
+
+								</div>
+								<span class="text-danger" id="customeordererror"></span>
+							</div>
+							<p:dataTable value="#{userAccountController.userDtosDetails}"
+								var="user" rows="10" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" id="tables"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+								<f:facet name="header">
+       							<h4 style="font-family: Open Sans sans-serif !important; font-size: 20px !important;color:black;font-weight:bold;"> #{msg['message.header.userList.filter']}</h4>
+    								</f:facet>
+
+								<p:column headerText="First Name">
+
+									<h:inputText value="#{user.fname}" size="10" id="fname"
+										rendered="#{user.editable}" required="true"
+										requiredMessage="#{msg['requiered.fname.message']}"
+										converterMessage="#{msg['error.enter.invalid.fname']}"
+										validatorMessage="#{msg['error.enter.invalid.fname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
 									</h:inputText>
-							</p:outputPanel>
-						</f:facet> -->
 
-						<p:column headerText="First Name">
-
-							<h:inputText value="#{user.fname}" size="10" id="fname"
-								rendered="#{user.editable}" required="true"
-								requiredMessage="#{msg['requiered.fname.message']}"
-								converterMessage="#{msg['error.enter.invalid.fname']}"
-								validatorMessage="#{msg['error.enter.invalid.fname']}">
-								<f:validateRegex
-									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-								<f:validateLength maximum="100"></f:validateLength>
-							</h:inputText>
-
-							<h:outputText value="#{user.fname}"
-								rendered="#{not user.editable}" />
-							<h:message errorClass="errorMsg1" for="fname"
-								style="font-size:12px;font-family:Time New Roman;"></h:message>
-						</p:column>
+									<h:outputText value="#{user.fname}"
+										rendered="#{not user.editable}" />
+									<h:message errorClass="errorMsg1" for="fname"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+								</p:column>
 
 
-						<p:column headerText="Last Name">
+								<p:column headerText="Last Name">
 
 
-							<h:inputText value="#{user.lname}" size="10" id="lname"
-								rendered="#{user.editable}" required="true"
-								requiredMessage="#{msg['requiered.lname.message']}"
-								converterMessage="#{msg['error.enter.invalid.lname']}"
-								validatorMessage="#{msg['error.enter.invalid.lname']}">
-								<f:validateRegex
-									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-								<f:validateLength maximum="100"></f:validateLength>
-							</h:inputText>
-							<h:outputText value="#{user.lname}"
-								rendered="#{not user.editable}" />
-							<h:message errorClass="errorMsg1" for="lname"
-								style="font-size:12px;font-family:Time New Roman;"></h:message>
+									<h:inputText value="#{user.lname}" size="10" id="lname"
+										rendered="#{user.editable}" required="true"
+										requiredMessage="#{msg['requiered.lname.message']}"
+										converterMessage="#{msg['error.enter.invalid.lname']}"
+										validatorMessage="#{msg['error.enter.invalid.lname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
+									</h:inputText>
+									<h:outputText value="#{user.lname}"
+										rendered="#{not user.editable}" />
+									<h:message errorClass="errorMsg1" for="lname"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
 
-						</p:column>
+								</p:column>
 
-						<p:column headerText="User Name">
-							<h:outputText value="#{user.viewId}" />
+								<p:column headerText="User Name">
+									<h:outputText value="#{user.viewId}" />
 
-						</p:column>
+								</p:column>
 
-						<p:column headerText="Category">
+								<p:column headerText="Category">
 
-							<h:selectOneMenu id="cat" styleClass="form-control"
-								rendered="#{user.editable}" required="true"
-								value="#{user.userCategory.userCatid}"
-								requiredMessage="#{msg['requiered.categoryname.message']}">
-								<f:selectItem
-									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-								<f:selectItems value="#{userAccountController.catDetails}"
-									var="option" itemValue="#{option.userCatid}"
-									itemLabel="#{option.usercategoryName}" itemLabelEscaped="true" />
-								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
-							</h:selectOneMenu>
+									<h:selectOneMenu id="cat" styleClass="form-control"
+										rendered="#{user.editable}" required="true"
+										value="#{user.userCategory.userCatid}"
+										requiredMessage="#{msg['requiered.categoryname.message']}">
+										<f:selectItem
+											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+										<f:selectItems value="#{userAccountController.catDetails}"
+											var="option" itemValue="#{option.userCatid}"
+											itemLabel="#{option.usercategoryName}"
+											itemLabelEscaped="true" />
+										<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+									</h:selectOneMenu>
 
-							<h:outputText value="#{user.userCategory.usercategoryName}"
-								rendered="#{not user.editable}" />
-							<h:message errorClass="errorMsg1" for="cat"
-								style="font-size:12px;font-family:Time New Roman;"></h:message>
-						</p:column>
-						<p:column headerText="User Status">
-							<h:outputText value="#{user.status}" />
+									<h:outputText value="#{user.userCategory.usercategoryName}"
+										rendered="#{not user.editable}" />
+									<h:message errorClass="errorMsg1" for="cat"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+								</p:column>
+								<p:column headerText="User Status">
+									<h:outputText value="#{user.status}" />
 
-						</p:column>
-						<p:column headerText=" Change Status">
+								</p:column>
+								<p:column headerText=" Change Status">
 
-							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-refresh"
-								value="#{user.action}"
-								action="#{userAccountController.updateStatus(user)}" />
-						</p:column>
-						<p:column headerText="Action">
-
-
-							<h:commandLink
-								class="btn btn-success 	glyphicon glyphicon-pencil" value="Edit" style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								action="#{userAccountController.editAction(user)}"
-								rendered="#{not user.editable}" />
-
-							<h:commandLink
-								class="btn btn-danger 	glyphicon glyphicon-remove"
-								value="Cancel" action="#{userAccountController.cancel(user)}" style="color:white;" rendered="#{user.editable}" />
+									<h:commandLink style="color:white"
+										class="btn btn-success 	glyphicon glyphicon-refresh"
+										value="#{user.action}"
+										action="#{userAccountController.updateStatus(user)}" />
+								</p:column>
+								<p:column headerText="Action">
 
 
-							<h:commandButton value="Save Changes" class="btn btn-primary" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								action="#{userAccountController.newAction(user)}"
-								rendered="#{user.editable}" render="userConatactPanel" />
-						</p:column>
+									<h:commandLink
+										class="btn btn-success 	glyphicon glyphicon-pencil"
+										value="Edit"
+										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										action="#{userAccountController.editAction(user)}"
+										rendered="#{not user.editable}" />
 
-					</p:dataTable>
+									<h:commandLink
+										class="btn btn-danger 	glyphicon glyphicon-remove"
+										value="Cancel" action="#{userAccountController.cancel(user)}"
+										style="color:white;" rendered="#{user.editable}" />
+
+
+									<h:commandButton value="Save Changes" class="btn btn-primary"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										action="#{userAccountController.newAction(user)}"
+										rendered="#{user.editable}" render="userConatactPanel" />
+								</p:column>
+
+							</p:dataTable>
+						</fieldset>
+
 					</div>
 				</div>
 			</h:form>
