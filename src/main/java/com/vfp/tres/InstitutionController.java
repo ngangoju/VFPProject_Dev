@@ -18,10 +18,12 @@ import org.hibernate.HibernateException;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
+import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SendEmail;
 import tres.common.SessionUtils;
+import tres.dao.generic.AbstractDao;
 import tres.dao.impl.CellImpl;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.CountryImpl;
@@ -57,7 +59,11 @@ public class InstitutionController implements Serializable, DbConstant {
 	private boolean isValid;
 	private boolean nextpage = false;
 	private boolean rendered;
-	private String key;
+	private String picture;
+	private boolean renderDiv;
+	private boolean renderDivdashboard;
+	private boolean renderrejected;
+	private boolean renderallinstit;
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
@@ -95,6 +101,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private List<InstitutionRegistrationRequest> pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 	private List<InstitutionRegistrationRequest> validInstitution = new ArrayList<InstitutionRegistrationRequest>();
 	/* class injection */
+	FormSampleController gen = new FormSampleController();
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	InstitutionImpl institutionImpl = new InstitutionImpl();
@@ -152,9 +159,6 @@ public class InstitutionController implements Serializable, DbConstant {
 			institutions = institutionImpl.getGenericListWithHQLParameter(
 					new String[] { "institutionRepresenative_userId" }, new Object[] { usersSession }, "Institution",
 					"institutionName asc");
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 			validInstitution = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
@@ -172,11 +176,12 @@ public class InstitutionController implements Serializable, DbConstant {
 
 		{
 
-			requests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
-					"instRegReqstDate asc");
-			institutionDtos = display(requests);
+			// requests = requestImpl.getGenericListWithHQLParameter(
+			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
+			// "InstitutionRegistrationRequest",
+			// "instRegReqstDate asc");
+			// institutionDtos = display(requests);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -199,6 +204,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
+			institution.setInstitutionLogo(picture);
 			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
@@ -284,12 +290,19 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			reqst.setInstRegReqstStatus(ACCEPTED);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
+			String msg = "Your request have been rejected due to certain condition. try again later";
+			/*
+			 * gen.sendEmailNotification("dujam7@outlook.com", usersSession.getFname() + " "
+			 * + usersSession.getLname(), "Confirmation", msg);
+			 */
+			gen.sendUserMailTest("dujam7@outlook.com", usersSession.getFname(), usersSession.getLname());
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.confirm.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not updated");
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 			clearInstitutionFuileds();
 		} catch (Exception e) {
 			setValid(false);
@@ -304,13 +317,17 @@ public class InstitutionController implements Serializable, DbConstant {
 			reqst.setInstRegReqstStatus(REJECTED);
 			reqst.setGenericStatus(DESACTIVE);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-			contact = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[] { usersSession }, "Contact");
+			// contact = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[]
+			// { usersSession }, "Contact");
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.reject.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not updated");
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 			clearInstitutionFuileds();
 		} catch (Exception e) {
 			setValid(false);
@@ -344,19 +361,19 @@ public class InstitutionController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String institutionViewBydate() {
+	public String institutionViewBydate() throws Exception {
 		try {
 			if (to.after(from)) {
 				try
 
 				{
 					Formating fmt = new Formating();
-					requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
+					List<InstitutionRegistrationRequest> reqst = new ArrayList<InstitutionRegistrationRequest>();
+					reqst = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
 							fmt.getMysqlDateFormt(from + ""), fmt.getMysqlDateFormt(to + ""),
 							new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 							new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
-
-					institutionDtos = display(requests);
+					institutionDtos = display(reqst);
 					return "/menu/ViewInstitutionProfile.xhtml?faces-redirect=true";
 				} catch (Exception e) {
 					setValid(false);
@@ -391,7 +408,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 		/* clear fields */
-		institution.setInstitutionType(null);
+		institution = new Institution();
 		/* end clear field */
 
 	}
@@ -415,21 +432,128 @@ public class InstitutionController implements Serializable, DbConstant {
 				institutionDto.setVillage(inst.getInstitution().getVillage());
 				dtos.add(institutionDto);
 			}
+
 			return dtos;
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public String getKey() {
-		return key;
+	// public void sendNotificationMail(String email) {
+	// /* sending content in a table example */
+	// String name = usersSession.getFname();
+	// String fname = usersSession.getLname();
+	//
+	// String msg = "<p>Hello.</p>" + "<table width=\"50%\" border=\"5px\">\n" + "
+	// <tbody>\n" + " <tr>\n"
+	// + " <td class=\"labelbold\">Fname</td>\n" + " <td>\n" + " " + name + "\n"
+	// + " </td>\n" + " </tr>\n" + " <tr>\n" + " <td
+	// class=\"labelbold\">Lname</td>\n"
+	// + " <td>\n" + " " + fname + "\n" + " </td>\n"
+	//
+	// + " <tbody>Your request have been rejected due to certain condition. try
+	// again later </tbody>\n"
+	// + "</table>\n";
+	// /* End send content in table sample */
+	// gen.sendEmailNotification("dujam7@outlook.com", "Tres SDA", "Confirmation",
+	// msg);
+	// LOGGER.info("::: notidficatio sent ");
+	// }
+
+	public void displayRequest() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderDiv = true;
+		renderrejected = false;
+		renderDivdashboard = true;
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void displayRejected() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderrejected = true;
+		renderDiv = false;
+		renderDivdashboard = true;
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void displayAllInstitutions() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderrejected = false;
+		renderDiv = false;
+		renderDivdashboard = true;
+		renderallinstit = true;
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			institutionDtos = display(requests);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int countRequests() {
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			return pendinGrequests.size();
+		} catch (Exception e) {
+			return 0;
+			// TODO: handle exception
+		}
+	}
+
+	public int countRequestsrejected() {
+		try {
+
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			return pendinGrequests.size();
+		} catch (Exception e) {
+			return 0;
+			// TODO: handle exception
+		}
+	}
+
+	public int countRequestsAllacepted() {
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			institutionDtos = display(requests);
+			return institutionDtos.size();
+		} catch (Exception e) {
+			return 0;
+			// TODO: handle exception
+		}
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	public void renderNext() {
@@ -857,6 +981,46 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setPendinGrequests(List<InstitutionRegistrationRequest> pendinGrequests) {
 		this.pendinGrequests = pendinGrequests;
+	}
+
+	public boolean isRenderDiv() {
+		return renderDiv;
+	}
+
+	public void setRenderDiv(boolean renderDiv) {
+		this.renderDiv = renderDiv;
+	}
+
+	public boolean isRenderrejected() {
+		return renderrejected;
+	}
+
+	public void setRenderrejected(boolean renderrejected) {
+		this.renderrejected = renderrejected;
+	}
+
+	public boolean isRenderDivdashboard() {
+		return renderDivdashboard;
+	}
+
+	public void setRenderDivdashboard(boolean renderDivdashboard) {
+		this.renderDivdashboard = renderDivdashboard;
+	}
+
+	public boolean isRenderallinstit() {
+		return renderallinstit;
+	}
+
+	public void setRenderallinstit(boolean renderallinstit) {
+		this.renderallinstit = renderallinstit;
+	}
+
+	public FormSampleController getGen() {
+		return gen;
+	}
+
+	public void setGen(FormSampleController gen) {
+		this.gen = gen;
 	}
 
 }
