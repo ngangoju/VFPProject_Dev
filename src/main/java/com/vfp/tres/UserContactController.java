@@ -97,9 +97,7 @@ public class UserContactController implements Serializable, DbConstant {
 				contDto.setContactId(contact.getContactId());
 				contDto.setUser(contact.getUser());
 				contactDtoDetails.add(contDto);
-			}
-			
-			
+			}		
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));

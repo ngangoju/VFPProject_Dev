@@ -95,6 +95,10 @@ return sdf.parse(sdf.format(d));
 
     }
     
+    public static  String  getMysqlFormatV2(Date   inputDate) throws ParseException{
+    	return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(inputDate);
+    	 }
+    
     public static  Date getFormtTimeReturnMysqlFormat(String   inputTime) throws ParseException{
    SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm a");
 java.util.Date d2=null;
