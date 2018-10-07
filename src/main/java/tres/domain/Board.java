@@ -93,5 +93,13 @@ public class Board extends CommonDomain implements Serializable {
 		this.institution = institution;
 	}
 
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
 
 }

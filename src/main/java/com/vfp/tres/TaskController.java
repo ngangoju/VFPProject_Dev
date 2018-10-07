@@ -39,6 +39,8 @@ public class TaskController implements Serializable, DbConstant {
 	private Users users;
 	private Users usersSession;
 	private Task task;
+	private StrategicPlan plan;
+	private List<StrategicPlan> planDetails = new ArrayList<StrategicPlan>();
 	private List<Task> taskDetails = new ArrayList<Task>();
 	private List<Task> taskDetail = new ArrayList<Task>();
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
@@ -105,6 +107,8 @@ public class TaskController implements Serializable, DbConstant {
 			task.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
+			plan = planDetails.get(planDetails.size()-1);
+			task.setStrategicPlan(plan);
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -291,6 +295,22 @@ public String newTask() {
 
 	public void setTaskDtoDetail(List<TaskDto> taskDtoDetail) {
 		this.taskDtoDetail = taskDtoDetail;
+	}
+
+	public StrategicPlan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(StrategicPlan plan) {
+		this.plan = plan;
+	}
+
+	public List<StrategicPlan> getPlanDetails() {
+		return planDetails;
+	}
+
+	public void setPlanDetails(List<StrategicPlan> planDetails) {
+		this.planDetails = planDetails;
 	}
 
 

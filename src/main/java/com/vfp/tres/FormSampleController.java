@@ -103,9 +103,42 @@ public class FormSampleController implements Serializable, DbConstant {
          + "  </tbody>\n"
          + "</table>\n";
 		/*End send content in table sample*/
+<<<<<<< HEAD
 		gen.sendEmailNotification("dujam7@outlook.com","test","Test Email",msg);
+=======
+		gen.sendEmailNotification("sibo2540@gmail.com","Sibo Emma","Test Email",msg);
+>>>>>>> 141331408e4602573424cd32281eb09843b09bc7
 		LOGGER.info("::: notidficatio sent   ");
 	}
+	
+	public  void sendUserMailTest( String useremail,String userfname,String userlname) {
+		/*sending content in a table example*/
+		String name="Mukamana";
+		String fname="Eric";
+		
+		String msg=  "<p>Kindly refer to the  below status.</p>"
+	      + "<table width=\"50%\" border=\"5px\">\n"
+         + "  <tbody>\n"
+         + "	<tr>\n"
+         + "      <td class=\"labelbold\">Fname</td>\n"
+         + "      <td>\n"
+         + "		  " +name+ "\n"
+         + "	  </td>\n"
+         + "    </tr>\n"
+         + "	<tr>\n"
+         + "      <td class=\"labelbold\">Lname</td>\n"
+         + "      <td>\n"
+         + "		  " +fname+ "\n"
+         + "	  </td>\n"
+      
+         + "  </tbody>\n"
+         + "</table>\n";
+		/*End send content in table sample*/
+		gen.sendEmailNotification(useremail,userfname+" "+userlname,"Test Email",msg);
+		LOGGER.info("::: notidficatio sent   ");
+	}
+	
+	
 	public void saveData() {
 		LOGGER.info(CLASSNAME + "testing save methode ");
 		Formating fmt=new Formating();

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<<<<<<< HEAD
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -25,16 +26,64 @@
 					
 						
 					<h:panelGroup layout="block"
+=======
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:body>
+
+	<ui:composition template="templateHome/common/commonLayout.xhtml">
+
+
+		<ui:define name="content">
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">
+					<span style="color: #737373; font-size: 10pt">Fields marked
+						with an asterisk <span style="color: red">(*)</span> are
+						mandatory.
+					</span>
+					<center></center>
+				</div>
+				<div class="panel-body"
+					style="border: 0px solid blue; margin-top: 4px; height: 850px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+
+
+					<h:form>
+						<h:panelGroup layout="block"
+							rendered="#{not formSampleController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+>>>>>>> 141331408e4602573424cd32281eb09843b09bc7
 							rendered="#{formSampleController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li style="list-style: none; background-color:#32CD32; color: white;margin-left:-4.9%" class="alert alert-success"><h:outputText
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success"><h:outputText
 											value="#{facesMessage.summary}" escape="false" /></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
 						<fieldset>
+<<<<<<< HEAD
       
        <legend>Application Form </legend>
        
@@ -140,5 +189,200 @@
     		</ui:define>
 </ui:composition>
     </h:body>
+=======
+
+							<legend>Application Form </legend>
+							<h:panelGroup id="categoryPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.sample.name']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-6" style="">
+										<h:selectOneMenu id="categoryId" styleClass="form-control"
+											required="true" value="#{formSampleController.users.lname}"
+											requiredMessage="#{msg['category.requiered.message']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="true" />
+											<f:selectItems
+												value="#{formSampleController.menuGroupDetails}"
+												var="option" itemValue="#{option}"
+												itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
+											<f:ajax event="change" execute="@this"
+												listener="#{formSampleController.changeSelectBox('Eric')}"
+												render="ReasonPanel" />
+										</h:selectOneMenu>
+									</div>
+									<h:message for="categoryId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+							<h:panelGroup id="ReasonPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.sample.name']}<span
+										style="color: red">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<h:inputTextarea id="addressId" styleClass="form-control"
+											value="#{formSampleController.users.address}" maxlength="150"
+											required="true"
+											requiredMessage="#{msg['category.requiered.message']}"
+											validatorMessage="#{msg['error.address.maxlength']}">
+											<f:validateLength maximum="150" />
+										</h:inputTextarea>
+									</div>
+									<div class="col-md-1 col-sm-1 col-xs-1"></div>
+
+									<h:message for="addressId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="fromDatePanel" layout="block">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.sample.name']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_dob_date_id"
+											binding="#{from_dob_date_id}" class="form-control"
+											escape="true"
+											value="#{formSampleController.users.dateOfBirth}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['dob.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_dob_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	maxDate : 0,
+																	//minDate: 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "./resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<h:message for="from_dob_date_id" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="surnamePan" layout="block">
+								<div class="fileupload fileupload-new"
+									data-provides="fileupload">
+									<div class="fileupload-preview thumbnail"
+										style="width: 80%; height: 70px;"></div>
+									<div>
+										<span class="btn btn-file btn-success"><span
+											class="fileupload-new">Select image</span><span
+											class="fileupload-exists">Change</span> <p:fileUpload
+												id="pict" value="#{fileUploadController.file}" mode="simple"
+												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" /> </span> <a href="#"
+											class="btn btn-danger fileupload-exists"
+											data-dismiss="fileupload">Remove</a>
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-6 col-xs-6">
+									<h:commandButton class="btn btn-info btn-xlg btn-block"
+										action="#{fileUploadController.processFileUpload}"
+										value="UploadFile" />
+
+								</div>
+
+							</h:panelGroup>
+
+
+							<h:panelGroup id="surnamePanl" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.sample.name']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<h:inputText id="surnameId" binding="#{surnameId}"
+											styleClass="form-control"
+											value="#{formSampleController.users.fname}" maxlength="35"
+											required="true"
+											validatorMessage="#{msg['error.enter.invalid.surname']}"
+											converterMessage="#{msg['error.enter.invalid.surname']}"
+											requiredMessage="#{msg['surname.message']}">
+											<f:validateRegex
+												pattern="^(//menu//)+(\\[a-z_\-\s0-9\.]+)+\.(xhtml)$" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+									</div>
+									<h:message for="surnameId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+							<div class="form-group row">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black"></label>
+								<div class="col-md-6 col-sm-6 col-xs-6">
+									<h:commandButton class="btn btn-info btn-xlg btn-block"
+										action="#{formSampleController.saveData}"
+										value="#{msg['label.subimit.message.login']}" />
+
+								</div>
+								<span class="text-danger" id="err"></span>
+							</div>
+
+
+						</fieldset>
+
+					</h:form>
+
+					<h:form>
+						<h:commandButton class="btn btn-success btn-xlg btn-small"
+							action="#{formSampleController.sendMailTest}" value="Send  Email">
+							<f:ajax render="@form" execute="@form" onevent="showProgress" />
+						</h:commandButton>
+					</h:form>
+
+
+
+					<center>
+						<div style="border-bottom: 2px solid blue; width: 200px">Report
+							Sample</div>
+					</center>
+
+					<h:panelGrid columns="3" columnClasses="left,right"
+						style="width:100%">
+						<p:chart type="line"
+							model="#{chartPresentationController.animatedModel1}"
+							style="width:350px;" />
+						<p:chart type="bar"
+							model="#{chartPresentationController.animatedModel2}"
+							style="width:350px;" />
+						<p:chart type="pie"
+							model="#{chartPresentationController.pieModel2}"
+							style="width:350px;height:300px" />
+					</h:panelGrid>
+
+
+				</div>
+			</div>
+
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+>>>>>>> 141331408e4602573424cd32281eb09843b09bc7
 
 </html>

@@ -177,7 +177,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDtoDetails.add(userDto);
 			// below list concern list of all users by changing their status
 
-		/*	usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Users", "userId desc");
 			for (Users users : usersDetails) {
 				UserDto userDtos = new UserDto();
@@ -204,7 +204,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				}
 				userDtosDetails.add(userDtos);
 
-			}*/
+			}
 
 		} catch (Exception e) {
 			setValid(false);
@@ -504,6 +504,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	}
 
 	
+	/*@SuppressWarnings("static-access")
 	public void displayUsersByDateBetween() {
 		try {
 			if (to.after(from)) {
@@ -548,7 +549,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
-	 
+	 */
 
 	/**
 	 * @return

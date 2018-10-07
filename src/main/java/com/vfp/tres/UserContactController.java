@@ -47,6 +47,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private String choice;
 	private boolean rendered;
 	private boolean renderForeignCountry=true;
+	private String useremail;
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -85,8 +86,8 @@ public class UserContactController implements Serializable, DbConstant {
 				userDto.setUserCategory(user.getUserCategory());
 				userDtoDetails.add(userDto);
 			}
-			contactDetails = contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Contact", "contactId asc");
+			contactDetails = contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","createdBy" },
+					new Object[] { ACTIVE,usersSession.getViewId() }, "Contact", "contactId asc");
 			for (Contact contact : contactDetails) {
 				ContactDto contDto = new ContactDto();
 				contDto.setEditable(false);
@@ -96,7 +97,7 @@ public class UserContactController implements Serializable, DbConstant {
 				contDto.setContactId(contact.getContactId());
 				contDto.setUser(contact.getUser());
 				contactDtoDetails.add(contDto);
-			}
+			}		
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -142,6 +143,7 @@ public class UserContactController implements Serializable, DbConstant {
 				return null;
 			}
 
+			FormSampleController sample= new FormSampleController();
 			contact.setCreatedBy(usersSession.getViewId());
 			contact.setCrtdDtTime(timestamp);
 			contact.setGenericStatus(ACTIVE);
@@ -151,6 +153,8 @@ public class UserContactController implements Serializable, DbConstant {
 			
 			LOGGER.info(user.getUserId() + ":::------->>>>>>User searched founded");
 			contact.setUser(usersImpl.gettUserById(user.getUserId(), "userId"));
+			sample.sendUserMailTest(useremail,user.getFname(),user.getLname());
+			contact.setEmail(useremail);
 			contact.setUpdatedBy(usersSession.getViewId());
 			contactImpl.saveContact(contact);
 			JSFMessagers.resetMessages();
@@ -413,6 +417,14 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void setRenderForeignCountry(boolean renderForeignCountry) {
 		this.renderForeignCountry = renderForeignCountry;
+	}
+
+	public String getUseremail() {
+		return useremail;
+	}
+
+	public void setUseremail(String useremail) {
+		this.useremail = useremail;
 	}
 
 }

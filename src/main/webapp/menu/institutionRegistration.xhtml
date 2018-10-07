@@ -358,9 +358,9 @@
 											<div>
 												<span class="btn btn-file btn-success"><span
 													class="fileupload-new">Choose</span><span
-													class="fileupload-exists">Change</span> <p:fileUpload
-														id="pict"
-														value="#{institutionController.institution.institutionLogo}"
+													class="fileupload-exists">Change</span> <p:growl
+														id="messages" showDetail="true" /> <p:fileUpload
+														id="pict" value="#{institutionController.picture}"
 														mode="simple" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" /> </span>
 												<a href="#" class="btn btn-danger fileupload-exists"
 													data-dismiss="fileupload">Cancel</a>

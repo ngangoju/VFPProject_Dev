@@ -58,6 +58,9 @@
 						var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
 						sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}"
 						>
+						<f:facet name="header" >
+       							<h4 style="font-family: Open Sans sans-serif !important; font-size: 18px !important;color:black;font-weight:bold;">  #{msg['message.header.userCat.filter']}</h4>
+    								</f:facet>
 						<p:column headerText="No" style="width:10%;">
 
 							<h:outputText value="#{row+1}" />
