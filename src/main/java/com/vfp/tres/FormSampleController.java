@@ -103,11 +103,10 @@ public class FormSampleController implements Serializable, DbConstant {
          + "  </tbody>\n"
          + "</table>\n";
 		/*End send content in table sample*/
-<<<<<<< HEAD
+
 		gen.sendEmailNotification("dujam7@outlook.com","test","Test Email",msg);
-=======
-		gen.sendEmailNotification("sibo2540@gmail.com","Sibo Emma","Test Email",msg);
->>>>>>> 141331408e4602573424cd32281eb09843b09bc7
+
+
 		LOGGER.info("::: notidficatio sent   ");
 	}
 	
