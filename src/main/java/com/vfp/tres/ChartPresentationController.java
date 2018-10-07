@@ -1,6 +1,8 @@
 package com.vfp.tres;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
+import java.util.logging.Logger;
+
 import javax.faces.bean.ManagedBean;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
@@ -14,7 +16,7 @@ import tres.dao.impl.UserImpl;
  
 @ManagedBean
 public class ChartPresentationController  implements Serializable{
-	
+	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private static final long serialVersionUID = 1L;
 	private LineChartModel animatedModel1;
     private BarChartModel animatedModel2;
@@ -38,7 +40,7 @@ public class ChartPresentationController  implements Serializable{
         pieModel2 = new PieChartModel();
         UserImpl usImpl=new UserImpl();
        
-  for (Object[] data:  usImpl.reportList("select count(*),cat.usercategoryName from UserCategory cat, Users u where u.userCategory=cat.userCatid group by cat.userCatid")){
+  for (Object[] data:  usImpl.reportList("select count(*),cat.usercategoryName from Users u  join  u.userCategory cat  group by cat.userCatid")){
        
 	  pieModel2.set(data[1]+"", Integer.parseInt(data[0]+""));	
         }
@@ -48,8 +50,16 @@ public class ChartPresentationController  implements Serializable{
         pieModel2.setShowDataLabels(true);
         pieModel2.setDiameter(150);
         pieModel2.setShadow(false);
+        
+        
+        for (Object[] data:  usImpl.reportList("select us.fname,us.lname from Contact co right  join  co.user us where co.user is null")){
+            
+          	LOGGER.info("users>>"+data[0]+":: "+data[1]+"");
+                  }
+          
     }
-  
+    
+   
  //end  example 
     private void createAnimatedModels() {
         animatedModel1 = initLinearModel();
@@ -125,13 +135,14 @@ public class ChartPresentationController  implements Serializable{
   
     private void createPieModel1() {
         pieModel1 = new PieChartModel();
+        UserImpl usImpl=new UserImpl();
+        
+        for (Object[] data:  usImpl.reportList("select count(*),cat.usercategoryName from UserCategory cat, Users u where u.userCategory=cat.userCatid group by cat.userCatid")){
+             
+        	pieModel1.set(data[1]+"", Integer.parseInt(data[0]+""));	
+              }
          
-        pieModel1.set("Brand 1", 540);
-        pieModel1.set("Brand 2", 325);
-        pieModel1.set("Brand 3", 702);
-        pieModel1.set("Brand 4", 421);
-         
-        pieModel1.setTitle("Simple Pie");
+        pieModel1.setTitle("Users with thier respective category");
         pieModel1.setLegendPosition("w");
         pieModel1.setShadow(false);
     }
