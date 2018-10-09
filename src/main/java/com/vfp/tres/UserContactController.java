@@ -88,6 +88,7 @@ public class UserContactController implements Serializable, DbConstant {
 			}
 			contactDetails = contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","createdBy" },
 					new Object[] { ACTIVE,usersSession.getViewId() }, "Contact", "contactId asc");
+			
 			for (Contact contact : contactDetails) {
 				ContactDto contDto = new ContactDto();
 				contDto.setEditable(false);
@@ -97,7 +98,8 @@ public class UserContactController implements Serializable, DbConstant {
 				contDto.setContactId(contact.getContactId());
 				contDto.setUser(contact.getUser());
 				contactDtoDetails.add(contDto);
-			}		
+			}	
+			
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));

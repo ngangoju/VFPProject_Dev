@@ -158,16 +158,16 @@
 										action="#{userAccountController.displayUsersByDateBetween()}"
 										value="Submit">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										<p:ajax listener="#{userAccountController.showDataTable()}" update="toTable"/>
 									</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="customeordererror"></span>
 							</div>
+							<p:outputPanel id="toTable" autoUpdate="true"
+									rendered="#{userAccountController.renderDataTable}">
 							<p:dataTable value="#{userAccountController.userDtosDetails}"
-								var="user" rows="10" paginator="true"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,15" id="tables"
-								style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+								var="user" rows="10"  id="tables" style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
 								<f:facet name="header">
        							<h4 style="font-family: Open Sans sans-serif !important; font-size: 20px !important;color:black;font-weight:bold;"> #{msg['message.header.userList.filter']}</h4>
     								</f:facet>
@@ -245,7 +245,10 @@
 									<h:commandLink style="color:white"
 										class="btn btn-success 	glyphicon glyphicon-refresh"
 										value="#{user.action}"
-										action="#{userAccountController.updateStatus(user)}" />
+										action="#{userAccountController.updateStatus(user)}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
 								</p:column>
 								<p:column headerText="Action">
 
@@ -255,7 +258,10 @@
 										value="Edit"
 										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 										action="#{userAccountController.editAction(user)}"
-										rendered="#{not user.editable}" />
+										rendered="#{not user.editable}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
 
 									<h:commandLink
 										class="btn btn-danger 	glyphicon glyphicon-remove"
@@ -266,10 +272,15 @@
 									<h:commandButton value="Save Changes" class="btn btn-primary"
 										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 										action="#{userAccountController.newAction(user)}"
-										rendered="#{user.editable}" render="userConatactPanel" />
+										rendered="#{user.editable}" execute="@this" > 
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										
+									</h:commandButton>
 								</p:column>
 
 							</p:dataTable>
+							</p:outputPanel>
 						</fieldset>
 
 					</div>
