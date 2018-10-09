@@ -153,6 +153,13 @@
     <version>4.2.2</version>
     <type>pom</type>
 </dependency>
+<!-- https://mvnrepository.com/artifact/jfree/jfreechart -->
+<!-- <dependency> -->
+<!--     <groupId>jfree</groupId> -->
+<!--     <artifactId>jfreechart</artifactId> -->
+<!--     <version>1.0.12</version> -->
+<!-- </dependency> -->
+
 	</dependencies>
 
 	<build>
