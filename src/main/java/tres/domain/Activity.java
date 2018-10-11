@@ -46,6 +46,10 @@ public class Activity extends CommonDomain implements Serializable {
 	@JoinColumn(name = "task")
 	private Task task;
 
+	@ManyToOne
+	@JoinColumn(name="user")
+	private Users user;
+	
 	public int getActivityId() {
 		return activityId;
 	}
@@ -93,6 +97,14 @@ public class Activity extends CommonDomain implements Serializable {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 }
