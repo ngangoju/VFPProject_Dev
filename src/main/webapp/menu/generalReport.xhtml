@@ -36,26 +36,25 @@
 											<div class="panel-heading">REPORT BY STAFF NAME.</div>
 
 											<div class="panel-body">
-												
+
+									
 
 												<div class="col-md-4 col-sm-4 col-xs-4">
 													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{staffReportActivity.myrepo}"
-														value="#{msg['label.subimit.message.print1']}"/>
-
-												</div>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
 														
-														value="#{msg['label.submit.message.printExel']}"/>
-														
+														value="#{msg['label.submit.message.printPdf']}" />
 
 												</div>
 												<div class="col-md-4 col-sm-4 col-xs-4">
 													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printChart']}"/>
-														
+														value="#{msg['label.submit.message.printExel']}" />
+
+
+												</div>
+												<div class="col-md-4 col-sm-4 col-xs-4">
+													<h:commandButton class="btn btn-success btn-md btn-block"
+														value="#{msg['label.submit.message.printChart']}" />
+
 
 												</div>
 											</div>
@@ -64,25 +63,41 @@
 										<div class="panel panel-primary">
 											<div class="panel-heading">REPORT BY TASK NAME.</div>
 											<div class="panel-body">
-												
 
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printChart']}"/>
+												<div class="form-group row">
+													<label for="todate"
+														class="col-md-2 col-sm-2 col-xs-2 control-label"
+														style="color: black">#{msg['form.task.parent']}</label>
+													<div class="col-md-6 col-sm-6 col-xs-6">
+														<h:selectOneMenu id="categoryId" styleClass="form-control"
+															required="true" value="#{staffReportActivity.myTask}"
+															requiredMessage="#{msg['parent.task.required']}">
+															<f:selectItem
+																itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																itemValue="#{null}" escapeItem="true" />
+															<f:selectItems value="#{staffReportActivity.taskDetail}"
+																var="option" itemValue="#{option.taskId}"
+																itemLabel="#{option.taskName}" itemLabelEscaped="true" />
+															<!--  									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
+														</h:selectOneMenu>
+													</div>
+
 												</div>
 												<div class="col-md-4 col-sm-4 col-xs-4">
 													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printExel']}"/>
-														
+														action="#{staffReportActivity.createPdf}"
+														value="#{msg['label.submit.message.printPdf']}" />
+												</div>
+												<div class="col-md-4 col-sm-4 col-xs-4">
+													<h:commandButton class="btn btn-success btn-md btn-block"
+														value="#{msg['label.submit.message.printExel']}" />
+
 
 												</div>
 												<div class="col-md-4 col-sm-4 col-xs-4">
 													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printChart']}"/>
-														
+														value="#{msg['label.submit.message.printChart']}" />
+
 
 
 												</div>
@@ -91,31 +106,29 @@
 										<div class="panel panel-primary">
 											<div class="panel-heading">REPORT BY DATE INTERVAL.</div>
 											<div class="panel-body">
-
+												
 												<div class="col-md-4 col-sm-4 col-xs-4">
 													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printPdf']}"/>
-														
+													action="#{staffReportActivity.createPDFforDates}"
+														value="#{msg['label.submit.message.printPdf']}" />
 
-												</div>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printExel']}"/>
-														
 
 												</div>
 												<div class="col-md-4 col-sm-4 col-xs-4">
 													<h:commandButton class="btn btn-success btn-md btn-block"
-														
-														value="#{msg['label.submit.message.printChart']}"/>
-														
+														value="#{msg['label.submit.message.printExel']}" />
+
+
+												</div>
+												<div class="col-md-4 col-sm-4 col-xs-4">
+													<h:commandButton class="btn btn-success btn-md btn-block"
+														value="#{msg['label.submit.message.printChart']}" />
+
 
 												</div>
 											</div>
 										</div>
-										
+
 									</div>
 
 								</div>
