@@ -153,7 +153,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
        
 	  pieModel2.set(data[1]+"", Integer.parseInt(data[0]+""));	
         }
-       pieModel2.setTitle("TASKS WITH THEIR RESPECTIVE \\n NUMBER OF ACTIVITIES ");
+       pieModel2.setTitle("Pie chart ");
         pieModel2.setLegendPosition("e");
         pieModel2.setFill(false);
         pieModel2.setShowDataLabels(true);
