@@ -20,6 +20,14 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
+import org.primefaces.model.chart.PieChartModel;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -66,7 +74,14 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private String[] status = { NOTSTARTED, APPROVED, REJECT, INPROGRESS, COMPLETED };
 	private String[] weight = { SHORT, MEDIUM, LONG };
 
-	
+	private LineChartModel animatedModel1;
+    private BarChartModel animatedModel2;
+    private PieChartModel pieModel1;
+    private PieChartModel pieModel2;
+    
+    
+     Task tc= new Task();
+    
 	TaskImpl taskImpl = new TaskImpl();
 	Task t=taskImpl.getTaskById(myTask, "taskId");
 	
@@ -82,6 +97,9 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
+		createAnimatedModels();
+        createPieModels();
+        
 		HttpSession session = SessionUtils.getSession();
 		usersSession = (Users) session.getAttribute("userSession");
 
@@ -100,7 +118,48 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		} catch (Exception e) {
 		}
 	}
-
+    private void createPieModels() {
+       // createPieModel1();
+        createPieModel2();
+    }
+    //see reference on this example how to get data from the database     
+ //end  example 
+    private void createAnimatedModels() {
+        animatedModel2 = initBarModel();
+        animatedModel2.setTitle("Bar Charts");
+        animatedModel2.setAnimate(true);
+        animatedModel2.setLegendPosition("ne");
+        Axis yAxis = animatedModel2.getAxis(AxisType.Y);
+        yAxis.setMin(0);
+        yAxis.setMax(10);
+    } 
+    private BarChartModel initBarModel() {
+        BarChartModel model = new BarChartModel();
+     
+        ChartSeries tasks = new ChartSeries();
+        for (Object[] data:  taskImpl.reportList("select count(*),tas.taskName from Activity a  join  a.task tas  group by tas.taskId")){
+       
+        	tasks.set(data[1]+"", Integer.parseInt(data[0]+""));
+              }
+        model.addSeries(tasks);
+        tasks.setLabel(tc.getTaskName());
+        return model;
+    } 
+    private void createPieModel2() {
+    	pieModel2 = new PieChartModel();
+        UserImpl usImpl=new UserImpl();
+       
+    for (Object[] data:  usImpl.reportList("select count(*),tas.taskName from Task tas, Activity ac where ac.task=tas.taskId group by tas.taskId")){
+       
+	  pieModel2.set(data[1]+"", Integer.parseInt(data[0]+""));	
+        }
+       pieModel2.setTitle("TASKS WITH THEIR RESPECTIVE \\n NUMBER OF ACTIVITIES ");
+        pieModel2.setLegendPosition("e");
+        pieModel2.setFill(false);
+        pieModel2.setShowDataLabels(true);
+        pieModel2.setDiameter(150);
+        pieModel2.setShadow(false);
+    } 
 	// CREATING FOOTER AND HEADER
 
 	class MyFooter extends PdfPageEventHelper {
@@ -410,6 +469,36 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		return sdf;
 	}
 
+	public LineChartModel getAnimatedModel1() {
+		return animatedModel1;
+	}
+	public void setAnimatedModel1(LineChartModel animatedModel1) {
+		this.animatedModel1 = animatedModel1;
+	}
+	public BarChartModel getAnimatedModel2() {
+		return animatedModel2;
+	}
+	public void setAnimatedModel2(BarChartModel animatedModel2) {
+		this.animatedModel2 = animatedModel2;
+	}
+	public PieChartModel getPieModel1() {
+		return pieModel1;
+	}
+	public void setPieModel1(PieChartModel pieModel1) {
+		this.pieModel1 = pieModel1;
+	}
+	public PieChartModel getPieModel2() {
+		return pieModel2;
+	}
+	public void setPieModel2(PieChartModel pieModel2) {
+		this.pieModel2 = pieModel2;
+	}
+	public Task getT() {
+		return t;
+	}
+	public void setT(Task t) {
+		this.t = t;
+	}
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
 	}
