@@ -130,22 +130,31 @@
 										</div>
 
 									</div>
+									 <div>
+                            <center>
+						<div style="border-bottom: 2px solid blue; width: 200px">Report
+							Sample</div>
+					</center>
+
+					<h:panelGrid columns="3" columnClasses="left,right"
+						style="width:100%">
+						<p:chart type="bar"
+							model="#{staffReportActivity.animatedModel2}"
+							style="width:350px;height:300px" />
+						<p:chart type="pie"
+							model="#{staffReportActivity.pieModel2}"
+							style="width:350px;height:300px" />
+					</h:panelGrid>    
+                           </div>
 
 								</div>
 
-
+                          
 							</fieldset>
-
+                                                    
 						</h:form>
-
-
-
-
 					</div>
-
 				</div>
-
-
 			</h:form>
 		</ui:define>
 	</ui:composition>
