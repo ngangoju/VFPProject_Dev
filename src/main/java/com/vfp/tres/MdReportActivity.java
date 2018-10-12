@@ -20,6 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -115,10 +116,7 @@ public class MdReportActivity implements Serializable, DbConstant {
     Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.ITALIC);
     public void onEndPage(PdfWriter writer, Document document) {
         PdfContentByte cb = writer.getDirectContent();
-        Date date = new Date();
-        SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
-        String xdate = dt.format(date);
-       Phrase header = new Phrase("Printed On: " + xdate, ffont1);
+       Phrase header = new Phrase("");
        Phrase footer = new Phrase("@Copyright ITEME...!\n", ffont2);
         ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
                 header,
@@ -133,10 +131,12 @@ public class MdReportActivity implements Serializable, DbConstant {
 //Codes for creating the table and its contents
 
 public void createPdf() throws IOException, DocumentException {
-	
+	Date date = new Date();
+    SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
+	String xdate = dt.format(date);
 	FacesContext context = FacesContext.getCurrentInstance();
     Document document = new Document();
-    Rectangle rect = new Rectangle(20, 20, 700, 700);
+    Rectangle rect = new Rectangle(100, 100, 700, 700);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PdfWriter writer = PdfWriter.getInstance(document, baos);
     MyFooter event = new MyFooter();
@@ -148,6 +148,8 @@ public void createPdf() throws IOException, DocumentException {
     }
 
       document.add(new Paragraph("\n"));
+      
+      
       Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
       PdfPTable table = new PdfPTable(5);
    
@@ -157,23 +159,29 @@ public void createPdf() throws IOException, DocumentException {
 //      pc.setHorizontalAlignment(Element.ALIGN_CENTER);
 //      table.addCell(pc);     
 //  table.setWidthPercentage(110);
+      Paragraph header1 = new Paragraph("MANAGER DIRECTOR REPORT MADE ON" + xdate + " REPORT");
+		// header.setAlignment(Element.ALIGN_RIGHT);
+		header1.setAlignment(Element.ALIGN_CENTER);
+		// header.add(header1);
+		document.add(header1);
+		document.add(new Paragraph("                                          "));
       
-  PdfPCell pc1 = new PdfPCell(new Paragraph(" TASK NAME", font0));
+  PdfPCell pc1 = new PdfPCell(new Paragraph("TASK NAME", font0));
   //pc1.setRowspan(3);
   pc1.setBackgroundColor(BaseColor.ORANGE);
   table.addCell(pc1);
   
-  PdfPCell pc2 = new PdfPCell(new Paragraph(" EXECUTION PERIOD", font0));
+  PdfPCell pc2 = new PdfPCell(new Paragraph("EXECUTION PERIOD", font0));
   pc2.setBackgroundColor(BaseColor.ORANGE);
   table.addCell(pc2);
  
   
-  PdfPCell pc3 = new PdfPCell(new Paragraph(" STATUS", font0));
+  PdfPCell pc3 = new PdfPCell(new Paragraph("STATUS", font0));
   pc3.setBackgroundColor(BaseColor.ORANGE);
   table.addCell(pc3);
   
   
-  PdfPCell pc4 = new PdfPCell(new Paragraph(" DEPARTMENT", font0));
+  PdfPCell pc4 = new PdfPCell(new Paragraph("DEPARTMENT", font0));
   pc4.setBackgroundColor(BaseColor.ORANGE);
   table.addCell(pc4);
   
@@ -199,12 +207,16 @@ public void createPdf() throws IOException, DocumentException {
 		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE},"Task", "taskId asc");
 		SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
 		for (Task task : taskDetails){
-			
 			table.addCell(task.getTaskName());
 			table.addCell(""+sdf.format(task.getDueDate()));
 			table.addCell(task.getGenericStatus());
-			table.addCell(task.getDescription());
-			table.addCell(""+task.getTaskId());
+			table.addCell("");
+			if (task.getGenericStatus().equals(ACTIVE)) {
+				table.addCell("+5");
+			}else {
+				table.addCell("-5");
+			}
+			
 		}
         document.add(table);
 		
