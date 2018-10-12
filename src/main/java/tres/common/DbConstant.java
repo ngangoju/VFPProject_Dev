@@ -54,7 +54,6 @@ public  interface  DbConstant {
  public static final String PUBLICPATH="/public/";
  public static final String USERSESSION="userSession";
  public static final String  JAVAFACERESOURCE="javax.faces.resource";
-
  public static final String NOTSTARTED = "Not Started";
  public static final String COMPLETED = "Completed";
  public static final String SHORT = "Short";
@@ -66,10 +65,9 @@ public  interface  DbConstant {
  public static final String SELECT_LISTOFMENU= "from ListOfMenu";
  public static final String SELECT_MENUGROUP = "from MenuGroup";
  public static final String SELECT_PROVINCE = "from Province";
- public static final String country_rw="Rwanda";   
-  
+ public static final String country_rw="Rwanda";    
  public static final String SELECT_ACTIVITY="from Activity";
  public static final String SELECT_TASK="from Task";
  public static final String SELECT_STRATEGIC_PLAN="from StrategicPlan";
-  
+ public static final String SELECT_BOARD="from Board";
 }
