@@ -14,7 +14,7 @@
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<table style="color:black">
+						<table style="color: black">
 							<tr>
 								<td>
 									<div>
@@ -27,15 +27,6 @@
 								<td>
 									<div style="width: 600px"></div>
 								</td>
-								<td><div style="float: right;">
-										<h:inputText id="name" value="#{institutionController.key}"
-											size="30">
-											<p:ajax update="table"
-												listener="#{institutionController.searchKey()}"
-												event="keyup" />
-											<f:ajax render="table" onevent="showProgress" />
-										</h:inputText>
-									</div></td>
 							</tr>
 						</table>
 					</div>
@@ -66,94 +57,140 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
+						<div class="card-header">
+							<h4 class="card-title">INSTITUTION PROFILE</h4>
+						</div>
+						<div class="card-body" style="padding-top: 10px">
+							<div class="card-text">
+								<h:panelGrid columns="3">
+									<h:column>
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">From<span style="color: red">*</span></label>
+									</h:column>
+									<h:column>
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">To<span style="color: red">*</span></label>
+									</h:column>
+									<h:column>
+										<div></div>
+									</h:column>
+									<h:column>
+										<p:calendar class="col-md-2 col-sm-2 col-xs-2 control-label"
+											value="#{institutionController.from}" pattern="yyyy-MM-dd"
+											required="true" requiredMessage="Date required" />
+									</h:column>
+									<h:column>
+										<p:calendar class="col-md-4 col-sm-3 col-xs-4"
+											value="#{institutionController.to}" pattern="yyyy-MM-dd"
+											required="true" requiredMessage="Date required" />
+									</h:column>
+									<h:column>
+										<h:commandButton
+											class="col-md-4 btn btn-info btn-sm btn-block" value="Submit">
+											<p:ajax
+												listener="#{institutionController.institutionViewBydate()}"
+												update="table" />
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandButton>
+									</h:column>
+								</h:panelGrid>
+							</div>
+						</div>
+						<div class="card-footer" style="padding-top: 10px">
+							<p:dataTable value="#{institutionController.institutionDtos}"
+								var="ls" rowIndexVar="index" style="padding-top: 2px" id="table"
+								paginator="true" rows="4"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="4,6,8,10,12">
+								<p:column style="width:30px">
+									<f:facet name="header">
+										<h:outputText value="#" />
+									</f:facet>
+									<h:outputText value="#{index + 1}" />
+								</p:column>
+								<p:column headerText="#{msg['institutionForm.name']}">
 
-						<p:dataTable value="#{institutionController.institutionDtos}"
-							var="ls" rowIndexVar="index" style="padding-top: 2px" id="table">
-							<p:column style="width:30px">
-								<f:facet name="header">
-									<h:outputText value="#" />
-								</f:facet>
-								<h:outputText value="#{index + 1}" />
-							</p:column>
-							<p:column headerText="#{msg['institutionForm.name']}">
-
-								<h:inputText id="name" value="#{ls.institutionName}" size="10"
-									rendered="#{ls.editable}" required="true"
-									requiredMessage="#{msg['institutionForm.requiered.name.message']}"
-									validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
-									<f:validateRegex
-										pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-									<f:validateLength maximum="25" />
-								</h:inputText>
-								<h:outputText value="#{ls.institutionName}"
-									rendered="#{not ls.editable}" />
-								<h:message errorClass="errorMsg1" for="name"></h:message>
-							</p:column>
+									<h:inputText id="name" value="#{ls.institutionName}" size="10"
+										rendered="#{ls.editable}" required="true"
+										requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+										validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+									<h:outputText value="#{ls.institutionName}"
+										rendered="#{not ls.editable}" />
+									<h:message errorClass="errorMsg1" for="name"></h:message>
+								</p:column>
 
 
-							<p:column headerText="#{msg['institutionForm.branchof']}">
-								<h:outputText
-									value="#{ls.institution.institution.getInstitutionName()}" />
+								<p:column headerText="#{msg['institutionForm.branchof']}">
+									<h:outputText
+										value="#{ls.institution.institution.getInstitutionName()}" />
 
-							</p:column>
+								</p:column>
 
-							<p:column headerText="#{msg['institutionForm.startDate']}">
-								<h:outputText value="#{ls.institutionRegDate}">
-									<f:convertDateTime pattern="yyyy dd MMM hh:mm" />
-								</h:outputText>
-							</p:column>
+								<p:column headerText="#{msg['institutionForm.startDate']}">
+									<h:outputText value="#{ls.institutionRegDate}">
+										<f:convertDateTime pattern="yyyy dd MMM hh:mm" />
+									</h:outputText>
+								</p:column>
 
-							<p:column headerText="#{msg['institutionForm.country']}">
-								<!-- 								#{ls.institution.country.countryName_en} -->
+								<p:column headerText="#{msg['institutionForm.country']}">
+									<!-- 								#{ls.institution.country.countryName_en} -->
 
-								<h:outputText value="#{ls.institution.country.countryName_en}"
-									rendered="#{not ls.editable}" />
-								<h:panelGroup rendered="#{ls.editable}">
-									<h:selectOneMenu class="form-control input-sm" id="country"
-										value="#{institutionController.cntryId}" required="true"
-										requiredMessage="#{msg['institutionForm.requiered.country.message']}">
-										<f:selectItems value="#{institutionController.countries}"
-											var="option" itemValue="#{option.taskId}"
-											itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
-									</h:selectOneMenu>
-								</h:panelGroup>
-							</p:column>
-							<p:column headerText="#{msg['institutionForm.address']}">
+									<h:outputText value="#{ls.institution.country.countryName_en}"
+										rendered="#{not ls.editable}" />
+									<h:panelGroup rendered="#{ls.editable}">
+										<h:selectOneMenu class="form-control input-sm" id="country"
+											value="#{institutionController.cntryId}" required="true"
+											requiredMessage="#{msg['institutionForm.requiered.country.message']}">
+											<f:selectItems value="#{institutionController.countries}"
+												var="option" itemValue="#{option.taskId}"
+												itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
+										</h:selectOneMenu>
+									</h:panelGroup>
+								</p:column>
+								<p:column headerText="#{msg['institutionForm.address']}">
 
-								<h:outputText value="#{ls.institutionAddress}" size="10"
-									rendered="#{not ls.editable}" />
+									<h:outputText value="#{ls.institutionAddress}" size="10"
+										rendered="#{not ls.editable}" />
 
-								<h:inputText value="#{ls.institutionAddress}"
-									rendered="#{ls.editable}" id="address" required="true"
-									requiredMessage="#{msg['institutionForm.requiered.address.message']}"
-									validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
-									style="width:120px">
-									<f:validateRegex
-										pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
-									<f:validateLength maximum="25" />
-								</h:inputText>
-								<h:message errorClass="errorMsg1" for="address"></h:message>
-							</p:column>
-							<p:column headerText="Action">
-								<h:commandLink style="color:white"
-									class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
-									action="#{institutionController.editAction(ls)}"
-									rendered="#{not ls.editable}" ajax="false">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-								<h:commandLink style="margin-left:2px;color:white"
-									class="btn btn-danger 	glyphicon glyphicon-remove"
-									value="Cancel" action="#{institutionController.cancel(ls)}"
-									rendered="#{ls.editable}" ajax="false">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-								<h:commandButton value="Save Changes" class="btn btn-primary"
-									action="#{institutionController.saveAction(ls)}"
-									rendered="#{ls.editable}" ajax="false">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandButton>
-							</p:column>
-						</p:dataTable>
+									<h:inputText value="#{ls.institutionAddress}"
+										rendered="#{ls.editable}" id="address" required="true"
+										requiredMessage="#{msg['institutionForm.requiered.address.message']}"
+										validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
+										style="width:120px">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+									<h:message errorClass="errorMsg1" for="address"></h:message>
+								</p:column>
+								<p:column headerText="Action">
+									<h:commandLink style="color:white"
+										class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+										action="#{institutionController.editAction(ls)}"
+										rendered="#{not ls.editable}" ajax="false">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+									<h:commandLink style="margin-left:2px;color:white"
+										class="btn btn-danger 	glyphicon glyphicon-remove"
+										value="Cancel" action="#{institutionController.cancel(ls)}"
+										rendered="#{ls.editable}" ajax="false">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+									<h:commandButton value="Save Changes" class="btn btn-primary"
+										action="#{institutionController.saveAction(ls)}"
+										rendered="#{ls.editable}" ajax="false">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandButton>
+								</p:column>
+							</p:dataTable>
+						</div>
+
 					</div>
 				</div>
 			</h:form>

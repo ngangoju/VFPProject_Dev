@@ -58,6 +58,10 @@ public class InstitutionController implements Serializable, DbConstant {
 	private boolean nextpage = false;
 	private boolean rendered;
 	private String key;
+	private boolean renderDiv;
+	private boolean renderrejected;
+	private boolean renderDivdashboard;
+	private boolean renderallinstit;
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
@@ -149,16 +153,22 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			institutions = institutionImpl.getGenericListWithHQLParameter(
-					new String[] { "institutionRepresenative_userId" }, new Object[] { usersSession }, "Institution",
-					"institutionName asc");
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
-			validInstitution = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
-					"instRegReqstDate desc");
+			institutions = institutionImpl
+					.getListWithHQL("select f from Institution f where institutionRepresenative_userId="
+							+ usersSession.getUserId() + "");
+			// institutions = institutionImpl.getGenericListWithHQLParameter(
+			// new String[] { "institutionRepresenative_userId" }, new Object[] {
+			// usersSession }, "Institution",
+			// "institutionName asc");
+			// pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+			// new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] {
+			// ACTIVE, PENDING },
+			// "InstitutionRegistrationRequest", "instRegReqstDate desc");
+			// validInstitution = requestImpl.getGenericListWithHQLParameter(
+			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
+			// "InstitutionRegistrationRequest",
+			// "instRegReqstDate desc");
 
 		} catch (Exception e) {
 			setValid(false);
@@ -172,11 +182,11 @@ public class InstitutionController implements Serializable, DbConstant {
 
 		{
 
-			requests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
-					"instRegReqstDate asc");
-			institutionDtos = display(requests);
+			// requests = requestImpl.getGenericListWithHQLParameter(
+			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
+			// "InstitutionRegistrationRequest",
+			// "instRegReqstDate asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -344,31 +354,31 @@ public class InstitutionController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String institutionViewBydate() {
+	public void institutionViewBydate() {
 		try {
-			if (to.after(from)) {
-				try
-
-				{
+			pendinGrequests=new ArrayList<InstitutionRegistrationRequest>();
+			if ((to.after(from)) && (Formating.daysBetween(from, to) <= 30)) {
+				try {
+					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 					Formating fmt = new Formating();
-					requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
-							fmt.getMysqlDateFormt(from + ""), fmt.getMysqlDateFormt(to + ""),
-							new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-							new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
-
-					institutionDtos = display(requests);
-					return "/menu/ViewInstitutionProfile.xhtml?faces-redirect=true";
+					LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+							+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+					for (Object[] data : requestImpl.reportList(
+							"select i.instRegReqstId from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+									+ "'  and i.instRegReqstStatus='accepted' and i.genericStatus='active' and createdBy='"
+									+ usersSession.getViewId() + "'")) {
+						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+						pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
+								"instRegReqstId"));
+					}
+					institutionDtos = display(pendinGrequests);
 				} catch (Exception e) {
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-					LOGGER.info(e.getMessage());
 					e.printStackTrace();
-					return "";
 				}
 			} else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
-				return "";
 			}
 
 		} catch (Exception e) {
@@ -376,7 +386,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
-			return "";
+
 		}
 	}
 
@@ -421,6 +431,135 @@ public class InstitutionController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			return null;
+		}
+	}
+
+	public void displayRequestDiv() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderDiv = true;
+		renderrejected = false;
+		renderDivdashboard = true;
+
+	}
+
+	public void displayRequest() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+					+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+
+				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+				request.setInstitution(((Institution) data[2]));
+				pendinGrequests.add(request); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void displayRejectedDiv() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderrejected = true;
+		renderDiv = false;
+		renderDivdashboard = true;
+	}
+
+	public void displayRejected() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+					+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='desactive'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+
+				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+				request.setInstitution(((Institution) data[2]));
+				pendinGrequests.add(request);
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void displayAllInstitutionsDiv() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderrejected = false;
+		renderDiv = false;
+		renderDivdashboard = true;
+		renderallinstit = true;
+
+	}
+
+	public void displayAllInstitutions() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+					+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='active'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+				//
+				// request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				pendinGrequests.add(
+						requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId"));
+			}
+			institutionDtos = display(pendinGrequests);
+			from = null;
+			to = null;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int countRequests() {
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			return pendinGrequests.size();
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+
+	public int countRequestsrejected() {
+		try {
+
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			return pendinGrequests.size();
+		} catch (Exception e) {
+			return 0;
+			// TODO: handle exception
+		}
+	}
+
+	public int countRequestsAllacepted() {
+		try {
+			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
+					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			institutionDtos = display(requests);
+			return institutionDtos.size();
+		} catch (Exception e) {
+			return 0;
+			// TODO: handle exception
 		}
 	}
 
@@ -857,6 +996,38 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setPendinGrequests(List<InstitutionRegistrationRequest> pendinGrequests) {
 		this.pendinGrequests = pendinGrequests;
+	}
+
+	public boolean isRenderDiv() {
+		return renderDiv;
+	}
+
+	public void setRenderDiv(boolean renderDiv) {
+		this.renderDiv = renderDiv;
+	}
+
+	public boolean isRenderrejected() {
+		return renderrejected;
+	}
+
+	public void setRenderrejected(boolean renderrejected) {
+		this.renderrejected = renderrejected;
+	}
+
+	public boolean isRenderDivdashboard() {
+		return renderDivdashboard;
+	}
+
+	public void setRenderDivdashboard(boolean renderDivdashboard) {
+		this.renderDivdashboard = renderDivdashboard;
+	}
+
+	public boolean isRenderallinstit() {
+		return renderallinstit;
+	}
+
+	public void setRenderallinstit(boolean renderallinstit) {
+		this.renderallinstit = renderallinstit;
 	}
 
 }
