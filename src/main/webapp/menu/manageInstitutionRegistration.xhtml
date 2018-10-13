@@ -374,7 +374,7 @@
 										var="ls" rowIndexVar="index" class="table" paginator="true"
 										rows="4"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-										rowsPerPageTemplate="4,6,8,10,12" id="Regtable">
+										rowsPerPageTemplate="4,6,8,10,12" id="rejectedTable">
 										<p:column style="border: none;">
 											<div class="circle-tile2 card">
 												<table class="circle-tile-content2   col-md-10 card-body"
@@ -438,7 +438,7 @@
 																				</h:commandLink>
 																			</div></th>
 																		<th
-																			style="text-align: right; width: 120px; border: none"
+																			style="text-align: left; width: 120px; border: none"
 																			class="card-link"><div>
 																				<h:commandLink style="margin-left:2px;color:white"
 																					class="btn btn-danger 	glyphicon glyphicon-remove"
@@ -528,8 +528,7 @@
 								</div>
 								<div class="card-footer" style="padding-top: 10px">
 									<p:dataTable value="#{institutionController.institutionDtos}"
-										var="ls" rowIndexVar="index" class="table" paginator="true"
-										rows="4"
+										var="ls"  class="table" paginator="true" rows="4"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 										rowsPerPageTemplate="4,6,8,10,12" id="alltable">
 										<p:column style="border: none;">

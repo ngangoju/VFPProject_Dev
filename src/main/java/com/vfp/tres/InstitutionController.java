@@ -1,6 +1,11 @@
 package com.vfp.tres;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +17,14 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
+import org.primefaces.model.UploadedFile;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
@@ -62,6 +72,8 @@ public class InstitutionController implements Serializable, DbConstant {
 	private boolean renderrejected;
 	private boolean renderDivdashboard;
 	private boolean renderallinstit;
+	private String name;
+	private Part file;
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
@@ -153,22 +165,18 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			institutions = institutionImpl
-					.getListWithHQL("select f from Institution f where institutionRepresenative_userId="
-							+ usersSession.getUserId() + "");
+			// institutions = institutionImpl
+			// .getListWithHQL("select f from Institution f where
+			// institutionRepresenative_userId="
+			// + usersSession.getUserId() + "");
 			// institutions = institutionImpl.getGenericListWithHQLParameter(
 			// new String[] { "institutionRepresenative_userId" }, new Object[] {
 			// usersSession }, "Institution",
 			// "institutionName asc");
-			// pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-			// new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] {
-			// ACTIVE, PENDING },
-			// "InstitutionRegistrationRequest", "instRegReqstDate desc");
-			// validInstitution = requestImpl.getGenericListWithHQLParameter(
-			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
-			// "InstitutionRegistrationRequest",
-			// "instRegReqstDate desc");
+			validInstitution = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
+					"instRegReqstDate desc");
 
 		} catch (Exception e) {
 			setValid(false);
@@ -196,7 +204,7 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	}
 
-	public String saveInstitutionRequest() {
+	public String saveInstitutionRequest() throws IOException {
 		try {
 			institution.setCreatedBy(usersSession.getViewId());
 			institution.setCrtdDtTime(timestamp);
@@ -209,6 +217,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
+			institution.setInstitutionLogo(processFileUpload());
 			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
@@ -356,17 +365,15 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void institutionViewBydate() {
 		try {
-			pendinGrequests=new ArrayList<InstitutionRegistrationRequest>();
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 			if ((to.after(from)) && (Formating.daysBetween(from, to) <= 30)) {
 				try {
 					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 					Formating fmt = new Formating();
-					LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
-							+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
 					for (Object[] data : requestImpl.reportList(
-							"select i.instRegReqstId from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
 									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-									+ "'  and i.instRegReqstStatus='accepted' and i.genericStatus='active' and createdBy='"
+									+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active' and createdBy='"
 									+ usersSession.getViewId() + "'")) {
 						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 						pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
@@ -446,8 +453,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 			Formating fmt = new Formating();
-			LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
-					+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
 			for (Object[] data : requestImpl.reportList(
 					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
 							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
@@ -457,7 +462,7 @@ public class InstitutionController implements Serializable, DbConstant {
 				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
 				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
 				request.setInstitution(((Institution) data[2]));
-				pendinGrequests.add(request); 
+				pendinGrequests.add(request);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -475,8 +480,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 			Formating fmt = new Formating();
-			LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
-					+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
 			for (Object[] data : requestImpl.reportList(
 					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
 							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
@@ -487,7 +490,7 @@ public class InstitutionController implements Serializable, DbConstant {
 				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
 				request.setInstitution(((Institution) data[2]));
 				pendinGrequests.add(request);
-			} 
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -506,17 +509,12 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 			Formating fmt = new Formating();
-			LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
-					+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
 			for (Object[] data : requestImpl.reportList(
-					"select i.instRegReqstId from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+					"select i.instRegReqstDate,i.instRegReqstId from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
 							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-							+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='active'")) {
-				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
-				//
-				// request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+							+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
 				pendinGrequests.add(
-						requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId"));
+						requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[1] + ""), "instRegReqstId"));
 			}
 			institutionDtos = display(pendinGrequests);
 			from = null;
@@ -561,6 +559,51 @@ public class InstitutionController implements Serializable, DbConstant {
 			return 0;
 			// TODO: handle exception
 		}
+	}
+
+	public String processFileUpload() throws IOException {
+
+		Part uploadedFile = getFile();
+		String url = getContextPath();
+		final Path destination = Paths
+				.get(url + "/resources/upload/" + FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
+		LOGGER.info(
+				"Uploaded File name::------------>>>>>>" + FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
+		// When using servlet 3.1
+		// final Path destination = Paths.get("c:/temp/"+
+		// FilenameUtils.getName(uploadedFile.getSubmittedFileName()));
+
+		InputStream bytes = null;
+
+		if (null != uploadedFile) {
+
+			bytes = uploadedFile.getInputStream(); //
+
+			// Copies bytes to destination.
+			Files.copy(bytes, destination);
+		}
+
+		return destination.toString();
+	}
+
+	public static String getSubmittedFileName(Part filePart) {
+		String header = filePart.getHeader("content-disposition");
+		if (header == null)
+			return null;
+		for (String headerPart : header.split(";")) {
+			if (headerPart.trim().startsWith("filename")) {
+				return headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", "");
+			}
+		}
+		return null;
+	}
+
+	public String getContextPath() {
+
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+
+		return request.getContextPath();
 	}
 
 	public String getKey() {
@@ -1028,6 +1071,22 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setRenderallinstit(boolean renderallinstit) {
 		this.renderallinstit = renderallinstit;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Part getFile() {
+		return file;
+	}
+
+	public void setFile(Part file) {
+		this.file = file;
 	}
 
 }

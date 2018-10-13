@@ -27,8 +27,10 @@ public class InstitutionDto implements Serializable {
 	private Village village;
 
 	private Users user;
-	
+
 	private boolean editable;
+
+	private String institutionLogo;
 
 	public boolean isEditable() {
 		return editable;
@@ -100,6 +102,14 @@ public class InstitutionDto implements Serializable {
 
 	public void setVillage(Village village) {
 		this.village = village;
+	}
+
+	public String getInstitutionLogo() {
+		return institutionLogo;
+	}
+
+	public void setInstitutionLogo(String institutionLogo) {
+		this.institutionLogo = institutionLogo;
 	}
 
 	@Override
