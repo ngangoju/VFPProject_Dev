@@ -109,12 +109,8 @@ public class MdReportActivity implements Serializable, DbConstant {
 		}
    
 		try {
-<<<<<<< HEAD
 			
-			boardDetails = boardImpl.getListWithHQL(SELECT_BOARD);
-=======
-			/*boardDetails = boardImpl.getListWithHQL(SELECT_BOARD);*/
->>>>>>> c32ae4d359591b984bda1e68ff7f788294789e5f
+			
 			boardDetails= boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "Board", "boardId asc");
 		} catch (Exception e) {
 		}
@@ -220,7 +216,7 @@ public void createPdf() throws IOException, DocumentException {
 
 for (Object[] data:  taskImpl.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+selectedBoard+"'")){
 	  	       
-      
+          	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
 			LOGGER.info("tes1 1::"+data[0]+""+" ::"+ data[1]+" ::"+ data[2]+"kamana");
           	table.addCell(data[0]+"");
           	table.addCell(data[1]+"");
