@@ -221,5 +221,14 @@ insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTi
                  values(39,'admin',now(),'active',now(),now(),'admin',now(),'Generate Report','url39','/menu/MdReportForm.xhtml',null,27);
 
 insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory)
-                        values(35,'admin',now(),'active',now(),now(),'admin',null,39,4);
+                        values(38,'admin',now(),'active',now(),now(),'admin',null,39,4);
+                        insert into menugroup (menuGroupId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory)
+values(28,'admin',now(),'active',now(),now(),'admin',now(),'Reports','M028','Reports',2);
+
+insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listofMenu,menuGroup) 
+                 values(40,'admin',now(),'active',now(),now(),'admin',now(),'Generate Report','url40','/menu/StaffReportForm.xhtml',null,28);
+
+
+insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory)
+                        values(39,'admin',now(),'active',now(),now(),'admin',null,40,2);
 ======================By Richard================================================================
