@@ -109,8 +109,12 @@ public class MdReportActivity implements Serializable, DbConstant {
 		}
    
 		try {
+<<<<<<< HEAD
 			
 			boardDetails = boardImpl.getListWithHQL(SELECT_BOARD);
+=======
+			/*boardDetails = boardImpl.getListWithHQL(SELECT_BOARD);*/
+>>>>>>> c32ae4d359591b984bda1e68ff7f788294789e5f
 			boardDetails= boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "Board", "boardId asc");
 		} catch (Exception e) {
 		}
