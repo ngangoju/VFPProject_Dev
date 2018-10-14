@@ -29,7 +29,6 @@ insert into listofmenu(menuId,crtdDtTime,genericStatus,description,urlCode,urlNa
 
 insert into listofmenu(menuId,crtdDtTime,genericStatus,description,urlCode,urlName,listOfMenu,menuGroup) values(2,now(),'active','Login Users List','Url02','/menu/ListOfLoginUsers.xhtml',null,1);
 
-
 insert  menuassignment(menuAssgnId,crtdDtTime, genericStatus,defaultMenuUrl,listOfMenu,userCategory) values(1,now(),'active',null,1,1);
 insert  menuassignment(menuAssgnId,crtdDtTime, genericStatus,defaultMenuUrl,listOfMenu,userCategory) values(2,now(),'active',null,2,1);
 
@@ -216,10 +215,11 @@ insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,u
 insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(31,'admin',now(),'active',now(),now(),'admin',null,35,4);
 
 ==================BY Ngango Junior=====================
-
+insert into menugroup (menuGroupId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,defaulGrouptMenu,groupMenuCode,menuGroupName,userCategory)
+ values(27,'admin',now(),'active',now(),now(),'admin',now(),'Reports','M027','Reports',4);
 insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listofMenu,menuGroup) 
-                 values(36,'admin',now(),'active',now(),now(),'admin',now(),'Generate Report','url36','/menu/generalReport.xhtml',null,4);
+                 values(39,'admin',now(),'active',now(),now(),'admin',now(),'Generate Report','url39','/menu/MdReportForm.xhtml',null,27);
 
 insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory)
-                        values(32,'admin',now(),'active',now(),now(),'admin',null,36,1);
+                        values(35,'admin',now(),'active',now(),now(),'admin',null,39,4);
 ======================By Richard================================================================

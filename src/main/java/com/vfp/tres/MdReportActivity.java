@@ -213,27 +213,10 @@ public void createPdf() throws IOException, DocumentException {
 	}
 	
 	try {
-		/*LOGGER.info(selectedBoard+"");
-		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},
-		new Object[] {ACTIVE},"Task", "taskId asc");
-		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","board"},
-				new Object[] {ACTIVE,boardImpl.getBoardById(3,"boardId")},"Task", "taskId asc");
-		SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-		for (Task task : taskDetails){
-			table.addCell(task.getTaskName());
-			table.addCell(""+sdf.format(task.getDueDate()));
-			table.addCell(task.getGenericStatus());
-			table.addCell("");
-			if (task.getGenericStatus().equals(ACTIVE)) {
-				table.addCell("+5");
-			}else {
-				table.addCell("-5");
-			}
-			
-		}*/
-		for (Object[] data:  taskImpl.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+selectedBoard+"'")){
+
+for (Object[] data:  taskImpl.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+selectedBoard+"'")){
 	  	       
-          	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+      
 			LOGGER.info("tes1 1::"+data[0]+""+" ::"+ data[1]+" ::"+ data[2]+"kamana");
           	table.addCell(data[0]+"");
           	table.addCell(data[1]+"");
