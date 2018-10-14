@@ -11,6 +11,7 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 		<ui:define name="content">
 
+
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
@@ -18,11 +19,15 @@
 							<tr>
 								<td>
 									<div>
-										<a href="UserCategory.xhtml" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserCatForm.addButton']}<b><span
-												style="background-color: red; color: white" class="badge"></span></b>
-										</a>
+										<h:commandLink 
+											class="btn btn-primary btn-xlg btn-block glyphicon "
+											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											value="#{msg['UserCatForm.availButtom']}" actionListener="#{userCategoryController.showCatTable()}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+											
+										</h:commandLink>
 									</div>
+
 								</td>
 							</tr>
 						</table>
@@ -54,50 +59,90 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						<p:dataTable value="#{userCategoryController.categoryDtoDetails}" style="width:70%; margin-top:10px;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-						var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
-						sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}"
-						>
-						<f:facet name="header" >
-       							<h4 style="font-family: Open Sans sans-serif !important; font-size: 18px !important;color:black;font-weight:bold;">  #{msg['message.header.userCat.filter']}</h4>
-    								</f:facet>
-						<p:column headerText="No" style="width:10%;">
+						<fieldset>
+							<legend> </legend>
+							<h:panelGrid columns="1" columnClasses="left,right"
+								style="width:100%">
+								<p:chart type="pie"
+									model="#{chartPresentationController.pieModel2}"
+									style="width:350px;height:300px" />
+							</h:panelGrid>
 
-							<h:outputText value="#{row+1}" />
-						</p:column>
-						<p:column headerText="CategoryName" style="width:35%;">
 
-							<h:inputText value="#{cat.usercategoryName}" size="20"
-								rendered="#{cat.editable}" required="true" id="catname"
-								requiredMessage="#{msg['requiered.categoryname.message']}"
-								converterMessage="#{msg['error.enter.invalid.catname']}"
-								validatorMessage="#{msg['error.enter.invalid.catname']}">
-								<f:validateRegex
-									pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-								<f:validateLength maximum="100"></f:validateLength>
 
-							</h:inputText>
-							<br/><h:message errorClass="errorMsg1" for="catname"
-								style="font-size:12px;font-family:Time New Roman;"></h:message>
-							<h:outputText value="#{cat.usercategoryName}"
-								rendered="#{not cat.editable}" />
+						</fieldset>
 
-						</p:column>
-						<p:column headerText="Action" style="width:30%;">
-							<h:commandLink style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								class="btn btn-success glyphicon glyphicon-pencil" value="#{msg['UserCategoryView.editButton']}"
-								action="#{userCategoryController.editAction(cat)}"
-								rendered="#{not cat.editable}" />
-							<h:commandLink style=" font-size: 14px !important;margin-left:2px;color:white;"
-								class="btn btn-danger glyphicon glyphicon-remove"
-								value="#{msg['UserCategoryView.cancelButton']}" action="#{userCategoryController.cancel(cat)}"
-								rendered="#{cat.editable}" />
-							<h:commandButton value="#{msg['UserCategoryView.savechangeButton']}" class="btn btn-primary" style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								action="#{userCategoryController.saveAction(cat)}"
-								rendered="#{cat.editable}" render="userConatactPanel" />
-						</p:column>
+						<p:outputPanel id="toTable"
+							rendered="#{userCategoryController.rendered}" autoUpdate="true">
+							<p:dataTable value="#{userCategoryController.categoryDtoDetails}"
+								style="width:70%; margin-top:10px;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+								var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
+								sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}">
+								<f:facet name="header">
+							<a href="UserCategory.xhtml"
+											style="font-family: Open Sans sans-serif !important; font-size: 14px !important; width:55%;"
+											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserCatForm.addButton']}<b><span
+										style="background-color: red; color: white;" class="badge"></span></b>
+									</a>
+								</f:facet>
+								<f:facet name="header">
+									<h4
+										style="font-family: Open Sans sans-serif !important; font-size: 18px !important; color: black; font-weight: bold; margin-top:10px;">
+										#{msg['message.header.userCat.filter']}</h4>
+								</f:facet>
+								<p:column headerText="No" style="width:10%;">
 
-					</p:dataTable>
+									<h:outputText value="#{row+1}" />
+								</p:column>
+								<p:column headerText="CategoryName" style="width:35%;">
+
+									<h:inputText value="#{cat.usercategoryName}" size="20"
+										rendered="#{cat.editable}" required="true" id="catname"
+										requiredMessage="#{msg['requiered.categoryname.message']}"
+										converterMessage="#{msg['error.enter.invalid.catname']}"
+										validatorMessage="#{msg['error.enter.invalid.catname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
+
+									</h:inputText>
+									<br />
+									<h:message errorClass="errorMsg1" for="catname"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+									<h:outputText value="#{cat.usercategoryName}"
+										rendered="#{not cat.editable}" />
+
+								</p:column>
+								<p:column headerText="Action" style="width:30%;">
+									<h:commandLink
+										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										class="btn btn-success glyphicon glyphicon-pencil"
+										value="#{msg['UserCategoryView.editButton']}"
+										action="#{userCategoryController.editAction(cat)}"
+										rendered="#{not cat.editable}" >
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />								
+										</h:commandLink>
+									<h:commandLink
+										style=" font-size: 14px !important;margin-left:2px;color:white;"
+										class="btn btn-danger glyphicon glyphicon-remove"
+										value="#{msg['UserCategoryView.cancelButton']}"
+										action="#{userCategoryController.cancel(cat)}"
+										rendered="#{cat.editable}" >
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />										
+										</h:commandLink>
+									<h:commandButton
+										value="#{msg['UserCategoryView.savechangeButton']}"
+										class="btn btn-primary"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										action="#{userCategoryController.saveAction(cat)}"
+										rendered="#{cat.editable}" render="userConatactPanel" >
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+											
+										</h:commandButton>
+								</p:column>
+
+							</p:dataTable>
+						</p:outputPanel>
 					</div>
 				</div>
 			</h:form>

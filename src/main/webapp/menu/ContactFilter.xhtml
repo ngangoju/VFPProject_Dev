@@ -11,23 +11,13 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 		<ui:define name="content">
 
-
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<table>
-							<tr>
-								<td>
-									<div>
-										<a href="UsersAccount.xhtml"
-											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserRegForm.addButton']}<b><span
-												style="background-color: red; color: white" class="badge"></span></b>
-										</a>
-									</div>
-								</td>
-							</tr>
-						</table>
+					<center><span style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
+						<span style="color: red">#{msg['header.title.asteriks']}</span>
+						#{msg['header.title.mandatory']}
+					</span></center>
 					</div>
 					<div class="panel-body">
 
@@ -60,7 +50,8 @@
 						<fieldset>
 							<legend
 								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
-								#{msg['message.header.userFilter.info']}</legend>
+								#{msg['message.header.contactFilter.info']}</legend>
+							
 							<div class="panel-body">
 
 								<div style="display: none">
@@ -75,7 +66,7 @@
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from" binding="#{from}"
 											class="form-control input-sm" escape="true"
-											value="#{userAccountController.from}" maxlength="35"
+											value="#{userContactController.from}" maxlength="35"
 											required="true"
 											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 											requiredMessage="#{msg['strartdate_institution.message']}">
@@ -108,7 +99,7 @@
 														style="width: 15%" alt="question" />
 												</h:panelGroup> <p:tooltip id="toolTipContent"
 													for="tooltips-contactDetails" position="bottom">
-													<span> #{msg['help.userFilter.message']} </span>
+													<span> #{msg['help.contactFilter.message']} </span>
 												</p:tooltip>
 										</a></span>
 
@@ -123,7 +114,7 @@
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="to" binding="#{to}"
 											class="form-control input-sm" escape="true"
-											value="#{userAccountController.to}" maxlength="35"
+											value="#{userContactController.to}" maxlength="35"
 											required="true"
 											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 											requiredMessage="#{msg['enddate_institution.message']}">
@@ -155,9 +146,7 @@
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
 								<div class="col-sm-4">
-									<h:commandButton class="btn btn-info btn-sm btn-block"
-										action="#{userAccountController.displayUsersByDateBetween()}"
-										value="Submit">
+									<h:commandButton class="btn btn-info btn-sm btn-block" value="Submit" action="#{userContactController.showContactFiltered()}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										
 									</h:commandButton>
@@ -165,126 +154,101 @@
 								</div>
 								<span class="text-danger" id="customeordererror"></span>
 							</div>
-							<p:outputPanel id="toTable" autoUpdate="true"
-									rendered="#{userAccountController.renderDataTable}">
-							<p:dataTable value="#{userAccountController.userDtosDetails}"
-								var="user" rows="10"  id="tables" style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+							<p:outputPanel id="toTable" autoUpdate="true" rendered="#{userContactController.renderTable}">
+							<p:dataTable value="#{userContactController.contactDtoDetails}"
+								style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+								var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
+								sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
 								<f:facet name="header">
-       							<h4 style="font-family: Open Sans sans-serif !important; font-size: 20px !important;color:black;font-weight:bold;"> #{msg['message.header.userList.filter']}</h4>
-    								</f:facet>
+									<h4
+										style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
+										#{msg['message.header.completeContact.filter']}</h4>
+								</f:facet>
+								<p:column headerText="No" style="width:5%;">
 
-								<p:column headerText="Firstname">
-
-									<h:inputText value="#{user.fname}" size="10" id="fname"
-										rendered="#{user.editable}" required="true"
-										requiredMessage="#{msg['requiered.fname.message']}"
-										converterMessage="#{msg['error.enter.invalid.fname']}"
-										validatorMessage="#{msg['error.enter.invalid.fname']}">
-										<f:validateRegex
-											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-										<f:validateLength maximum="100"></f:validateLength>
-									</h:inputText>
-
-									<h:outputText value="#{user.fname}"
-										rendered="#{not user.editable}" />
-									<h:message errorClass="errorMsg1" for="fname"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
+									<h:outputText value="#{row+1}" />
 								</p:column>
-
-
-								<p:column headerText="Lastname">
-
-
-									<h:inputText value="#{user.lname}" size="10" id="lname"
-										rendered="#{user.editable}" required="true"
-										requiredMessage="#{msg['requiered.lname.message']}"
-										converterMessage="#{msg['error.enter.invalid.lname']}"
-										validatorMessage="#{msg['error.enter.invalid.lname']}">
-										<f:validateRegex
-											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-										<f:validateLength maximum="100"></f:validateLength>
-									</h:inputText>
-									<h:outputText value="#{user.lname}"
-										rendered="#{not user.editable}" />
-									<h:message errorClass="errorMsg1" for="lname"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-
-								</p:column>
-
 								<p:column headerText="Username">
-									<h:outputText value="#{user.viewId}" />
 
+									<h:outputText value="#{cont.user.viewId}" />
 								</p:column>
+								<p:column headerText="Email">
 
-								<p:column headerText="Category">
-
-									<h:selectOneMenu id="cat" styleClass="form-control"
-										rendered="#{user.editable}" required="true"
-										value="#{user.userCategory.userCatid}"
-										requiredMessage="#{msg['requiered.categoryname.message']}">
-										<f:selectItem
-											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-										<f:selectItems value="#{userAccountController.catDetails}"
-											var="option" itemValue="#{option.userCatid}"
-											itemLabel="#{option.usercategoryName}"
-											itemLabelEscaped="true" />
-										<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
-									</h:selectOneMenu>
-
-									<h:outputText value="#{user.userCategory.usercategoryName}"
-										rendered="#{not user.editable}" />
-									<h:message errorClass="errorMsg1" for="cat"
+									<h:inputText value="#{cont.email}" size="15"
+										rendered="#{cont.editable}" id="email" required="true"
+										validatorMessage="#{msg['error.enter.invalid.email']}"
+										converterMessage="#{msg['error.enter.invalid.email']}"
+										requiredMessage="#{msg['error.enter.required.email']}">
+										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+									<h:message errorClass="errorMsg1" for="email"
 										style="font-size:12px;font-family:Time New Roman;"></h:message>
-								</p:column>
-								<p:column headerText="Status">
-									<h:outputText value="#{user.status}" />
 
+									<h:outputText value="#{cont.email}"
+										rendered="#{not cont.editable}" />
 								</p:column>
-								<p:column headerText=" Change Status">
+								<p:column headerText="Phone">
 
-									<h:commandLink style="color:white"
-										class="btn btn-success 	glyphicon glyphicon-refresh"
-										value="#{user.action}"
-										action="#{userAccountController.updateStatus(user)}" >
-										<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-										</h:commandLink>
+									<h:inputText value="#{cont.phone}" size="15" id="phone"
+										rendered="#{cont.editable}" required="true"
+										converterMessage="#{msg['error.enter.invalid.phone']}"
+										requiredMessage="#{msg['requiered.phone.message']}"
+										validatorMessage="#{msg['error.enter.invalid.phone']}">
+										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+									<h:message errorClass="errorMsg1" for="phone"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+									<h:outputText value="#{cont.phone}"
+										rendered="#{not cont.editable}" />
 								</p:column>
+								<p:column headerText="Contact Details">
+
+									<h:inputText value="#{cont.contactDetails}" size="15"
+										id="contDetails" rendered="#{cont.editable}" required="true"
+										converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
+										validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
+										requiredMessage="#{msg['requiered.contactDetails.message']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+									<h:message errorClass="errorMsg1" for="contDetails"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+									<h:outputText value="#{cont.contactDetails}"
+										rendered="#{not cont.editable}" />
+								</p:column>
+								
+								
 								<p:column headerText="Action">
-
-
-									<h:commandLink
-										class="btn btn-success 	glyphicon glyphicon-pencil"
-										value="Edit"
-										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-										action="#{userAccountController.editAction(user)}"
-										rendered="#{not user.editable}" >
+									<h:commandLink style="color:white"
+										class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+										action="#{userContactController.editContactAction(cont)}"
+										rendered="#{not cont.editable}" >
 										<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 										</h:commandLink>
-
-									<h:commandLink
+									<h:commandLink style="margin-left:2px;color:white"
 										class="btn btn-danger 	glyphicon glyphicon-remove"
-										value="Cancel" action="#{userAccountController.cancel(user)}"
-										style="color:white;" rendered="#{user.editable}" >
+										value="Cancel"
+										action="#{userContactController.cancelContact(cont)}"
+										rendered="#{cont.editable}" >
 										<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 										</h:commandLink>
-
-
 									<h:commandButton value="Save Changes" class="btn btn-primary"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-										action="#{userAccountController.newAction(user)}"
-										rendered="#{user.editable}" execute="@this" > 
+										action="#{userContactController.saveContactAction(cont)}"
+										rendered="#{cont.editable}" render="userConatactPanel" >
 										<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-										
-									</h:commandButton>
+										</h:commandButton>
 								</p:column>
 
 							</p:dataTable>
-							</p:outputPanel>
+
+
+						</p:outputPanel>
 						</fieldset>
 
 					</div>

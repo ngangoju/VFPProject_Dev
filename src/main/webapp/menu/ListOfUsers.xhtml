@@ -1,81 +1,184 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui" >
+	xmlns:p="http://primefaces.org/ui">
 <h:body>
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
-
 		<ui:define name="content">
 
 
- 
+			<h:form>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<table>
+							<tr>
+								<td>
+									<div>
+										<a href="UsersAccount.xhtml"
+											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-backward">#{msg['UserRegForm.BackButton']}<b><span
+												style="background-color: red; color: white" class="badge"></span></b>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body">
+
+						<h:panelGroup layout="block"
+							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li style="list-style: none;" class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+							<p:dataTable value="#{userAccountController.userDtosDetails}"
+								var="user" rows="10" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" id="tables"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+								<f:facet name="header">
+       							<h4 style="font-family: Open Sans sans-serif !important; font-size: 20px !important;color:black;font-weight:bold;"> #{msg['message.header.userList.filter']}</h4>
+    								</f:facet>
+
+								<p:column headerText="First Name">
+
+									<h:inputText value="#{user.fname}" size="10" id="fname"
+										rendered="#{user.editable}" required="true"
+										requiredMessage="#{msg['requiered.fname.message']}"
+										converterMessage="#{msg['error.enter.invalid.fname']}"
+										validatorMessage="#{msg['error.enter.invalid.fname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
+									</h:inputText>
+
+									<h:outputText value="#{user.fname}"
+										rendered="#{not user.editable}" />
+									<h:message errorClass="errorMsg1" for="fname"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+								</p:column>
 
 
-<h:panelGroup id="userConatactPanel">
-	<h:form>
+								<p:column headerText="Last Name">
 
-	 
-    	  <p:dataTable  value="#{userContactController.userDtoDetails}" var="user" >
 
-            
-            <p:column  headerText="fname"   >
-               		
-    		<h:inputText value="#{user.fname}" size="10" rendered="#{user.editable}" />
-    				
-    		<h:outputText value="#{user.fname}" rendered="#{not user.editable}" />
-            </p:column>
-    	     
-    			
-    	     <p:column headerText="Last Name" >
-    			
-    				
-    		<h:inputText value="#{user.lname}" size="20" rendered="#{user.editable}" />
-    				
-    		<h:outputText value="#{user.lname}" rendered="#{not user.editable}" />
-    				
-    	     </p:column>
-    			
-    	     <p:column headerText="User Name" >
-    				
-    	
-    				
-    		<h:outputText value="#{user.viewId}"  />
-    				
-    	     </p:column>
-    			
-    	     <p:column headerText="Category" >
-    				
-    	
-    		<h:outputText value="#{user.userCategory.usercategoryName}" />
-    				
-    	     </p:column>
-    		
-    	     <p:column headerText="Action">
-    				
-    		
-    	<h:commandLink style="color:white" class="btn btn-success 	glyphicon glyphicon-edit" value="Edit" action="#{userContactController.editAction(user)}" 
-                                       rendered="#{not user.editable}" />
-    				<h:commandLink  style="margin-left:2px;color:white" class="btn btn-danger 	glyphicon glyphicon-remove" value="Cancel" action="#{userContactController.cancel(user)}" rendered="#{user.editable}"/>
-    					
-    				
-    					  <h:commandButton value="Save Changes"   class="btn btn-primary" action="#{userContactController.saveAction(user)}" rendered="#{user.editable}" render="userConatactPanel"  />
-    	     </p:column>
+									<h:inputText value="#{user.lname}" size="10" id="lname"
+										rendered="#{user.editable}" required="true"
+										requiredMessage="#{msg['requiered.lname.message']}"
+										converterMessage="#{msg['error.enter.invalid.lname']}"
+										validatorMessage="#{msg['error.enter.invalid.lname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
+									</h:inputText>
+									<h:outputText value="#{user.lname}"
+										rendered="#{not user.editable}" />
+									<h:message errorClass="errorMsg1" for="lname"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
 
-    	 </p:dataTable>
-    		<br/>
+								</p:column>
 
-    		   
-      </h:form>
-     </h:panelGroup>
-        	</ui:define>
+								<p:column headerText="User Name">
+									<h:outputText value="#{user.viewId}" />
+
+								</p:column>
+
+								<p:column headerText="Category">
+
+									<h:selectOneMenu id="cat" styleClass="form-control"
+										rendered="#{user.editable}" required="true"
+										value="#{user.userCategory.userCatid}"
+										requiredMessage="#{msg['requiered.categoryname.message']}">
+										<f:selectItem
+											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+										<f:selectItems value="#{userAccountController.catDetails}"
+											var="option" itemValue="#{option.userCatid}"
+											itemLabel="#{option.usercategoryName}"
+											itemLabelEscaped="true" />
+										<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+									</h:selectOneMenu>
+
+									<h:outputText value="#{user.userCategory.usercategoryName}"
+										rendered="#{not user.editable}" />
+									<h:message errorClass="errorMsg1" for="cat"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+								</p:column>
+								<p:column headerText="User Status">
+									<h:outputText value="#{user.status}" />
+
+								</p:column>
+								<p:column headerText=" Change Status">
+
+									<h:commandLink style="color:white"
+										class="btn btn-success 	glyphicon glyphicon-refresh"
+										value="#{user.action}"
+										action="#{userAccountController.updateStatus(user)}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
+								</p:column>
+								<p:column headerText="Action">
+
+
+									<h:commandLink
+										class="btn btn-success 	glyphicon glyphicon-pencil"
+										value="Edit"
+										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										action="#{userAccountController.editAction(user)}"
+										rendered="#{not user.editable}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
+
+									<h:commandLink
+										class="btn btn-danger 	glyphicon glyphicon-remove"
+										value="Cancel" action="#{userAccountController.cancel(user)}"
+										style="color:white;" rendered="#{user.editable}" />
+
+
+									<h:commandButton value="Save Changes" class="btn btn-primary"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										action="#{userAccountController.newAction(user)}"
+										rendered="#{user.editable}" execute="@this" > 
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										
+									</h:commandButton>
+								</p:column>
+
+							</p:dataTable>
+					
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
 	</ui:composition>
-
 </h:body>
-
 </html>

@@ -16,7 +16,7 @@
 			<div class="panel panel-default">
 
 				<div class="panel-body"
-					style="border: 0px solid blue; margin-top: 4px; height: 650px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+					style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 
 
 					<h:form>
@@ -39,7 +39,18 @@
 										</ui:repeat>
 									</ul>
 								</h:panelGroup>
-
+								<h:panelGroup layout="block"
+									rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+									<ul>
+										<ui:repeat value="#{facesContext.messageList}"
+											var="facesMessage">
+											<li
+												style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+												class="alert alert-success"><center><h:outputText
+													value="#{facesMessage.summary}" escape="false" /></center></li>
+										</ui:repeat>
+									</ul>
+								</h:panelGroup>
 							</div>
 
 						</div>
@@ -77,7 +88,7 @@
 													<span class="btn btn-file btn-success"><span
 														class="fileupload-new">Select image</span><span
 														class="fileupload-exists">Change</span> <p:fileUpload
-															id="pict" value="#" mode="simple"
+															id="pict" value="#{fileUploadController.files}" mode="simple"
 															allowTypes="/(\.|\/)(gif|jpe?g|png)$/" /> </span> <a href="#"
 														class="btn btn-danger fileupload-exists"
 														data-dismiss="fileupload">Remove</a>
@@ -93,12 +104,17 @@
 													class="btn btn-success glyphicon glyphicon-edit"
 													value="Edit"
 													action="#{userAccountController.editAction(user)}"
-													rendered="#{not user.editable}" /></span> <h:commandLink
-												style="margin-left:2px;color:white"
+													rendered="#{not user.editable}">
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink></span> <h:commandLink style="margin-left:2px;color:white"
 												class="btn btn-danger 	glyphicon glyphicon-remove"
 												value="Cancel"
 												action="#{userAccountController.cancel(user)}"
-												rendered="#{user.editable}" /></td>
+												rendered="#{user.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink></td>
 
 									</tr>
 									<tr>
@@ -118,6 +134,7 @@
 												rendered="#{not user.editable}" /></td>
 									</tr>
 									<tr>
+									
 										<td><br />LastName:</td>
 										<td><h:inputText value="#{user.lname}" size="20"
 												id="lname" rendered="#{user.editable}" required="true"
@@ -127,38 +144,90 @@
 												<f:validateRegex
 													pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
 												<f:validateLength maximum="100"></f:validateLength>
-											</h:inputText><br />
-										<h:message errorClass="errorMsg1" for="lname"
+											</h:inputText><br /> <h:message errorClass="errorMsg1" for="lname"
 												style="font-size:12px;font-family:Time New Roman;"></h:message>
 											<h:outputText value="#{user.lname}"
 												rendered="#{not user.editable}" /></td>
 									</tr>
 									<tr>
-										<td><br/>Address:</td>
-										<td><h:inputText value="#{user.address}" size="20" id="addr"
-												rendered="#{user.editable}" required="true"
+										<td><br />Address:</td>
+										<td><h:inputText value="#{user.address}" size="20"
+												id="addr" rendered="#{user.editable}" required="true"
 												requiredMessage="#{msg['requiered.address.message']}"
 												converterMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
 												validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}">
 												<f:validateRegex
 													pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
 												<f:validateLength maximum="100"></f:validateLength>
-												</h:inputText>
-												<br/>
-												<h:message errorClass="errorMsg1" for="addr"
-												style="font-size:12px;font-family:Time New Roman;"></h:message>												
-												 <h:outputText value="#{user.address}" rendered="#{not user.editable}" />
-												
-												</td>
+											</h:inputText> <br /> <h:message errorClass="errorMsg1" for="addr"
+												style="font-size:12px;font-family:Time New Roman;"></h:message>
+											<h:outputText value="#{user.address}"
+												rendered="#{not user.editable}" /></td>
 
 									</tr>
+									<!--Change Password option  -->
+									<p:outputPanel id="yesOrNo"
+										rendered="#{userAccountController.renderForeignCountry}"
+										autoUpdate="true">
+										<tr>
+											<td><br />Do you want to change your password?:</td>
+											<td><h:selectOneRadio style="margin-top:18px;"
+													value="#{userAccountController.option}">
+													<f:selectItem itemLabel="Yes" itemValue="yes" />
+													<f:selectItem itemLabel="No" itemValue="no" />
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress"
+														listener="#{userAccountController.changeOption()}" />
+												</h:selectOneRadio></td>
 
+										</tr>
+									</p:outputPanel>
+
+									<p:outputPanel id="changepswd"
+										rendered="#{userAccountController.rendered}" autoUpdate="true">
+										<tr>
+											<td><br />Change Password:</td>
+											<td><h:inputSecret
+													 size="20"
+													id="pswds" value="#{userAccountController.password}"
+													maxlength="35" required="true"
+													requiredMessage="#{msg['requiered.username.password']}">
+													<f:validateRegex
+														pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+												</h:inputSecret> <br /> <h:message errorClass="errorMsg1" for="pswds"
+													style="font-size:12px;font-family:Time New Roman;"></h:message>
+											</td>
+
+										</tr>
+										<tr>
+											<td><br />Confirm Password:</td>
+											<td><h:inputSecret
+													 size="20"
+													id="confpswds" value="#{userAccountController.confirmPswd}"
+													maxlength="35" required="true"
+													requiredMessage="#{msg['requiered.username.confirmpassword']}">
+													<f:validateRegex
+														pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+												</h:inputSecret> <br /> <h:message errorClass="errorMsg1" for="confpswds"
+													style="font-size:12px;font-family:Time New Roman;"></h:message>
+											</td>
+
+										</tr>
+									</p:outputPanel>
+									<!-- End of change pswd -->
 								</tbody>
 							</ui:repeat>
 						</table>
-						<h:commandButton value="Save Changes" styleClass="btn btn-primary"
-							style="margin-left:20px;"
-							action="#{userAccountController.saveAction(user)}" />
+						<p:outputPanel id="toButton"
+							rendered="#{userAccountController.renderForeignCountry}"
+							autoUpdate="true">
+							<h:commandButton value="Save Changes"
+								styleClass="btn btn-primary" style="margin-left:20px;"
+								action="#{userAccountController.saveAction(user)}">
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandButton>
+						</p:outputPanel>
+
 
 
 					</h:form>
