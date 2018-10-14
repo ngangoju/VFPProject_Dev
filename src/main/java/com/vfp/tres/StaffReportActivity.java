@@ -70,6 +70,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
+	private List<Users>usersDetails=new ArrayList<Users>();
 	private List<Task> taskDetail = new ArrayList<Task>();
 	private String[] status = { NOTSTARTED, APPROVED, REJECT, INPROGRESS, COMPLETED };
 	private String[] weight = { SHORT, MEDIUM, LONG };
@@ -80,10 +81,10 @@ public class StaffReportActivity implements Serializable, DbConstant {
     private PieChartModel pieModel2;
     
     
-     Task tc= new Task();
+    Task tc= new Task();
     
 	TaskImpl taskImpl = new TaskImpl();
-	Task t=taskImpl.getTaskById(myTask, "taskId");
+	
 	
 	/* class injection */
 
@@ -112,9 +113,15 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		}
 
 		try {
+			
 			taskDetail = taskImpl.getListWithHQL(SELECT_TASK);
 			taskDetail = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Task", "taskId asc");
+			usersDetails = usersImpl.getListWithHQL(SELECT_TASK);
+			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","userCategory" },
+					new Object[] { ACTIVE,2 }, "Task", "taskId asc");
+		
+			
 		} catch (Exception e) {
 		}
 	}
@@ -133,12 +140,29 @@ public class StaffReportActivity implements Serializable, DbConstant {
         yAxis.setMin(0);
         yAxis.setMax(10);
     } 
+    
+    public void testMethod() {
+    	
+    	 for (Object[] data:  taskImpl.reportList("select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board")){
+    	       
+         	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+         	LOGGER.info("tes1 1::"+data[0]+" ::"+ data[1]+" ::"+ data[2]);
+               }
+    	 
+    	 
+    	 for (Object[] data:  taskImpl.reportList("select count(*),t.taskName,t.endDate,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board")){
+  	       
+          	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+          	LOGGER.info("tes1 1::"+Integer.parseInt(data[0]+"")+" ::"+ data[1]+" ::"+ data[2]);
+                }
+    }
     private BarChartModel initBarModel() {
         BarChartModel model = new BarChartModel();
      
         ChartSeries tasks = new ChartSeries();
         for (Object[] data:  taskImpl.reportList("select count(*),tas.taskName from Activity a  join  a.task tas  group by tas.taskId")){
        
+        	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
         	tasks.set(data[1]+"", Integer.parseInt(data[0]+""));
               }
         model.addSeries(tasks);
@@ -222,7 +246,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		table.addCell(pc);
 
 		table.setWidthPercentage(110);
-		PdfPCell pc1 = new PdfPCell(new Paragraph(" Task name\n Execution period", font0));
+		PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
 		// pc1.setRowspan(3);
 		pc1.setBackgroundColor(BaseColor.ORANGE);
 		table.addCell(pc1);
@@ -256,7 +280,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 
 		try {
 		activityDetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","task"},
-			new Object[] { ACTIVE,taskImpl.getTaskById(Integer.parseInt(myTask+""), "taskId") }, "Activity","activityId asc");
+		new Object[] { ACTIVE,taskImpl.getTaskById(Integer.parseInt(myTask+""), "taskId") }, "Activity","activityId asc");
 			for (Activity activity : activityDetails) {
 				table.addCell(activity.getCrtdDtTime()+"");
 				table.addCell(activity.getDescription());
@@ -493,14 +517,22 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	public void setPieModel2(PieChartModel pieModel2) {
 		this.pieModel2 = pieModel2;
 	}
-	public Task getT() {
-		return t;
+
+
+	public Task getTc() {
+		return tc;
 	}
-	public void setT(Task t) {
-		this.t = t;
+	public void setTc(Task tc) {
+		this.tc = tc;
 	}
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
+	}
+	public List<Users> getUsersDetails() {
+		return usersDetails;
+	}
+	public void setUsersDetails(List<Users> usersDetails) {
+		this.usersDetails = usersDetails;
 	}
 
 }
