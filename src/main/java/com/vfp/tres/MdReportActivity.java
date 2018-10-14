@@ -42,6 +42,7 @@ import tres.common.JSFBoundleProvider;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.BoardImpl;
+import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
@@ -66,12 +67,13 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private List<Task> taskDetails = new ArrayList<Task>();
 	private Task task;
 	private Board board;
-	private String selectedBoard;
+	private int selectedBoard;
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<Board>boardDetails=new ArrayList<Board>();
+	
     private String[] status= {NOTSTARTED,APPROVED,REJECT,INPROGRESS,COMPLETED};
 	private String[] weight= {SHORT,MEDIUM,LONG};
 	
@@ -82,6 +84,10 @@ public class MdReportActivity implements Serializable, DbConstant {
 	ActivityImpl activityImpl = new ActivityImpl();
 	TaskImpl taskImpl = new TaskImpl();
 	BoardImpl boardImpl=new BoardImpl();
+	Board t=boardImpl.getBoardById(selectedBoard, "boardId");
+	
+	
+	
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	@SuppressWarnings("unchecked")
@@ -103,6 +109,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 		}
    
 		try {
+			
 			boardDetails = boardImpl.getListWithHQL(SELECT_BOARD);
 			boardDetails= boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "Board", "boardId asc");
 		} catch (Exception e) {
@@ -152,19 +159,22 @@ public void createPdf() throws IOException, DocumentException {
       
       Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
       PdfPTable table = new PdfPTable(5);
-   
-//  PdfPCell pc = new PdfPCell(new Paragraph("TASK NAME "));
-//      pc.setColspan(5);  
-//      pc.setBackgroundColor(BaseColor.BLUE);
-//      pc.setHorizontalAlignment(Element.ALIGN_CENTER);
-//      table.addCell(pc);     
-//  table.setWidthPercentage(110);
+
       Paragraph header1 = new Paragraph("MANAGER DIRECTOR REPORT MADE ON" + xdate + " REPORT");
 		// header.setAlignment(Element.ALIGN_RIGHT);
 		header1.setAlignment(Element.ALIGN_CENTER);
 		// header.add(header1);
 		document.add(header1);
 		document.add(new Paragraph("                                          "));
+		
+		
+	   //String myBoardName=t.getBoardName();
+		
+		PdfPCell pc = new PdfPCell(new Paragraph("BOARD REPORT FOR "+" "));
+		pc.setColspan(5);
+		pc.setBackgroundColor(BaseColor.CYAN);
+		pc.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(pc);
       
   PdfPCell pc1 = new PdfPCell(new Paragraph("TASK NAME", font0));
   //pc1.setRowspan(3);
@@ -203,8 +213,11 @@ public void createPdf() throws IOException, DocumentException {
 	}
 	
 	try {
-		
-		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE},"Task", "taskId asc");
+		/*LOGGER.info(selectedBoard+"");
+		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},
+		new Object[] {ACTIVE},"Task", "taskId asc");
+		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","board"},
+				new Object[] {ACTIVE,boardImpl.getBoardById(3,"boardId")},"Task", "taskId asc");
 		SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
 		for (Task task : taskDetails){
 			table.addCell(task.getTaskName());
@@ -217,7 +230,17 @@ public void createPdf() throws IOException, DocumentException {
 				table.addCell("-5");
 			}
 			
-		}
+		}*/
+		for (Object[] data:  taskImpl.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+selectedBoard+"'")){
+	  	       
+          	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+			LOGGER.info("tes1 1::"+data[0]+""+" ::"+ data[1]+" ::"+ data[2]+"kamana");
+          	table.addCell(data[0]+"");
+          	table.addCell(data[1]+"");
+          	table.addCell(data[2]+"");
+          	table.addCell(data[3]+"");
+          	table.addCell("");
+                }
         document.add(table);
 		
 		document.close();
@@ -227,7 +250,8 @@ public void createPdf() throws IOException, DocumentException {
 		context.responseComplete();
 		
 		}catch(Exception e) {
-			LOGGER.info(e.getMessage());
+			
+			LOGGER.info(e.getMessage()+"kamana arahari");
 			e.printStackTrace();
 		}
 }
@@ -249,10 +273,10 @@ public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputS
     }
 }
 
-public void myrepo() throws IOException, DocumentException {
+/*public void myrepo() throws IOException, DocumentException {
 
     new MdReportActivity().createPdf();
-}
+}*/
 
 public String getCLASSNAME() {
 	return CLASSNAME;
@@ -406,12 +430,14 @@ public void setBoard(Board board) {
 	this.board = board;
 }
 
-public String getSelectedBoard() {
+
+
+public int getSelectedBoard() {
 	return selectedBoard;
 }
 
-public void setSelectedBoard(String selectedBoard) {
-	selectedBoard = selectedBoard;
+public void setSelectedBoard(int selectedBoard) {
+	this.selectedBoard = selectedBoard;
 }
 
 public List<Board> getBoardDetails() {
