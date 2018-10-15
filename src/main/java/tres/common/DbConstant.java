@@ -70,4 +70,6 @@ public  interface  DbConstant {
  public static final String SELECT_TASK="from Task";
  public static final String SELECT_STRATEGIC_PLAN="from StrategicPlan";
  public static final String SELECT_BOARD="from Board";
+ public static final String Yes_Option="yes"; 
+ public static final String Root_Path="C:\\Vfp_Document";
 }

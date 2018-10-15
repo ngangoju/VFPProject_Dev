@@ -1,5 +1,6 @@
 package com.vfp.tres;
 
+import java.awt.image.renderable.RenderedImageFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -114,13 +115,15 @@ public class UserAccountController implements Serializable, DbConstant {
 	private String choice;
 	private boolean rendered;
 	private boolean renderForeignCountry;
+	private String option;
 	private Date dateofBirth;
 	private int age;
 	private int days;
 	private Date to;
 	private Date from;
+	private boolean renderDataTable;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked" })
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
@@ -174,37 +177,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setAddress(user.getAddress());
 			userDto.setUserId(user.getUserId());
 			userDto.setUserCategory(user.getUserCategory());
-			userDtoDetails.add(userDto);
-			// below list concern list of all users by changing their status
-
-		/*	usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Users", "userId desc");
-			for (Users users : usersDetails) {
-				UserDto userDtos = new UserDto();
-				userDtos.setEditable(false);
-				userDtos.setFname(users.getFname());
-				userDtos.setLname(users.getLname());
-				userDtos.setViewId(users.getViewId());
-				userDtos.setAddress(users.getAddress());
-				userDtos.setUserId(users.getUserId());
-				userDtos.setUserCategory(users.getUserCategory());
-				userDtos.setStatus(users.getStatus());
-				if (users.getStatus().equals(ACTIVE)) {
-					userDtos.setAction(DESACTIVE);
-
-				} else if (users.getStatus().equals(DESACTIVE)) {
-
-					userDtos.setAction(ACTIVE);
-					users.setStatus(DESACTIVE);
-
-				} else {
-					userDtos.setAction(DESACTIVE);
-					users.setStatus(ACTIVE);
-
-				}
-				userDtosDetails.add(userDtos);
-
-			}*/
+			userDtoDetails.add(userDto);	
 
 		} catch (Exception e) {
 			setValid(false);
@@ -395,6 +368,14 @@ public class UserAccountController implements Serializable, DbConstant {
 		usersDetails = null;
 	}
 
+	public void changeOption() {
+		if (option.equals(Yes_Option)) {
+			rendered = true;
+		}else {
+			rendered = false;
+		}
+	}
+
 	public String getContextPath() {
 
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
@@ -403,8 +384,13 @@ public class UserAccountController implements Serializable, DbConstant {
 		return request.getContextPath();
 	}
 
+	public void optionCombine() {
+		rendered=false;
+		renderForeignCountry=false;
+	}
 	public String cancel(UserDto user) {
 		user.setEditable(false);
+		optionCombine();
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -413,29 +399,59 @@ public class UserAccountController implements Serializable, DbConstant {
 	public String editAction(UserDto user) {
 
 		user.setEditable(true);
+		renderForeignCountry=true;
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
 
-	public String saveAction(UserDto user) {
+	public boolean confirmPswd() {
+		boolean valid = false;
+		if (password.equalsIgnoreCase(confirmPswd)) {
+			valid = true;
+			return (valid);
+		}
+		return (valid);
+	}
+	public String saveAction(UserDto user) throws NoSuchAlgorithmException, IOException {
 		LOGGER.info("update  saveAction method");
 		/* System.out.println("**************update  saveAction method"); */
 		// get all existing value but set "editable" to false
 
 		if (user != null) {
-
+			optionCombine();
 			Users us = new Users();
 			us = new Users();
 			us = usersImpl.gettUserById(user.getUserId(), "userId");
-
+			boolean valid=confirmPswd() ;
 			LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
 			LOGGER.info("++++++++++++++++++++++++++here update sart for " + us + " useriD " + us.getUserId());
+			FileUploadController upload= new FileUploadController();
+			
+			/*String filename=upload.processImageUploaded();*/
+			/*if(null!=filename) {
+			LOGGER.info("File Name Uploaded ::::::::--->>"+filename);*/
 			user.setEditable(false);
 			us.setFname(user.getFname());
 			us.setLname(user.getLname());
 			us.setAddress(user.getAddress());
+			/*us.setImage(filename);*/
 			usersImpl.UpdateUsers(us);
-
+			/*}*/
+			
+			
+			if(valid) {
+				us.setViewName(loginImpl.criptPassword(confirmPswd));
+				usersImpl.UpdateUsers(us);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("pswd.changed.message"));
+			}else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("erropswd.changed.message"));
+			}
+			
+			
 			// return to current page
 			return null;
 		} else {
@@ -452,18 +468,20 @@ public class UserAccountController implements Serializable, DbConstant {
 		// get all existing value but set "editable" to false
 		Users us = new Users();
 		us = new Users();
-		us = usersImpl.gettUserById(user.getUserId(), "userId");
+		if (null != user)
+			us = usersImpl.gettUserById(user.getUserId(), "userId");
 
-		LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
-
+		if (null != us)
+			LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
 		user.setEditable(false);
 		us.setFname(user.getFname());
 		us.setLname(user.getLname());
 		us.setUserCategory(user.getUserCategory());
 		usersImpl.UpdateUsers(us);
-
+		displayUsersByDateBetween();
 		// return to current page
-		return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+		return "null";
+		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
 
 	}
 
@@ -472,22 +490,24 @@ public class UserAccountController implements Serializable, DbConstant {
 		// get all existing value but set "editable" to false
 		Users us = new Users();
 		us = new Users();
-		us = usersImpl.gettUserById(user.getUserId(), "userId");
-
-		LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
+		if (user != null)
+			us = usersImpl.gettUserById(user.getUserId(), "userId");
+		if (us != null)
+			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
 
 		if (user.getStatus().equals(ACTIVE)) {
 
 			us.setStatus(DESACTIVE);
-			usersImpl.UpdateUsers(us);
+
 		} else {
 
 			us.setStatus(ACTIVE);
 		}
 		usersImpl.UpdateUsers(us);
-
+		displayUsersByDateBetween();
 		// return to current page
-		return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+		return "null";
+		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
 
 	}
 
@@ -503,46 +523,58 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
-	
+	public void showDataTable() {
+
+		if ((null != to) && (null != from)) {
+
+			renderDataTable = true;
+		}
+	}
+
 	@SuppressWarnings("static-access")
 	public void displayUsersByDateBetween() {
 		try {
 			if (to.after(from)) {
+
 				Formating fmt = new Formating();
-				LOGGER.info("Here We are :--------------->>");
-				/*usersDetails = usersImpl.getListByDateBewteenOtherCriteria("createdDate",from ,to,
-						new String[] { "genericStatus", "createdBy" },
-						new Object[] { ACTIVE, usersSession.getViewId() });*/
-				usersImpl.getListByDateBewteenOtherCriteria("createdDate",fmt.getFormtDateReturnMysqlFormat("04/09/2018"+"") ,fmt.getFormtDateReturnMysqlFormat("13/09/2018"+""),
-						new String[] { "genericStatus"},
-						new Object[] { ACTIVE});
-				for (Users users : usersDetails) {
-					UserDto userDtos = new UserDto();
-					userDtos.setEditable(false);
-					userDtos.setFname(users.getFname());
-					userDtos.setLname(users.getLname());
-					userDtos.setViewId(users.getViewId());
-					userDtos.setAddress(users.getAddress());
-					userDtos.setUserId(users.getUserId());
-					userDtos.setUserCategory(users.getUserCategory());
-					userDtos.setStatus(users.getStatus());
-					if (users.getStatus().equals(ACTIVE)) {
-						userDtos.setAction(DESACTIVE);
+				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+						+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+				days = fmt.daysBetween(from, to);
 
-					} else if (users.getStatus().equals(DESACTIVE)) {
+				LOGGER.info("Days founded:......................" + days);
+				if (days <= 30) {
+					renderDataTable = true;
+					userDtosDetails = new ArrayList<UserDto>();
+					for (Object[] data : usersImpl.reportList(
+							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId from Users us where us.createdDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
 
-						userDtos.setAction(ACTIVE);
-						users.setStatus(DESACTIVE);
-					} else {
-						userDtos.setAction(DESACTIVE);
-						users.setStatus(ACTIVE);
-
+						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
+								+ data[1] + "");
+						UserDto userDtos = new UserDto();
+						userDtos.setEditable(false);
+						userDtos.setUserId(Integer.parseInt(data[5] + ""));
+						userDtos.setFname(data[0] + "");
+						userDtos.setLname(data[1] + "");
+						userDtos.setViewId(data[2] + "");
+						userDtos.setUserCategory(((UserCategory) data[3]));
+						userDtos.setStatus(data[4] + "");
+						if (data[4].equals(ACTIVE)) {
+							userDtos.setAction(DESACTIVE);
+						} else {
+							userDtos.setAction(ACTIVE);
+						}
+						userDtosDetails.add(userDtos);
 					}
-					userDtosDetails.add(userDtos);
+
+				} else {
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 				}
+
 			} else {
 				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
 
 		} catch (Exception e) {
@@ -552,11 +584,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
-	 
 
-	/**
-	 * @return
-	 */
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -1003,6 +1031,22 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setFrom(Date from) {
 		this.from = from;
+	}
+
+	public boolean isRenderDataTable() {
+		return renderDataTable;
+	}
+
+	public void setRenderDataTable(boolean renderDataTable) {
+		this.renderDataTable = renderDataTable;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
 	}
 
 }
