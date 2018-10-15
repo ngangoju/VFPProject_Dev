@@ -18,13 +18,14 @@ public class BoardImpl extends AbstractDao<Long, Board> implements IBoard{
 		return (List<Board>) (Object) getModelList();
 	}
 
-	public Board gettUserById(int boardId, String primaryKeyclomunName) {
+	public Board getBoardById(int boardId, String primaryKeyclomunName) {
 		return (Board) getModelById(boardId, primaryKeyclomunName);
 	}
 
 	public Board UpdateBoard(Board board) {
 		return updateIntable(board);
 	}
+	
 
 	public Board getBoardsWithQuery(String[] propertyName, Object[] value, String hqlStatement) {
 		try {
@@ -32,11 +33,6 @@ public class BoardImpl extends AbstractDao<Long, Board> implements IBoard{
 		} catch (Exception ex) {
 			LOGGER.info("getUsersWithQuery  Query error ::::" + ex.getMessage());
 		}
-		return null;
-	}
-
-	public Board getBoardById(int boardId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
