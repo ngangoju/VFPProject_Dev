@@ -9,10 +9,20 @@
    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
    <load-on-startup>1</load-on-startup>
   </servlet>
+    <servlet>
+    	<servlet-name>SendSupportEmail</servlet-name>
+    	<display-name>SendSupportEmail</display-name>
+    	<description></description>
+    	<servlet-class>com.vfp.tres.SendSupportEmail</servlet-class>
+    </servlet>
  
   <servlet-mapping>
    <servlet-name>Faces Servlet</servlet-name>
    <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SendSupportEmail</servlet-name>
+  	<url-pattern>/SendSupportEmail</url-pattern>
   </servlet-mapping>
   
     <session-config>
@@ -23,6 +33,26 @@
     <welcome-file-list>
         <welcome-file>home.xhtml</welcome-file>
     </welcome-file-list>
-
+    
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/404.xhtml</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/500.xhtml</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>503</error-code>
+		<location>/WEB-INF/503.xhtml</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/WEB-INF/403.xhtml</location>
+	</error-page>
+	
 </web-app>
 

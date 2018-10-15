@@ -15,69 +15,93 @@
     	 
     	 
     	 	<ui:define name="content">
-<center ><h1>partnership description here</h1></center>
-<div class="row" >
-                  
-                    <div class="col-md-4 col-sm-6">
-                        <div class="circle-tile2">
-                           
-                                <div class="circle-tile-heading2 green2">
-                                    <i class="glyphicon glyphicon-asterisk fa-fw fa-3x"></i> 
-                                    </div>
-                            
-                            <div class="circle-tile-content2 green2">
-                                <div class="circle-tile-description2 text-faded2">
-                                   Test Menu
-                                </div>
-                                <div class="circle-tile-number2 text-faded2">
-                                   1
-                                </div>
-                                <a href="#" class="circle-tile-footer">View  <i class="glyphicon glyphicon-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="circle-tile2">
-                           
-                                <div class="circle-tile-heading2 orange2">
-                                    <i class="glyphicon glyphicon-list fa-fw fa-3x"></i>
-                                </div>
-                           
-                            <div class="circle-tile-content2 orange2">
-                                <div class="circle-tile-description text-faded2">
-                                    Test Menu
-                                </div>
-                                <div class="circle-tile-number2 text-faded2">
-                                    2 
-                                </div>
-                                <a href="#" class="circle-tile-footer">More Info <i class="glyphicon glyphicon-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="circle-tile2">
-                            
-                                <div class="circle-tile-heading2 blue2">
-                                    <i class="glyphicon glyphicon-file fa-fw fa-3x"></i>
-                                </div>
-                          
-                            <div class="circle-tile-content2 blue2">
-                                <div class="circle-tile-description text-faded2">
-                                   Test Menu
-                                </div>
-                                <div class="circle-tile-number2 text-faded2">
-                                    3
-                                    <span id="sparklineB"></span>
-                                </div>
-                                <a href="#" class="circle-tile-footer">More Info <i class="glyphicon glyphicon-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                                              
-      
-        
-    </div>
+ <div class="container">
 
+        <div class="row">
+
+            <div class="col-xl-8 offset-xl-2 py-5">
+                  
+                <h1>Contact Us:
+                 
+                </h1>
+
+                <h4>#{msg['msg.support.infomation']}</h4> 
+                <h4>#{msg['msg.support.infomation.two']}</h4>
+
+
+                <form action="SendSupportEmail" method="post">
+
+                    <div class="messages"></div>
+
+                    <div class="controls">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="form_name">#{msg['massages.cmn.common.first.fname']} *</label>
+                                    <input id="form_name" type="text" name="name" class="form-control" placeholder="Please enter your firstname *" required="required" data-error="Firstname is required."/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="form_lastname">#{msg['massages.cmn.common.last.lname']}*</label>
+                                    <input id="form_lastname" type="text" name="surname" class="form-control" placeholder="Please enter your lastname *" required="required" data-error="Lastname is required."/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="form_email">Email *</label>
+                                    <input id="form_email" type="email" name="email" class="form-control" placeholder="Please enter your email *" required="required" data-error="Valid email is required."/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="form_need">#{msg['lebel.please.specify.your.need']} *</label>
+                                    <select id="form_need" name="need" class="form-control" required="required" data-error="Please specify your need.">
+                                        <option value=""></option>
+                                        <option value="#{msg['label.partnership.request']}">#{msg['label.partnership.request']}</option>
+                                        <option value="#{msg['label.application.support']}">#{msg['label.application.support']}</option>
+                                        <option value="{msg['label.other']}">#{msg['label.other']}</option>
+                                    </select>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="form_message">#{msg['label.conta.message']}*</label>
+                                    <textarea id="form_message" name="message" class="form-control" placeholder="Message for me *" rows="4" required="required" data-error="Please, leave us a message."></textarea>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="submit" class="btn btn-success btn-send" value="Send message"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="text-muted">
+                                    <strong>*</strong> #{msg['header.title.fieldmarked']}
+                                    <a href="http://www.tres.rw" target="_blank">Tres Website</a>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+            <!-- /.8 -->
+
+        </div>
+        <!-- /.row-->
+
+    </div>
     		</ui:define>
 </ui:composition>
     </h:body>

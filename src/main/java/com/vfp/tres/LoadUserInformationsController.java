@@ -76,8 +76,10 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	
 		
 		users= (Users) session.getAttribute("userSession");
+		if(null!=users) {
 	LOGGER.info("HHH>>"+users.getUserCategory().getUsercategoryName());
 	userCategory=users.getUserCategory();
+		
 		try {
 			menuAssignmentDetails=menuAssignmentImpl.getGenericListWithHQLParameter(new String[] { "userCategory", "genericStatus"},new Object[] {users.getUserCategory(),ACTIVE}, "MenuAssignment", "menuAssgnId asc");
 			LOGGER.info("menu size ::>>"+menuAssignmentDetails.size());
@@ -88,7 +90,7 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-
+		}
 	
 		
 	}
@@ -96,9 +98,11 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 public List<MenuGroup>getListMenuGroup(){
 
 	try {
+		if(null!=users) {
 		LOGGER.info("user::::>>>"+users.getUserCategory());
 		menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"},new Object[] {ACTIVE,users.getUserCategory()}, "MenuGroup", "menuGroupId asc");
-	} catch (Exception e) {
+		}
+		} catch (Exception e) {
 		setValid(false);
 		JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 		LOGGER.info(e.getMessage());
