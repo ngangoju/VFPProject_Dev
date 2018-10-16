@@ -45,7 +45,10 @@ public class UserDto implements Serializable {
 
 	private boolean editable;
 	private String action;
-
+	private String institution;
+	private String phone;
+	private String email;
+	private String genericStatus;
 	public String getAction() {
 		return action;
 	}
@@ -187,4 +190,36 @@ public class UserDto implements Serializable {
 		this.board = board;
 	}
 
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getGenericStatus() {
+		return genericStatus;
+	}
+
+	public void setGenericStatus(String genericStatus) {
+		this.genericStatus = genericStatus;
+	}
+	
 }
