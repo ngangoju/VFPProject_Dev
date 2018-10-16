@@ -1,90 +1,88 @@
 package tres.domain;
+/**
+ * author Emma
+ * */
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-@MappedSuperclass
-public abstract class Documents implements Serializable {
-private static final long serialVersionUID =  -6665275582900585705L;
-public Documents() {
+@Entity
+@Table(name = "Documents")
+@NamedQuery(name = "Documents.findAll", query = "SELECT r FROM Documents r order by v desc")
+public class Documents extends CommonDomain implements Serializable {
 
-  }
-  @Column(name = "DocUrl")
-  private String DocumentUrl;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "DocId")
+	private long DocId;
 
-  @Column(name = "DocName")
-  private String DocName;
-  @Column(name = "DocType")
-  private String DocType;
+	@Column(name = "documentLoc")
+	private String documentLoc;
 
-  @Column(name = "DocSize")
-  private int DocSize;
+	@Column(name = "originalFileName")
+	private String originalFileName;
 
-  @Column(name = "UploadDtTime")
-  private Timestamp UploadDtTime;
+	@Column(name = "sysFilename")
+	private String sysFilename;
 
-  @Column(name = "UploadedBy")
-  private String UploadedBy;
-  
-  @Column(name = "DocStatus")
-  private String DocStatus;
-public String getDocumentUrl() {
-	return DocumentUrl;
-}
+	@Column(name = "validDocCode")
+	private String validDocCode;
+	
+	@Column(name = "fileSize")
+	private long fileSize;
 
-public void setDocumentUrl(String documentUrl) {
-	DocumentUrl = documentUrl;
-}
-public String getDocName() {
-	return DocName;
-}
+	public long getDocId() {
+		return DocId;
+	}
 
-public void setDocName(String docName) {
-	DocName = docName;
-}
+	public void setDocId(long docId) {
+		DocId = docId;
+	}
 
-public Timestamp getUploadDtTime() {
-	return UploadDtTime;
-}
+	public String getDocumentLoc() {
+		return documentLoc;
+	}
 
-public void setUploadDtTime(Timestamp uploadDtTime) {
-	UploadDtTime = uploadDtTime;
-}
+	public void setDocumentLoc(String documentLoc) {
+		this.documentLoc = documentLoc;
+	}
 
-public String getUploadedBy() {
-	return UploadedBy;
-}
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
 
-public void setUploadedBy(String uploadedBy) {
-	UploadedBy = uploadedBy;
-}
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
+	}
 
-public String getDocStatus() {
-	return DocStatus;
-}
+	public String getSysFilename() {
+		return sysFilename;
+	}
 
-public void setDocStatus(String docStatus) {
-	DocStatus = docStatus;
-}
+	public void setSysFilename(String sysFilename) {
+		this.sysFilename = sysFilename;
+	}
 
-public int getDocSize() {
-	return DocSize;
-}
+	public String getValidDocCode() {
+		return validDocCode;
+	}
 
-public void setDocSize(int docSize) {
-	DocSize = docSize;
-}
+	public void setValidDocCode(String validDocCode) {
+		this.validDocCode = validDocCode;
+	}
 
-public String getDocType() {
-	return DocType;
-}
+	public long getFileSize() {
+		return fileSize;
+	}
 
-public void setDocType(String docType) {
-	DocType = docType;
-} 
-
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
+	}	
 }
