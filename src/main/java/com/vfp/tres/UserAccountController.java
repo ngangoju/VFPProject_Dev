@@ -410,7 +410,6 @@ public class UserAccountController implements Serializable, DbConstant {
 			return (option);
 		}
 	}
-
 	public void profilePage(UserDto user) {
 		if (redirect.equals(Next_Option)) {
 			if(null!=user) {
@@ -625,7 +624,7 @@ public class UserAccountController implements Serializable, DbConstant {
 					renderDataTable = true;
 					userDtosDetails = new ArrayList<UserDto>();
 					for (Object[] data : usersImpl.reportList(
-							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId from Users us where us.createdDate between '"
+							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,co.email,co.phone,ins.institutionName,us.genericStatus,us.board from Users us,Contact co,Institution ins,Board b where b.institution=ins.institutionId and b.boardId=us.board and co.user=us.userId and us.createdDate between '"
 									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
 
 						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
@@ -636,8 +635,13 @@ public class UserAccountController implements Serializable, DbConstant {
 						userDtos.setFname(data[0] + "");
 						userDtos.setLname(data[1] + "");
 						userDtos.setViewId(data[2] + "");
-						userDtos.setUserCategory(((UserCategory) data[3]));
+						userDtos.setUserCategory((UserCategory) data[3]);
 						userDtos.setStatus(data[4] + "");
+						userDtos.setEmail(data[6] + "");
+						userDtos.setPhone(data[7] + "");
+						userDtos.setInstitution(data[8] + "");
+						userDtos.setGenericStatus(data[9] + "");
+						userDtos.setBoard((Board)data[10]);
 						if (data[4].equals(ACTIVE)) {
 							userDtos.setAction(DESACTIVE);
 						} else {

@@ -85,8 +85,8 @@
 									<h:message for="countryId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-							
-							
+
+
 							<h:panelGroup id="secondPanel" layout="block">
 								<p:outputPanel id="toUpdate" autoUpdate="true"
 									rendered="#{userAccountController.rendered}">
@@ -345,8 +345,7 @@
 												<h:inputText locale="#{facesContext.viewRoot.locale}"
 													autocomplete="off" id="from_dob_date_id"
 													binding="#{from_dob_date_id}" class="form-control"
-													escape="true"
-													value="#{userAccountController.dateofBirth}"
+													escape="true" value="#{userAccountController.dateofBirth}"
 													maxlength="35" required="true"
 													converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 													requiredMessage="#{msg['dob.message']}">
@@ -372,19 +371,19 @@
 												</script>
 											</div>
 											<div class="col-md-2">
-											<span class="tooltips-input-main"><a
-												class="tooltips-input"> <h:panelGroup
-														id="tooltips-contactDetails" layout="block">
-														<img
-															src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-															style="width: 8%" alt="question" />
-													</h:panelGroup> <p:tooltip id="toolTipContent"
-														for="tooltips-contactDetails" position="bottom">
-														<span> #{msg['help.userdob.message']} </span>
-													</p:tooltip>
-											</a></span>
+												<span class="tooltips-input-main"><a
+													class="tooltips-input"> <h:panelGroup
+															id="tooltips-contactDetails" layout="block">
+															<img
+																src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+																style="width: 8%" alt="question" />
+														</h:panelGroup> <p:tooltip id="toolTipContent"
+															for="tooltips-contactDetails" position="bottom">
+															<span> #{msg['help.userdob.message']} </span>
+														</p:tooltip>
+												</a></span>
 
-										</div>
+											</div>
 											<h:message for="from_dob_date_id" styleClass="help-block"></h:message>
 										</div>
 									</h:panelGroup>
@@ -423,12 +422,29 @@
 												style="color: red">*</span></label>
 											<div class="col-md-6 col-sm-6 col-xs-6">
 												<h:inputSecret id="pswd" binding="#{pswd}"
-													styleClass="form-control"
+													styleClass="form-control pwd"
 													value="#{userAccountController.password}" maxlength="35"
 													required="true"
 													requiredMessage="#{msg['requiered.username.password']}">
 													<f:validateLength maximum="35" />
 												</h:inputSecret>
+												<span>
+													<button class="btn btn-default reveal" type="button"
+														style="margin-top: -60px; margin-left: 385px;">
+														<i class="glyphicon glyphicon-eye-open"></i>
+													</button>
+												</span>
+												<script>
+												$(".reveal").mousedown(function() {
+												    $(".pwd").replaceWith($('.pwd').clone().attr('type', 'text'));
+												})
+												.mouseup(function() {
+													$(".pwd").replaceWith($('.pwd').clone().attr('type', 'password'));
+												})
+												.mouseout(function() {
+													$(".pwd").replaceWith($('.pwd').clone().attr('type', 'password'));
+												});
+												</script>
 											</div>
 											<h:message for="pswd" styleClass="help-block"></h:message>
 										</div>
@@ -442,12 +458,29 @@
 												style="color: red">*</span></label>
 											<div class="col-md-6 col-sm-6 col-xs-6">
 												<h:inputSecret id="confpswd" binding="#{confpswd}"
-													styleClass="form-control"
+													styleClass="form-control pswd"
 													value="#{userAccountController.confirmPswd}" maxlength="35"
 													required="true"
 													requiredMessage="#{msg['requiered.username.confirmpassword']}">
 													<f:validateLength maximum="35" />
 												</h:inputSecret>
+												<span>
+													<button class="btn btn-default reveal" type="button"
+														style="margin-top: -60px; margin-left: 385px;">
+														<i class="glyphicon glyphicon-eye-open"></i>
+													</button>
+												</span>
+												<script>
+												$(".reveal").mousedown(function() {
+												    $(".pswd").replaceWith($('.pswd').clone().attr('type', 'text'));
+												})
+												.mouseup(function() {
+													$(".pswd").replaceWith($('.pswd').clone().attr('type', 'password'));
+												})
+												.mouseout(function() {
+													$(".pswd").replaceWith($('.pswd').clone().attr('type', 'password'));
+												});
+												</script>
 											</div>
 											<h:message for="confpswd" styleClass="help-block"></h:message>
 										</div>
@@ -505,7 +538,7 @@
 								<!-- End of First Panel -->
 							</h:panelGroup>
 
-							
+
 							<h:panelGroup id="FourthPanel" layout="block">
 								<p:outputPanel id="tobutton" autoUpdate="true"
 									rendered="#{userAccountController.renderForeignCountry}">
@@ -513,6 +546,7 @@
 									<h:panelGroup id="ButtonPanel" layout="block">
 
 										<div class="form-group row">
+
 											<label for="todate"
 												class="col-md-2 col-sm-2 col-xs-2 control-label"
 												style="color: black"></label>
@@ -521,7 +555,8 @@
 													action="#{userAccountController.saveUserInfo}"
 													value="#{msg['label.subimit.message.submit']}"
 													style="font-family: Open Sans sans-serif !important; font-size: 15px !important;">
-												<f:ajax render="@form" execute="@form" onevent="showProgress"/>
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
 												</h:commandButton>
 											</div>
 											<span class="text-danger" id="err"></span>
