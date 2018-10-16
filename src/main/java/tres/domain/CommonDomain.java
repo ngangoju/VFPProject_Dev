@@ -10,7 +10,7 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @MappedSuperclass
-public abstract class CommonDomain implements Serializable {
+public abstract class CommonDomain  implements Serializable {
 private static final long serialVersionUID =  -6665275582900585705L;
 public CommonDomain() {
 

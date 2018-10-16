@@ -11,6 +11,7 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 		<ui:define name="content">
 
+
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
@@ -158,21 +159,21 @@
 										action="#{userAccountController.displayUsersByDateBetween()}"
 										value="Submit">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										
 									</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="customeordererror"></span>
 							</div>
+							<p:outputPanel id="toTable" autoUpdate="true"
+									rendered="#{userAccountController.renderDataTable}">
 							<p:dataTable value="#{userAccountController.userDtosDetails}"
-								var="user" rows="10" paginator="true"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,15" id="tables"
-								style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+								var="user" rows="10"  id="tables" style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
 								<f:facet name="header">
        							<h4 style="font-family: Open Sans sans-serif !important; font-size: 20px !important;color:black;font-weight:bold;"> #{msg['message.header.userList.filter']}</h4>
     								</f:facet>
 
-								<p:column headerText="First Name">
+								<p:column headerText="Firstname">
 
 									<h:inputText value="#{user.fname}" size="10" id="fname"
 										rendered="#{user.editable}" required="true"
@@ -191,7 +192,7 @@
 								</p:column>
 
 
-								<p:column headerText="Last Name">
+								<p:column headerText="Lastname">
 
 
 									<h:inputText value="#{user.lname}" size="10" id="lname"
@@ -210,7 +211,7 @@
 
 								</p:column>
 
-								<p:column headerText="User Name">
+								<p:column headerText="Username">
 									<h:outputText value="#{user.viewId}" />
 
 								</p:column>
@@ -236,7 +237,7 @@
 									<h:message errorClass="errorMsg1" for="cat"
 										style="font-size:12px;font-family:Time New Roman;"></h:message>
 								</p:column>
-								<p:column headerText="User Status">
+								<p:column headerText="Status">
 									<h:outputText value="#{user.status}" />
 
 								</p:column>
@@ -245,7 +246,10 @@
 									<h:commandLink style="color:white"
 										class="btn btn-success 	glyphicon glyphicon-refresh"
 										value="#{user.action}"
-										action="#{userAccountController.updateStatus(user)}" />
+										action="#{userAccountController.updateStatus(user)}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
 								</p:column>
 								<p:column headerText="Action">
 
@@ -255,21 +259,32 @@
 										value="Edit"
 										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 										action="#{userAccountController.editAction(user)}"
-										rendered="#{not user.editable}" />
+										rendered="#{not user.editable}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
 
 									<h:commandLink
 										class="btn btn-danger 	glyphicon glyphicon-remove"
 										value="Cancel" action="#{userAccountController.cancel(user)}"
-										style="color:white;" rendered="#{user.editable}" />
+										style="color:white;" rendered="#{user.editable}" >
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										</h:commandLink>
 
 
 									<h:commandButton value="Save Changes" class="btn btn-primary"
 										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 										action="#{userAccountController.newAction(user)}"
-										rendered="#{user.editable}" render="userConatactPanel" />
+										rendered="#{user.editable}" execute="@this" > 
+										<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+										
+									</h:commandButton>
 								</p:column>
 
 							</p:dataTable>
+							</p:outputPanel>
 						</fieldset>
 
 					</div>

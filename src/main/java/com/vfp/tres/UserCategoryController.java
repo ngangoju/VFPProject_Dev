@@ -45,7 +45,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	ContactImpl contactImpl = new ContactImpl();
-
+	private boolean rendered;
 	UserCategoryImpl userCatImpl = new UserCategoryImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -81,10 +81,10 @@ public class UserCategoryController implements Serializable, DbConstant {
 
 		try {
 			try {
-				UserCategory userCat= new UserCategory();
-				userCat= userCatImpl.getModelWithMyHQL(new String[] {"usercategoryName"}, new Object[] { userCategory.getUsercategoryName() },
-						"from UserCategory");
-				if(null!=userCat) {
+				UserCategory userCat = new UserCategory();
+				userCat = userCatImpl.getModelWithMyHQL(new String[] { "usercategoryName" },
+						new Object[] { userCategory.getUsercategoryName() }, "from UserCategory");
+				if (null != userCat) {
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.categoryname"));
@@ -121,6 +121,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 		return "";
 	}
 
+	public void showCatTable() {
+		
+		if(categoryDtoDetails.size()!=0)
+			rendered=true;
+	}
 	private void clearCategoryFuileds() {
 		userCategory = new UserCategory();
 		categoryDetails = null;
@@ -143,7 +148,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 		userCatImpl.UpdateUsercategory(usercat);
 
 		// return to current page
-		return "/menu/ListOfUserCategory.xhtml?faces-redirect=true";
+		return null;
 
 	}
 
@@ -241,6 +246,14 @@ public class UserCategoryController implements Serializable, DbConstant {
 
 	public void setUserCatImpl(UserCategoryImpl userCatImpl) {
 		this.userCatImpl = userCatImpl;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
 	}
 
 }

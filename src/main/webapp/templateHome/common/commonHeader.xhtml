@@ -10,15 +10,18 @@
 <body class="w3-theme-l5">
   <ui:composition>
 <span style="display: none">#{manageLanguages.getLang()}</span>
+
 <!-- Navbar -->
 
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class=""></i></a>
+  
   <a href="home.xhtml" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="glyphicon glyphicon-home fa fa-home w3-margin-right"></i></a>
  
-  
+  <h:panelGroup rendered="#{additinalInformation.currentPage() eq 'home.xhtml'}">
   <a href="javascript:void(0)"  data-toggle="modal" data-target=".bs-example-modal-lg"  class="glyphicon glyphicon-lock w3-bar-item w3-button  w3-right w3-padding-large w3-hover-white" title="Sign In">
     <span>#{msg['label.common.sign.in']}</span>
   </a>
+ 
   
   
  
@@ -34,7 +37,7 @@
    </h:form>
     </div>
   </div>
-
+ </h:panelGroup>
 </ui:composition>
     </body>
 </html>
