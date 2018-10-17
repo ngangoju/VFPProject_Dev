@@ -15,10 +15,12 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<center>
-							<span class="glyphicon glyphicon-form"></span> List of Requests
+							<span class="glyphicon glyphicon-form"></span> INSTITUTION
+							REGISTRATION MANAGEMENT
 						</center>
 					</div>
 					<div class="panel-body">
+
 						<h:panelGroup layout="block"
 							rendered="#{not institutionController.valid and not facesContext.validationFailed}">
 							<ul>
@@ -44,53 +46,624 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						<p:dataTable value="#{institutionController.requests}" var="ls"
-							rowIndexVar="index" class="table">
-
-							<p:column style="width:30px">
-								<f:facet name="header">
-									<h:outputText value="#" />
-								</f:facet>
-								<h:outputText value="#{index + 1}" />
-							</p:column>
-							<p:column headerText="Institution Name">
-
-								<h:outputText class="" value="#{ls.institution.institutionName}" />
-							</p:column>
 
 
-							<p:column headerText="Representatif Names">
-								<h:outputText
-									value="#{ls.institution.institutionRepresenative.fname} 
-							#{ls.institution.institutionRepresenative.lname} " />
+						<!-- Div for dashbord start-->
+						<h:panelGroup layout="block" id="container">
+							<p:outputPanel
+								rendered="#{not institutionController.renderDivdashboard}"
+								id="upt" autoUpdate="true">
+								<div class="row">
+									<div class="col-md-4 col-sm-6">
+										<div class="circle-tile2">
 
-							</p:column>
+											<div class="circle-tile-heading2 green2">
+												<center style="margin-top: 30px">
+													<h:outputText
+														value="#{institutionController.countRequests()}" />
+												</center>
+											</div>
 
-							<p:column headerText="Time">
+											<div class="circle-tile-content2 green2">
+												<div class="circle-tile-description text-faded2">
+													Institution Requests</div>
+												<div class="circle-tile-number2 text-faded2">
+													<span class="glyphicon glyphicon-bell"></span> <span
+														id="sparklineB"></span>
+												</div>
+												<h:commandLink value="More information"
+													class="circle-tile-footer">
+													<i class="glyphicon glyphicon-chevron-right"> </i>
+													<p:ajax update="@form"
+														listener="#{institutionController.displayRequestDiv()}" />
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-4 col-sm-6">
+										<div class="circle-tile2">
+
+											<div class="circle-tile-heading2 purple2">
+												<center style="margin-top: 30px">
+													<h:outputText
+														value="#{institutionController.countRequestsrejected()}" />
+												</center>
+											</div>
+
+											<div class="circle-tile-content2 purple2">
+												<div class="circle-tile-description text-faded2">
+													Rejected</div>
+												<div class="circle-tile-number2 text-faded2">
+													<span class="glyphicon glyphicon-floppy-remove"></span> <span
+														id="sparklineB"></span>
+												</div>
+												<h:commandLink value="More information"
+													class="circle-tile-footer"
+													action="#{institutionController.displayRejectedDiv()}">
+													<i class="glyphicon glyphicon-chevron-right"> </i>
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-4 col-sm-6">
+										<div class="circle-tile2">
+
+											<div class="circle-tile-heading2 blue2">
+												<center style="margin-top: 30px">
+													<h:outputText
+														value="#{institutionController. countRequestsAllacepted()}" />
+												</center>
+											</div>
+
+											<div class="circle-tile-content2 blue2">
+												<div class="circle-tile-description text-faded2">View
+													institutions</div>
+												<div class="circle-tile-number2 text-faded2">
+													<span class="glyphicon glyphicon-list-alt"></span> <span
+														id="sparklineB"></span>
+												</div>
+												<h:commandLink value="More information"
+													class="circle-tile-footer"
+													action="#{institutionController.displayAllInstitutionsDiv()}">
+													<i class="glyphicon glyphicon-chevron-right"> </i>
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</p:outputPanel>
+						</h:panelGroup>
+						<!-- Div for dashbord ends-->
 
 
 
-								<h:outputText value="#{ls.instRegReqstDate}">
-									<f:convertDateTime pattern="dd MMM hh:mm" />
-								</h:outputText>
 
-							</p:column>
+						<!-- Div for Request table start-->
 
-							<p:column headerText="Action">
+						<h:panelGroup>
+							<p:outputPanel rendered="#{institutionController.renderDiv}"
+								id="update" autoUpdate="true">
+								<div class="card-header">
+									<h4 class="card-title">INSTITUTION REQUESTS</h4>
+								</div>
+								
+								 
+								<div class="card-body" style="padding-top: 10px">
+									<div class="form-group row">
+										<div class="card">
+											<div class="card-title">
+												<h4 class="panel-title">Institution Registration
+													Request</h4>
+											</div>
+											<div class="card-body">
+												<p:outputPanel rendered="#{not institutionController.selctDiv}"
+								                id="selct11" autoUpdate="true">  
+												<div class="card-text">
+													<h:panelGrid columns="3">
+														<h:column>
+															<label for="todate"
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																style="color: black">From<span
+																style="color: red">*</span></label>
+														</h:column>
+														<h:column>
+															<label for="todate"
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																style="color: black">To<span style="color: red">*</span></label>
+														</h:column>
+														<h:column>
+															<div></div>
+														</h:column>
+														<h:column>
+															<p:calendar
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																value="#{institutionController.from}"
+																pattern="yyyy-MM-dd" required="true"
+																requiredMessage="Date required" />
+														</h:column>
+														<h:column>
+															<p:calendar class="col-md-4 col-sm-3 col-xs-4"
+																value="#{institutionController.to}" pattern="yyyy-MM-dd"
+																required="true" requiredMessage="Date required" />
+														</h:column>
+														<h:column>
+															<h:commandButton
+																class="col-md-4 btn btn-info btn-sm btn-block"
+																value="Submit"
+																action="#{institutionController.displayRequest()}">
+																<f:ajax render="table" execute="@form"
+																	onevent="showProgress" />
+															</h:commandButton>
+														</h:column>
+													</h:panelGrid>
+												</div>
+												</p:outputPanel>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card-footer" style="padding-top: 10px">
+								<p:outputPanel rendered="#{institutionController.selctDiv}"
+								                id="selct12" autoUpdate="true">
+									<p:dataTable value="#{institutionController.pendinGrequests}"
+										var="ls" rowIndexVar="index" class="table" paginator="true"
+										rows="4"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="4,6,8,10,12" id="table">
+										<p:column style="border: none;">
+											<div class="circle-tile2 card">
+												<table class="circle-tile-content2   col-md-10 card-body"
+													style="height: 30px; padding: 10px; border: none;">
+													<tr style="border: none">
+														<td style="border: none;">
+															<h3 class="card-title">
+																<h:outputText value="#{ls.institution.institutionName}"
+																	size="10" />
+															</h3>
+														</td>
+														<td style="border: none"></td>
+													</tr>
+													<tr>
+														<td style="width: 170px; border: none;">
+															<div
+																class="circle-tile-heading2 card-img-top #{menuAss.listOfMenu.menuColor}">
+																<i class="glyphicon glyphicon-file fa-fw fa-3x"> </i>
+															</div>
+														</td>
+														<td class="col-md-6"
+															style="float: left; width: 100%; border: none;">
+															<div class="circle-tile-content2 " style="padding: 20px">
+																<table style="width: 100%; border: none;">
+																	<tr>
+																		<th style="text-align: right; width: 120px">Time:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"><h:outputText
+																				style="border: none" value="#{ls.instRegReqstDate}">
+																				<f:convertDateTime pattern="dd MMM hh:mm" />
+																			</h:outputText></td>
+																	</tr>
+																	<tr style="border: none">
+																		<th style="text-align: right; width: 120px">Representative:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none">
+																			<h:outputText
+																				value="#{ls.institution.institutionRepresenative.fname} #{ls.institution.institutionRepresenative.lname}" />
+																		</td>
+																	</tr>
+																	<tr style="border: none">
+																		<th style="text-align: right; width: 120px">Country:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"><h:outputText
+																				value="#{ls.institution.country.countryName_en}" />
+																		</td>
+																	</tr>
+																	<tr>
+																		<th
+																			style="text-align: right; width: 120px; border: none"
+																			class="card-link"><div>
+																				<h:commandLink style="color:white"
+																					class="btn btn-success 	glyphicon glyphicon-ok"
+																					value="Confirm">
+																					<p:ajax update="table"
+																						listener="#{institutionController.institutonConfirmation(ls)}"
+																						event="click" />
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandLink>
+																			</div></th>
+																		<th
+																			style="text-align: right; width: 120px; border: none"
+																			class="card-link"><div>
+																				<h:commandLink
+																					style="float:left;padding-left:10px;color:white"
+																					class="btn btn-danger 	glyphicon glyphicon-remove"
+																					value="Reject">
+																					<p:ajax update="table"
+																						listener="#{institutionController.institutonRejected(ls)}"
+																						event="click" />
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandLink>
+																			</div></th>
+																	</tr>
+																</table>
+															</div>
+														</td>
+													</tr>
+													<tr style="border: none">
+														<td style="border: none"></td>
+														<td style="border: none"></td>
+													</tr>
+												</table>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</p:outputPanel>
+								</div>
 
+							</p:outputPanel>
+						</h:panelGroup>
 
-								<h:commandLink style="color:white"
-									class="btn btn-success 	glyphicon glyphicon-ok" value="Confirm"
-									action="#{institutionController.institutonConfirmation(ls)}" />
-								<h:commandLink style="margin-left:2px;color:white"
-									class="btn btn-danger 	glyphicon glyphicon-remove"
-									value="Reject"
-									action="#{institutionController.institutonRejected(ls)}" />
-							</p:column>
+						<!-- Div for Request table ends-->
+						<!-- Div for Trash table start-->
+						<h:panelGroup>
+							<p:outputPanel
+								rendered="#{institutionController.renderrejected }"
+								id="rejected" autoUpdate="true">
+								<div class="card-header">
+									<h4 class="card-title">REJECTED INSTITUTION</h4>
+								</div>
+								<div class="card-body" style="padding-top: 10px">
+									<div class="form-group row">
+										<div class="card">
+										<div class="card-body">
+										<p:outputPanel rendered="#{not institutionController.selctDiv}"
+								                id="selct22" autoUpdate="true"> 
+								                <div class="card-title">
+								                <h:panelGrid columns="3">
+														<h:column>
+															<label for="todate"
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																style="color: black">From<span
+																style="color: red">*</span></label>
+														</h:column>
+														<h:column>
+															<label for="todate"
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																style="color: black">To<span style="color: red">*</span></label>
+														</h:column>
+														<h:column>
+															<div></div>
+														</h:column>
+														<h:column>
+															<p:calendar
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																value="#{institutionController.from}"
+																pattern="yyyy-MM-dd" required="true"
+																requiredMessage="Date required" />
+														</h:column>
+														<h:column>
+															<p:calendar class="col-md-4 col-sm-3 col-xs-4"
+																value="#{institutionController.to}" pattern="yyyy-MM-dd"
+																required="true" requiredMessage="Date required" />
+														</h:column>
+														<h:column>
+															<h:commandButton
+																class="col-md-4 btn btn-info btn-sm btn-block"
+																value="Submit"
+																action="#{institutionController.displayRejected()}">
+																<f:ajax render="Regtable" execute="@form"
+																	onevent="showProgress" />
+															</h:commandButton>
+														</h:column>
+													</h:panelGrid>
+								                </div>
+								                </p:outputPanel>   
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card-footer" style="padding-top: 10px">
+								<p:outputPanel rendered="#{institutionController.selctDiv}"
+								                id="selct23" autoUpdate="true"> 
+									<p:dataTable value="#{institutionController.pendinGrequests}"
+										var="ls" rowIndexVar="index" class="table" paginator="true"
+										rows="4"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="4,6,8,10,12" id="rejectedTable">
+										<p:column style="border: none;">
+											<div class="circle-tile2 card">
+												<table class="circle-tile-content2   col-md-10 card-body"
+													style="height: 30px; padding: 10px; border: none;">
+													<tr style="border: none">
+														<td style="border: none;">
+															<h3 class="card-title">
+																<h:outputText value="#{ls.institution.institutionName}"
+																	size="10" />
+															</h3>
+														</td>
+														<td style="border: none"></td>
+													</tr>
+													<tr>
+														<td style="width: 170px; border: none;">
+															<div
+																class="circle-tile-heading2 card-img-top #{menuAss.listOfMenu.menuColor}">
+																<i class="glyphicon glyphicon-file fa-fw fa-3x"> </i>
+															</div>
+														</td>
+														<td class="col-md-6"
+															style="float: left; width: 100%; border: none;">
+															<div class="circle-tile-content2 " style="padding: 20px">
+																<table style="width: 100%; border: none;">
+																	<tr>
+																		<th style="text-align: right; width: 120px">Time:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"><h:outputText
+																				style="border: none" value="#{ls.instRegReqstDate}">
+																				<f:convertDateTime pattern="dd MMM hh:mm" />
+																			</h:outputText></td>
+																	</tr>
+																	<tr style="border: none">
+																		<th style="text-align: right; width: 120px">Representative:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none">
+																			<h:outputText
+																				value="#{ls.institution.institutionRepresenative.fname} #{ls.institution.institutionRepresenative.lname}" />
+																		</td>
+																	</tr>
+																	<tr style="border: none">
+																		<th style="text-align: right; width: 120px">Country:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"><h:outputText
+																				value="#{ls.institution.country.countryName_en}" />
+																		</td>
+																	</tr>
+																	<tr>
+																		<th
+																			style="text-align: right; width: 120px; border: none"
+																			class="card-link"><div>
+																				<h:commandLink style="color:white"
+																					class="btn btn-success 	glyphicon glyphicon-ok"
+																					value="Revert">
+																					<p:ajax update="rejectedTable"
+																						listener="#{institutionController.institutonConfirmation(ls)}" />
+																				</h:commandLink>
+																			</div></th>
+																		<th
+																			style="text-align: left; width: 120px; border: none"
+																			class="card-link"><div>
+																				<h:commandLink style="margin-left:2px;color:white"
+																					class="btn btn-danger 	glyphicon glyphicon-remove"
+																					value="Trash">
+																					<p:ajax update="rejectedTable"
+																						listener="#{institutionController.institutonRejected(ls)}" />
+																				</h:commandLink>
+																			</div></th>
+																	</tr>
+																</table>
+															</div>
+														</td>
+													</tr>
+													<tr style="border: none">
+														<td style="border: none"></td>
+														<td style="border: none"></td>
+													</tr>
+												</table>
+											</div>
+										</p:column>
+									</p:dataTable>
+									</p:outputPanel>
+								</div>
 
-						</p:dataTable>
+							</p:outputPanel>
+						</h:panelGroup>
+						<!-- Div for Trash table start-->
+						<!-- Div for all institution table start-->
+
+						<h:panelGroup>
+							<p:outputPanel
+								rendered="#{institutionController.renderallinstit}" id="all"
+								autoUpdate="true">
+								<div class="card-header">
+									<h4 class="card-title">INSTITUTION</h4>
+								</div>
+								<div class="card-body" style="padding-top: 10px">
+									<div class="form-group row">
+										<div class="card">
+										<p:outputPanel rendered="#{not institutionController.selctDiv}"
+								                id="selct33" autoUpdate="true"> 
+								                <div class="card-body">
+								                <div class="card-title">
+								                 <h:panelGrid columns="3">
+														<h:column>
+															<label for="todate"
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																style="color: black">From<span
+																style="color: red">*</span></label>
+														</h:column>
+														<h:column>
+															<label for="todate"
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																style="color: black">To<span style="color: red">*</span></label>
+														</h:column>
+														<h:column>
+															<div></div>
+														</h:column>
+														<h:column>
+															<p:calendar
+																class="col-md-2 col-sm-2 col-xs-2 control-label"
+																value="#{institutionController.from}"
+																pattern="yyyy-MM-dd" required="true"
+																requiredMessage="Date required" />
+														</h:column>
+														<h:column>
+															<p:calendar class="col-md-4 col-sm-3 col-xs-4"
+																value="#{institutionController.to}" pattern="yyyy-MM-dd"
+																required="true" requiredMessage="Date required" />
+														</h:column>
+														<h:column>
+															<h:commandButton
+																class="col-md-4 btn btn-info btn-sm btn-block"
+																value="Submit"
+																action="#{institutionController.displayAllInstitutions()}">
+																<f:ajax render="alltable" execute="@form"
+																	onevent="showProgress" />
+															</h:commandButton>
+														</h:column>
+													</h:panelGrid>
+								                </div>
+								                </div>
+								                </p:outputPanel>  
+										</div>
+									</div>
+								</div>
+								<div class="card-footer" style="padding-top: 10px">
+								<p:outputPanel rendered="#{institutionController.selctDiv}"
+								                id="selct34" autoUpdate="true">
+									<p:dataTable value="#{institutionController.institutionDtos}"
+										var="ls" class="table" paginator="true" rows="4"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="4,6,8,10,12" id="alltable">
+										<p:column style="border: none;">
+											<div class="circle-tile2 card">
+												<table class="circle-tile-content2   col-md-10 card-body"
+													style="height: 30px; padding: 10px; border: none;">
+													<tr style="border: none">
+														<td style="border: none;">
+															<h3 class="card-title">
+																<h:inputText id="name" value="#{ls.institutionName}"
+																	size="10" rendered="#{ls.editable}" required="true"
+																	requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+																	validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}"
+																	class="input-sm col-md-1">
+																	<f:validateRegex
+																		pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+																	<f:validateLength maximum="25" />
+																</h:inputText>
+																<h:outputText value="#{ls.institutionName}" size="10"
+																	rendered="#{not ls.editable}" />
+																<h:message errorClass="errorMsg1" for="name"></h:message>
+															</h3>
+														</td>
+														<td style="border: none"></td>
+													</tr>
+													<tr>
+														<td style="width: 170px; border: none;">
+															<div
+																class="circle-tile-heading2 card-img-top #{menuAss.listOfMenu.menuColor}">
+																<i class="glyphicon glyphicon-file fa-fw fa-3x"> </i>
+															</div>
+														</td>
+														<td class="col-md-6"
+															style="float: left; width: 100%; border: none;">
+															<div class="circle-tile-content2 " style="padding: 20px">
+																<table style="width: 100%; border: none;">
+																	<tr>
+																		<th style="text-align: right; width: 120px">Started
+																			on:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none;"><h:outputText
+																				value="#{ls.institutionRegDate}">
+																				<f:convertDateTime pattern="yyyy dd MMM hh:mm" />
+																			</h:outputText></td>
+																	</tr>
+																	<tr style="border: none">
+																		<th style="text-align: right; width: 120px">Address:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"><h:outputText
+																				value="#{ls.institutionAddress}" size="10"
+																				rendered="#{not ls.editable}" /> <h:inputText
+																				value="#{ls.institutionAddress}"
+																				rendered="#{ls.editable}" id="address"
+																				required="true"
+																				requiredMessage="#{msg['institutionForm.requiered.address.message']}"
+																				validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
+																				style="width:120px"
+																				class="form-control input-sm col-md-1">
+																				<f:validateRegex
+																					pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
+																				<f:validateLength maximum="25" />
+																			</h:inputText> <h:message errorClass="errorMsg1" for="address"></h:message></td>
+																	</tr>
+																	<tr style="border: none">
+																		<th style="text-align: right; width: 120px">Country:</th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"><h:outputText
+																				value="#{ls.institution.country.countryName_en}"
+																				rendered="#{not ls.editable}" /> <h:panelGroup
+																				rendered="#{ls.editable}">
+																				<h:selectOneMenu class="form-control col-md-1"
+																					id="country"
+																					value="#{institutionController.cntryId}"
+																					required="true"
+																					requiredMessage="#{msg['institutionForm.requiered.country.message']}">
+																					<f:selectItems
+																						value="#{institutionController.countries}"
+																						var="option" itemValue="#{option.taskId}"
+																						itemLabel="#{option.countryName_en}"
+																						itemLabelEscaped="true" />
+																				</h:selectOneMenu>
+																			</h:panelGroup></td>
+																	</tr>
+																	<tr>
+																		<th
+																			style="text-align: right; width: 120px; border: none"
+																			class="card-link"><div>
+																				<h:commandButton style="color:white"
+																					class="btn btn-success 	glyphicon glyphicon-edit"
+																					value="Edit"
+																					action="#{institutionController.editAction(ls)}"
+																					rendered="#{not ls.editable}" ajax="false">
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandButton>
+																				<h:commandLink style="margin-left:2px;color:white"
+																					class="btn btn-danger 	glyphicon glyphicon-remove"
+																					value="Cancel"
+																					action="#{institutionController.cancel(ls)}"
+																					rendered="#{ls.editable}" ajax="false">
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandLink>
+																				<h:commandButton value="Save Changes"
+																					class="btn btn-primary"
+																					action="#{institutionController.saveAction(ls)}"
+																					rendered="#{ls.editable}" ajax="false">
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandButton>
+																			</div></th>
+																		<td
+																			style="text-align: left; padding-left: 5px; border: none"></td>
+																	</tr>
+																</table>
+															</div>
+														</td>
+													</tr>
+													<tr style="border: none">
+														<td style="border: none"></td>
+														<td style="border: none"></td>
+													</tr>
+												</table>
+											</div>
+										</p:column>
+									</p:dataTable>
+									</p:outputPanel>
+								</div>
+
+							</p:outputPanel>
+						</h:panelGroup>
+						<!-- Div for Trash table start-->
 					</div>
-
 				</div>
 			</h:form>
 		</ui:define>
