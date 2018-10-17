@@ -76,11 +76,13 @@ public class BoardController implements Serializable, DbConstant {
 		}
 
 		try {
-
+			LOGGER.info("initialise lists:: ");
 			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Board", "boardId desc");
+			
 			institutionList = instituteImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Institution", "institutionId desc");
+			LOGGER.info("lis size :: "+institutionList.size());
 			for (Board board : boardList) {
 				BoardDto boardDto = new BoardDto();
 				boardDto.setEditable(false);

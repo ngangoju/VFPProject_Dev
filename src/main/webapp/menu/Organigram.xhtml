@@ -11,8 +11,13 @@
 <title>Insert title here</title>
 
 </head>
-<body>
-	<h:form id="form">
+<h:body>
+
+	<ui:composition template="/template/common/commonLayout.xhtml">
+    	 
+    	 
+    	 	<ui:define name="content">
+	<h:form id="form1">
 
 		<style>
 .ui-organigram .ui-organigram-node.division {
@@ -113,14 +118,17 @@
 
 				<h:outputLabel value="style" />
 				<p:inputText value="#{organigramView.style}" size="100">
-					<p:ajax process="@this" update=":form:organigram" />
+					<p:ajax process="@this" update=":form1:organigram" />
 				</p:inputText>
 
 				<p:commandButton value="scrollToSelection"
 					onclick="PF('organigram').scrollToSelection(); return false;" />
-				<p:commandButton value="Update Organigram" update=":form:organigram" />
+				<p:commandButton value="Update Organigram" update=":form1:organigram" />
 			</h:panelGrid>
 		</p:panel>
 	</h:form>
-</body>
+	
+	    		</ui:define>
+</ui:composition>
+</h:body>
 </html>

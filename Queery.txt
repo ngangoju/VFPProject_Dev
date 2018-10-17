@@ -77,7 +77,11 @@ insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,u
 
 insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(16,'admin',now(),'active',now(),now(),'admin',now(),'Create Board','url08','/menu/board.xhtml',null,11);
 
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(40,'admin',now(),'active',now(),now(),'admin',now(),'View Board','url012','/menu/boardOrganigram.xhtml',null,11);
+
 insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(26,'admin',now(),'active',now(),now(),'admin',null,16,3);
+
+insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(37,'admin',now(),'active',now(),now(),'admin',null,40,3);
 
 ==================BY Gwiza Erick=====================
 
@@ -223,3 +227,12 @@ insert into listofmenu (menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTi
 insert  menuassignment (menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory)
                         values(32,'admin',now(),'active',now(),now(),'admin',null,36,1);
 ======================By Richard================================================================
+
+
+insert into listofmenu(menuId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,creationDate,description,urlCode,urlName,listOfMenu,menuGroup) values(40,'admin',now(),'active',now(),now(),'admin',now(),'View Board','url012','/menu/boardOrganigram.xhtml',null,11);
+
+insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(26,'admin',now(),'active',now(),now(),'admin',null,16,3);
+
+insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(37,'admin',now(),'active',now(),now(),'admin',null,40,3);
+
+======================By Gwiza================================================================
