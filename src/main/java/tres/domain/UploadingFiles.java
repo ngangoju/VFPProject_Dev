@@ -4,7 +4,6 @@ package tres.domain;
  * */
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,7 +24,7 @@ public class UploadingFiles extends CommonDomain implements Serializable {
 	@GeneratedValue
 	@Column(name = "upLoadId")
 	private long upLoadId;
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "documents")
 	private Documents documents;
 	@ManyToOne

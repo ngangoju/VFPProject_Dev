@@ -32,7 +32,10 @@
         <mapping class="tres.domain.Evaluation"/>
         <mapping class="tres.domain.Documents"/>
         <mapping class="tres.domain.UploadingFiles"/>
+        <mapping class="tres.domain.UploadingActivity"/>
+        <mapping class="tres.domain.UploadingStrategicPlan"/>
         <mapping class="tres.domain.PaymentRecords"/>
+        <mapping class="tres.domain.TaskAssignment"/>
     </session-factory>
 </hibernate-configuration>
 
