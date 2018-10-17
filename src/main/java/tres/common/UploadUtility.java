@@ -83,7 +83,7 @@ public class UploadUtility  implements Serializable, DbConstant {
 			try {
 				
 				doc = (Documents) documentsImpl.getModelById(Integer.parseInt(docId), "DocId");
-				LOGGER.info("doc location >>"+doc.getDocumentLoc());
+				//LOGGER.info("doc location >>"+doc.getDocumentLoc());
 				   if (doc!=null ) {
 				  		//loadProperties();
 					   LOGGER.info("download start:::");
