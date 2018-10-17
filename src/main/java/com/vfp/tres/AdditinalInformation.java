@@ -17,7 +17,7 @@ public class AdditinalInformation {
 				 .getExternalContext().getRequest()).getRequestURI(); 
 		 String arr[]=str.split("/");
 		 
-				LOGGER.info("currentPage:::"+arr[2]);
+				//LOGGER.info("currentPage:::"+arr[2]);
 				return arr[2];
 	}
 }

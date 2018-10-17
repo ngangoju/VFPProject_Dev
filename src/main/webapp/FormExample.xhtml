@@ -86,11 +86,47 @@
 
 
 					</h:form>
+					<br/><br/>
+<h:form>
+
+<h1>File Sample</h1>
+    <p:fileUpload fileUploadListener="#{formSampleController.fileUpload}" mode="advanced" dragDropSupport="false"
+                  multiple="true" update="messages" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+ 
+    <p:growl id="messages" showDetail="true" />
+</h:form>
 
 
+
+    	
+    		<p:dataTable value="#{formSampleController.fileList()}" var="fileDetails">
+
+    				<p:column headerText="File name">
+									<h:outputText value="#{fileDetails.documents.originalFileName}" />
+
+								</p:column>
+    			<p:column headerText="System file name">
+									<h:outputText value="#{fileDetails.documents.sysFilename}" />
+
+								</p:column>
+								
+								<p:column headerText="View Image">
+									<h:graphicImage value="/images/dynamic/?file=#{fileDetails.documents.sysFilename}"/>
+
+								</p:column>
+								
+									<p:column headerText="View Image">
+									<h:form>
+<h:commandLink target="_blank" value="#{fileDetails.documents.originalFileName}" action="#{formSampleController.downloadFile}"><f:param name="docId" value="#{fileDetails.documents.docId}" /></h:commandLink>
+</h:form>
+								</p:column>
+    			
+    			
+    			</p:dataTable>
 </div>
 
 </div>
+<br/>
 
 		</ui:define>
 	</ui:composition>
