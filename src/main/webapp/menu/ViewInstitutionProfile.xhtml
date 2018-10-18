@@ -96,12 +96,12 @@
 										<h:column>
 											<h:commandButton
 												class="col-md-4 btn btn-info btn-sm btn-block"
-												value="Submit">
-												<p:ajax
-													listener="#{institutionController.institutionViewBydate()}"
-													update="table,tablePan" />
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
+												value="Submit" action="#{institutionController.institutionViewBydate()}">
+<!-- 												<p:ajax -->
+<!-- 													listener="#{institutionController.institutionViewBydate()}" -->
+<!-- 													update="table,tablePan" /> -->
+<!-- 												<f:ajax render="@form" execute="@form" -->
+<!-- 													onevent="showProgress" /> -->
 											</h:commandButton>
 										</h:column>
 									</h:panelGrid>
@@ -122,7 +122,7 @@
 									<h:column style="text-align: right">
 										<h:commandLink href="institutionRegistration.xhtml"
 											class=" btn btn-primary btn-sm btn-block glyphicon glyphicon-triangle-left "
-											value="Back">
+											value="Back" action="#{institutionController.rendrBackInstProfile()}">
 										</h:commandLink>
 									</h:column>
 								</h:panelGrid>

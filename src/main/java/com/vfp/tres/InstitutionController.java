@@ -78,7 +78,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private boolean selctDiv;
 	private boolean rendered = false;
 	private String key;
-	private boolean renderDiv;
+	private boolean renderDiv = false;
 	private boolean renderrejected;
 	private boolean renderDivdashboard;
 	private boolean renderallinstit;
@@ -222,7 +222,6 @@ public class InstitutionController implements Serializable, DbConstant {
 	public String saveInstitutionRequest() throws IOException {
 		try {
 
-			// LOGGER.info(processFileUpload());
 			institution.setCreatedBy(usersSession.getViewId());
 			institution.setCrtdDtTime(timestamp);
 			institution.setGenericStatus(ACTIVE);
@@ -396,11 +395,8 @@ public class InstitutionController implements Serializable, DbConstant {
 								"instRegReqstId"));
 					}
 					institutionDtos = display(pendinGrequests);
-					if (institutionDtos != null) {
-						renderDiv = true;
-					} else {
-						renderDiv = false;
-					}
+					renderDiv = true;
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -604,85 +600,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		}
 	}
 
-	public String processFileUpload() throws IOException {
-		boolean valid = validateImage();
-		if (valid) {
-			Part uploadedFile = getFile();
-			final Path destination = Paths.get(Root_Path + "\\" + UUID.randomUUID().toString() + "."
-					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
-			LOGGER.info("Uploaded File name::------------>>>>>>"
-					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
-			InputStream bytes = null;
-
-			if (null != uploadedFile) {
-
-				bytes = uploadedFile.getInputStream(); //
-
-				// Copies bytes to destination.
-				Files.copy(bytes, destination);
-			}
-
-			return FilenameUtils.getName(getSubmittedFileName(uploadedFile));
-		} else {
-			return null;
-		}
-	}
-
-	public static String getSubmittedFileName(Part filePart) {
-		String header = filePart.getHeader("content-disposition");
-		if (header == null)
-			return null;
-		for (String headerPart : header.split(";")) {
-			if (headerPart.trim().startsWith("filename")) {
-				return headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", "");
-			}
-		}
-		return null;
-	}
-
-	public boolean validateImage() {
-
-		boolean valid = true;
-		try {
-			if (file == null) {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
-				LOGGER.info("Select a valid file::::::::::::::::::");
-				valid = false;
-			} else if (file.getSize() <= 0) {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
-				LOGGER.info("Select a valid file::::::::::::::::::");
-				valid = false;
-			} else if (file.getContentType().isEmpty()) {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
-				LOGGER.info("Select a valid file::::::::::::::::::");
-				valid = false;
-			} else if ((!file.getContentType().startsWith("image"))) {
-				setValid(false);
-				LOGGER.info("File type is:::::" + file.getContentType());
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.filetype.error"));
-				LOGGER.info("Select the jpe?g|gif|png image only::::::::::::::::::");
-				valid = false;
-			} else if ((file.getSize() > 500000)) {
-				setValid(false);
-				LOGGER.info("The File Size is:::::::::::" + file.getSize());
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.bigsize"));
-				LOGGER.info(
-						"File size too big. File size allowed  is less than or equal to 500 Kb.\"::::::::::::::::::");
-
-			}
-
-			return (valid);
-		} catch (Exception ex) {
-			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.uploaded"));
-			LOGGER.info(ex.getMessage());
-			throw new ValidatorException(new FacesMessage(ex.getMessage()));
-		}
-	}
-
 	public void TrashInstitution(InstitutionRegistrationRequest request1) {
 		try {
 			requestImpl.delete(request1);
@@ -726,7 +643,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		String validationCode = "PROFILEIMAGE";
 		try {
 			documents = ut.fileUploadUtil(event, validationCode);
-
 			// need to put institution
 			uploadingFiles.setInstitutioLogo(institution);
 			uploadingFiles.setCrtdDtTime(timestamp);
@@ -803,6 +719,11 @@ public class InstitutionController implements Serializable, DbConstant {
 			e.printStackTrace();
 			return "";
 		}
+
+	}
+
+	public void rendrBackInstProfile() {
+		renderDiv = false;
 
 	}
 
