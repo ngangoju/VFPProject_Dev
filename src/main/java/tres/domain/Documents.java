@@ -21,7 +21,7 @@ public class Documents extends CommonDomain implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "DocId")
-	private long DocId;
+	private int DocId;
 
 	@Column(name = "documentLoc")
 	private String documentLoc;
@@ -38,13 +38,6 @@ public class Documents extends CommonDomain implements Serializable {
 	@Column(name = "fileSize")
 	private long fileSize;
 
-	public long getDocId() {
-		return DocId;
-	}
-
-	public void setDocId(long docId) {
-		DocId = docId;
-	}
 
 	public String getDocumentLoc() {
 		return documentLoc;
@@ -84,5 +77,16 @@ public class Documents extends CommonDomain implements Serializable {
 
 	public void setFileSize(long fileSize) {
 		this.fileSize = fileSize;
+	}
+
+	public int getDocId() {
+		return DocId;
+	}
+
+	public void setDocId(int docId) {
+		DocId = docId;
 	}	
+	
+	
+	
 }

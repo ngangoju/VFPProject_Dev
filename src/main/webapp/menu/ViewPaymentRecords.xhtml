@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/common/commonLayout.xhtml">
+
+		<ui:define name="content">
+
+			<h:panelGroup id="paymentRecordsPanel">
+				<h:form>
+					<p:outputPanel>
+						<h:commandLink style="color:white;float:top;"
+							class="btn btn-success 	glyphicon glyphicon-user"
+							value=" Add New Payment Records" action="#{paymentRecordsContoller.addNewPaymentRecords()}" >
+							<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandLink>
+
+					</p:outputPanel>
+					<p:dataTable value="#{paymentRecordsContoller.paymentRecordsDtoDetails}"
+						var="payment" rows="10" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" id="tables">
+						
+						<p:column headerText="#{msg['payment.instittution']}">
+
+							<h:selectOneMenu id="cat" styleClass="form-control"
+								rendered="#{payment.editable}" required="true"
+								value="#{payment.institution.institutionid}"
+								requiredMessage="#{msg['payment.institution.required']}">
+								<f:selectItem
+									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+								<f:selectItems value="#{paymentRecordsContoller.institutionDetails}"
+									var="option" itemValue="#{option.institutionId}"
+									itemLabel="#{option.institutionName}" itemLabelEscaped="true" />
+								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+							</h:selectOneMenu>
+
+							<h:outputText value="#{payment.institution.institutionName}"
+								rendered="#{not payment.editable}" />
+
+						</p:column>
+						
+						<p:column headerText="#{msg['payment.date']}">
+
+							<h:inputText value="#{payment.paymentDate}" size="10"
+								rendered="#{payment.editable}" />
+
+							<h:outputText value="#{payment.paymentDate}"
+								rendered="#{not payment.editable}" />
+						</p:column>
+
+
+						<p:column headerText="#{msg['payment.expired']}">
+
+							<h:inputText value="#{payment.paymentExpiretionDate}" size="10"
+								rendered="#{payment.editable}" />
+
+							<h:outputText value="#{payment.paymentExpiretionDate}"
+								rendered="#{not payment.editable}" />
+
+						</p:column>
+						
+						<p:column headerText="#{msg['payment.amount']}">
+
+							<h:inputText value="#{payment.amount}" size="10"
+								rendered="#{payment.editable}" />
+
+							<h:outputText value="#{payment.amount}"
+								rendered="#{not payment.editable}" />
+
+						</p:column>
+
+						<p:column headerText="#{msg['payment.currency']}">
+
+							<h:inputText value="#{payment.currency}" size="10"
+								rendered="#{payment.editable}" />
+
+							<h:outputText value="#{payment.currency}"
+								rendered="#{not payment.editable}" />
+
+						</p:column>
+						
+						<p:column headerText="#{msg['payment.bankRefNo']}">
+
+							<h:inputText value="#{payment.bankRefernceNo}" size="10"
+								rendered="#{payment.editable}" />
+
+							<h:outputText value="#{payment.bankRefernceNo}"
+								rendered="#{not payment.editable}" />
+
+						</p:column>
+						
+						<p:column headerText="#{msg['payment.status']}">
+							<h:outputText value="#{payment.paymentStatus}" />
+
+						</p:column>
+						<p:column headerText="#{msg['payment.change.status']}">
+							
+							<h:commandLink style="color:white"
+								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{payment.action}" action="#{paymentRecordsContoller.updateStatus(payment)}" >
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+						</p:column>
+						<p:column headerText="Action">
+
+
+							<h:commandLink style="color:white"
+								class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
+								action="#{paymentRecordsContoller.editAction(payment)}"
+								rendered="#{not payment.editable}" />
+
+							<h:commandLink style="margin-left:2px;color:white"
+								class="btn btn-danger 	glyphicon glyphicon-remove"
+								value="Cancel" action="#{paymentRecordsContoller.cancel(payment)}"
+								rendered="#{payment.editable}" />
+
+
+							<h:commandButton value="Save Changes" class="btn btn-primary"
+								action="#{paymentRecordsContoller.newAction(payment)}"
+								rendered="#{payment.editable}" render="paymentRecordsPanel" >
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandButton>
+						</p:column>
+
+					</p:dataTable>
+					<br />
+
+
+				</h:form>
+			</h:panelGroup>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

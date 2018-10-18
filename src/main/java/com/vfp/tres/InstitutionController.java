@@ -1,20 +1,33 @@
 package com.vfp.tres;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
+import org.primefaces.model.UploadedFile;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
@@ -53,11 +66,20 @@ public class InstitutionController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "Institution :: InstitutionRequest ";
 	private static final long serialVersionUID = 1L;
+	private static final String Root_Path = "C:\\VFP_Document";
 	/* to manage validation messages */
 	private boolean isValid;
-	private boolean nextpage = false;
-	private boolean rendered;
+	private boolean nextpage;
+	private boolean selctDiv;
+	private boolean rendered = false;
 	private String key;
+	private boolean renderDiv;
+	private boolean renderrejected;
+	private boolean renderDivdashboard;
+	private boolean renderallinstit;
+	private boolean btnRender;
+	private String name;
+	private Part file;
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
@@ -149,12 +171,14 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			institutions = institutionImpl.getGenericListWithHQLParameter(
-					new String[] { "institutionRepresenative_userId" }, new Object[] { usersSession }, "Institution",
-					"institutionName asc");
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			// institutions = institutionImpl
+			// .getListWithHQL("select f from Institution f where
+			// institutionRepresenative_userId="
+			// + usersSession.getUserId() + "");
+			// institutions = institutionImpl.getGenericListWithHQLParameter(
+			// new String[] { "institutionRepresenative_userId" }, new Object[] {
+			// usersSession }, "Institution",
+			// "institutionName asc");
 			validInstitution = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
@@ -172,11 +196,11 @@ public class InstitutionController implements Serializable, DbConstant {
 
 		{
 
-			requests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
-					"instRegReqstDate asc");
-			institutionDtos = display(requests);
+			// requests = requestImpl.getGenericListWithHQLParameter(
+			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
+			// "InstitutionRegistrationRequest",
+			// "instRegReqstDate asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -186,8 +210,10 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	}
 
-	public String saveInstitutionRequest() {
+	public String saveInstitutionRequest() throws IOException {
 		try {
+
+			// LOGGER.info(processFileUpload());
 			institution.setCreatedBy(usersSession.getViewId());
 			institution.setCrtdDtTime(timestamp);
 			institution.setGenericStatus(ACTIVE);
@@ -199,6 +225,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
+			// institution.setInstitutionLogo(file.getName());
 			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
@@ -286,6 +313,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			requestImpl.UpdateInstitRegReqsts(reqst);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
+			displayRequest();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.confirm.message"));
@@ -304,9 +332,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			reqst.setInstRegReqstStatus(REJECTED);
 			reqst.setGenericStatus(DESACTIVE);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-			contact = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[] { usersSession }, "Contact");
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
+			displayRequest();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.reject.message"));
@@ -344,31 +370,34 @@ public class InstitutionController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String institutionViewBydate() {
+	public void institutionViewBydate() {
 		try {
-			if (to.after(from)) {
-				try
-
-				{
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			if ((to.after(from)) && (Formating.daysBetween(from, to) <= 30)) {
+				try {
+					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 					Formating fmt = new Formating();
-					requests = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
-							fmt.getMysqlDateFormt(from + ""), fmt.getMysqlDateFormt(to + ""),
-							new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-							new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
-
-					institutionDtos = display(requests);
-					return "/menu/ViewInstitutionProfile.xhtml?faces-redirect=true";
+					for (Object[] data : requestImpl.reportList(
+							"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+									+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active' and createdBy='"
+									+ usersSession.getViewId() + "'")) {
+						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+						pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
+								"instRegReqstId"));
+					}
+					institutionDtos = display(pendinGrequests);
+					if (institutionDtos != null) {
+						renderDiv = true;
+					} else {
+						renderDiv = false;
+					}
 				} catch (Exception e) {
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-					LOGGER.info(e.getMessage());
 					e.printStackTrace();
-					return "";
 				}
 			} else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
-				return "";
 			}
 
 		} catch (Exception e) {
@@ -376,16 +405,19 @@ public class InstitutionController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
-			return "";
+
 		}
 	}
 
 	public void renderProvMethod() {
 		try {
-			if (countryImpl.getCountryById(cntryId, "taskId").getCountryName_en().equals("RWANDA")) {
-				rendered = true;
-			} else {
-				rendered = false;
+			country = countryImpl.getCountryById(cntryId, "taskId");
+			if (country != null) {
+				if (country.getCountryName_en().equals("RWANDA")) {
+					rendered = true;
+				} else {
+					rendered = false;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -424,6 +456,261 @@ public class InstitutionController implements Serializable, DbConstant {
 		}
 	}
 
+	public void displayRequestDiv() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderDiv = true;
+		renderrejected = false;
+		renderDivdashboard = true;
+		selctDiv = false;
+
+	}
+
+	public void displayRequest() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+
+				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+				request.setInstitution(((Institution) data[2]));
+				pendinGrequests.add(request);
+			}
+			if (pendinGrequests != null) {
+				selctDiv = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void displayRejectedDiv() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderrejected = true;
+		renderDiv = false;
+		renderDivdashboard = true;
+		selctDiv = false;
+	}
+
+	public void displayRejected() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='desactive'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+
+				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+				request.setInstitution(((Institution) data[2]));
+				pendinGrequests.add(request);
+			}
+			if (pendinGrequests != null) {
+				selctDiv = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void displayAllInstitutionsDiv() {
+		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+		renderrejected = false;
+		renderDiv = false;
+		renderDivdashboard = true;
+		renderallinstit = true;
+		selctDiv = false;
+
+	}
+
+	public void displayAllInstitutions() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
+				pendinGrequests.add(
+						requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId"));
+			}
+			institutionDtos = display(pendinGrequests);
+			if (institutionDtos != null) {
+				selctDiv = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int countRequests() {
+		int a = 0;
+		try {
+			for (Object[] data : requestImpl.reportList(
+					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
+							+ PENDING + "' and i.genericStatus='" + ACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	public int countRequestsrejected() {
+		int a = 0;
+		try {
+			for (Object[] data : requestImpl.reportList(
+					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
+							+ REJECTED + "' and i.genericStatus='" + DESACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	public int countRequestsAllacepted() {
+		int a = 0;
+		try {
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstStatus,count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
+				a = Integer.parseInt(data[1] + "");
+			}
+			LOGGER.info(a + "");
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.info(a + "");
+			return 0;
+		}
+	}
+
+	public String processFileUpload() throws IOException {
+		boolean valid = validateImage();
+		if (valid) {
+			Part uploadedFile = getFile();
+			final Path destination = Paths.get(Root_Path + "\\" + UUID.randomUUID().toString() + "."
+					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
+			LOGGER.info("Uploaded File name::------------>>>>>>"
+					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
+			InputStream bytes = null;
+
+			if (null != uploadedFile) {
+
+				bytes = uploadedFile.getInputStream(); //
+
+				// Copies bytes to destination.
+				Files.copy(bytes, destination);
+			}
+
+			return FilenameUtils.getName(getSubmittedFileName(uploadedFile));
+		} else {
+			return null;
+		}
+	}
+
+	public static String getSubmittedFileName(Part filePart) {
+		String header = filePart.getHeader("content-disposition");
+		if (header == null)
+			return null;
+		for (String headerPart : header.split(";")) {
+			if (headerPart.trim().startsWith("filename")) {
+				return headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", "");
+			}
+		}
+		return null;
+	}
+
+	public boolean validateImage() {
+
+		boolean valid = true;
+		try {
+			if (file == null) {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
+				LOGGER.info("Select a valid file::::::::::::::::::");
+				valid = false;
+			} else if (file.getSize() <= 0) {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
+				LOGGER.info("Select a valid file::::::::::::::::::");
+				valid = false;
+			} else if (file.getContentType().isEmpty()) {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
+				LOGGER.info("Select a valid file::::::::::::::::::");
+				valid = false;
+			} else if ((!file.getContentType().startsWith("image"))) {
+				setValid(false);
+				LOGGER.info("File type is:::::" + file.getContentType());
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.filetype.error"));
+				LOGGER.info("Select the jpe?g|gif|png image only::::::::::::::::::");
+				valid = false;
+			} else if ((file.getSize() > 500000)) {
+				setValid(false);
+				LOGGER.info("The File Size is:::::::::::" + file.getSize());
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.bigsize"));
+				LOGGER.info(
+						"File size too big. File size allowed  is less than or equal to 500 Kb.\"::::::::::::::::::");
+
+			}
+
+			return (valid);
+		} catch (Exception ex) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.uploaded"));
+			LOGGER.info(ex.getMessage());
+			throw new ValidatorException(new FacesMessage(ex.getMessage()));
+		}
+	}
+
+	public void TrashInstitution(InstitutionRegistrationRequest request1) {
+		try {
+			requestImpl.delete(request1);
+			LOGGER.info("Permenetly removed");
+			setValid(true);
+			displayRejected();
+			LOGGER.info("The File Size is:::::::::::" + file.getSize());
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.bigsize"));
+			LOGGER.info("failed:");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.uploaded"));
+			LOGGER.info(e.getMessage());
+			throw new ValidatorException(new FacesMessage(e.getMessage()));
+		}
+	}
+
+	public void RevertInstitution(InstitutionRegistrationRequest req) {
+
+		try {
+			req.setInstRegReqstStatus(PENDING);
+			req.setGenericStatus(ACTIVE);
+			requestImpl.UpdateInstitRegReqsts(req);
+			displayRejected();
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Reverted success"));
+			LOGGER.info(CLASSNAME + ":::Institution request not updated");
+			clearInstitutionFuileds();
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public String getKey() {
 		return key;
 	}
@@ -434,6 +721,7 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void renderNext() {
 		nextpage = true;
+		rendered = true;
 	}
 
 	public void renderBack() {
@@ -857,6 +1145,74 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setPendinGrequests(List<InstitutionRegistrationRequest> pendinGrequests) {
 		this.pendinGrequests = pendinGrequests;
+	}
+
+	public boolean isRenderDiv() {
+		return renderDiv;
+	}
+
+	public void setRenderDiv(boolean renderDiv) {
+		this.renderDiv = renderDiv;
+	}
+
+	public boolean isRenderrejected() {
+		return renderrejected;
+	}
+
+	public void setRenderrejected(boolean renderrejected) {
+		this.renderrejected = renderrejected;
+	}
+
+	public boolean isRenderDivdashboard() {
+		return renderDivdashboard;
+	}
+
+	public void setRenderDivdashboard(boolean renderDivdashboard) {
+		this.renderDivdashboard = renderDivdashboard;
+	}
+
+	public boolean isRenderallinstit() {
+		return renderallinstit;
+	}
+
+	public void setRenderallinstit(boolean renderallinstit) {
+		this.renderallinstit = renderallinstit;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Part getFile() {
+		return file;
+	}
+
+	public void setFile(Part file) {
+		this.file = file;
+	}
+
+	public static String getRootPath() {
+		return Root_Path;
+	}
+
+	public boolean isBtnRender() {
+		return btnRender;
+	}
+
+	public void setBtnRender(boolean btnRender) {
+		this.btnRender = btnRender;
+	}
+
+	public boolean isSelctDiv() {
+		return selctDiv;
+	}
+
+	public void setSelctDiv(boolean selctDiv) {
+		this.selctDiv = selctDiv;
 	}
 
 }
