@@ -14,6 +14,21 @@
 
 
 		<ui:define name="content">
+
+			<h:panelGroup layout="block"
+				rendered="#{not activityController.valid and not facesContext.validationFailed}">
+				<ul>
+					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+						<li class="alert alert-danger"
+							style="list-style: none; background-color: #FF2400; color: white">
+							<center>
+								<h:outputText value="#{facesMessage.summary}" escape="false" />
+							</center>
+						</li>
+					</ui:repeat>
+				</ul>
+			</h:panelGroup>
+
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
@@ -27,21 +42,6 @@
 
 
 					<h:form>
-						<h:panelGroup layout="block"
-							rendered="#{not activityController.valid and not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
-										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center>
-									</li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
-
 						<fieldset>
 
 							<legend>#{msg['form.activity.title']}</legend>

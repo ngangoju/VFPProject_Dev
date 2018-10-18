@@ -38,28 +38,13 @@
 									<ul>
 										<ui:repeat value="#{facesContext.messageList}"
 											var="facesMessage">
-											<li class="alert"
+											<li class="alert alert-danger"
 												style="list-style: none; background-color: #FF2400; color: white">
 												<center>
 													<h:outputText value="#{facesMessage.summary}"
 														escape="false" />
 												</center>
 											</li>
-										</ui:repeat>
-									</ul>
-								</h:panelGroup>
-								<!--success message  -->
-								<h:panelGroup layout="block"
-									rendered="#{strategicPlanController.valid and  not facesContext.validationFailed}">
-									<ul>
-										<ui:repeat value="#{facesContext.messageList}"
-											var="facesMessage">
-											<li
-												style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-												class="alert"><center>
-													<h:outputText value="#{facesMessage.summary}"
-														escape="false" />
-												</center></li>
 										</ui:repeat>
 									</ul>
 								</h:panelGroup>

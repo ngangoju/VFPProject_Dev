@@ -17,13 +17,13 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.StrategicPlanImpl;
+import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
-import tres.domain.Activity;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
+import tres.domain.TaskAssignment;
 import tres.domain.Users;
-import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.TaskDto;
 
 @ManagedBean
@@ -41,10 +41,13 @@ public class TaskController implements Serializable, DbConstant {
 	private Task task;
 	private StrategicPlan plan;
 	private List<StrategicPlan> planDetails = new ArrayList<StrategicPlan>();
+	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
 	private List<Task> taskDetails = new ArrayList<Task>();
 	private List<Task> taskDetail = new ArrayList<Task>();
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
 	private List<TaskDto> taskDtoDetail = new ArrayList<TaskDto>();
+	private int listSize;
+	private int assignmentSize;
 	
 	/*class injection*/
 	
@@ -52,6 +55,7 @@ public class TaskController implements Serializable, DbConstant {
 	UserImpl usersImpl = new UserImpl();
 	TaskImpl taskImpl = new TaskImpl();
 	StrategicPlanImpl planImpl = new StrategicPlanImpl();
+	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -71,8 +75,11 @@ public class TaskController implements Serializable, DbConstant {
 		}
 		
 		try {
+			taskAssignDetails=taskAssignImpl.getGenericListWithHQLParameter(new String[] {"createdBy"},new Object[] {usersSession.getFname()+" "+ usersSession.getLname()}, "TaskAssignment", "taskAssignmentId asc");
 			taskDetail=taskImpl.getListWithHQL(SELECT_TASK);
 			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getFname()+" "+ usersSession.getLname()}, "Task", "taskId asc");
+			listSize=taskDetails.size();
+			assignmentSize=taskAssignDetails.size();
 			for (Task task : taskDetails){
 				TaskDto taskDto = new TaskDto();
 				taskDto.setTaskId(task.getTaskId());
@@ -108,7 +115,6 @@ public class TaskController implements Serializable, DbConstant {
 			task.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
-			/*plan = planDetails.get(planDetails.size()-1);*/
 			plan = planImpl.getModelWithMyHQL(new String[] {"genericStatus"},new Object[] {ACTIVE}, SELECT_STRATEGIC_PLAN);
 			task.setStrategicPlan(plan);
 			taskImpl.saveTask(task);
@@ -123,7 +129,7 @@ public class TaskController implements Serializable, DbConstant {
 			LOGGER.info(CLASSNAME+":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
 			LOGGER.info(CLASSNAME+""+e.getMessage());
 			e.printStackTrace();
 			return"";	
@@ -313,6 +319,46 @@ public String newTask() {
 
 	public void setPlanDetails(List<StrategicPlan> planDetails) {
 		this.planDetails = planDetails;
+	}
+
+	public List<TaskAssignment> getTaskAssignDetails() {
+		return taskAssignDetails;
+	}
+
+	public void setTaskAssignDetails(List<TaskAssignment> taskAssignDetails) {
+		this.taskAssignDetails = taskAssignDetails;
+	}
+
+	public int getListSize() {
+		return listSize;
+	}
+
+	public void setListSize(int listSize) {
+		this.listSize = listSize;
+	}
+
+	public int getAssignmentSize() {
+		return assignmentSize;
+	}
+
+	public void setAssignmentSize(int assignmentSize) {
+		this.assignmentSize = assignmentSize;
+	}
+
+	public StrategicPlanImpl getPlanImpl() {
+		return planImpl;
+	}
+
+	public void setPlanImpl(StrategicPlanImpl planImpl) {
+		this.planImpl = planImpl;
+	}
+
+	public TaskAssignmentImpl getTaskAssignImpl() {
+		return taskAssignImpl;
+	}
+
+	public void setTaskAssignImpl(TaskAssignmentImpl taskAssignImpl) {
+		this.taskAssignImpl = taskAssignImpl;
 	}
 
 

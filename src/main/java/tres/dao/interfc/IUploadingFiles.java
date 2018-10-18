@@ -6,9 +6,7 @@
 
 package tres.dao.interfc;
 
-import tres.domain.Documents;
 import tres.domain.UploadingFiles;
-import tres.domain.Users;
 import java.util.List;
 
 /**
