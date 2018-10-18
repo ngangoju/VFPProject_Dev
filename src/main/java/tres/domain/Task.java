@@ -1,6 +1,7 @@
 package tres.domain;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -119,4 +120,12 @@ public class Task extends CommonDomain implements Serializable {
 		this.taskName = taskName;
 	}
 
+	public String formatStartDate() {
+		SimpleDateFormat fmt= new SimpleDateFormat("dd/MM/yyyy");
+		return(fmt.format(startDate));
+	}
+	public String formatEndDate() {
+		SimpleDateFormat fmt= new SimpleDateFormat("dd/MM/yyyy");
+		return(fmt.format(endDate));
+	}
 }

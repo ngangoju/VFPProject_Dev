@@ -108,6 +108,7 @@ public class TaskController implements Serializable, DbConstant {
 			task.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
+			/*plan = planDetails.get(planDetails.size()-1);*/
 			plan = planImpl.getModelWithMyHQL(new String[] {"genericStatus"},new Object[] {ACTIVE}, SELECT_STRATEGIC_PLAN);
 			task.setStrategicPlan(plan);
 			taskImpl.saveTask(task);

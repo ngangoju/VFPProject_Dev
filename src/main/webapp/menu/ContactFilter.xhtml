@@ -14,10 +14,12 @@
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
-					<center><span style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
-						<span style="color: red">#{msg['header.title.asteriks']}</span>
-						#{msg['header.title.mandatory']}
-					</span></center>
+						<center>
+							<span style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
+								<span style="color: red">#{msg['header.title.asteriks']}</span>
+								#{msg['header.title.mandatory']}
+							</span>
+						</center>
 					</div>
 					<div class="panel-body">
 
@@ -51,7 +53,7 @@
 							<legend
 								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
 								#{msg['message.header.contactFilter.info']}</legend>
-							
+
 							<div class="panel-body">
 
 								<div style="display: none">
@@ -146,111 +148,125 @@
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
 								<div class="col-sm-4">
-									<h:commandButton class="btn btn-info btn-sm btn-block" value="Submit" action="#{userContactController.showContactFiltered()}">
+									<h:commandButton class="btn btn-info btn-sm btn-block"
+										value="Submit"
+										action="#{userContactController.showContactFiltered()}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										
+
 									</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="customeordererror"></span>
 							</div>
-							<p:outputPanel id="toTable" autoUpdate="true" rendered="#{userContactController.renderTable}">
-							<p:dataTable value="#{userContactController.contactDtoDetails}"
-								style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
-								sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
-								<f:facet name="header">
-									<h4
-										style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-										#{msg['message.header.completeContact.filter']}</h4>
-								</f:facet>
-								<p:column headerText="No" style="width:5%;">
+							<p:outputPanel id="toTable" autoUpdate="true"
+								rendered="#{userContactController.renderTable}">
+								<p:dataTable value="#{userContactController.contactDtoDetails}"
+									stclass="display" cellspacing="0"
+									style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+									var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
+									sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
+									<f:facet name="header">
+										<h4
+											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
+											#{msg['message.header.completeContact.filter']}</h4>
+									</f:facet>
+									<p:column headerText="No" style="width:5%;">
 
-									<h:outputText value="#{row+1}" />
-								</p:column>
-								<p:column headerText="Username">
+										<h:outputText value="#{row+1}" />
+									</p:column>
+									<p:column headerText="Username">
 
-									<h:outputText value="#{cont.user.viewId}" />
-								</p:column>
-								<p:column headerText="Email">
+										<h:outputText value="#{cont.user.viewId}" />
+									</p:column>
+									<p:column headerText="Email">
 
-									<h:inputText value="#{cont.email}" size="15"
-										rendered="#{cont.editable}" id="email" required="true"
-										validatorMessage="#{msg['error.enter.invalid.email']}"
-										converterMessage="#{msg['error.enter.invalid.email']}"
-										requiredMessage="#{msg['error.enter.required.email']}">
-										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
-									<h:message errorClass="errorMsg1" for="email"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
+										<h:inputText value="#{cont.email}" size="15"
+											rendered="#{cont.editable}" id="email" required="true"
+											validatorMessage="#{msg['error.enter.invalid.email']}"
+											converterMessage="#{msg['error.enter.invalid.email']}"
+											requiredMessage="#{msg['error.enter.required.email']}">
+											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+											<f:validateLength maximum="100" />
+										</h:inputText>
+										<h:message errorClass="errorMsg1" for="email"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
 
-									<h:outputText value="#{cont.email}"
-										rendered="#{not cont.editable}" />
-								</p:column>
-								<p:column headerText="Phone">
+										<h:outputText value="#{cont.email}"
+											rendered="#{not cont.editable}" />
+									</p:column>
+									<p:column headerText="Phone">
 
-									<h:inputText value="#{cont.phone}" size="15" id="phone"
-										rendered="#{cont.editable}" required="true"
-										converterMessage="#{msg['error.enter.invalid.phone']}"
-										requiredMessage="#{msg['requiered.phone.message']}"
-										validatorMessage="#{msg['error.enter.invalid.phone']}">
-										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-										<f:validateLength maximum="25" />
-									</h:inputText>
-									<h:message errorClass="errorMsg1" for="phone"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-									<h:outputText value="#{cont.phone}"
-										rendered="#{not cont.editable}" />
-								</p:column>
-								<p:column headerText="Contact Details">
+										<h:inputText value="#{cont.phone}" size="15" id="phone"
+											rendered="#{cont.editable}" required="true"
+											converterMessage="#{msg['error.enter.invalid.phone']}"
+											requiredMessage="#{msg['requiered.phone.message']}"
+											validatorMessage="#{msg['error.enter.invalid.phone']}">
+											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+											<f:validateLength maximum="25" />
+										</h:inputText>
+										<h:message errorClass="errorMsg1" for="phone"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+										<h:outputText value="#{cont.phone}"
+											rendered="#{not cont.editable}" />
+									</p:column>
+									<p:column headerText="Contact Details">
 
-									<h:inputText value="#{cont.contactDetails}" size="15"
-										id="contDetails" rendered="#{cont.editable}" required="true"
-										converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-										validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-										requiredMessage="#{msg['requiered.contactDetails.message']}">
-										<f:validateRegex
-											pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
-									<h:message errorClass="errorMsg1" for="contDetails"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-									<h:outputText value="#{cont.contactDetails}"
-										rendered="#{not cont.editable}" />
-								</p:column>
-								
-								
-								<p:column headerText="Action">
-									<h:commandLink style="color:white"
-										class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
-										action="#{userContactController.editContactAction(cont)}"
-										rendered="#{not cont.editable}" >
-										<f:ajax render="@form" execute="@form"
+										<h:inputText value="#{cont.contactDetails}" size="15"
+											id="contDetails" rendered="#{cont.editable}" required="true"
+											converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
+											validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
+											requiredMessage="#{msg['requiered.contactDetails.message']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+											<f:validateLength maximum="100" />
+										</h:inputText>
+										<h:message errorClass="errorMsg1" for="contDetails"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+										<h:outputText value="#{cont.contactDetails}"
+											rendered="#{not cont.editable}" />
+									</p:column>
+
+
+									<p:column headerText="Action">
+										<div class="btn-group" role="group" aria-label="Basic example">
+											<h:commandLink style="color:white" type="button"
+												class="btn btn-success 	glyphicon glyphicon-edit"
+												value="Edit"
+												action="#{userContactController.editContactAction(cont)}"
+												rendered="#{not cont.editable}">
+												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-										</h:commandLink>
-									<h:commandLink style="margin-left:2px;color:white"
-										class="btn btn-danger 	glyphicon glyphicon-remove"
-										value="Cancel"
-										action="#{userContactController.cancelContact(cont)}"
-										rendered="#{cont.editable}" >
-										<f:ajax render="@form" execute="@form"
+											</h:commandLink>
+											<h:commandLink style="margin-left:2px;color:white"
+												class="btn btn-danger btn-sm glyphicon glyphicon-remove"
+												value="Cancel"
+												action="#{userContactController.cancelContact(cont)}"
+												rendered="#{cont.editable}">
+												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-										</h:commandLink>
-									<h:commandButton value="Save Changes" class="btn btn-primary"
-										action="#{userContactController.saveContactAction(cont)}"
-										rendered="#{cont.editable}" render="userConatactPanel" >
-										<f:ajax render="@form" execute="@form"
+											</h:commandLink>
+											<h:commandButton value="Save Changes"
+												class="btn btn-primary btn-sm"
+												action="#{userContactController.saveContactAction(cont)}"
+												rendered="#{cont.editable}" render="userConatactPanel">
+												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-										</h:commandButton>
-								</p:column>
+											</h:commandButton>
 
-							</p:dataTable>
+											<h:commandLink style="color:white"
+												class="btn btn-info btn-sm glyphicon glyphicon-edit"
+												value="Other contact"
+												action="#{userContactController.otherUserContact(cont)}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+										</div>
+									</p:column>
 
-
-						</p:outputPanel>
+								</p:dataTable>
+							</p:outputPanel>
 						</fieldset>
-
+						
 					</div>
 				</div>
 			</h:form>

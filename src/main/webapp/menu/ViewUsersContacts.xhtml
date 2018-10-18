@@ -76,7 +76,7 @@
 												<div class="circle-tile-number2 text-faded2">
 													<span class="glyphicon glyphicon-cog"></span> <span
 														id="sparklineB"></span> <label style="color: white;font-family: Open Sans sans-serif !important; font-size: 15px !important;">
-														#{userContactController.listSize}&nbsp;#{msg['message.user.one']}</label>
+														#{userContactController.listSize}&nbsp;#{msg['message.user.notcont']}</label>
 												</div>
 												<h:commandLink styleClass="circle-tile-footer"
 													actionListener="#{userContactController.showContacts()}"
@@ -394,7 +394,7 @@
 										style="color: black"></label>
 									<div class="col-md-4 col-sm-4 col-xs-4">
 										<h:commandButton class="btn btn-info btn-xlg btn-block"
-											action="#{userContactController.saveContact}"
+											action="#{userContactController.saveUserNewContact}"
 											value="#{msg['label.subimit.message.submit']}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandButton>

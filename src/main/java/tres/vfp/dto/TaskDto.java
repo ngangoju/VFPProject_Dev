@@ -1,6 +1,7 @@
 package tres.vfp.dto;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
@@ -137,7 +138,14 @@ public class TaskDto implements Serializable {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-
+	public String getformatStartDate() {
+		SimpleDateFormat fmt= new SimpleDateFormat("dd/MM/yyyy");
+		return(fmt.format(startDate));
+	}
+	public String getformatEndDate() {
+		SimpleDateFormat fmt= new SimpleDateFormat("dd/MM/yyyy");
+		return(fmt.format(endDate));
+	}
 
 }
 
