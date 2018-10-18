@@ -30,6 +30,10 @@ public class UploadingFiles extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="user")
 	private Users user;
+	
+	@ManyToOne
+	@JoinColumn(name="institutioLogo")
+	private Institution institutioLogo;
 
 	public long getUpLoadId() {
 		return upLoadId;
@@ -54,5 +58,15 @@ public class UploadingFiles extends CommonDomain implements Serializable {
 	public void setUser(Users user) {
 		this.user = user;
 	}
+
+	public Institution getInstitutioLogo() {
+		return institutioLogo;
+	}
+
+	public void setInstitutioLogo(Institution institutioLogo) {
+		this.institutioLogo = institutioLogo;
+	}
+	
+	
 	
 }

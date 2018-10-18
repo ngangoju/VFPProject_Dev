@@ -27,6 +27,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import tres.common.DbConstant;
@@ -35,6 +36,7 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SendEmail;
 import tres.common.SessionUtils;
+import tres.common.UploadUtility;
 import tres.dao.impl.CellImpl;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.CountryImpl;
@@ -43,16 +45,19 @@ import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.InstitutionRegRequestImpl;
 import tres.dao.impl.ProvinceImpl;
 import tres.dao.impl.SectorImpl;
+import tres.dao.impl.UploadingFilesImpl;
 import tres.dao.impl.UserImpl;
 import tres.dao.impl.VillageImpl;
 import tres.domain.Cell;
 import tres.domain.Contact;
 import tres.domain.Country;
 import tres.domain.District;
+import tres.domain.Documents;
 import tres.domain.Institution;
 import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Province;
 import tres.domain.Sector;
+import tres.domain.UploadingFiles;
 import tres.domain.Users;
 import tres.domain.Village;
 import tres.vfp.dto.InstitutionDto;
@@ -83,6 +88,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
+	private Documents documents;
 	private Users usersSession;
 	private int userIdNumber;
 	private int institutionId;
@@ -95,8 +101,10 @@ public class InstitutionController implements Serializable, DbConstant {
 	private Sector sector;
 	private Cell cell;
 	private Contact contact;
+	private String useremail;
 	private int institutionID;
 	private InstitutionDto institutionDto;
+	private UploadingFiles uploadingFiles;
 	private int pid;
 	private int did;
 	private int cid;
@@ -129,6 +137,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	VillageImpl villageImpl = new VillageImpl();
 	CountryImpl countryImpl = new CountryImpl();
 	ContactImpl contactImpl = new ContactImpl();
+	UploadingFilesImpl uploadingFilesImpl = new UploadingFilesImpl();
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -225,8 +234,8 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
-			// institution.setInstitutionLogo(file.getName());
 			institutionImpl.saveInstitution(institution);
+			saveInstitutionContact(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
 			request.setGenericStatus(ACTIVE);
@@ -238,7 +247,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			requestImpl.saveInstitutionRegRequest(request);
 			JSFMessagers.resetMessages();
 			setValid(true);
-			nextpage = false;
+			nextpage = true;
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not sent");
 			clearInstitutionFuileds();
@@ -709,6 +718,97 @@ public class InstitutionController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public void fileUpload(FileUploadEvent event) {
+
+		UploadUtility ut = new UploadUtility();
+		String validationCode = "PROFILEIMAGE";
+		try {
+			documents = ut.fileUploadUtil(event, validationCode);
+
+			// need to put institution
+			uploadingFiles.setInstitutioLogo(institution);
+			uploadingFiles.setCrtdDtTime(timestamp);
+			uploadingFiles.setGenericStatus(ACTIVE);
+			uploadingFiles.setDocuments(documents);
+			uploadingFilesImpl.saveIntable(uploadingFiles);
+
+			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("upload.message.success"));
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + "testing save methode ");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			e.printStackTrace();
+		}
+
+	}
+
+	public String saveInstitutionContact(Institution institution) {
+
+		try {
+
+			try {
+				Contact ct = new Contact();
+				if (null != useremail)
+					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+							"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
+					return null;
+				}
+				ct = contactImpl.getModelWithMyHQL(new String[] { "phone" }, new Object[] { contact.getPhone() },
+						"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: phone number already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			contact.setCreatedBy(usersSession.getViewId());
+			contact.setCrtdDtTime(timestamp);
+			contact.setGenericStatus(ACTIVE);
+			contact.setUpDtTime(timestamp);
+			contact.setInstitution(institution);
+			contact.setEmail(useremail);
+			contact.setUpdatedBy(usersSession.getViewId());
+			contactImpl.saveContact(contact);
+			return "";
+
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
+	}
+
+	public void renderBackRegForm() {
+		institution = new Institution();
+		nextpage = false;
 	}
 
 	public String getKey() {
@@ -1213,6 +1313,38 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setSelctDiv(boolean selctDiv) {
 		this.selctDiv = selctDiv;
+	}
+
+	public UploadingFiles getUploadingFiles() {
+		return uploadingFiles;
+	}
+
+	public void setUploadingFiles(UploadingFiles uploadingFiles) {
+		this.uploadingFiles = uploadingFiles;
+	}
+
+	public UploadingFilesImpl getUploadingFilesImpl() {
+		return uploadingFilesImpl;
+	}
+
+	public void setUploadingFilesImpl(UploadingFilesImpl uploadingFilesImpl) {
+		this.uploadingFilesImpl = uploadingFilesImpl;
+	}
+
+	public Documents getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(Documents documents) {
+		this.documents = documents;
+	}
+
+	public String getUseremail() {
+		return useremail;
+	}
+
+	public void setUseremail(String useremail) {
+		this.useremail = useremail;
 	}
 
 }

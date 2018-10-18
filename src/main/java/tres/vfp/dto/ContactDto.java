@@ -2,6 +2,10 @@ package tres.vfp.dto;
 
 import java.io.Serializable;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import tres.domain.Institution;
 import tres.domain.Users;
 
 public class ContactDto implements Serializable {
@@ -15,6 +19,8 @@ public class ContactDto implements Serializable {
 	private String email;
 
 	private String phone;
+	 
+	private Institution institution;
 
 	private Users user;
 	private boolean editable;
@@ -67,6 +73,14 @@ public class ContactDto implements Serializable {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 	
 	

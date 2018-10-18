@@ -21,7 +21,7 @@ public class InstitutionDto implements Serializable {
 	private Date institutionRegDate;
 
 	private Institution institution;
-
+	
 	private Country country;
 
 	private Village village;
