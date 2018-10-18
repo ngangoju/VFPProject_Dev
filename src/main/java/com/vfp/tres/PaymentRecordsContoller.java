@@ -39,7 +39,7 @@ import tres.vfp.dto.UserDto;
 public class PaymentRecordsContoller implements Serializable, DbConstant{
 
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	private String CLASSNAME = "GroupOfMenuController :: ";
+	private String CLASSNAME = "PaymentRecordsContoller :: ";
 	private static final long serialVersionUID = 1L;
 	
 	/* to manage validation messages */
@@ -47,8 +47,8 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 	/* end manage validation messages */
 	private int paymentId;
 	private String paymentCode;
-	private Timestamp paymentDate;
-	private Timestamp paymentExpiretionDate;
+	private Date paymentDate;
+	private Date paymentExpiretionDate;
     private String  amount;
 	private String   currency;
 	private String   paymentChanel;
@@ -156,6 +156,13 @@ LOGGER.info("saving "+paymentRecords);
 
 PaymentRecords payment=new PaymentRecords();
 
+SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+simpleDateFormat.format(paymentExpiretionDate);
+
+simpleDateFormat.format(paymentDate);
+
+
 payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 			new Object[] {paymentRecords.getPaymentCode()}, "from PaymentRecords ");
 
@@ -165,6 +172,8 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		paymentRecords.setPaymentStatus(ACTIVE);
 		paymentRecords.setUpdatedBy(userSessions.getViewId());
 		paymentRecords.setUpDtTime(timestamp);
+		paymentRecords.setPaymentDate(new java.sql.Date(paymentDate.getTime()));
+		paymentRecords.setPaymentExpiretionDate(new java.sql.Date(paymentExpiretionDate.getTime()));
 	
 		paymentRecords.setInstitution(institutionImpl.getInstitutionById(institutionId, "institutionId"));
 		
@@ -328,19 +337,19 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		this.paymentCode = paymentCode;
 	}
 
-	public Timestamp getPaymentDate() {
+	public Date getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
+	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
-	public Timestamp getPaymentExpiretionDate() {
+	public Date getPaymentExpiretionDate() {
 		return paymentExpiretionDate;
 	}
 
-	public void setPaymentExpiretionDate(Timestamp paymentExpiretionDate) {
+	public void setPaymentExpiretionDate(Date paymentExpiretionDate) {
 		this.paymentExpiretionDate = paymentExpiretionDate;
 	}
 
