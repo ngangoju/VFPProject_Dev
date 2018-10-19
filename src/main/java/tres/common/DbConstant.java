@@ -76,4 +76,9 @@ public  interface  DbConstant {
  public static final String FILELOCATION="C:\\\\Vfp_Document\\\\";
  public static final String SELECT_PAYMENTRECORDS="from PaymentRecords";
  public static final String SELECT_INSTITUTION="from Institution";
+ public static final String pdfFormat="PDF"; 
+ public static final String PdfforTask="Pdffortask";
+ public static final String exelforTask="ExcelforTask";
+ public static final String taskchart="Chart";
+ 
 }

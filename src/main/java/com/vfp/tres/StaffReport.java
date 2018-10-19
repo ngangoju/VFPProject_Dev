@@ -171,10 +171,8 @@ public void createPdf() throws IOException, DocumentException {
 	}
 	
 	try {
-		
 		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE},"Task", "taskId asc");
 		for (Task task : taskDetails){
-			
 			table.addCell(task.getTaskName());
 			table.addCell(task.getDescription());
 			table.addCell(""+task.getDueDate());

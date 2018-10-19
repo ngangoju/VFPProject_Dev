@@ -20,6 +20,15 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
@@ -47,6 +56,7 @@ import tres.common.JSFBoundleProvider;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.TaskImpl;
+import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Task;
@@ -66,9 +76,21 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private Users usersSession;
 	private Task tasks;
 	private int myTask;
+	private boolean rendered;
+	private boolean renderedx;
+	private boolean renderForexcel;
+	private String myChoice;
+	private String pdfchoice;
+	private String excelchoice;
+	private boolean renderedspdf;
+	private boolean renderedtpdf;
+	private boolean renderedsxl;
+	private boolean renderedtxl;
+	private String myName;
 	private Date first=null;
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
+	private List<Activity> activityDetailss = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<Users>usersDetails=new ArrayList<Users>();
 	private List<Task> taskDetail = new ArrayList<Task>();
@@ -80,10 +102,10 @@ public class StaffReportActivity implements Serializable, DbConstant {
     private PieChartModel pieModel1;
     private PieChartModel pieModel2;
     
-    
     Task tc= new Task();
     
 	TaskImpl taskImpl = new TaskImpl();
+	UserCategoryImpl usercatgoryImpl=new UserCategoryImpl();
 	
 	
 	/* class injection */
@@ -100,6 +122,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	public void init() {
 		createAnimatedModels();
         createPieModels();
+       
         
 		HttpSession session = SessionUtils.getSession();
 		usersSession = (Users) session.getAttribute("userSession");
@@ -113,13 +136,14 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		}
 
 		try {
+			activityDetailss = new ArrayList<Activity>();
 			
 			taskDetail = taskImpl.getListWithHQL(SELECT_TASK);
 			taskDetail = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Task", "taskId asc");
-			usersDetails = usersImpl.getListWithHQL(SELECT_TASK);
+			
 			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","userCategory" },
-					new Object[] { ACTIVE,2 }, "Task", "taskId asc");
+			new Object[] { ACTIVE,usercatgoryImpl.getUserCategoryById(2, "userCatid") }, "Users", "userId asc");
 		
 			
 		} catch (Exception e) {
@@ -205,9 +229,6 @@ public class StaffReportActivity implements Serializable, DbConstant {
 					(document.right() - document.left()) / 2 + document.leftMargin(), document.bottom() - 10, 0);
 		}
 	}
-
-
-
 	//Codes for creating the table and its contents
 	@SuppressWarnings("unchecked")
 	public void createPdf() throws IOException, DocumentException {
@@ -224,13 +245,6 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		if (!document.isOpen()) {
 			document.open();
 		}
-//  Image img = Image.getInstance(
-//          "E:\\\\aTERSS NGABO\\\\VFPProject_Dev\\\\VFPProject_Dev\\\\src\\\\main\\\\resources\\\\netsss.PNG");
-//  img.scaleAbsolute(520f, 40f);
-//  Paragraph heade = new Paragraph();
-//  heade.add(img);
-//  heade.setAlignment(img.ALIGN_CENTER);
-//  document.add(heade);
 
 		document.add(new Paragraph("\n"));
 		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
@@ -320,15 +334,200 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
+  // Method to print excel sheet
+	public void printXLSForStaff() throws IOException {
+        HSSFWorkbook book = new HSSFWorkbook();
+        HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
+        //create a heading
+        Row heading = sheet.createRow(0);
+        heading.createCell(0).setCellValue("Execution Period");
+        heading.createCell(1).setCellValue("Activity");
+        heading.createCell(2).setCellValue("Week");
+        heading.createCell(3).setCellValue("Status");
+        heading.createCell(4).setCellValue("Staff");
+        for (int i = 0; i < 5; i++) {
+            CellStyle cellStyle = book.createCellStyle();
+            HSSFFont font = book.createFont();
+            font.setFontName(HSSFFont.FONT_ARIAL);
+            font.setBoldweight((short) 100);
+            font.setColor(IndexedColors.DARK_RED.getIndex());
+            font.setFontHeightInPoints((short) 16);
+            cellStyle.setFont(font);
+            cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
+            heading.getCell(i).setCellStyle(cellStyle);
+        }
 
-	/*public void myrepo() throws IOException, DocumentException {
+        //From database
 
-		new StaffReportActivity().createPdf();
-		LOGGER.info(myTask + "");
+            try {
+                activityDetailss = activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","user"},
+                new Object[] { ACTIVE,usersImpl.gettUserById(Integer.parseInt(myName+""), "userId") }, "Activity","activityId asc");
+                        
+                        
+                        int i=1;
+                            for (Activity activity : activityDetailss) {	
+                            Row row = sheet.createRow(i);
+
+                            Cell cell1 = row.createCell(0);
+                            cell1.setCellValue("");
+                            
+
+                            Cell cell2 = row.createCell(1);
+                            cell2.setCellValue(activity.getDescription());
+                            
+                            
+                            Cell cell3 = row.createCell(2);
+                            cell3.setCellValue("");
+                           
+                            
+                            Cell cell4 = row.createCell(3);
+                            cell4.setCellValue(activity.getStatus());
+                            
+                            Cell cell5 = row.createCell(4);
+                            cell5.setCellValue(activity.getCreatedBy());
+                           i++;
+                           
+                            }
+                           
+                            sheet.autoSizeColumn(5);
+                            
+			} catch (Exception e) {
+				e.getMessage();
+					
+			}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.setResponseContentType("application/vnd.ms-excel");
+        externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"SupervisorReport.xls\"");
+
+        book.write(externalContext.getResponseOutputStream());
+        facesContext.responseComplete();
+    }
+	
+	//Excel report for staff name
+	public void printXLS() throws IOException {
+        HSSFWorkbook book = new HSSFWorkbook();
+        HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
+        //create a heading
+        Row heading = sheet.createRow(0);
+        heading.createCell(0).setCellValue("Execution Period");
+        heading.createCell(1).setCellValue("Activity");
+        heading.createCell(2).setCellValue("Week");
+        heading.createCell(3).setCellValue("Status");
+        heading.createCell(4).setCellValue("Staff");
+        for (int i = 0; i < 5; i++) {
+            CellStyle cellStyle = book.createCellStyle();
+            HSSFFont font = book.createFont();
+            font.setFontName(HSSFFont.FONT_ARIAL);
+            font.setBoldweight((short) 100);
+            font.setColor(IndexedColors.DARK_RED.getIndex());
+            font.setFontHeightInPoints((short) 16);
+            cellStyle.setFont(font);
+            cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
+            heading.getCell(i).setCellStyle(cellStyle);
+        }
+
+        //From database
+
+            try {
+                activityDetailss = activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","task"},
+                new Object[] { ACTIVE,taskImpl.getTaskById(Integer.parseInt(myTask+""), "taskId") }, "Activity","activityId asc");
+                        
+                        
+                        int i=1;
+                            for (Activity activity : activityDetailss) {	
+                            Row row = sheet.createRow(i);
+
+                            Cell cell1 = row.createCell(0);
+                            cell1.setCellValue("");
+                            
+
+                            Cell cell2 = row.createCell(1);
+                            cell2.setCellValue(activity.getDescription());
+                            
+                            
+                            Cell cell3 = row.createCell(2);
+                            cell3.setCellValue("");
+                           
+                            
+                            Cell cell4 = row.createCell(3);
+                            cell4.setCellValue(activity.getStatus());
+                            
+                            Cell cell5 = row.createCell(4);
+                            cell5.setCellValue(activity.getCreatedBy());
+                           i++;
+                           
+                            }
+                           
+                            sheet.autoSizeColumn(5);
+                            
+			} catch (Exception e) {
+				e.getMessage();
+					
+			}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.setResponseContentType("application/vnd.ms-excel");
+        externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"SupervisorReport.xls\"");
+
+        book.write(externalContext.getResponseOutputStream());
+        facesContext.responseComplete();
+    }
+	
+	public void updateTable() throws Exception {
+		if (myChoice.equalsIgnoreCase(pdfFormat)) {
+
+			rendered = true;
+			renderedx = false;
+			renderedtpdf = false;
+			renderedspdf = false;
+			renderedtxl = false;
+			renderedsxl = false;
+		} else {
+			rendered = false;
+			renderedx = true;
+			renderedtpdf = false;
+			renderedspdf = false;
+			renderedtxl = false;
+			renderedsxl = false;
+		}
+
 	}
-	*/
+	
+	public void updateReportType() throws Exception {
+		if (pdfchoice.equalsIgnoreCase(PdfforTask)) {
+
+			renderedspdf = true;
+			renderedtpdf = false;
+			renderedtxl = false;
+			renderedsxl = false;
+			
+		} else {
 
 
+			renderedtpdf = true;
+			renderedspdf = false;
+			renderedtxl = false;
+			renderedsxl = false;
+		}
+
+	}
+	
+	public void updateReportExcelType() throws Exception {
+		if (excelchoice.equalsIgnoreCase(exelforTask)) {
+
+			renderedsxl = true;
+			renderedtxl = false;
+			renderedtpdf = false;
+			renderedspdf = false;
+			
+		} else {
+			renderedtxl = true;
+			renderedsxl = false;
+			renderedtpdf = false;
+			renderedspdf = false;
+		}
+	}
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -534,5 +733,86 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	public void setUsersDetails(List<Users> usersDetails) {
 		this.usersDetails = usersDetails;
 	}
+	public List<Activity> getActivityDetailss() {
+		return activityDetailss;
+	}
+	public void setActivityDetailss(List<Activity> activityDetailss) {
+		this.activityDetailss = activityDetailss;
+	}
+	public String getMyName() {
+		return myName;
+	}
+	public void setMyName(String myName) {
+		this.myName = myName;
+	}
+
+
+	public boolean isRendered() {
+		return rendered;
+	}
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+	public boolean isRenderForexcel() {
+		return renderForexcel;
+	}
+	public void setRenderForexcel(boolean renderForexcel) {
+		this.renderForexcel = renderForexcel;
+	}
+	public UserCategoryImpl getUsercatgoryImpl() {
+		return usercatgoryImpl;
+	}
+	public void setUsercatgoryImpl(UserCategoryImpl usercatgoryImpl) {
+		this.usercatgoryImpl = usercatgoryImpl;
+	}
+	public String getMyChoice() {
+		return myChoice;
+	}
+	public void setMyChoice(String myChoice) {
+		this.myChoice = myChoice;
+	}
+	public String getPdfchoice() {
+		return pdfchoice;
+	}
+	public void setPdfchoice(String pdfchoice) {
+		this.pdfchoice = pdfchoice;
+	}
+	public boolean isRenderedx() {
+		return renderedx;
+	}
+	public void setRenderedx(boolean renderedx) {
+		this.renderedx = renderedx;
+	}
+	public String getExcelchoice() {
+		return excelchoice;
+	}
+	public void setExcelchoice(String excelchoice) {
+		this.excelchoice = excelchoice;
+	}
+	public boolean isRenderedspdf() {
+		return renderedspdf;
+	}
+	public void setRenderedspdf(boolean renderedspdf) {
+		this.renderedspdf = renderedspdf;
+	}
+	public boolean isRenderedtpdf() {
+		return renderedtpdf;
+	}
+	public void setRenderedtpdf(boolean renderedtpdf) {
+		this.renderedtpdf = renderedtpdf;
+	}
+	public boolean isRenderedsxl() {
+		return renderedsxl;
+	}
+	public void setRenderedsxl(boolean renderedsxl) {
+		this.renderedsxl = renderedsxl;
+	}
+	public boolean isRenderedtxl() {
+		return renderedtxl;
+	}
+	public void setRenderedtxl(boolean renderedtxl) {
+		this.renderedtxl = renderedtxl;
+	}
+
 
 }
