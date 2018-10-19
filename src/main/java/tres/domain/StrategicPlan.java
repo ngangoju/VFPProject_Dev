@@ -1,6 +1,7 @@
 package tres.domain;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -61,7 +62,6 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	public Date getRecordedDate() {
 		return recordedDate;
 	}
-
 	public void setRecordedDate(Date recordedDate) {
 		this.recordedDate = recordedDate;
 	}

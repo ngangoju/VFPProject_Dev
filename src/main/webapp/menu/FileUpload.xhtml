@@ -30,7 +30,7 @@
 					<div class="panel-body">
 
 						<h:panelGroup layout="block"
-							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
+							rendered="#{not formSampleController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -45,7 +45,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup layout="block"
-							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+							rendered="#{formSampleController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -63,7 +63,7 @@
 
 							<h:form>
 								<p:fileUpload
-									fileUploadListener="#{formSampleController.fileUpload}"
+									fileUploadListener="#{formSampleController.strategicPlanFileUpload}"
 									mode="advanced" dragDropSupport="false" multiple="true"
 									update="messages" sizeLimit="1000000" fileLimit="3"
 									allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
@@ -74,14 +74,21 @@
 							
 								<p:dataTable value="#{formSampleController.stratPlanFileList()}"
 									var="fileDetails">
-
-									<p:column headerText="File name">
+									
+									<p:column headerText="Strategic Plan">
 										<h:outputText
-											value="#{fileDetails.documents.originalFileName}" />
+											value="#{fileDetails.strategicPlan.details}" />
 
 									</p:column>
-									<p:column headerText="System file name">
-										<h:outputText value="#{fileDetails.documents.sysFilename}" />
+									<p:column headerText="Recorded Date">
+										<h:outputText
+											value="#{fileDetails.strategicPlan.recordedDate}" >
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+
+									</p:column>
+									<p:column headerText="Generic Status">
+										<h:outputText value="#{fileDetails.strategicPlan.genericStatus}" />
 
 									</p:column>
 
