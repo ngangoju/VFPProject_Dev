@@ -19,6 +19,20 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.PieChartModel;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -66,8 +80,16 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private Users usersSession;
 	private List<Task> taskDetails = new ArrayList<Task>();
 	private Task task;
+	private String myChoice;
 	private Board board;
+	private boolean rendered;
+	private boolean renderedx;
+	private boolean renderedchart;
 	private int selectedBoard;
+	private LineChartModel animatedModel1;
+    private BarChartModel animatedModel2;
+    private PieChartModel pieModel1;
+    private PieChartModel pieModel2;
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
@@ -85,7 +107,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	TaskImpl taskImpl = new TaskImpl();
 	BoardImpl boardImpl=new BoardImpl();
 	Board t=boardImpl.getBoardById(selectedBoard, "boardId");
-	
+	Task tc= new Task();
 	
 	
 	/*end class injection*/
@@ -93,7 +115,8 @@ public class MdReportActivity implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
-		
+		createAnimatedModels();
+        createPieModels();
 		HttpSession session = SessionUtils.getSession();
 		usersSession = (Users) session.getAttribute("userSession");
 
@@ -115,6 +138,67 @@ public class MdReportActivity implements Serializable, DbConstant {
 		} catch (Exception e) {
 		}
 	}
+	private void createPieModels() {
+	       // createPieModel1();
+	        createPieModel2();
+	    }
+	    //see reference on this example how to get data from the database     
+	 //end  example 
+	    private void createAnimatedModels() {
+	        animatedModel2 = initBarModel();
+	        animatedModel2.setTitle("Bar Chart");
+	        animatedModel2.setAnimate(true);
+	        animatedModel2.setLegendPosition("ne");
+	        Axis yAxis = animatedModel2.getAxis(AxisType.Y);
+	        yAxis.setMin(0);
+	        yAxis.setMax(10);
+	    } 
+	    
+	    public void testMethod() {
+	    	
+	    	 for (Object[] data:  taskImpl.reportList("select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board")){
+	    	       
+	         	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+	         	LOGGER.info("tes1 1::"+data[0]+" ::"+ data[1]+" ::"+ data[2]);
+	               }
+	    	 
+	    	 
+	    	 for (Object[] data:  taskImpl.reportList("select count(*),t.taskName,t.endDate,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board")){
+	  	       
+	          	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+	          	LOGGER.info("tes1 1::"+Integer.parseInt(data[0]+"")+" ::"+ data[1]+" ::"+ data[2]);
+	                }
+	    }
+	    private BarChartModel initBarModel() {
+	        BarChartModel model = new BarChartModel();
+	     
+	        ChartSeries tasks = new ChartSeries();
+	        for (Object[] data:  taskImpl.reportList("select count(*),tas.taskName from Activity a  join  a.task tas  group by tas.taskId")){
+	       
+	        	//select t.taskName,u.fname,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board;
+	        	tasks.set(data[1]+"", Integer.parseInt(data[0]+""));
+	              }
+	        model.addSeries(tasks);
+	        tasks.setLabel(tc.getTaskName());
+	        return model;
+	    } 
+	    private void createPieModel2() {
+	    	pieModel2 = new PieChartModel();
+	        UserImpl usImpl=new UserImpl();
+	       
+	    for (Object[] data:  usImpl.reportList("select count(*),tas.taskName from Task tas, Activity ac where ac.task=tas.taskId group by tas.taskId")){
+	       
+		  pieModel2.set(data[1]+"", Integer.parseInt(data[0]+""));	
+	        }
+	       pieModel2.setTitle("Pie chart ");
+	        pieModel2.setLegendPosition("e");
+	        pieModel2.setFill(false);
+	        pieModel2.setShowDataLabels(true);
+	        pieModel2.setDiameter(150);
+	        pieModel2.setShadow(false);
+	    } 
+	
+	//CREATING  FOOTER AND HEADER FOR PAGES
 	
     class MyFooter extends PdfPageEventHelper {
 
@@ -256,10 +340,111 @@ public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputS
     }
 }
 
-/*public void myrepo() throws IOException, DocumentException {
 
-    new MdReportActivity().createPdf();
-}*/
+
+//Method to print excel sheet
+	public void printXLS() throws IOException {
+     HSSFWorkbook book = new HSSFWorkbook();
+     HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
+     //create a heading
+     Row heading = sheet.createRow(0);
+     heading.createCell(0).setCellValue("Task Name");
+     heading.createCell(1).setCellValue("Execution Date");
+     heading.createCell(2).setCellValue("Status");
+     heading.createCell(3).setCellValue("Departement");
+     heading.createCell(4).setCellValue("Marks");
+     for (int i = 0; i < 5; i++) {
+         CellStyle cellStyle = book.createCellStyle();
+         HSSFFont font = book.createFont();
+         font.setFontName(HSSFFont.FONT_ARIAL);
+         font.setBoldweight((short) 100);
+         font.setColor(IndexedColors.DARK_RED.getIndex());
+         font.setFontHeightInPoints((short) 16);
+         cellStyle.setFont(font);
+         cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
+         heading.getCell(i).setCellStyle(cellStyle);
+     }
+
+     //From database
+
+         try {
+
+
+                     int i=1;
+                     for (Object[] data:  taskImpl.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+selectedBoard+"'")){
+          	  	       
+                         Row row = sheet.createRow(i);
+
+                         Cell cell1 = row.createCell(0);
+                         cell1.setCellValue(data[0]+"");
+                         
+
+                         Cell cell2 = row.createCell(1);
+                         cell2.setCellValue(data[1]+"");
+                         
+                         
+                         Cell cell3 = row.createCell(2);
+                         cell3.setCellValue(data[2]+"");
+                        
+                         
+                         Cell cell4 = row.createCell(3);
+                         cell4.setCellValue(data[3]+"");
+                         if (data[2].equals("active")) {
+                        	 Cell cell5 = row.createCell(4);
+                             cell5.setCellValue("5");
+                        	 
+							
+						}else {
+							Cell cell5 = row.createCell(4);
+                            cell5.setCellValue("0");
+							
+						}
+                         
+                        i++;
+                        
+                         }
+                        
+                         sheet.autoSizeColumn(4);
+                         
+			} catch (Exception e) {
+				e.getMessage();
+				
+				
+				
+			}
+         
+
+
+
+     FacesContext facesContext = FacesContext.getCurrentInstance();
+     ExternalContext externalContext = facesContext.getExternalContext();
+     externalContext.setResponseContentType("application/vnd.ms-excel");
+     externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"SupervisorReport.xls\"");
+
+     book.write(externalContext.getResponseOutputStream());
+     facesContext.responseComplete();
+ }
+	public void updateTable() throws Exception {
+		if (myChoice.equalsIgnoreCase(pdfFormat)) {
+
+			rendered = true;
+			renderedx = false;
+			renderedchart=false;
+
+		}else if(myChoice.equalsIgnoreCase(taskchart)) {
+			renderedchart=true;
+			rendered = false;
+			renderedx = false;
+		}
+		else {
+			rendered = false;
+			renderedx = true;
+			renderedchart=false;
+
+
+		}
+
+	}
 
 public String getCLASSNAME() {
 	return CLASSNAME;
@@ -438,5 +623,78 @@ public BoardImpl getBoardImpl() {
 public void setBoardImpl(BoardImpl boardImpl) {
 	this.boardImpl = boardImpl;
 }
+
+public String getMyChoice() {
+	return myChoice;
+}
+
+public void setMyChoice(String myChoice) {
+	this.myChoice = myChoice;
+}
+
+public Board getT() {
+	return t;
+}
+
+public void setT(Board t) {
+	this.t = t;
+}
+
+public boolean isRendered() {
+	return rendered;
+}
+
+public void setRendered(boolean rendered) {
+	this.rendered = rendered;
+}
+
+public boolean isRenderedx() {
+	return renderedx;
+}
+
+public void setRenderedx(boolean renderedx) {
+	this.renderedx = renderedx;
+}
+
+public boolean isRenderedchart() {
+	return renderedchart;
+}
+
+public void setRenderedchart(boolean renderedchart) {
+	this.renderedchart = renderedchart;
+}
+public LineChartModel getAnimatedModel1() {
+	return animatedModel1;
+}
+public void setAnimatedModel1(LineChartModel animatedModel1) {
+	this.animatedModel1 = animatedModel1;
+}
+public BarChartModel getAnimatedModel2() {
+	return animatedModel2;
+}
+public void setAnimatedModel2(BarChartModel animatedModel2) {
+	this.animatedModel2 = animatedModel2;
+}
+public PieChartModel getPieModel1() {
+	return pieModel1;
+}
+public void setPieModel1(PieChartModel pieModel1) {
+	this.pieModel1 = pieModel1;
+}
+public PieChartModel getPieModel2() {
+	return pieModel2;
+}
+public void setPieModel2(PieChartModel pieModel2) {
+	this.pieModel2 = pieModel2;
+}
+public Task getTc() {
+	return tc;
+}
+public void setTc(Task tc) {
+	this.tc = tc;
+}
+
+
+
 
 }
