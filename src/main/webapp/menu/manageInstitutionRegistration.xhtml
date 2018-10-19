@@ -72,12 +72,12 @@
 														id="sparklineB"></span>
 												</div>
 												<h:commandLink value="More information"
-													class="circle-tile-footer">
+													class="circle-tile-footer"   action="#{institutionController.displayRequestDiv()}">
 													<i class="glyphicon glyphicon-chevron-right"> </i>
-													<p:ajax update="@form"
-														listener="#{institutionController.displayRequestDiv()}" />
-													<f:ajax render="@form" execute="@form"
-														onevent="showProgress" />
+													<!-- 													<p:ajax update="@form" -->
+													<!-- 														listener="" /> -->
+													<!-- 													<f:ajax render="@form" execute="@form" -->
+													<!-- 														onevent="showProgress" /> -->
 												</h:commandLink>
 											</div>
 										</div>
@@ -104,8 +104,8 @@
 													class="circle-tile-footer"
 													action="#{institutionController.displayRejectedDiv()}">
 													<i class="glyphicon glyphicon-chevron-right"> </i>
-													<f:ajax render="@form" execute="@form"
-														onevent="showProgress" />
+<!-- 													<f:ajax render="@form" execute="@form" -->
+<!-- 														onevent="showProgress" /> -->
 												</h:commandLink>
 											</div>
 										</div>
@@ -132,8 +132,8 @@
 													class="circle-tile-footer"
 													action="#{institutionController.displayAllInstitutionsDiv()}">
 													<i class="glyphicon glyphicon-chevron-right"> </i>
-													<f:ajax render="@form" execute="@form"
-														onevent="showProgress" />
+<!-- 													<f:ajax render="@form" execute="@form" -->
+<!-- 														onevent="showProgress" /> -->
 												</h:commandLink>
 											</div>
 										</div>

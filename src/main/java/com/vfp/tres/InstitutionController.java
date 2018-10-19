@@ -246,7 +246,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			requestImpl.saveInstitutionRegRequest(request);
 			JSFMessagers.resetMessages();
 			setValid(true);
-			nextpage = true;
+			//nextpage = true;
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not sent");
 			clearInstitutionFuileds();
