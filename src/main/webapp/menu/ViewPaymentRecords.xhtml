@@ -32,7 +32,7 @@
 
 							<h:selectOneMenu id="cat" styleClass="form-control"
 								rendered="#{payment.editable}" required="true"
-								value="#{payment.institution.institutionid}"
+								value="#{payment.institutionid}"
 								requiredMessage="#{msg['payment.institution.required']}">
 								<f:selectItem
 									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
@@ -97,11 +97,11 @@
 								rendered="#{not payment.editable}" />
 
 						</p:column>
-						
 						<p:column headerText="#{msg['payment.status']}">
 							<h:outputText value="#{payment.paymentStatus}" />
 
 						</p:column>
+						
 						<p:column headerText="#{msg['payment.change.status']}">
 							
 							<h:commandLink style="color:white"
