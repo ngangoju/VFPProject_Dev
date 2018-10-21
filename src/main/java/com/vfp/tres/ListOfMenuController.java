@@ -59,6 +59,16 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	private List<ListOfMenu> listOfMenuDetails = new ArrayList<ListOfMenu>();
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
 	
+	private String[] menuColor= {DARKBLUE2,GREEN2,BLUE2,ORANGE2,RED2,PURPLE2,DARKGRAY2,GRAY2,LIGHTGRAY2,YELLOW2};
+	
+	private String[] menuIcon= {GLYPHICONGLYPHICONASTERISK,GLYPHICONGLYPHICONPLUS,GLYPHICONGLYPHICONMINUS,GLYPHICONGLYPHICONEURO,GLYPHICONGLYPHICONCLOUD,
+			GLYPHICONGLYPHICONENVELOPE,GLYPHICONGLYPHICONPENCIL,GLYPHICONGLYPHICONGLASS,GLYPHICONGLYPHICONMUSIC,GLYPHICONGLYPHICONSEARCH,
+			GLYPHICONGLYPHICONHEART,GLYPHICONGLYPHICONSTAR,GLYPHICONGLYPHICONSTAREMPTY,GLYPHICONGLYPHICONUSER,GLYPHICONGLYPHICONFILM,
+			GLYPHICONGLYPHICONTHLARGE,GLYPHICONGLYPHICONTH,GLYPHICONGLYPHICONTHLIST,GLYPHICONGLYPHICONOK,GLYPHICONGLYPHICONREMOVE,
+			GLYPHICONGLYPHICONZOOMIN,GLYPHICONGLYPHICONZOOMOUT,GLYPHICONGLYPHICONOFF,GLYPHICONGLYPHICONSIGNAL,GLYPHICONGLYPHICONCOG,
+			GLYPHICONGLYPHICONTRASH,GLYPHICONGLYPHICONHOME,GLYPHICONGLYPHICONFILE,GLYPHICONGLYPHICONTIME,GLYPHICONGLYPHICONROAD,GLYPHICONGLYPHICONDOWNLOADALT,
+			GLYPHICONGLYPHICONDOWNLOAD,GLYPHICONGLYPHICONUPLOAD,GLYPHICONGLYPHICONINBOX};
+	
 	private List<ListOfMenuDto> listOfMenuDtoDetails = new ArrayList<ListOfMenuDto>();
 	
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -96,6 +106,8 @@ public class ListOfMenuController implements Serializable, DbConstant{
 				listOfMenuDtos.setDescription(listOfMenus.getDescription());
 				listOfMenuDtos.setUrlName(listOfMenus.getUrlName());
 				listOfMenuDtos.setMenuGroup(listOfMenus.getMenuGroup());
+				listOfMenuDtos.setIconImage(listOfMenus.getIconImage());
+				listOfMenuDtos.setMenuColor(listOfMenus.getMenuColor());
 				listOfMenuDtos.setGenericStatus(listOfMenus.getGenericStatus());
 				if (listOfMenus.getGenericStatus().equals(ACTIVE)) {
 					listOfMenuDtos.setAction(DESACTIVE);
@@ -414,6 +426,22 @@ public class ListOfMenuController implements Serializable, DbConstant{
 
 	public void setListOfMenuDtoDetails(List<ListOfMenuDto> listOfMenuDtoDetails) {
 		this.listOfMenuDtoDetails = listOfMenuDtoDetails;
+	}
+
+	public String[] getMenuColor() {
+		return menuColor;
+	}
+
+	public void setMenuColor(String[] menuColor) {
+		this.menuColor = menuColor;
+	}
+
+	public String[] getMenuIcon() {
+		return menuIcon;
+	}
+
+	public void setMenuIcon(String[] menuIcon) {
+		this.menuIcon = menuIcon;
 	}
 	
 	

@@ -5,7 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
+  xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <head>
 </head>
@@ -15,17 +15,17 @@
 
 		<ui:define name="content">
 			<h:form>
-				<div class="form-group row">
-
-					<div class="col-md-12 col-sm-12 col-xs-12">
-						<!--error massage  -->
-						<h:panelGroup layout="block"
-							rendered="#{not boardController.valid and not facesContext.validationFailed}">
+<div class="form-group row">
+							
+							<div class="col-md-12 col-sm-12 col-xs-12">
+							<!--error massage  -->
+							<h:panelGroup  layout="block"
+							rendered="#{not userContactController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
 									<li class="alert"
-										style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%">
+										style="list-style: none; background-color: #FF2400; color: white;margin-left:-4.9%">
 										<center>
 											<h:outputText value="#{facesMessage.summary}" escape="false" />
 										</center>
@@ -34,35 +34,30 @@
 							</ul>
 						</h:panelGroup>
 						<!--success massage  -->
-						<h:panelGroup layout="block"
-							rendered="#{boardController.valid and not facesContext.validationFailed}">
+						<h:panelGroup  layout="block"
+							rendered="#{userContactController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li
-										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-										class="alert"><center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center></li>
+									var="facesMessage">	
+									<li  style="list-style: none; background-color:#32CD32; color: white;margin-left:-4.9%" class="alert"><center><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-					</div>
-				</div>
+							</div>
+							
+						</div>
 				<div class="panel panel-info">
 					<!-- Default panel contents -->
 					<div class="panel-heading">
 						<center>
-							<span class="glyphicon glyphicon-save"></span>#{msg['message.header.boardInfo.details']}
+							<span class="glyphicon glyphicon-save"></span>#{msg['message.header.contactDetails.info']}
 						</center>
 					</div>
 					<div class="panel-body">
-						<!-- Success and error massages from server -->
-
-						<span style="color: #737373; font-size: 10pt">Fields marked
-							with an asterisk <span style="color: red">(*)</span> are
-							mandatory.
-						</span>
+					<!-- Success and error massages from server -->					
+					
+			<span style="color: #737373;font-size: 10pt">Fields marked with an asterisk <span style="color:red">(*)</span> are mandatory.</span>
 						<div style="display: none">
 							<input id="lat" name="lat" type="text" /> <input id="long"
 								name="long" type="text" />
@@ -70,94 +65,87 @@
 
 						<div class="form-group row" style="margin-top: 15pt;">
 							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['form.board.boardName']}<span
-								style="color: red">*</span></label>
+								style="color: black">#{msg['label.message.contactDetails']}<span
+									style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText
-									value="#{boardController.boardName}"
-									class="form-control" id="boardName" required="true"
-									converterMessage="#{msg['error.enter.invalid.boardName']}"
-									validatorMessage="#{msg['error.enter.invalid.boardName']}"
-									requiredMessage="#{msg['required.boardName.message']}">
-									<f:validateRegex
-										pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-									<f:validateLength maximum="100" />
-								</h:inputText>
+								<h:inputText value="#{userContactController.contact.contactDetails}" class="form-control" id="contDetails"
+									required="true"
+									converterMessage="#{msg['error.enter.invalid.conatactDetails']}" validatorMessage="#{msg['error.enter.invalid.conatactDetails']}" requiredMessage="#{msg['requiered.contactDetails.message']}" >
+									<f:validateRegex pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}"/>
+									 <f:validateLength maximum="100" />
+									</h:inputText>
 
 
-							</div>						
-								<h:message errorClass="errorMsg1" for="boardName"></h:message>
+							</div>
+							<div class="col-md-4">
+								<span class="tooltips-input-main"><a
+									class="tooltips-input"> <h:panelGroup
+											id="tooltips-contactDetails" layout="block">
+											<img
+												src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+												style="width: 8%" alt="question" />
+										</h:panelGroup> <p:tooltip id="toolTipContent" for="tooltips-contactDetails"
+											position="bottom">
+											<span> #{msg['help.coantDetails.message']} </span>
+										</p:tooltip>
+								</a></span>
+								<h:message errorClass="errorMsg1" for="contDetails"></h:message>
+							</div>
 						</div>
 
 						<div class="form-group row">
 							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['form.board.description']}<span
-								style="color: red">*</span></label>
+								style="color: black">#{msg['label.message.Email']}<span
+									style="color: red">*</span></label>
 							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText value="#{boardController.board.description}"
-									class="form-control" id="desc" required="true"
-									validatorMessage="#{msg['error.enter.invalid.boardDescription']}"
-									converterMessage="#{msg['error.enter.invalid.boardDescription']}"
-									requiredMessage="#{msg['description.required.message']}">
-									<f:validateRegex pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-									<f:validateLength maximum="100" />
-								</h:inputText>
+								<h:inputText  value="#{userContactController.contact.email}" class="form-control" id="email" required="true"
+									validatorMessage="#{msg['error.enter.invalid.email']}" converterMessage="#{msg['error.enter.invalid.email']}" requiredMessage="#{msg['error.enter.required.email']}" >
+									  <f:validateRegex pattern="#{regex['regex.validation.email']}" />
+									   <f:validateLength maximum="100" />
+									</h:inputText>
+
+
 
 							</div>
-							<h:message errorClass="errorMsg1" for="desc"></h:message>
+							<h:message errorClass="errorMsg1" for="email"></h:message>
 						</div>
-							<div class="form-group row">
-								<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['form.board.institution']}<span
+						<div class="form-group row">
+							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+								style="color: black">#{msg['label.message.Phone']}<span
 									style="color: red">*</span></label>
-								<div class="col-md-4 col-sm-4 col-xs-4">
-									<h:selectOneMenu id="instinfo" styleClass="form-control"
-										required="true" value="#{boardController.instituteNumber}"
-										converterMessage="#{msg['requiered.username.institution']}"
-										requiredMessage="#{msg['required.institution.message']}">
-										<f:selectItem
-											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-										<f:selectItems value="#{boardController.institutionList}"
-											var="option" itemValue="#{option.institutionId}"
-											itemLabel="#{option.institutionName}"
-											itemLabelEscaped="true" />
-										<f:ajax event="change" execute="@this" />
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="instinfo"></h:message>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:inputText value="#{userContactController.contact.phone}" class="form-control" id="phone" required="true"
+									converterMessage="#{msg['error.enter.invalid.phone']}" requiredMessage="#{msg['requiered.phone.message']}" validatorMessage="#{msg['error.enter.invalid.phone']}" >
+									<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+									 <f:validateLength maximum="25" />
+									</h:inputText>
 							</div>
-					
-							<div class="form-group row">
-								<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-									style="color: black">#{msg['form.board.board']}<span
-									style="color: red">*</span></label>
-								<div class="col-md-4 col-sm-4 col-xs-4">
-									<h:selectOneMenu id="boardinfo" styleClass="form-control"
-										 value="#{boardController.boardNumber}">
-										<f:selectItem
-											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-										<f:selectItems value="#{boardController.boardList}"
-											var="option" itemValue="#{option.boardId}"
-											itemLabel="#{option.boardName}"
-											itemLabelEscaped="true" />
-										<f:ajax event="change" execute="@this" />
-									</h:selectOneMenu>
-								</div>
-								<h:message errorClass="errorMsg1" for="boardinfo"></h:message>
-							</div>
+							<h:message errorClass="errorMsg1" for="phone"></h:message>
+						</div>
+		<h:panelGroup id="userInfoPanel" layout="block">    
+			<div class="form-group row">
+				<label class="col-md-2 col-sm-2 col-xs-6 control-label" style="color: black" >#{msg['label.message.userInfo']}<span style="color: red">*</span></label>
+		         <div class="col-md-4 col-sm-4 col-xs-4">
+			        <h:selectOneMenu id="userinfo"  styleClass="form-control" required="true" value="#{userContactController.userIdNumber}" converterMessage="#{msg['requiered.username.invalid']}" requiredMessage="#{msg['requiered.username.message']}"  >
+                		<f:selectItem itemLabel="#{msg['common.message.select.PLACEHOLDER']}" itemValue="#{null}" escapeItem="true" itemDisabled="false"  />
+                        <f:selectItems value="#{userContactController.usersDetails}" var="option" itemValue="#{option.userId}" itemLabel="#{option.fname} #{option.lname}" itemLabelEscaped="true"  />
+            		  <f:ajax event="change" execute="@this"  />
+                    </h:selectOneMenu>
+				  </div>
+				<h:message errorClass="errorMsg1" for="userinfo"></h:message>
+			</div>
+		</h:panelGroup>					
 						<div class="form-group row">
 							<label for="todate"
 								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
 							<div class="col-sm-4">
 								<h:commandButton class="btn btn-info btn-xlg btn-block"
-									action="#{boardController.saveBoard()}"
-									value="#{msg['label.subimit.message.submit']}">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandButton>
+									action="#{userContactController.saveContact}" value="#{msg['label.subimit.message.submit']}" >
+							<f:ajax render="@form" execute="@form"  onevent="showProgress"/>
+</h:commandButton>
 							</div>
 							<span class="text-danger" id="customeordererror"></span>
 						</div>

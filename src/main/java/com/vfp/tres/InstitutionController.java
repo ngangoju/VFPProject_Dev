@@ -1,29 +1,40 @@
 package com.vfp.tres;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
+import org.primefaces.model.UploadedFile;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
-import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SendEmail;
 import tres.common.SessionUtils;
-import tres.dao.generic.AbstractDao;
 import tres.dao.impl.CellImpl;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.CountryImpl;
@@ -55,15 +66,20 @@ public class InstitutionController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "Institution :: InstitutionRequest ";
 	private static final long serialVersionUID = 1L;
+	private static final String Root_Path = "C:\\VFP_Document";
 	/* to manage validation messages */
 	private boolean isValid;
-	private boolean nextpage = false;
-	private boolean rendered;
-	private String picture;
+	private boolean nextpage;
+	private boolean selctDiv;
+	private boolean rendered = false;
+	private String key;
 	private boolean renderDiv;
-	private boolean renderDivdashboard;
 	private boolean renderrejected;
+	private boolean renderDivdashboard;
 	private boolean renderallinstit;
+	private boolean btnRender;
+	private String name;
+	private Part file;
 	/* end manage validation messages */
 	private Institution institution;
 	private InstitutionRegistrationRequest request;
@@ -87,6 +103,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private int vid;
 	private int sid;
 	private int cntryId;
+	private String useremail;
 	/* arrays */
 	private List<Country> countries = new ArrayList<Country>();
 	private List<Province> provinces = new ArrayList<Province>();
@@ -101,7 +118,6 @@ public class InstitutionController implements Serializable, DbConstant {
 	private List<InstitutionRegistrationRequest> pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 	private List<InstitutionRegistrationRequest> validInstitution = new ArrayList<InstitutionRegistrationRequest>();
 	/* class injection */
-	FormSampleController gen = new FormSampleController();
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	InstitutionImpl institutionImpl = new InstitutionImpl();
@@ -156,9 +172,14 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			institutions = institutionImpl.getGenericListWithHQLParameter(
-					new String[] { "institutionRepresenative_userId" }, new Object[] { usersSession }, "Institution",
-					"institutionName asc");
+			// institutions = institutionImpl
+			// .getListWithHQL("select f from Institution f where
+			// institutionRepresenative_userId="
+			// + usersSession.getUserId() + "");
+			// institutions = institutionImpl.getGenericListWithHQLParameter(
+			// new String[] { "institutionRepresenative_userId" }, new Object[] {
+			// usersSession }, "Institution",
+			// "institutionName asc");
 			validInstitution = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
@@ -181,7 +202,6 @@ public class InstitutionController implements Serializable, DbConstant {
 			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
 			// "InstitutionRegistrationRequest",
 			// "instRegReqstDate asc");
-			// institutionDtos = display(requests);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -191,8 +211,10 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	}
 
-	public String saveInstitutionRequest() {
+	public String saveInstitutionRequest() throws Exception {
 		try {
+
+			// LOGGER.info(processFileUpload());
 			institution.setCreatedBy(usersSession.getViewId());
 			institution.setCrtdDtTime(timestamp);
 			institution.setGenericStatus(ACTIVE);
@@ -204,7 +226,6 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
-			institution.setInstitutionLogo(picture);
 			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
@@ -215,6 +236,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			request.setUpDtTime(timestamp);
 			request.setInstRegReqstStatus("pending");
 			requestImpl.saveInstitutionRegRequest(request);
+			saveContact();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			nextpage = false;
@@ -290,19 +312,13 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			reqst.setInstRegReqstStatus(ACCEPTED);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-			String msg = "Your request have been rejected due to certain condition. try again later";
-			/*
-			 * gen.sendEmailNotification("dujam7@outlook.com", usersSession.getFname() + " "
-			 * + usersSession.getLname(), "Confirmation", msg);
-			 */
-			gen.sendUserMailTest("dujam7@outlook.com", usersSession.getFname(), usersSession.getLname());
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			displayRequest();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.confirm.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not updated");
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 			clearInstitutionFuileds();
 		} catch (Exception e) {
 			setValid(false);
@@ -317,17 +333,11 @@ public class InstitutionController implements Serializable, DbConstant {
 			reqst.setInstRegReqstStatus(REJECTED);
 			reqst.setGenericStatus(DESACTIVE);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-			// contact = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[]
-			// { usersSession }, "Contact");
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
+			displayRequest();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.reject.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not updated");
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
 			clearInstitutionFuileds();
 		} catch (Exception e) {
 			setValid(false);
@@ -361,31 +371,39 @@ public class InstitutionController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String institutionViewBydate() throws Exception {
+	public void institutionViewBydate() {
 		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 			if (to.after(from)) {
-				try
 
-				{
-					Formating fmt = new Formating();
-					List<InstitutionRegistrationRequest> reqst = new ArrayList<InstitutionRegistrationRequest>();
-					reqst = requestImpl.getListByDateBewteenOtherCriteria("instRegReqstDate",
-							fmt.getMysqlDateFormt(from + ""), fmt.getMysqlDateFormt(to + ""),
-							new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-							new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() });
-					institutionDtos = display(reqst);
-					return "/menu/ViewInstitutionProfile.xhtml?faces-redirect=true";
-				} catch (Exception e) {
+				if ((Formating.daysBetween(from, to) <= 30)) {
+					try {
+						pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+						Formating fmt = new Formating();
+						for (Object[] data : requestImpl.reportList(
+								"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+										+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+										+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active' and createdBy='"
+										+ usersSession.getViewId() + "'")) {
+							pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
+									"instRegReqstId"));
+						}
+						institutionDtos = display(pendinGrequests);
+						if (institutionDtos != null) {
+							renderDiv = true;
+						} else {
+							renderDiv = false;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else {
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-					LOGGER.info(e.getMessage());
-					e.printStackTrace();
-					return "";
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 				}
 			} else {
 				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
-				return "";
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
 
 		} catch (Exception e) {
@@ -393,22 +411,25 @@ public class InstitutionController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
-			return "";
+
 		}
 	}
 
 	public void renderProvMethod() {
 		try {
-			if (countryImpl.getCountryById(cntryId, "taskId").getCountryName_en().equals("RWANDA")) {
-				rendered = true;
-			} else {
-				rendered = false;
+			country = countryImpl.getCountryById(cntryId, "taskId");
+			if (country != null) {
+				if (country.getCountryName_en().equals("RWANDA")) {
+					rendered = true;
+				} else {
+					rendered = false;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		/* clear fields */
-		institution = new Institution();
+		institution.setInstitutionType(null);
 		/* end clear field */
 
 	}
@@ -432,132 +453,280 @@ public class InstitutionController implements Serializable, DbConstant {
 				institutionDto.setVillage(inst.getInstitution().getVillage());
 				dtos.add(institutionDto);
 			}
-
 			return dtos;
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
-			e.printStackTrace();
 			return null;
 		}
 	}
 
-	// public void sendNotificationMail(String email) {
-	// /* sending content in a table example */
-	// String name = usersSession.getFname();
-	// String fname = usersSession.getLname();
-	//
-	// String msg = "<p>Hello.</p>" + "<table width=\"50%\" border=\"5px\">\n" + "
-	// <tbody>\n" + " <tr>\n"
-	// + " <td class=\"labelbold\">Fname</td>\n" + " <td>\n" + " " + name + "\n"
-	// + " </td>\n" + " </tr>\n" + " <tr>\n" + " <td
-	// class=\"labelbold\">Lname</td>\n"
-	// + " <td>\n" + " " + fname + "\n" + " </td>\n"
-	//
-	// + " <tbody>Your request have been rejected due to certain condition. try
-	// again later </tbody>\n"
-	// + "</table>\n";
-	// /* End send content in table sample */
-	// gen.sendEmailNotification("dujam7@outlook.com", "Tres SDA", "Confirmation",
-	// msg);
-	// LOGGER.info("::: notidficatio sent ");
-	// }
-
-	public void displayRequest() {
+	public void displayRequestDiv() {
 		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 		renderDiv = true;
 		renderrejected = false;
 		renderDivdashboard = true;
+		selctDiv = false;
+
+	}
+
+	public void displayRequest() {
 		try {
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+
+				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+				request.setInstitution(((Institution) data[2]));
+				pendinGrequests.add(request);
+			}
+			if (pendinGrequests != null) {
+				selctDiv = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-
 		}
 	}
 
-	public void displayRejected() {
+	public void displayRejectedDiv() {
 		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 		renderrejected = true;
 		renderDiv = false;
 		renderDivdashboard = true;
-		try {
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
+		selctDiv = false;
+	}
 
+	public void displayRejected() {
+		try {
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='desactive'")) {
+				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+
+				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+				request.setInstitution(((Institution) data[2]));
+				pendinGrequests.add(request);
+			}
+			if (pendinGrequests != null) {
+				selctDiv = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void displayAllInstitutions() {
+	public void displayAllInstitutionsDiv() {
 		pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 		renderrejected = false;
 		renderDiv = false;
 		renderDivdashboard = true;
 		renderallinstit = true;
+		selctDiv = false;
+
+	}
+
+	public void displayAllInstitutions() {
 		try {
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
-			institutionDtos = display(requests);
+			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+			Formating fmt = new Formating();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
+				pendinGrequests.add(
+						requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId"));
+			}
+			institutionDtos = display(pendinGrequests);
+			if (institutionDtos != null) {
+				selctDiv = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public int countRequests() {
+		int a = 0;
 		try {
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
-			return pendinGrequests.size();
+			for (Object[] data : requestImpl.reportList(
+					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
+							+ PENDING + "' and i.genericStatus='" + ACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return 0;
-			// TODO: handle exception
 		}
 	}
 
 	public int countRequestsrejected() {
+		int a = 0;
 		try {
-
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { DESACTIVE, REJECTED },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
-			return pendinGrequests.size();
+			for (Object[] data : requestImpl.reportList(
+					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
+							+ REJECTED + "' and i.genericStatus='" + DESACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return 0;
-			// TODO: handle exception
 		}
 	}
 
 	public int countRequestsAllacepted() {
+		int a = 0;
 		try {
-			pendinGrequests = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, ACCEPTED },
-					"InstitutionRegistrationRequest", "instRegReqstDate desc");
-			institutionDtos = display(requests);
-			return institutionDtos.size();
+			for (Object[] data : requestImpl.reportList(
+					"select i.instRegReqstStatus,count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
+				a = Integer.parseInt(data[1] + "");
+			}
+			LOGGER.info(a + "");
+			return a;
 		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.info(a + "");
 			return 0;
-			// TODO: handle exception
 		}
 	}
 
-	public String getPicture() {
-		return picture;
+	public void TrashInstitution(InstitutionRegistrationRequest request1) {
+		try {
+			requestImpl.delete(request1);
+			LOGGER.info("Permenetly removed");
+			setValid(true);
+			displayRejected();
+			LOGGER.info("The File Size is:::::::::::" + file.getSize());
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.bigsize"));
+			LOGGER.info("failed:");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.uploaded"));
+			LOGGER.info(e.getMessage());
+			throw new ValidatorException(new FacesMessage(e.getMessage()));
+		}
 	}
 
-	public void setPicture(String picture) {
-		this.picture = picture;
+	public void RevertInstitution(InstitutionRegistrationRequest req) {
+
+		try {
+			req.setInstRegReqstStatus(PENDING);
+			req.setGenericStatus(ACTIVE);
+			requestImpl.UpdateInstitRegReqsts(req);
+			displayRejected();
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Reverted success"));
+			LOGGER.info(CLASSNAME + ":::Institution request not updated");
+			clearInstitutionFuileds();
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public String saveContact() throws Exception {
+		try {
+
+			try {
+
+				Contact ct = new Contact();
+				if (null != useremail)
+					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+							"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
+					return null;
+				}
+				ct = contactImpl.getModelWithMyHQL(new String[] { "phone" }, new Object[] { contact.getPhone() },
+						"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: phone number already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+
+			FormSampleController sample = new FormSampleController();
+			contact.setCreatedBy(usersSession.getViewId());
+			contact.setCrtdDtTime(timestamp);
+			contact.setGenericStatus(ACTIVE);
+			contact.setUpDtTime(timestamp);
+			contact.setInstitution(institution);
+			isValid = sample.isValid();
+			if (isValid) {
+				contact.setEmail(useremail);
+				contact.setUpdatedBy(usersSession.getViewId());
+				contactImpl.saveContact(contact);
+
+				JSFMessagers.resetMessages();
+				setValid(true);
+				// JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+				LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+				return "/menu/ViewUsersContacts.xhtml?faces-redirect=true";
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+				return null;
+			}
+
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
+	}
+
+	public void backToFilterDiv() {
+		renderDiv = false;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public void renderNext() {
 		nextpage = true;
+		rendered = true;
 	}
 
 	public void renderBack() {
@@ -1015,12 +1184,48 @@ public class InstitutionController implements Serializable, DbConstant {
 		this.renderallinstit = renderallinstit;
 	}
 
-	public FormSampleController getGen() {
-		return gen;
+	public String getName() {
+		return name;
 	}
 
-	public void setGen(FormSampleController gen) {
-		this.gen = gen;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Part getFile() {
+		return file;
+	}
+
+	public void setFile(Part file) {
+		this.file = file;
+	}
+
+	public static String getRootPath() {
+		return Root_Path;
+	}
+
+	public boolean isBtnRender() {
+		return btnRender;
+	}
+
+	public void setBtnRender(boolean btnRender) {
+		this.btnRender = btnRender;
+	}
+
+	public boolean isSelctDiv() {
+		return selctDiv;
+	}
+
+	public void setSelctDiv(boolean selctDiv) {
+		this.selctDiv = selctDiv;
+	}
+
+	public String getUseremail() {
+		return useremail;
+	}
+
+	public void setUseremail(String useremail) {
+		this.useremail = useremail;
 	}
 
 }

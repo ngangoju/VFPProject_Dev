@@ -41,12 +41,7 @@
 			<legend>#{msg['form.activity.table']}</legend>
 
 			<h:form>
-				<!-- 				<div class="div-action pull pull-left" style="padding-bottom: 20px;"> -->
-				<!-- 					<h:commandLink class="btn btn-primary" -->
-				<!-- 						action="#{activityController.newActivity()}"> -->
-				<!-- 						<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']} -->
-				<!-- 					</h:commandLink> -->
-				<!-- 				</div> -->
+
 				<p:dataTable id="example" class="display" cellspacing="0"
 					value="#{activityController.activityDetail}" var="act">
 
@@ -82,16 +77,19 @@
 					</p:column>
 
 					<p:column headerText="Action">
+						<div class="btn-group" role="group" aria-label="Basic example">
 
-
-						<h:commandLink style="color:white"
-							class="btn btn-success 	glyphicon glyphicon-ok" value=" Approve"
-							action="#{activityController.activityApproval(act)}" />
-						<h:commandLink style="margin-left:2px;color:white"
-							class="btn btn-danger 	glyphicon glyphicon-remove"
-							value=" Reject"
-							action="#{activityController.activityRejection(act)}" />
+							<h:commandLink style="color:white"
+								class="btn btn-secondary btn-success 	glyphicon glyphicon-ok"
+								action="#{activityController.activityApproval(act)}" />
+							<h:commandLink style="margin-left:2px;color:white"
+								class="btn btn-secondary btn-danger 	glyphicon glyphicon-remove"
+								action="#{activityController.activityRejection(act)}" />
+							<h:commandLink style="margin-left:2px;color:white"
+								class="btn btn-secondary btn-info 	glyphicon glyphicon-envelope"
+								data-toggle="modal" data-target="#exampleModal" />
 							
+						</div>
 					</p:column>
 
 				</p:dataTable>

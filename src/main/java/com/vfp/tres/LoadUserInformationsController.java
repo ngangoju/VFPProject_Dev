@@ -33,28 +33,27 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "LoadUserInformationsController :: ";
 	private static final long serialVersionUID = 1L;
-	/*to manage validation messages*/
+	/* to manage validation messages */
 	private boolean isValid;
-	/*end  manage validation messages*/
+	/* end manage validation messages */
 	private Users users;
 	private UserCategory userCategory;
 	private MenuAssignment menuAssignment;
 	private MenuGroup menuGroup;
-	
+
 	private List<MenuAssignment> menuAssignmentDetails = new ArrayList<MenuAssignment>();
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
-	
-	/*class injection*/
-	
+
+	/* class injection */
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
-	MenuAssignmentImpl menuAssignmentImpl=new MenuAssignmentImpl();
-	MenuGroupImpl menuGroupImpl=new MenuGroupImpl();
-	
-	/*end class injection*/
+	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
+	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
+
+	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -68,70 +67,84 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 		if (menuGroup == null) {
 			menuGroup = new MenuGroup();
 		}
-		
+
 		if (userCategory == null) {
 			userCategory = new UserCategory();
 		}
-		
-	
-		
-		users= (Users) session.getAttribute("userSession");
-	LOGGER.info("HHH>>"+users.getUserCategory().getUsercategoryName());
-	userCategory=users.getUserCategory();
+
+		users = (Users) session.getAttribute("userSession");
+		if (null != users) {
+			LOGGER.info("HHH>>" + users.getUserCategory().getUsercategoryName());
+			userCategory = users.getUserCategory();
+
+			try {
+				menuAssignmentDetails = menuAssignmentImpl.getGenericListWithHQLParameter(
+						new String[] { "userCategory", "genericStatus" },
+						new Object[] { users.getUserCategory(), ACTIVE }, "MenuAssignment", "menuAssgnId asc");
+				LOGGER.info("menu size ::>>" + menuAssignmentDetails.size());
+			} catch (Exception e) {
+				LOGGER.info("error loading generic menu:::");
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	public List<MenuGroup> getListMenuGroup() {
+
 		try {
-			menuAssignmentDetails=menuAssignmentImpl.getGenericListWithHQLParameter(new String[] { "userCategory", "genericStatus"},new Object[] {users.getUserCategory(),ACTIVE}, "MenuAssignment", "menuAssgnId asc");
-			LOGGER.info("menu size ::>>"+menuAssignmentDetails.size());
+			if (null != users) {
+				LOGGER.info("user::::>>>" + users.getUserCategory());
+				menuGroupDetails = menuGroupImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "userCategory" },
+						new Object[] { ACTIVE, users.getUserCategory() }, "MenuGroup", "menuGroupId asc");
+			}
 		} catch (Exception e) {
-			LOGGER.info("error loading generic menu:::");
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
 
-	
-		
+		return menuGroupDetails;
 	}
-@SuppressWarnings({ "unchecked" })
-public List<MenuGroup>getListMenuGroup(){
 
-	try {
-		LOGGER.info("user::::>>>"+users.getUserCategory());
-		menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"},new Object[] {ACTIVE,users.getUserCategory()}, "MenuGroup", "menuGroupId asc");
-	} catch (Exception e) {
-		setValid(false);
-		JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-		LOGGER.info(e.getMessage());
-		e.printStackTrace();
-	}
-	
-	return menuGroupDetails;
-}
+	@SuppressWarnings("rawtypes")
+	public String redirectToDefoultMenu() {
+		for (Iterator iterator = menuAssignmentDetails.iterator(); iterator.hasNext();) {
+			MenuAssignment menuAssignments = (MenuAssignment) iterator.next();
+			if (menuAssignments != null && menuAssignments.getDefaultMenuUrl() != null) {
+				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+						.getRequest();
 
-@SuppressWarnings("rawtypes")
-public  String  redirectToDefoultMenu() {
-	   for (Iterator iterator = menuAssignmentDetails.iterator(); iterator.hasNext();) {
-		   MenuAssignment menuAssignments = (MenuAssignment) iterator.next();  
-		   if(menuAssignments!=null&&menuAssignments.getDefaultMenuUrl()!=null) {
-			   HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-
-				String url=request.getContextPath()+ menuAssignments.getDefaultMenuUrl().getUrlName();
+				String url = request.getContextPath() + menuAssignments.getDefaultMenuUrl().getUrlName();
 				try {
 					FacesContext.getCurrentInstance().getExternalContext().redirect(url);
 				} catch (IOException e) {
-					
+
 					e.printStackTrace();
 				}
 				return "";
-		   }
-	   }
-	   return "There is No default Menu Configured for this User Category";   
-}
-public String getContextPath() {
-	
-	   HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-	return request.getContextPath();
-}
+			}
+		}
+		return "There is No default Menu Configured for this User Category";
+	}
+
+	public String getContextPath() {
+
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		return request.getContextPath();
+	}
+
+	public String rootPath() {
+		return Root_Path;
+	}
+
 	public Users getUsers() {
 		return users;
 	}
@@ -181,7 +194,7 @@ public String getContextPath() {
 	}
 
 	public List<MenuAssignment> getMenuAssignmentDetails() {
-		
+
 		return menuAssignmentDetails;
 	}
 
@@ -212,13 +225,13 @@ public String getContextPath() {
 	public void setMenuAssignmentImpl(MenuAssignmentImpl menuAssignmentImpl) {
 		this.menuAssignmentImpl = menuAssignmentImpl;
 	}
+
 	public UserCategory getUserCategory() {
 		return userCategory;
 	}
+
 	public void setUserCategory(UserCategory userCategory) {
 		this.userCategory = userCategory;
 	}
-	
-	
 
 }

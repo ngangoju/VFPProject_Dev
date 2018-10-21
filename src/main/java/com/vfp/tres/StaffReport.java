@@ -79,28 +79,6 @@ public class StaffReport implements Serializable, DbConstant {
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	
-//public void reportByDate() {
-//
-//		   Formating fmt = new Formating();
-//		   
-//			try {
-//				taskDetails=taskImpl.getListByDateBewteenOtherCriteria("startDate",
-//						fmt.getMysqlDateFormt(first + ""), fmt.getMysqlDateFormt(second + ""),
-//						new String[] { "genericStatus"},
-//						new Object[] { ACTIVE});
-//				
-//			} catch (ParseException e) {
-//				LOGGER.info(e.getMessage());
-//				e.printStackTrace();
-//			}
-//			for (Task task : taskDetails){
-//				
-//				if (use.get) {
-//					
-//				}
-//			
-
-//}
 	
 	//Codes for setting the footer and header.-->
 	
@@ -195,7 +173,6 @@ public void createPdf() throws IOException, DocumentException {
 	try {
 		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE},"Task", "taskId asc");
 		for (Task task : taskDetails){
-			
 			table.addCell(task.getTaskName());
 			table.addCell(task.getDescription());
 			table.addCell(""+task.getDueDate());

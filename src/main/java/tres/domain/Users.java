@@ -220,4 +220,9 @@ public class Users extends CommonDomain implements Serializable {
 		this.action = action;
 	}
 
+	@Override
+	public String toString() {
+		return fname + " " + lname;
+	}
+
 }

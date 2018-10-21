@@ -54,7 +54,6 @@ public  interface  DbConstant {
  public static final String PUBLICPATH="/public/";
  public static final String USERSESSION="userSession";
  public static final String  JAVAFACERESOURCE="javax.faces.resource";
-
  public static final String NOTSTARTED = "Not Started";
  public static final String COMPLETED = "Completed";
  public static final String SHORT = "Short";
@@ -66,10 +65,64 @@ public  interface  DbConstant {
  public static final String SELECT_LISTOFMENU= "from ListOfMenu";
  public static final String SELECT_MENUGROUP = "from MenuGroup";
  public static final String SELECT_PROVINCE = "from Province";
- public static final String country_rw="Rwanda";   
-  
+ public static final String country_rw="Rwanda";    
  public static final String SELECT_ACTIVITY="from Activity";
  public static final String SELECT_TASK="from Task";
  public static final String SELECT_STRATEGIC_PLAN="from StrategicPlan";
-  
+ public static final String SELECT_BOARD="from Board";
+ public static final String Yes_Option="yes"; 
+ public static final String Root_Path="C:\\Vfp_Document";
+ public static final String Next_Option="next"; 
+ public static final String FILELOCATION="C:\\\\Vfp_Document\\\\";
+ public static final String SELECT_PAYMENTRECORDS="from PaymentRecords";
+ public static final String SELECT_INSTITUTION="from Institution";
+ public static final String pdfFormat="PDF"; 
+ public static final String PdfforTask="Pdffortask";
+ public static final String exelforTask="ExcelforTask";
+ public static final String taskchart="Chart";
+ 
+ public static final String DARKBLUE2 ="dark-blue2";
+ public static final String GREEN2 ="green2";
+ public static final String BLUE2="blue2"; 
+ public static final String ORANGE2 ="orange2";
+ public static final String RED2="red2"; 
+ public static final String PURPLE2="purple2"; 
+ public static final String DARKGRAY2="dark-gray2"; 
+ public static final String GRAY2="gray2";
+ public static final String LIGHTGRAY2 =" light-gray2";
+ public static final String YELLOW2="yellow2"; 
+ public static final String GLYPHICONGLYPHICONASTERISK="glyphicon glyphicon-asterisk";	
+ public static final String GLYPHICONGLYPHICONPLUS="glyphicon glyphicon-plus";	
+ public static final String GLYPHICONGLYPHICONMINUS="glyphicon glyphicon-minus";	
+ public static final String GLYPHICONGLYPHICONEURO="glyphicon glyphicon-euro";	
+ public static final String GLYPHICONGLYPHICONCLOUD="glyphicon glyphicon-cloud";	
+ public static final String GLYPHICONGLYPHICONENVELOPE="glyphicon glyphicon-envelope";	
+ public static final String GLYPHICONGLYPHICONPENCIL	="glyphicon glyphicon-pencil";
+ public static final String GLYPHICONGLYPHICONGLASS="glyphicon glyphicon-glass";	
+ public static final String GLYPHICONGLYPHICONMUSIC="glyphicon glyphicon-music";	
+ public static final String GLYPHICONGLYPHICONSEARCH="glyphicon glyphicon-search"	;
+ public static final String GLYPHICONGLYPHICONHEART="glyphicon glyphicon-heart";	
+ public static final String GLYPHICONGLYPHICONSTAR="glyphicon glyphicon-star";
+ public static final String GLYPHICONGLYPHICONSTAREMPTY="glyphicon glyphicon-star-empty";	
+ public static final String GLYPHICONGLYPHICONUSER="glyphicon glyphicon-user";	
+ public static final String GLYPHICONGLYPHICONFILM="glyphicon glyphicon-film";
+ public static final String GLYPHICONGLYPHICONTHLARGE="glyphicon glyphicon-th-large";	
+ public static final String GLYPHICONGLYPHICONTH="glyphicon glyphicon-th";	
+ public static final String GLYPHICONGLYPHICONTHLIST="glyphicon glyphicon-th-list";	
+ public static final String GLYPHICONGLYPHICONOK="glyphicon glyphicon-ok";	
+ public static final String GLYPHICONGLYPHICONREMOVE="glyphicon glyphicon-remove";	
+ public static final String GLYPHICONGLYPHICONZOOMIN="glyphicon glyphicon-zoom-in";	
+ public static final String GLYPHICONGLYPHICONZOOMOUT="glyphicon glyphicon-zoom-out";
+ public static final String GLYPHICONGLYPHICONOFF="glyphicon glyphicon-off";	
+ public static final String GLYPHICONGLYPHICONSIGNAL="glyphicon glyphicon-signal";	
+ public static final String GLYPHICONGLYPHICONCOG="glyphicon glyphicon-cog";	
+ public static final String GLYPHICONGLYPHICONTRASH="glyphicon glyphicon-trash";	
+ public static final String GLYPHICONGLYPHICONHOME="glyphicon glyphicon-home";	
+ public static final String GLYPHICONGLYPHICONFILE="glyphicon glyphicon-file";	
+ public static final String GLYPHICONGLYPHICONTIME="glyphicon glyphicon-time";
+ public static final String GLYPHICONGLYPHICONROAD="glyphicon glyphicon-road";
+ public static final String GLYPHICONGLYPHICONDOWNLOADALT="glyphicon glyphicon-download-alt";	
+ public static final String GLYPHICONGLYPHICONDOWNLOAD="glyphicon glyphicon-download";
+ public static final String GLYPHICONGLYPHICONUPLOAD="glyphicon glyphicon-upload";
+ public static final String GLYPHICONGLYPHICONINBOX="glyphicon glyphicon-inbox";
 }

@@ -34,10 +34,17 @@ public class Contact extends CommonDomain implements Serializable {
 	@Column(name = "phone", unique = true)
 	private String phone;
 
+	@Column(name = "pobox", unique = true)
+	private String pobox;
+
 	@ManyToOne
-	@JoinColumn(name="user")
+	@JoinColumn(name = "user")
 	private Users user;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "institution")
+	private Institution institution;
+
 	public int getContactId() {
 		return contactId;
 	}
@@ -53,8 +60,6 @@ public class Contact extends CommonDomain implements Serializable {
 	public void setContactDetails(String contactDetails) {
 		this.contactDetails = contactDetails;
 	}
-
-	
 
 	public Users getUser() {
 		return user;
@@ -79,7 +84,24 @@ public class Contact extends CommonDomain implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+
+	 
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public String getPobox() {
+		return pobox;
+	}
+
+	public void setPobox(String pobox) {
+		this.pobox = pobox;
+	}
 	
 	
-	
+
 }

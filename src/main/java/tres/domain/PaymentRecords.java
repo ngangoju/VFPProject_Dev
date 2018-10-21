@@ -29,13 +29,13 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 	private String paymentCode;
 	
     @Column(name = "paymentDate")
-	private Timestamp paymentDate;
+	private Date paymentDate;
 	  
 	@Column(name = "paymentExpiretionDate")
-	private Timestamp paymentExpiretionDate;
+	private Date paymentExpiretionDate;
 	
 	@Column(name = "amount")
-    private double  amount;
+    private String  amount;
 	   
 	   
 	@Column(name = "currency")
@@ -78,27 +78,33 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.paymentCode = paymentCode;
 	}
 
-	public Timestamp getPaymentDate() {
-		return paymentDate;
+	
+	public void setPaymentDate(Date date) {
+		this.paymentDate = date;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
-		this.paymentDate = paymentDate;
-	}
-
-	public Timestamp getPaymentExpiretionDate() {
+	
+	public Date getPaymentExpiretionDate() {
 		return paymentExpiretionDate;
+	}
+
+	public void setPaymentExpiretionDate(Date paymentExpiretionDate) {
+		this.paymentExpiretionDate = paymentExpiretionDate;
+	}
+
+	public Date getPaymentDate() {
+		return paymentDate;
 	}
 
 	public void setPaymentExpiretionDate(Timestamp paymentExpiretionDate) {
 		this.paymentExpiretionDate = paymentExpiretionDate;
 	}
 
-	public double getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
 

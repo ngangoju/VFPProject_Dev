@@ -65,7 +65,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		
 		try {
 			
-			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getViewId()}, "StrategicPlan", "planId asc");
+			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"createdBy"},new Object[] {usersSession.getFname()+" "+usersSession.getLname()}, "StrategicPlan", "planId asc");
 			for(StrategicPlan strategicPlan: strategicPlanDetails) {
 				StrategicPlanDto strategicPlanDto = new StrategicPlanDto();
 				strategicPlanDto.setStrategicPlanId(strategicPlan.getPlanId());
@@ -89,6 +89,11 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	
 	public String savePlan() {
 		try {
+			strategicPlanDetails = strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"createdBy"},new Object[] {usersSession.getFname()+" "+usersSession.getLname()}, "StrategicPlan", "planId asc");
+		for(StrategicPlan strategicP: strategicPlanDetails) {
+			strategicP.setGenericStatus(DESACTIVE);
+			strategicPlanImpl.UpdateStrategicPlan(strategicP);
+			}
 			strategicPlan.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			strategicPlan.setCrtdDtTime(timestamp);
 			strategicPlan.setGenericStatus(ACTIVE);
