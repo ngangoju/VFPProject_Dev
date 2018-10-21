@@ -25,24 +25,121 @@
 					</ui:repeat>
 				</ul>
 			</h:panelGroup>
-
-			<legend>#{msg['form.task.table']}</legend>
-
 			<h:form>
+	<p:outputPanel id="table1" autoUpdate="true"
+							rendered="#{taskController.rendered}">	
+							<h1>#{msg['manage.task.form']}</h1>	
+<div class="col-md-4 col-sm-6">
+										<div class="circle-tile2 ">
+
+											<div class="circle-tile-heading2 green2 ">
+												<h1 style="color: white;">#{taskController.listSize}</h1>
+											</div>
+
+											<div class="circle-tile-content2 green2 ">
+												<div class="circle-tile-description text-faded2">
+													<label
+														style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+														#{msg['registered.task.form']}</label>
+												</div>
+												<div class="circle-tile-number2 text-faded2">
+													<span class="glyphicon glyphicon-tasks"></span> <span
+														id="sparklineB"></span> <label style="color: white;font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+														&nbsp;#{msg['task.form.message']}</label>
+												</div>
+												<h:commandLink styleClass="circle-tile-footer"
+													actionListener="#{taskController.showTasks()}"
+													value="More Info">
+													<i class="glyphicon glyphicon-chevron-right"></i>
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-4 col-sm-6">
+										<div class="circle-tile2">
+
+											<div class="circle-tile-heading2 blue2 text-white">
+												<h1 style="color: white;">#{taskController.assignmentSize}</h1>
+											</div>
+
+											<div class="circle-tile-content2 blue2">
+												<div class="circle-tile-description text-faded2">
+												<label
+														style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+														#{msg['assign.task.form']}</label>
+												</div>
+												<div class="circle-tile-number2 text-faded2">
+													<span class="glyphicon glyphicon-user"></span> <span
+														id="sparklineB"></span><label style="color: white;font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+														&nbsp; #{msg['assignment.form.message']}</label>
+														
+												</div>
+												<h:commandLink styleClass="circle-tile-footer"
+													actionListener="#{taskController.showAssignments()}"
+													value="More Info">
+													<i class="glyphicon glyphicon-chevron-right"></i>
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-4 col-sm-6">
+										<div class="circle-tile2">
+
+											<div class="circle-tile-heading2 orange2 ">
+												<h1 style="color: white;">#{userContactController.contactSize}</h1>
+											</div>
+
+											<div class="circle-tile-content2 orange2 ">
+												<div class="circle-tile-description text-faded2">
+												<label
+														style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+														#{msg['message.liststaff.board']}</label>
+												</div>
+												<div class="circle-tile-number2 text-faded2">
+													<span class="glyphicon glyphicon-cog"></span> <span
+														id="sparklineB"></span><label style="color: white;font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+														&nbsp;#{msg['message.user.one']}</label>
+												</div>
+												
+												<a href="ContactFilter.xhtml" class="circle-tile-footer"
+													>More Info
+													<i class="glyphicon glyphicon-chevron-right"></i>
+												</a>
+
+											</div>
+										</div>
+
+									</div>
+	</p:outputPanel>								
+						<p:outputPanel id="table" autoUpdate="true" rendered="#{taskController.renderTable}">
+							<h1>#{msg['form.task.table']}</h1>
+							<div class="nav">
 				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
 					<h:commandLink class="btn btn-primary"
 						action="#{taskController.newTask()}">
 						<i class="glyphicon glyphicon-plus-sign"></i>#{msg['form.task.new']}
 					</h:commandLink>
-				</div>
-				<br />
-				<br />
-				<br />
-				<p:dataTable value="#{taskController.taskDtoDetails}" var="act">
-
-					<p:column headerText="#{msg['form.task.name']}">
-
-						<h:inputText id="tasknameId" binding="#{surnameId}"
+					</div>
+				<div class="div-action pull pull-right" style="padding-bottom: 20px;">
+							<h:commandLink class="btn btn-primary glyphicon glyphicon-chevron-left"
+											actionListener="#{taskController.back()}" value="#{msg['UserRegForm.BackButton']}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+												</h:commandLink>
+												</div></div>
+							<p:dataTable value="#{taskController.taskDtoDetails}"
+								style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+								var="act" rowIndexVar="row" sortBy="#{act.taskId}"
+								sortOrder="ASCENDING" rowKey="#{act.taskId}">
+								<p:column headerText="#{msg['form.task.name']}">
+								
+									<h:inputText id="tasknameId" binding="#{surnameId}"
 							value="#{act.taskName}" styleClass="form-control" size="10"
 							rendered="#{act.editable}" maxlength="80" required="true"
 							validatorMessage="#{msg['error.enter.invalid.surname']}"
@@ -156,10 +253,50 @@
 					</p:column>
 
 				</p:dataTable>
+									</p:outputPanel>
+									
+									
+			<p:outputPanel id="table2" autoUpdate="true" rendered="#{taskController.renderTaskForm}">
+							<h1>#{msg['assign.task.form']}s</h1>
+							<div class="nav">
+				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
+					<h:commandLink class="btn btn-primary"
+						action="#{taskController.newAssign()}">
+						<i class="glyphicon glyphicon-plus-sign"></i>#{msg['form.assign.new']}
+					</h:commandLink>
+					</div>
+				<div class="div-action pull pull-right" style="padding-bottom: 20px;">
+							<h:commandLink class="btn btn-primary glyphicon glyphicon-chevron-left"
+											actionListener="#{taskController.back()}" value="#{msg['UserRegForm.BackButton']}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+												</h:commandLink>
+												</div>
+												</div>
+							<p:dataTable value="#{taskController.taskAssignDetails}"
+								style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+								var="act" rowIndexVar="row" sortBy="#{act.taskAssignmentId}"
+								sortOrder="ASCENDING" rowKey="#{act.taskAssignmentId}">
+								<p:column headerText="#{msg['form.task.name']}">
+								
+						<h:outputText value="#{act.task.taskName}"/>
+					</p:column>
 
 
-			</h:form>
-		</ui:define>
+					<p:column headerText="#{msg['message.liststaff.board']}">
+						<h:outputText value="#{act.user.fname} #{act.user.lname}"/>
+					</p:column>
+
+
+					<p:column headerText="#{msg['institutionForm.startDate']}">
+											<h:outputText value="#{act.crtdDtTime}"/>
+
+					</p:column>
+
+				</p:dataTable>
+									</p:outputPanel>
+			</h:form>						
+
+</ui:define>
 	</ui:composition>
 </h:body>
 

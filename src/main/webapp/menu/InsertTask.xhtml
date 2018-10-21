@@ -203,7 +203,7 @@
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-2 control-label"
 									style="color: black"></label>
-								<div class="col-md-6 col-sm-6 col-xs-6">
+								<div class="col-md-5 col-sm-5 col-xs-5">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{taskController.saveTash}"
 										value="#{msg['label.submit.message.save']}">
@@ -218,8 +218,14 @@
 						</fieldset>
 
 					</h:form>
-
-
+<h:form>
+				<div class="div-action pull pull-right" style="padding-bottom: 20px;">
+									<h:commandLink class="btn btn-info glyphicon glyphicon-chevron-left"
+											actionListener="#{taskController.showTasks()}" value="#{msg['UserRegForm.BackButton']}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+												</h:commandLink>
+												</div>
+</h:form>
 				</div>
 			</div>
 		</ui:define>
