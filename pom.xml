@@ -68,11 +68,7 @@
 			<version>1.0.0.GA</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20180813</version>
-		</dependency>
+	
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -156,6 +152,11 @@
 			<artifactId>itext</artifactId>
 			<version>4.2.2</version>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180813</version>
 		</dependency>
 	</dependencies>
 
