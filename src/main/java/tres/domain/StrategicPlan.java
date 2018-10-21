@@ -35,7 +35,18 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	@Column(name = "recordedDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date recordedDate;
-	
+
+	@Column(name = "startDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startDate;
+
+	@Column(name = "dueDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dueDate;
+
+	@Column(name = "endDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "Users")
@@ -64,6 +75,30 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 
 	public void setRecordedDate(Date recordedDate) {
 		this.recordedDate = recordedDate;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public Users getUsers() {

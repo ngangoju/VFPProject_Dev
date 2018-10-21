@@ -2,6 +2,11 @@ package tres.vfp.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import tres.domain.Task;
 
 public class ActivityDto implements Serializable {	
@@ -20,6 +25,12 @@ public class ActivityDto implements Serializable {
 	private Task task;
 	
 	private String createdBy;
+
+	private Date startDate;
+
+	private Date dueDate;
+
+	private Date endDate;
 
 	private String genericstatus;
 	
@@ -105,6 +116,30 @@ public class ActivityDto implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	
 }

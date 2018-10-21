@@ -101,6 +101,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setGenericStatus(ACTIVE);
 			activity.setStatus(NOTSTARTED);
 			activity.setUpDtTime(timestamp);
+			activity.setEndDate(activity.getDueDate());
 			activity.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			activity.setDate(timestamp);
 			activity.setUser(usersImpl.gettUserById(usersSession.getUserId(), "userId"));

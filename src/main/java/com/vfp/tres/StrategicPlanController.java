@@ -101,6 +101,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			strategicPlan.setUsers(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
 			strategicPlan.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			strategicPlan.setRecordedDate(timestamp);
+			strategicPlan.setEndDate(strategicPlan.getDueDate());
 			strategicPlanImpl.saveStrategicPlan(strategicPlan);
 			JSFMessagers.resetMessages();
 			setValid(true);

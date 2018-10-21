@@ -25,9 +25,7 @@ import tres.domain.Activity;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
-import tres.domain.UserCategory;
 import tres.domain.Users;
-import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.TaskDto;
 
 @ManagedBean
