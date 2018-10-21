@@ -25,6 +25,7 @@ import tres.dao.impl.UserImpl;
 import tres.domain.Contact;
 import tres.domain.UserCategory;
 import tres.domain.Users;
+import tres.vfp.dto.ContactDto;
 import tres.vfp.dto.UserCategoryDto;
 import tres.vfp.dto.UserDto;
 
@@ -162,6 +163,12 @@ public class UserCategoryController implements Serializable, DbConstant {
 		return null;
 	}
 
+	public String otherUserCategory(UserCategoryDto cat) {
+		if (null != cat) {
+			return "/menu/UserCategory.xhtml?faces-redirect=true";
+		}
+		return null;
+	}
 	public String editAction(UserCategoryDto cat) {
 
 		cat.setEditable(true);

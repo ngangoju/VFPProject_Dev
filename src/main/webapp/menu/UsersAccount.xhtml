@@ -428,23 +428,7 @@
 													requiredMessage="#{msg['requiered.username.password']}">
 													<f:validateLength maximum="35" />
 												</h:inputSecret>
-												<span>
-													<button class="btn btn-default reveal" type="button"
-														style="margin-top: -60px; margin-left: 385px;">
-														<i class="glyphicon glyphicon-eye-open"></i>
-													</button>
-												</span>
-												<script>
-												$(".reveal").mousedown(function() {
-												    $(".pwd").replaceWith($('.pwd').clone().attr('type', 'text'));
-												})
-												.mouseup(function() {
-													$(".pwd").replaceWith($('.pwd').clone().attr('type', 'password'));
-												})
-												.mouseout(function() {
-													$(".pwd").replaceWith($('.pwd').clone().attr('type', 'password'));
-												});
-												</script>
+												
 											</div>
 											<h:message for="pswd" styleClass="help-block"></h:message>
 										</div>
@@ -464,23 +448,6 @@
 													requiredMessage="#{msg['requiered.username.confirmpassword']}">
 													<f:validateLength maximum="35" />
 												</h:inputSecret>
-												<span>
-													<button class="btn btn-default reveal" type="button"
-														style="margin-top: -60px; margin-left: 385px;">
-														<i class="glyphicon glyphicon-eye-open"></i>
-													</button>
-												</span>
-												<script>
-												$(".reveal").mousedown(function() {
-												    $(".pswd").replaceWith($('.pswd').clone().attr('type', 'text'));
-												})
-												.mouseup(function() {
-													$(".pswd").replaceWith($('.pswd').clone().attr('type', 'password'));
-												})
-												.mouseout(function() {
-													$(".pswd").replaceWith($('.pswd').clone().attr('type', 'password'));
-												});
-												</script>
 											</div>
 											<h:message for="confpswd" styleClass="help-block"></h:message>
 										</div>
@@ -510,6 +477,7 @@
 											<h:message for="categ" styleClass="help-block"></h:message>
 										</div>
 									</h:panelGroup>
+									<p:outputPanel rendered="#{userAccountController.renderBoard}" autoUpdate="true">
 									<h:panelGroup id="BoardPanel" layout="block">
 										<div class="form-group row"
 											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
@@ -534,6 +502,8 @@
 											<h:message for="brd" styleClass="help-block"></h:message>
 										</div>
 									</h:panelGroup>
+									</p:outputPanel >
+									
 								</p:outputPanel>
 								<!-- End of First Panel -->
 							</h:panelGroup>

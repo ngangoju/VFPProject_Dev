@@ -11,16 +11,15 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 		<ui:define name="content">
 
+			<h4>
+				#{loadUserInformationsController.users.userCategory.usercategoryName}
+				<span class="glyphicon glyphicon-dashboard">
+					#{msg['message.com.Staff.dashaboard']}</span>
+			</h4>
+			<div
+				style="border-bottom: 1.5px solid #91DBFA; margin-bottom: 6px; width: 100%"></div>
 			<h:form>
 				<div class="panel panel-info">
-					<div class="panel-heading">
-						<center>
-							<span style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
-								<span style="color: red">#{msg['header.title.asteriks']}</span>
-								#{msg['header.title.mandatory']}
-							</span>
-						</center>
-					</div>
 					<div class="panel-body">
 
 						<h:panelGroup layout="block"
@@ -52,8 +51,7 @@
 						<fieldset>
 							<legend
 								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
-								#{msg['message.header.contactFilter.info']}</legend>
-
+								#{msg['message.header.StaffFilter.info']}</legend>
 							<div class="panel-body">
 
 								<div style="display: none">
@@ -101,7 +99,7 @@
 														style="width: 15%" alt="question" />
 												</h:panelGroup> <p:tooltip id="toolTipContent"
 													for="tooltips-contactDetails" position="bottom">
-													<span> #{msg['help.contactFilter.message']} </span>
+													<span> #{msg['help.userFilter.message']} </span>
 												</p:tooltip>
 										</a></span>
 
@@ -149,8 +147,8 @@
 									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
 								<div class="col-sm-4">
 									<h:commandButton class="btn btn-info btn-sm btn-block"
-										value="Submit"
-										action="#{userContactController.showContactFiltered()}">
+										action="#{userContactController.boardStaff()}"
+										value="Submit">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 
 									</h:commandButton>
@@ -160,112 +158,49 @@
 							</div>
 							<p:outputPanel id="toTable" autoUpdate="true"
 								rendered="#{userContactController.renderTable}">
-								<p:dataTable value="#{userContactController.contactDtoDetails}"
-									stclass="display" cellspacing="0"
-									style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-									var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
-									sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
+								<p:dataTable value="#{userContactController.userDtoDetails}"
+									rowIndexVar="row" sortOrder="ASCENDING" rowKey="#{user.fname}"
+									var="user" rows="10" id="tables" sortBy="#{user.fname}"
+									style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+
+
 									<f:facet name="header">
 										<h4
 											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-											#{msg['message.header.completeContact.filter']}</h4>
+											#{msg['message.header.staffList.filter']}/#{userContactController.boardName}&nbsp;Board</h4>
 									</f:facet>
 									<p:column headerText="No" style="width:5%;">
 
 										<h:outputText value="#{row+1}" />
 									</p:column>
-									<p:column headerText="Username">
-
-										<h:outputText value="#{cont.user.viewId}" />
+									<p:column headerText="Names">
+										<h:outputText value="#{user.fname} &nbsp; #{user.lname}" />
 									</p:column>
+
 									<p:column headerText="Email">
+										<h:outputText value="#{user.email}" />
 
-										<h:inputText value="#{cont.email}" size="15"
-											rendered="#{cont.editable}" id="email" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-										<h:message errorClass="errorMsg1" for="email"
-											style="font-size:12px;font-family:Time New Roman;"></h:message>
-
-										<h:outputText value="#{cont.email}"
-											rendered="#{not cont.editable}" />
 									</p:column>
 									<p:column headerText="Phone">
-
-										<h:inputText value="#{cont.phone}" size="15" id="phone"
-											rendered="#{cont.editable}" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.phone.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-										<h:message errorClass="errorMsg1" for="phone"
-											style="font-size:12px;font-family:Time New Roman;"></h:message>
-										<h:outputText value="#{cont.phone}"
-											rendered="#{not cont.editable}" />
+										<h:outputText value="#{user.phone}" />
 									</p:column>
-									<p:column headerText="Contact Details">
+									<p:column headerText="Boardname">
+										<h:outputText value="#{user.board.boardName}" />
 
-										<h:inputText value="#{cont.contactDetails}" size="15"
-											id="contDetails" rendered="#{cont.editable}" required="true"
-											converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-											validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-											requiredMessage="#{msg['requiered.contactDetails.message']}">
-											<f:validateRegex
-												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-										<h:message errorClass="errorMsg1" for="contDetails"
-											style="font-size:12px;font-family:Time New Roman;"></h:message>
-										<h:outputText value="#{cont.contactDetails}"
-											rendered="#{not cont.editable}" />
 									</p:column>
+									<p:column headerText="Category">
+										<h:outputText value="#{user.userCategory.usercategoryName}" />
 
+									</p:column>
+									<p:column headerText="Status">
+										<h:outputText value="#{user.status}" />
 
-									<p:column headerText="Action">
-										<div class="btn-group" role="group" aria-label="Basic example">
-											<h:commandLink style="color:white" data-toggle="tooltip" data-placement="left" title="Edit"
-												class="btn btn-success 	glyphicon glyphicon-edit"
-												action="#{userContactController.editContactAction(cont)}"
-												rendered="#{not cont.editable}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-											<h:commandLink style="margin-left:2px;color:white" data-toggle="tooltip" data-placement="right" title="Cancel"
-												class="btn btn-danger glyphicon glyphicon-remove"
-												action="#{userContactController.cancelContact(cont)}"
-												rendered="#{cont.editable}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-											<h:commandLink  data-toggle="tooltip" data-placement="right" title="Save Changes"
-												 class="btn btn-primary glyphicon glyphicon-floppy-disk"
-												action="#{userContactController.saveContactAction(cont)}"
-												rendered="#{cont.editable}" render="userConatactPanel">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-											
-											<h:commandLink style="color:white" data-toggle="tooltip" data-placement="right" title="Other contact"
-												class="btn btn-info glyphicon glyphicon-new-window"
-												action="#{userContactController.otherUserContact(cont)}" rendered="#{not cont.editable}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-											
-											
-										</div>
 									</p:column>
 
 								</p:dataTable>
 							</p:outputPanel>
 						</fieldset>
-						
+
 					</div>
 				</div>
 			</h:form>

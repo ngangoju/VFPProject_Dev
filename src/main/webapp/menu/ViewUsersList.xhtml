@@ -252,35 +252,34 @@
 										</h:commandLink>
 								</p:column>
 								<p:column headerText="Action">
-
-
-									<h:commandLink
-										class="btn btn-success 	glyphicon glyphicon-pencil"
-										value="Edit"
-										style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+									<div class="btn-group btn btn-sm" role="group" aria-label="Basic example">
+									<h:commandLink data-toggle="tooltip" data-placement="left" title="Edit" class="btn btn-success 	glyphicon glyphicon-edit"
+										style="color:white;"
 										action="#{userAccountController.editAction(user)}"
 										rendered="#{not user.editable}" >
 										<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 										</h:commandLink>
 
-									<h:commandLink
-										class="btn btn-danger 	glyphicon glyphicon-remove"
-										value="Cancel" action="#{userAccountController.cancel(user)}"
+									<h:commandLink data-toggle="tooltip" data-placement="left" title="Cancel"
+												class="btn btn-danger 	glyphicon glyphicon-remove"
+									 action="#{userAccountController.cancel(user)}"
 										style="color:white;" rendered="#{user.editable}" >
 										<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 										</h:commandLink>
 
 
-									<h:commandButton value="Save Changes" class="btn btn-primary"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+									<h:commandLink class="btn btn-primary glyphicon glyphicon-floppy-disk"
+												style="color:white;" data-toggle="tooltip"
+												data-placement="right" title="Save Changes"
 										action="#{userAccountController.newAction(user)}"
 										rendered="#{user.editable}" execute="@this" > 
 										<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 										
-									</h:commandButton>
+									</h:commandLink>
+									</div>
 								</p:column>
 
 							</p:dataTable>

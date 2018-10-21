@@ -100,6 +100,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private List<Village> villageByCell = new ArrayList<Village>();
 	private List<UserDto> userDtoDetails = new ArrayList<UserDto>();
 	private List<UserDto> userDtosDetails = new ArrayList<UserDto>();
+	private List<UserDto> repDtosDetails = new ArrayList<UserDto>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -126,7 +127,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private boolean renderDataTable;
 	private boolean nextButoon;
 	private String redirect;
-
+	private boolean renderBoard;
 	@SuppressWarnings({ "unchecked" })
 	@PostConstruct
 	public void init() {
@@ -167,8 +168,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto = new UserDto();
 		}
 		try {
-			catDetails = catImpl.getListWithHQL(SELECT_USERCATEGORY);
-			provinceList = provImpl.getListWithHQL(SELECT_PROVINCE);
+	
+		provinceList = provImpl.getListWithHQL(SELECT_PROVINCE);
 			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Board", "boardId desc");
 			Users user = usersImpl.gettUserById(usersSession.getUserId(), "userId");
@@ -182,30 +183,45 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setUserId(user.getUserId());
 			userDto.setUserCategory(user.getUserCategory());
 			userDtoDetails.add(userDto);
-			// below list concern list of all users by changing their status
+			repDtosDetails=displayRepresentativeByDateBetween();
+			
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
 
-			/*
-			 * usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] {
-			 * "genericStatus" }, new Object[] { ACTIVE }, "Users", "userId desc"); for
-			 * (Users users : usersDetails) { UserDto userDtos = new UserDto();
-			 * userDtos.setEditable(false); userDtos.setFname(users.getFname());
-			 * userDtos.setLname(users.getLname()); userDtos.setViewId(users.getViewId());
-			 * userDtos.setAddress(users.getAddress());
-			 * userDtos.setUserId(users.getUserId());
-			 * userDtos.setUserCategory(users.getUserCategory());
-			 * userDtos.setStatus(users.getStatus()); if (users.getStatus().equals(ACTIVE))
-			 * { userDtos.setAction(DESACTIVE);
-			 * 
-			 * } else if (users.getStatus().equals(DESACTIVE)) {
-			 * 
-			 * userDtos.setAction(ACTIVE); users.setStatus(DESACTIVE);
-			 * 
-			 * } else { userDtos.setAction(DESACTIVE); users.setStatus(ACTIVE);
-			 * 
-			 * } userDtosDetails.add(userDtos);
-			 * 
-			 * }
-			 */
+	}
+	
+	
+	// Method to Display usercategory by user logged in
+
+	@SuppressWarnings("unchecked")
+	public List<UserCategory> showCategory() {
+		HttpSession session = SessionUtils.getSession();
+		usersSession = (Users) session.getAttribute("userSession");
+		try {
+			if (null != usersSession) {
+				if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
+
+					catDetails = catImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "usercategoryName" },
+							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", "usercatid desc");
+					renderBoard=false;
+					return (catDetails);
+				} else {
+					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+							new Object[] { ACTIVE }, "UserCategory", "usercatid desc");
+					renderBoard=true;
+					return (catDetails);
+				}
+
+			} else {
+
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.SessionError.internal.error"));
+			}
 
 		} catch (Exception e) {
 			setValid(false);
@@ -213,6 +229,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+
+		return null;
 
 	}
 
@@ -290,6 +308,8 @@ public class UserAccountController implements Serializable, DbConstant {
 	public String saveUserInfo() throws IOException, NoSuchAlgorithmException {
 		String url = getContextPath();
 		// System.out.print("+++++++++++++++++:" + url + "/");
+		HttpSession session = SessionUtils.getSession();
+		usersSession = (Users) session.getAttribute("userSession");
 		try {
 			try {
 				Users user = new Users();
@@ -344,16 +364,37 @@ public class UserAccountController implements Serializable, DbConstant {
 					if (choice.equalsIgnoreCase(country_rw)) {
 						users.setVillage(villageImpl.getVillageById(villageId, "villageId"));
 						users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
-						users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
-						users.setViewName(loginImpl.criptPassword(password));
-						users.setStatus(DESACTIVE);
-						usersImpl.saveUsers(users);
-						JSFMessagers.resetMessages();
-						setValid(true);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-						LOGGER.info(CLASSNAME + ":::User Details is saved");
-						clearUserFuileds();
-						return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+						if (null != usersSession) {
+							if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
+								users.setViewName(loginImpl.criptPassword(password));
+								users.setStatus(DESACTIVE);
+								usersImpl.saveUsers(users);
+								JSFMessagers.resetMessages();
+								setValid(true);
+								JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+								LOGGER.info(CLASSNAME + ":::User Details is saved");
+								clearUserFuileds();
+								return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+							} else {
+
+								users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
+								users.setViewName(loginImpl.criptPassword(password));
+								users.setStatus(DESACTIVE);
+								usersImpl.saveUsers(users);
+								JSFMessagers.resetMessages();
+								setValid(true);
+								JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+								LOGGER.info(CLASSNAME + ":::User Details is saved");
+								clearUserFuileds();
+								return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+							}
+						} else {
+
+							setValid(false);
+							JSFMessagers
+									.addErrorMessage(getProvider().getValue("com.server.SessionError.internal.error"));
+						}
+
 					} else {
 						users.setUserCategory(catImpl.getUserCategoryById(categoryId, "userCatid"));
 						users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
@@ -443,11 +484,13 @@ public class UserAccountController implements Serializable, DbConstant {
 		renderForeignCountry = false;
 		rendersaveButton = false;
 		renderprofile = false;
+		nextButoon=false;
 	}
 
 	public String cancel(UserDto user) {
 		user.setEditable(false);
 		optionCombine();
+		
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -458,6 +501,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		user.setEditable(true);
 		renderForeignCountry = true;
 		renderprofile = true;
+		showCategory();
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
@@ -556,12 +600,12 @@ public class UserAccountController implements Serializable, DbConstant {
 		us.setLname(user.getLname());
 		us.setUserCategory(user.getUserCategory());
 		usersImpl.UpdateUsers(us);
-		displayUsersByDateBetween();
 		// return to current page
 		return "null";
 		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
 
 	}
+	
 
 	public String updateStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
@@ -581,8 +625,33 @@ public class UserAccountController implements Serializable, DbConstant {
 
 			us.setStatus(ACTIVE);
 		}
-		usersImpl.UpdateUsers(us);
+		usersImpl.UpdateUsers(us);		
 		displayUsersByDateBetween();
+		// return to current page
+		return "null";
+		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
+
+	}
+	public String updateRepStatus(UserDto user) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		Users us = new Users();
+		us = new Users();
+		if (user != null)
+			us = usersImpl.gettUserById(user.getUserId(), "userId");
+		if (us != null)
+			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
+
+		if (user.getStatus().equals(ACTIVE)) {
+
+			us.setStatus(DESACTIVE);
+
+		} else {
+
+			us.setStatus(ACTIVE);
+		}
+		usersImpl.UpdateUsers(us);		
+		repDtosDetails=displayRepresentativeByDateBetween();
 		// return to current page
 		return "null";
 		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
@@ -591,12 +660,14 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void updateTable() throws Exception {
 		if (choice.equalsIgnoreCase(country_rw)) {
-
+			
 			rendered = true;
 			renderForeignCountry = true;
+			showCategory();
 		} else {
 			rendered = false;
 			renderForeignCountry = true;
+			showCategory();
 		}
 
 	}
@@ -609,6 +680,48 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 	}
 
+	@SuppressWarnings("static-access")
+	public List<UserDto> displayRepresentativeByDateBetween() {
+		
+		try {
+			
+					userDtosDetails = new ArrayList<UserDto>();
+					for (Object[] data : usersImpl.reportList(
+							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.loginStatus,cat.usercategoryName from Users us,UserCategory cat where us.userCategory=cat.userCatid and cat.usercategoryName='"+INSTITUTE_REP+"'"
+								)) {
+
+						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
+								+ data[1] + "");
+						UserDto userDtos = new UserDto();
+						userDtos.setEditable(false);
+						userDtos.setUserId(Integer.parseInt(data[5] + ""));
+						userDtos.setFname(data[0] + "");
+						userDtos.setLname(data[1] + "");
+						userDtos.setViewId(data[2] + "");
+						userDtos.setUserCategory((UserCategory) data[3]);
+						userDtos.setStatus(data[4] + "");
+						/*userDtos.setEmail(data[6] + "");
+						userDtos.setPhone(data[7] + "");
+						userDtos.setInstitution(data[8] + "");
+						userDtos.setGenericStatus(data[9] + "");
+						userDtos.setBoard((Board)data[10]);*/
+						userDtos.setLoginStatus(data[6] + "");
+						if (data[4].equals(ACTIVE)) {
+							userDtos.setAction(DESACTIVE);
+						} else {
+							userDtos.setAction(ACTIVE);
+						}
+						userDtosDetails.add(userDtos);
+					}
+					return(userDtosDetails);
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
 	@SuppressWarnings("static-access")
 	public void displayUsersByDateBetween() {
 		try {
@@ -1164,4 +1277,24 @@ public class UserAccountController implements Serializable, DbConstant {
 		this.nextButoon = nextButoon;
 	}
 
+
+	public boolean isRenderBoard() {
+		return renderBoard;
+	}
+
+
+	public void setRenderBoard(boolean renderBoard) {
+		this.renderBoard = renderBoard;
+	}
+
+
+	public List<UserDto> getRepDtosDetails() {
+		return repDtosDetails;
+	}
+
+
+	public void setRepDtosDetails(List<UserDto> repDtosDetails) {
+		this.repDtosDetails = repDtosDetails;
+	}
+	
 }
