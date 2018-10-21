@@ -96,10 +96,8 @@
 										<h:column>
 											<h:commandButton
 												class="col-md-4 btn btn-info btn-sm btn-block"
-												value="Submit">
-												<p:ajax
-													listener="#{institutionController.institutionViewBydate()}"
-													update="table,tablePan" />
+												value="Submit"
+												action="#{institutionController.institutionViewBydate()}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandButton>
@@ -110,6 +108,8 @@
 							</p:outputPanel>
 
 						</div>
+
+
 						<p:outputPanel rendered="#{institutionController.renderDiv}"
 							id="tablePan" autoUpdate="true">
 							<div class="col-md-12 col-sm-2 col-xs-2 card-title">
@@ -122,7 +122,8 @@
 									<h:column style="text-align: right">
 										<h:commandLink href="institutionRegistration.xhtml"
 											class=" btn btn-primary btn-sm btn-block glyphicon glyphicon-triangle-left "
-											value="Back">
+											value="Back"
+											action="#{institutionController.backToFilterDiv()}">
 										</h:commandLink>
 									</h:column>
 								</h:panelGrid>

@@ -103,6 +103,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private int vid;
 	private int sid;
 	private int cntryId;
+	private String useremail;
 	/* arrays */
 	private List<Country> countries = new ArrayList<Country>();
 	private List<Province> provinces = new ArrayList<Province>();
@@ -210,7 +211,7 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	}
 
-	public String saveInstitutionRequest() throws IOException {
+	public String saveInstitutionRequest() throws Exception {
 		try {
 
 			// LOGGER.info(processFileUpload());
@@ -225,7 +226,6 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
-			// institution.setInstitutionLogo(file.getName());
 			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
@@ -236,6 +236,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			request.setUpDtTime(timestamp);
 			request.setInstRegReqstStatus("pending");
 			requestImpl.saveInstitutionRegRequest(request);
+			saveContact();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			nextpage = false;
@@ -373,31 +374,36 @@ public class InstitutionController implements Serializable, DbConstant {
 	public void institutionViewBydate() {
 		try {
 			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
-			if ((to.after(from)) && (Formating.daysBetween(from, to) <= 30)) {
-				try {
-					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
-					Formating fmt = new Formating();
-					for (Object[] data : requestImpl.reportList(
-							"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-									+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active' and createdBy='"
-									+ usersSession.getViewId() + "'")) {
-						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
-						pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
-								"instRegReqstId"));
+			if (to.after(from)) {
+
+				if ((Formating.daysBetween(from, to) <= 30)) {
+					try {
+						pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+						Formating fmt = new Formating();
+						for (Object[] data : requestImpl.reportList(
+								"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+										+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+										+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active' and createdBy='"
+										+ usersSession.getViewId() + "'")) {
+							pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
+									"instRegReqstId"));
+						}
+						institutionDtos = display(pendinGrequests);
+						if (institutionDtos != null) {
+							renderDiv = true;
+						} else {
+							renderDiv = false;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-					institutionDtos = display(pendinGrequests);
-					if (institutionDtos != null) {
-						renderDiv = true;
-					} else {
-						renderDiv = false;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+				} else {
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 				}
 			} else {
 				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("Invalidrange"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
 
 		} catch (Exception e) {
@@ -595,85 +601,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		}
 	}
 
-	public String processFileUpload() throws IOException {
-		boolean valid = validateImage();
-		if (valid) {
-			Part uploadedFile = getFile();
-			final Path destination = Paths.get(Root_Path + "\\" + UUID.randomUUID().toString() + "."
-					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
-			LOGGER.info("Uploaded File name::------------>>>>>>"
-					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
-			InputStream bytes = null;
-
-			if (null != uploadedFile) {
-
-				bytes = uploadedFile.getInputStream(); //
-
-				// Copies bytes to destination.
-				Files.copy(bytes, destination);
-			}
-
-			return FilenameUtils.getName(getSubmittedFileName(uploadedFile));
-		} else {
-			return null;
-		}
-	}
-
-	public static String getSubmittedFileName(Part filePart) {
-		String header = filePart.getHeader("content-disposition");
-		if (header == null)
-			return null;
-		for (String headerPart : header.split(";")) {
-			if (headerPart.trim().startsWith("filename")) {
-				return headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", "");
-			}
-		}
-		return null;
-	}
-
-	public boolean validateImage() {
-
-		boolean valid = true;
-		try {
-			if (file == null) {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
-				LOGGER.info("Select a valid file::::::::::::::::::");
-				valid = false;
-			} else if (file.getSize() <= 0) {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
-				LOGGER.info("Select a valid file::::::::::::::::::");
-				valid = false;
-			} else if (file.getContentType().isEmpty()) {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.validfile.error"));
-				LOGGER.info("Select a valid file::::::::::::::::::");
-				valid = false;
-			} else if ((!file.getContentType().startsWith("image"))) {
-				setValid(false);
-				LOGGER.info("File type is:::::" + file.getContentType());
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.filetype.error"));
-				LOGGER.info("Select the jpe?g|gif|png image only::::::::::::::::::");
-				valid = false;
-			} else if ((file.getSize() > 500000)) {
-				setValid(false);
-				LOGGER.info("The File Size is:::::::::::" + file.getSize());
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.bigsize"));
-				LOGGER.info(
-						"File size too big. File size allowed  is less than or equal to 500 Kb.\"::::::::::::::::::");
-
-			}
-
-			return (valid);
-		} catch (Exception ex) {
-			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.error.uploaded"));
-			LOGGER.info(ex.getMessage());
-			throw new ValidatorException(new FacesMessage(ex.getMessage()));
-		}
-	}
-
 	public void TrashInstitution(InstitutionRegistrationRequest request1) {
 		try {
 			requestImpl.delete(request1);
@@ -709,6 +636,84 @@ public class InstitutionController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public String saveContact() throws Exception {
+		try {
+
+			try {
+
+				Contact ct = new Contact();
+				if (null != useremail)
+					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+							"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
+					return null;
+				}
+				ct = contactImpl.getModelWithMyHQL(new String[] { "phone" }, new Object[] { contact.getPhone() },
+						"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: phone number already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+
+			FormSampleController sample = new FormSampleController();
+			contact.setCreatedBy(usersSession.getViewId());
+			contact.setCrtdDtTime(timestamp);
+			contact.setGenericStatus(ACTIVE);
+			contact.setUpDtTime(timestamp);
+			contact.setInstitution(institution);
+			isValid = sample.isValid();
+			if (isValid) {
+				contact.setEmail(useremail);
+				contact.setUpdatedBy(usersSession.getViewId());
+				contactImpl.saveContact(contact);
+
+				JSFMessagers.resetMessages();
+				setValid(true);
+				// JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+				LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+				return "/menu/ViewUsersContacts.xhtml?faces-redirect=true";
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+				return null;
+			}
+
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
+	}
+
+	public void backToFilterDiv() {
+		renderDiv = false;
 	}
 
 	public String getKey() {
@@ -1213,6 +1218,14 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setSelctDiv(boolean selctDiv) {
 		this.selctDiv = selctDiv;
+	}
+
+	public String getUseremail() {
+		return useremail;
+	}
+
+	public void setUseremail(String useremail) {
+		this.useremail = useremail;
 	}
 
 }
