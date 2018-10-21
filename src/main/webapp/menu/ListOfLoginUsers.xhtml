@@ -15,7 +15,7 @@
 
 <h1>File Sample</h1>
 <h:form>
-    <p:fileUpload fileUploadListener="#{formSampleController.fileUpload}" mode="advanced" dragDropSupport="false"
+    <p:fileUpload fileUploadListener="#{formSampleController.fileUpload}" mode="advanced" dragDropSupport="true"
                   multiple="true" update="messages" sizeLimit="1000000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
  
     <p:growl id="messages" showDetail="true" />
