@@ -53,7 +53,7 @@
 										style="color: black">#{msg['form.task.description']}<span
 										style="color: red">*</span>
 									</label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
+									<div class="col-md-5 col-sm-5 col-xs-7">
 										<h:inputTextarea id="descriptionId" styleClass="form-control"
 											value="#{activityController.activity.description}"
 											maxlength="150" required="true"
@@ -75,7 +75,7 @@
 										class="col-md-3 col-sm-3 col-xs-3 control-label"
 										style="color: black">#{msg['form.task.startDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
+									<div class="col-md-5 col-sm-5 col-xs-7">
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_start_date_id"
 											binding="#{from_dob_date_id}" class="form-control"
@@ -116,7 +116,7 @@
 										class="col-md-3 col-sm-3 col-xs-3 control-label"
 										style="color: black">#{msg['form.task.dueDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
+									<div class="col-md-5 col-sm-5 col-xs-7">
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_due_date_id"
 											binding="#{from_due_date_id}" class="form-control"
@@ -156,7 +156,7 @@
 										class="col-md-3 col-sm-3 col-xs-3 control-label"
 										style="color: black">#{msg['form.activity.weight']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5" style="">
+									<div class="col-md-5 col-sm-5 col-xs-7" style="">
 										<h:selectOneMenu id="weightId" styleClass="form-control"
 											required="true" value="#{activityController.activity.weight}"
 											requiredMessage="#{msg['weight.required.message']}">
@@ -179,7 +179,7 @@
 								<label for="todate"
 									class="col-md-3 col-sm-3 col-xs-3 control-label"
 									style="color: black"></label>
-								<div class="col-md-5 col-sm-5 col-xs-5">
+								<div class="col-md-5 col-sm-5 col-xs-7">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{activityController.saveActivite}"
 										value="#{msg['label.submit.message.save']}">

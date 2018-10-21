@@ -51,7 +51,7 @@
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.parent']}</label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:selectOneMenu id="categoryId" styleClass="form-control"
 											required="false" value="#{taskController.taskID}"
 											requiredMessage="#{msg['parent.task.required']}">
@@ -77,7 +77,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.name']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:inputText id="tasknameId" binding="#{surnameId}"
 											styleClass="form-control"
 											value="#{taskController.task.taskName}" maxlength="80"
@@ -101,7 +101,7 @@
 										style="color: black">#{msg['form.task.description']}<span
 										style="color: red">*</span>
 									</label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:inputTextarea id="descriptionId" styleClass="form-control"
 											value="#{taskController.task.description}" maxlength="150"
 											required="true"
@@ -124,7 +124,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.startDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_start_date_id"
 											binding="#{from_dob_date_id}" class="form-control"
@@ -165,7 +165,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.dueDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_due_date_id"
 											binding="#{from_due_date_id}" class="form-control"
@@ -203,7 +203,7 @@
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-2 control-label"
 									style="color: black"></label>
-								<div class="col-md-5 col-sm-5 col-xs-5">
+								<div class="col-md-5 col-sm-5 col-xs-7">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{taskController.saveTash}"
 										value="#{msg['label.submit.message.save']}">

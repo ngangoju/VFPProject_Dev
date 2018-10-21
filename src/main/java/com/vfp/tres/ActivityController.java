@@ -70,7 +70,7 @@ public class ActivityController implements Serializable, DbConstant {
 		
 		try {
 			users=usersImpl.getUsersWithQuery(new String[] {"board"}, new Object[] {usersSession.getBoard()}, "Users");
-			activityDetail=activityImpl.getGenericListWithHQLParameter(new String[] {"user"},new Object[] {users}, "Activity", "activityId asc");
+			activityDetail=activityImpl.getListWithHQL(SELECT_ACTIVITY);
 			activityDetails=activityImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getFname()+" "+ usersSession.getLname()}, "Activity", "activityId asc");
 			for (Activity activity : activityDetails){
 				ActivityDto activityDto = new ActivityDto();
