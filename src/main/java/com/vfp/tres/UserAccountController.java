@@ -600,6 +600,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		us.setLname(user.getLname());
 		us.setUserCategory(user.getUserCategory());
 		usersImpl.UpdateUsers(us);
+		listUsersByDateBetween();
 		// return to current page
 		return "null";
 		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
@@ -626,7 +627,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			us.setStatus(ACTIVE);
 		}
 		usersImpl.UpdateUsers(us);		
-		displayUsersByDateBetween();
+		 listUsersByDateBetween();
 		// return to current page
 		return "null";
 		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
@@ -723,6 +724,60 @@ public class UserAccountController implements Serializable, DbConstant {
 		return null;
 	}
 	@SuppressWarnings("static-access")
+	public void listUsersByDateBetween() {
+		try {
+			if (to.after(from)) {
+
+				Formating fmt = new Formating();
+				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+						+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+				days = fmt.daysBetween(from, to);
+
+				LOGGER.info("Days founded:......................" + days);
+				if (days <= 30) {
+					renderDataTable = true;
+					userDtosDetails = new ArrayList<UserDto>();
+					for (Object[] data : usersImpl.reportList(
+							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId from Users us where us.createdDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
+
+						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
+								+ data[1] + "");
+						UserDto userDtos = new UserDto();
+						userDtos.setEditable(false);
+						userDtos.setUserId(Integer.parseInt(data[5] + ""));
+						userDtos.setFname(data[0] + "");
+						userDtos.setLname(data[1] + "");
+						userDtos.setViewId(data[2] + "");
+						userDtos.setUserCategory(((UserCategory) data[3]));
+						userDtos.setStatus(data[4] + "");
+						if (data[4].equals(ACTIVE)) {
+							userDtos.setAction(DESACTIVE);
+						} else {
+							userDtos.setAction(ACTIVE);
+						}
+						userDtosDetails.add(userDtos);
+					}
+
+				} else {
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
+				}
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("static-access")
 	public void displayUsersByDateBetween() {
 		try {
 			if (to.after(from)) {
@@ -739,7 +794,6 @@ public class UserAccountController implements Serializable, DbConstant {
 					for (Object[] data : usersImpl.reportList(
 							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,co.email,co.phone,ins.institutionName,us.genericStatus,us.board from Users us,Contact co,Institution ins,Board b where b.institution=ins.institutionId and b.boardId=us.board and co.user=us.userId and us.createdDate between '"
 									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
-
 						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
 								+ data[1] + "");
 						UserDto userDtos = new UserDto();
