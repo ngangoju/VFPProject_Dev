@@ -5,6 +5,7 @@ import java.util.Date;
 
 import tres.domain.Country;
 import tres.domain.Institution;
+import tres.domain.UploadingFiles;
 import tres.domain.Users;
 import tres.domain.Village;
 
@@ -29,6 +30,8 @@ public class InstitutionDto implements Serializable {
 	private Users user;
 	
 	private boolean editable;
+	
+	private UploadingFiles institutionLogo;
 
 	public boolean isEditable() {
 		return editable;
@@ -106,5 +109,15 @@ public class InstitutionDto implements Serializable {
 	public String toString() {
 		return "InstitutionDto [institutionName=" + institutionName + "]";
 	}
+
+	public UploadingFiles getInstitutionLogo() {
+		return institutionLogo;
+	}
+
+	public void setInstitutionLogo(UploadingFiles institutionLogo) {
+		this.institutionLogo = institutionLogo;
+	}
+	
+	
 
 }

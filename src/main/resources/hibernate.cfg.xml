@@ -36,6 +36,7 @@
         <mapping class="tres.domain.UploadingStrategicPlan"/>
         <mapping class="tres.domain.PaymentRecords"/>
         <mapping class="tres.domain.TaskAssignment"/>
+		 <mapping class="tres.domain.InstitutionEscaletePolicy"/>
     </session-factory>
 </hibernate-configuration>
 

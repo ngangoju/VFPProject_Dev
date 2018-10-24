@@ -84,7 +84,7 @@
 											<div></div>
 										</h:column>
 										<h:column>
-											<p:calendar class="col-md-2 col-sm-2 col-xs-2 control-label"
+											<p:calendar class="col-md-4 col-sm-3 col-xs-4"
 												value="#{institutionController.from}" pattern="yyyy-MM-dd"
 												required="true" requiredMessage="Date required" />
 										</h:column>
@@ -131,7 +131,8 @@
 							<br />
 							<br />
 							<div class="card-footer" style="padding-top: 10px">
-								<p:dataTable value="#{institutionController.institutionDtos}"
+								 
+								  <p:dataTable value="#{institutionController.institutionDtos}"
 									var="ls" rowIndexVar="index" style="padding-top: 2px"
 									id="table" paginator="true" rows="4"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -202,33 +203,39 @@
 										</h:inputText>
 										<h:message errorClass="errorMsg1" for="address"></h:message>
 									</p:column>
+									<p:column headerText="Contact">
+									 
+									<h:graphicImage style="width:50%;margin: 5px" value="/images/dynamic/?file=#{ls.institutionLogo.documents.sysFilename}"/>
+									</p:column>
 									<p:column headerText="Action">
 										<h:commandLink style="color:white"
-											class="btn btn-success 	glyphicon glyphicon-edit"
-											value="Edit" action="#{institutionController.editAction(ls)}"
+											class="btn btn-success 	glyphicon glyphicon-edit" value=""
+											action="#{institutionController.editAction(ls)}"
 											rendered="#{not ls.editable}" ajax="false">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
 										<h:commandLink style="margin-left:2px;color:white"
-											class="btn btn-danger 	glyphicon glyphicon-remove"
-											value="Cancel" action="#{institutionController.cancel(ls)}"
+											class="btn btn-danger 	glyphicon glyphicon-remove" value=""
+											action="#{institutionController.cancel(ls)}"
 											rendered="#{ls.editable}" ajax="false">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
-										<h:commandButton value="Save Changes" class="btn btn-primary"
+										<h:commandLink value=""
+											class="btn btn-success glyphicon glyphicon-floppy-disk	"
 											action="#{institutionController.saveAction(ls)}"
 											rendered="#{ls.editable}" ajax="false">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+										</h:commandLink>
+										<p:commandLink
+											class="btn btn-primary glyphicon glyphicon-plus"
+											rendered="#{ls.editable}" value="">
+										</p:commandLink> 
 									</p:column>
-								</p:dataTable>
+								</p:dataTable> 
+     
 							</div>
 						</p:outputPanel>
-
-
-
-
-
+						 
 					</div>
 				</div>
 			</h:form>
