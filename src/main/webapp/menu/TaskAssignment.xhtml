@@ -70,31 +70,21 @@
 								</div>
 							</h:panelGroup>
 
+<h:panelGroup id="categoryPanel3" layout="block">          
 
-							<h:panelGroup id="categoryPanel1" layout="block">
 								<div class="form-group row">
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['task.form']}</label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
-										<h:selectOneMenu id="categoryId1" styleClass="form-control"
-											required="false" value="#{taskController.taskID}"
-											requiredMessage="#{msg['task.required.form']}">
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" />
-									<f:selectItems
-										value="#{taskController.taskDetails}" var="option"
-										itemValue="#{option.taskId}"
-										itemLabel="#{option.taskName}"
-										itemLabelEscaped="true" />
-<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
-										</h:selectOneMenu>
-									</div>
-									<h:message for="categoryId1" styleClass="help-block"></h:message>
-								</div>
-							</h:panelGroup>
+									<div class="col-md-6 col-sm-6 col-xs-6">                     
 
+               <p:autoComplete id="taskList" value="#{taskController.taskID}" completeMethod="#{taskController.taskDetails}" required="true"/>         
+
+									</div>
+									<h:message for="categoryId3" styleClass="help-block"></h:message>
+								</div>
+         </h:panelGroup>
+							
 							
 							<div class="form-group row">
 								<label for="todate"

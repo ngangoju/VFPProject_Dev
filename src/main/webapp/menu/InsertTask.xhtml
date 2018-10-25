@@ -29,10 +29,9 @@
 						<h:panelGroup layout="block"
 							rendered="#{not taskController.valid and not facesContext.validationFailed}">
 							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
+								<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
+										style="list-style: none; background-color: #FF2400; color: white;">
 										<center>
 											<h:outputText value="#{facesMessage.summary}" escape="false" />
 										</center>
@@ -41,6 +40,20 @@
 							</ul>
 						</h:panelGroup>
 
+			<h:panelGroup layout="block"
+				rendered="#{taskController.valid and  not facesContext.validationFailed}">
+				<ul>
+					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+						<li class="alert alert-success" 
+						style="list-style: none; background-color: #32CD32; color: white;">
+						<center>
+						<h:outputText value="#{facesMessage.summary}" escape="false" />
+						</center>
+						</li>
+					</ui:repeat>
+				</ul>
+			</h:panelGroup>
+			
 						<fieldset>
 
 							<legend>#{msg['form.task.title']}</legend>
