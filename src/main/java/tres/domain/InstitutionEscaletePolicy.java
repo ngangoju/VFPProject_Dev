@@ -10,15 +10,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "InstitutionEscaletePolicy")
-public class InstitutionEscaletePolicy {
+public class InstitutionEscaletePolicy extends CommonDomain {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
 	@Column(name = "policyId")
 	private int policyId;
 
-	@Column(name = "ReschduleTime")
-	private int ReschduleTime;
+	@Column(name = "reschduleTime")
+	private int reschduleTime;
 
 	@Column(name = "Status")
 	private String Status;
@@ -26,8 +26,6 @@ public class InstitutionEscaletePolicy {
 	@OneToOne
 	@JoinColumn(name = "institution")
 	private Institution institution;
-
-	 
 
 	public int getPolicyId() {
 		return policyId;
@@ -38,11 +36,11 @@ public class InstitutionEscaletePolicy {
 	}
 
 	public int getReschduleTime() {
-		return ReschduleTime;
+		return reschduleTime;
 	}
 
 	public void setReschduleTime(int reschduleTime) {
-		ReschduleTime = reschduleTime;
+		this.reschduleTime = reschduleTime;
 	}
 
 	public String getStatus() {
@@ -60,7 +58,5 @@ public class InstitutionEscaletePolicy {
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
-
-	
 
 }

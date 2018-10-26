@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+<body>
+	<ui:composition template="/template/common/commonLayout.xhtml">
+		<ui:define name="content">
+			<div class="panel panel-default">
+
+				<div class="panel-body"
+					style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+					<h:form>
+						<div class="panel panel-info">
+
+							<h:panelGroup layout="block"
+								rendered="#{InstitutionPolicyController.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li
+											style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+											class="alert"><center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								rendered="#{not InstitutionPolicyController.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li class="alert"
+											style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%"><center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<div class="panel-heading">
+								<center>
+									<span class="glyphicon glyphicon-form"></span> Create Policy
+								</center>
+							</div>
+							<div class="panel-body">
+								<span style="color: #737373; font-size: 10pt">Fields
+									marked with an asterisk <span style="color: red">(*)</span> are
+									mandatory.
+								</span> <br /> <br />
+								<h:panelGroup layout="block">
+									<p:outputPanel rendered="#{not institutionPolicyController.renderDiv}"
+										id="pageOne" autoUpdate="true">
+										<div class="form-group row">
+											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+												style="color: black">#{msg['message.com.institution.EscaletTime']}<span
+												style="color: red">*</span>
+											</label>
+											<div class="col-md-4 col-sm-4 col-xs-4">
+
+												<h:inputText class="form-control input-sm" id="name"
+													required="true"
+													requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+													value="#{institutionPolicyController.nmbrTime}"
+													validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+													<f:validateRegex
+														pattern="#{regex['regex.validation.message.DIGITS']}" /> 
+												</h:inputText>
+											</div>
+											<h:message errorClass="errorMsg1" for="name"></h:message>
+										</div>
+										<div class="form-group row">
+											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+												style="color: black">#{msg['message.com.institution.selectInstitution']}
+												<span style="color: red">*</span>
+											</label>
+											<div class="col-md-4 col-sm-4 col-xs-4 ">
+
+												<h:selectOneMenu class="form-control input-sm" id="branch"
+													value="#{institutionPolicyController.institutionID}"
+													required="false"
+													requiredMessage="#{msg['requiered.username.message']}">
+													<!-- 									<f:ajax render="branch" execute="@form" onevent="showProgress" /> -->
+													<f:selectItem
+														itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+														itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+													<f:selectItems
+														value="#{institutionPolicyController.validInstitution}"
+														var="option"
+														itemValue="#{option.institution.institutionId}"
+														itemLabel="#{option.institution.institutionName}"
+														itemLabelEscaped="true" />
+												</h:selectOneMenu>
+											</div>
+											<h:message errorClass="errorMsg1" for="province"></h:message>
+										</div>
+										<div class="form-group row ">
+											<div class="form-group row ">
+												<label for="todate"
+													class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+
+												<div class="col-sm-4">
+													<h:commandButton
+														class="btn btn-info btn-xlg btn-block input-sm"
+														value="#{msg['institutionForm.save']}"
+														action="#{institutionPolicyController.createEscaletePolicy()}">
+														<f:ajax render="@form" execute="@form"
+															onevent="showProgress" />
+													</h:commandButton>
+												</div>
+												<span class="text-danger" id="customeordererror"></span>
+											</div>
+										</div>
+									</p:outputPanel>
+								</h:panelGroup>
+							</div>
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
