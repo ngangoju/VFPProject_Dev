@@ -18,9 +18,12 @@ import javax.servlet.http.HttpSession;
 import tres.common.DbConstant;
 import tres.common.Formating;
 import tres.common.JSFBoundleProvider;
+import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Activity;
 import tres.domain.Task;
 import tres.domain.Users;
 import tres.vfp.dto.TaskDto;
@@ -65,9 +68,16 @@ public class StaffReport implements Serializable, DbConstant {
 	private Date first;
 	private Date second;
 	private String login;
+	private String myChoice;
+	private Activity activity;
+	private boolean renderedspdf;
+
+
 	
 	private List<Task> taskDetails = new ArrayList<Task>();
+	private List<Activity>activitydetails=new ArrayList<Activity>();
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
+	ActivityImpl activityImpl = new ActivityImpl();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	/*class injection*/
@@ -109,91 +119,103 @@ public class StaffReport implements Serializable, DbConstant {
 
 //Codes for creating the table and its contents
 
-public void createPdf() throws IOException, DocumentException {
+    @SuppressWarnings("unchecked")
+	public void createPdf() throws IOException, DocumentException {
 
-	FacesContext context = FacesContext.getCurrentInstance();
-    Document document = new Document();
-    Rectangle rect = new Rectangle(20, 20, 600, 600);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    PdfWriter writer = PdfWriter.getInstance(document, baos);
-    MyFooter event = new MyFooter();
-    writer.setPageEvent(event);
-    writer.setBoxSize("art", rect);
-    document.setPageSize(rect);
-    if (!document.isOpen()) {
-        document.open();
-    }
-        document.add(new Paragraph("\n"));
-        Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-        PdfPTable table = new PdfPTable(5);
-     //Pdf table=new Pdftable(3);
-        
-    PdfPCell pc = new PdfPCell(new Paragraph("TASK NAME",font0));
-        pc.setColspan(5);
-        pc.setBackgroundColor(BaseColor.MAGENTA);
-        pc.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(pc);
-        
-    table.setWidthPercentage(110);
-    PdfPCell pc1 = new PdfPCell(new Paragraph(" Task name\n Execution period", font0));
-    //pc1.setRowspan(3);
-    pc1.setBackgroundColor(BaseColor.ORANGE);
-    table.addCell(pc1);
-    
-    PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
-    pc2.setBackgroundColor(BaseColor.ORANGE);
-    table.addCell(pc2);
-   
-    
-    PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
-    pc3.setBackgroundColor(BaseColor.ORANGE);
-    table.addCell(pc3);
-    
-    
-    PdfPCell pc4 = new PdfPCell(new Paragraph(" Marks", font0));
-    pc4.setBackgroundColor(BaseColor.ORANGE);
-    table.addCell(pc4);
-    
-    
-    PdfPCell pc5 = new PdfPCell(new Paragraph(" Status", font0));
-    pc5.setBackgroundColor(BaseColor.ORANGE);
-    table.addCell(pc5);
-    table.setHeaderRows(2);
-    HttpSession session = SessionUtils.getSession();
-	usersSession= (Users) session.getAttribute("userSession");
-	
-	if (users == null) {
-		users = new Users();
-	}
-	
-	if (task == null) {
-		task = new Task();
-	}
-	
-	try {
-		taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE},"Task", "taskId asc");
-		for (Task task : taskDetails){
-			table.addCell(task.getTaskName());
-			table.addCell(task.getDescription());
-			table.addCell(""+task.getDueDate());
-			table.addCell(""+task.getTaskId());
-			table.addCell(task.getGenericStatus());		
+		FacesContext context = FacesContext.getCurrentInstance();
+		Document document = new Document();
+		Rectangle rect = new Rectangle(20, 20, 600, 600);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfWriter writer = PdfWriter.getInstance(document, baos);
+		MyFooter event = new MyFooter();
+		writer.setPageEvent(event);
+		writer.setBoxSize("art", rect);
+		document.setPageSize(rect);
+		if (!document.isOpen()) {
+			document.open();
+		}
+		try {
 			
-	}
-		document.add(table);
-		
-		document.close();
-		writePDFToResponse(context.getExternalContext(), baos, "Staff_report");
+			//Users t= usersImpl.gettUserById(usersSession.getUserId(), "userId");
+			int myName=2;
+			
+			activitydetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
+					new Object[] { ACTIVE, usersImpl.gettUserById(myName , "userId") },
+					"Activity", "activityId asc");
+			if (activitydetails.size() > 0) {
+				setValid(true);
+				document.add(new Paragraph("\n"));
+				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+				PdfPTable table = new PdfPTable(5);
 
-		context.responseComplete();
-		}catch(Exception e) {
+				Users t = usersImpl.gettUserById(Integer.parseInt(myName + ""), "userId");
+				String myNane = t.getFname()+""+t.getLname();
+				PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
+				pc.setColspan(5);
+				pc.setBackgroundColor(BaseColor.CYAN);
+				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc);
+
+				table.setWidthPercentage(110);
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
+
+				pc1.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc1);
+
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
+				pc2.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc2);
+
+				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
+				pc3.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc3);
+
+				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", font0));
+				pc4.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc4);
+
+				PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", font0));
+				pc5.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc5);
+				table.setHeaderRows(2);
+				HttpSession session = SessionUtils.getSession();
+				usersSession = (Users) session.getAttribute("userSession");
+
+				if (users == null) {
+					users = new Users();
+				}
+
+				if (activity == null) {
+					activity = new Activity();
+				}
+
+				for (Activity activity : activitydetails) {
+					table.addCell(activity.getCrtdDtTime() + "");
+					table.addCell(activity.getDescription());
+					table.addCell(activity.getWeight());
+					table.addCell(activity.getStatus());
+					table.addCell("" + activity.getCreatedBy());
+				}
+				document.add(table);
+
+				document.close();
+
+				writePDFToResponse(context.getExternalContext(), baos, "Staff_report");
+
+				context.responseComplete();
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaff"));
+			}
+		} catch (Exception e) {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-		}
-public void myrepo() throws IOException, DocumentException {
+	}
+/*public void myrepo() throws IOException, DocumentException {
     new StaffReport().createPdf();
-}
+}*/
 public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputStream baos, String fileName) {
     try {
         externalContext.responseReset();
@@ -212,7 +234,14 @@ public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputS
 }
 
     
-    
+public void updateTable() throws Exception {
+	if (myChoice.equalsIgnoreCase(pdfFormat)) {
+		renderedspdf = true;
+	} else {
+		renderedspdf = false;
+	}
+
+}
 
 	public String getCLASSNAME() {
 		return CLASSNAME;
@@ -340,6 +369,24 @@ public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputS
 	}
 	public void setSecond(Date second) {
 		this.second = second;
+	}
+	public String getMyChoice() {
+		return myChoice;
+	}
+	public void setMyChoice(String myChoice) {
+		this.myChoice = myChoice;
+	}
+	public boolean isRenderedspdf() {
+		return renderedspdf;
+	}
+	public void setRenderedspdf(boolean renderedspdf) {
+		this.renderedspdf = renderedspdf;
+	}
+	public List<Activity> getActivitydetails() {
+		return activitydetails;
+	}
+	public void setActivitydetails(List<Activity> activitydetails) {
+		this.activitydetails = activitydetails;
 	}
 	
 }
