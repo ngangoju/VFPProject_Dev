@@ -128,7 +128,7 @@ public class TaskController implements Serializable, DbConstant {
 			task.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
-			plan = planImpl.getModelWithMyHQL(new String[] {"genericStatus","createdBy"},new Object[] {ACTIVE,usersSession.getFname()+" "+usersSession.getLname()}, SELECT_STRATEGIC_PLAN);
+			plan = planImpl.getModelWithMyHQL(new String[] {"genericStatus"},new Object[] {ACTIVE}, SELECT_STRATEGIC_PLAN);
 			task.setStrategicPlan(plan);
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
@@ -241,6 +241,11 @@ public class TaskController implements Serializable, DbConstant {
 		rendered=true;
 	}
 
+	public String backBtn() {
+		return "/menu/Task.xhtml?faces-redirect=true";
+		//showAssignments();
+	}
+	
 private void clearTaskFuileds() {
 	task=new Task();
 	taskDetails=null;

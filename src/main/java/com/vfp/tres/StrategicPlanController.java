@@ -73,6 +73,8 @@ public class StrategicPlanController implements Serializable, DbConstant {
 				strategicPlanDto.setDetails(strategicPlan.getDetails());
 				strategicPlanDto.setRecordedDate(strategicPlan.getRecordedDate());
 				strategicPlanDto.setGenericStatus(strategicPlan.getGenericStatus());
+				strategicPlanDto.setDueDate(strategicPlan.getDueDate());
+				strategicPlanDto.setStartDate(strategicPlan.getStartDate());
 				strategicPlanDto.setUsers(strategicPlan.getUsers());
 				strategicPlanDtoDetails.add(strategicPlanDto);
 			}
