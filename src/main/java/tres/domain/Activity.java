@@ -59,9 +59,9 @@ public class Activity extends CommonDomain implements Serializable {
 	private Task task;
 
 	@ManyToOne
-	@JoinColumn(name="user")
+	@JoinColumn(name = "user")
 	private Users user;
-	
+
 	public int getActivityId() {
 		return activityId;
 	}

@@ -30,43 +30,43 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "StrategicPlanController :: ";
 	private static final long serialVersionUID = 1L;
-	/*to manage validation messages*/
+	/* to manage validation messages */
 	private boolean isValid;
-	/*end  manage validation messages*/
+	/* end manage validation messages */
 	private Users users;
 	private Users usersSession;
 	private StrategicPlan strategicPlan;
 	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
 	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
-	
-	
-	/*class injection*/
-	
+
+	/* class injection */
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	StrategicPlanImpl strategicPlanImpl = new StrategicPlanImpl();
-	
-	/*end class injection*/
+
+	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
-		usersSession= (Users) session.getAttribute("userSession");
-		
+		usersSession = (Users) session.getAttribute("userSession");
+
 		if (users == null) {
 			users = new Users();
 		}
-		
+
 		if (strategicPlan == null) {
 			strategicPlan = new StrategicPlan();
 		}
-		
+
 		try {
-			
-			strategicPlanDetails=strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"createdBy"},new Object[] {usersSession.getFname()+" "+usersSession.getLname()}, "StrategicPlan", "planId asc");
-			for(StrategicPlan strategicPlan: strategicPlanDetails) {
+			strategicPlanDetails = strategicPlanImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
+					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "StrategicPlan",
+					"planId asc");
+			for (StrategicPlan strategicPlan : strategicPlanDetails) {
 				StrategicPlanDto strategicPlanDto = new StrategicPlanDto();
 				strategicPlanDto.setStrategicPlanId(strategicPlan.getPlanId());
 				strategicPlanDto.setEditable(false);
@@ -85,89 +85,89 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
-	
-		
 	}
-	
+
 	public String savePlan() {
 		try {
-			strategicPlanDetails = strategicPlanImpl.getGenericListWithHQLParameter(new String[] {"createdBy"},new Object[] {usersSession.getFname()+" "+usersSession.getLname()}, "StrategicPlan", "planId asc");
-		for(StrategicPlan strategicP: strategicPlanDetails) {
-			strategicP.setGenericStatus(DESACTIVE);
-			strategicPlanImpl.UpdateStrategicPlan(strategicP);
+			strategicPlanDetails = strategicPlanImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
+					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "StrategicPlan",
+					"planId asc");
+			for (StrategicPlan strategicP : strategicPlanDetails) {
+				strategicP.setGenericStatus(DESACTIVE);
+				strategicPlanImpl.UpdateStrategicPlan(strategicP);
 			}
-			strategicPlan.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
+			strategicPlan.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			strategicPlan.setCrtdDtTime(timestamp);
 			strategicPlan.setGenericStatus(ACTIVE);
 			strategicPlan.setUpDtTime(timestamp);
 			strategicPlan.setUsers(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
-			strategicPlan.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
+			strategicPlan.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			strategicPlan.setRecordedDate(timestamp);
 			strategicPlan.setEndDate(strategicPlan.getDueDate());
 			strategicPlanImpl.saveStrategicPlan(strategicPlan);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
-			LOGGER.info(CLASSNAME+":::StrategicPlan Details is saved");
+			LOGGER.info(CLASSNAME + ":::StrategicPlan Details is saved");
 			clearPlanFuileds();
-			return"/menu/StrategicPlan.xhtml?faces-redirect=true";
-			
+			return "/menu/StrategicPlan.xhtml?faces-redirect=true";
+
 		} catch (Exception e) {
-			LOGGER.info(CLASSNAME+":::Strategic Plan Details is failling with HibernateException  error");
+			LOGGER.info(CLASSNAME + ":::Strategic Plan Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-			LOGGER.info(CLASSNAME+""+e.getMessage());
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
-			return"";	
+			return "";
 		}
-		
+
 	}
 
-public void clearPlanFuileds() {
-	strategicPlan=new StrategicPlan();
-	strategicPlanDetails=null;
-}
+	public void clearPlanFuileds() {
+		strategicPlan = new StrategicPlan();
+		strategicPlanDetails = null;
+	}
 
-public String newPlan() {
-	return "/menu/InsertStrategicPlan.xhtml?faces-redirect=true";
-}
+	public String newPlan() {
+		return "/menu/InsertStrategicPlan.xhtml?faces-redirect=true";
+	}
 
 	public void changeSelectBox(String name) {
-		
-		LOGGER.info("Ajax is working with listener::::::"+name);
+
+		LOGGER.info("Ajax is working with listener::::::" + name);
 	}
+
 	public String saveAction(StrategicPlanDto strategicPlanDto) {
 		LOGGER.info("update  saveAction method");
-		//get all existing value but set "editable" to false 
-		StrategicPlan act=new StrategicPlan();
-		act=new StrategicPlan();
-		act=strategicPlanImpl.getStrategicPlanById(strategicPlanDto.getStrategicPlanId(), "planId");
-		
-			LOGGER.info("here update sart for "+act +" strategicPlaniD "+act.getPlanId());
+		// get all existing value but set "editable" to false
+		StrategicPlan act = new StrategicPlan();
+		act = new StrategicPlan();
+		act = strategicPlanImpl.getStrategicPlanById(strategicPlanDto.getStrategicPlanId(), "planId");
 
-			strategicPlanDto.setEditable(false);
-			act.setDetails(strategicPlanDto.getDetails());
-		
-			strategicPlanImpl.UpdateStrategicPlan(act);
-			
-		//return to current page
+		LOGGER.info("here update sart for " + act + " strategicPlaniD " + act.getPlanId());
+
+		strategicPlanDto.setEditable(false);
+		act.setDetails(strategicPlanDto.getDetails());
+
+		strategicPlanImpl.UpdateStrategicPlan(act);
+
+		// return to current page
 		return null;
-		
+
 	}
 
 	public String cancel(StrategicPlanDto strategicPlanDto) {
 		strategicPlanDto.setEditable(false);
-		//usersImpl.UpdateUsers(user);
+		// usersImpl.UpdateUsers(user);
 		return null;
-		
-		
+
 	}
 
 	public String editAction(StrategicPlanDto strategicPlanDto) {
-	    
+
 		strategicPlanDto.setEditable(true);
-		//usersImpl.UpdateUsers(user);
+		// usersImpl.UpdateUsers(user);
 		return null;
 	}
 
@@ -226,6 +226,5 @@ public String newPlan() {
 	public void setStrategicPlanImpl(StrategicPlanImpl strategicPlanImpl) {
 		this.strategicPlanImpl = strategicPlanImpl;
 	}
-
 
 }

@@ -12,7 +12,6 @@
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
-
 		<ui:define name="content">
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
@@ -79,7 +78,8 @@
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_start_date_id"
 											binding="#{from_dob_date_id}" class="form-control"
-											escape="true" value="#{activityController.activity.startDate}"
+											escape="true"
+											value="#{activityController.activity.startDate}"
 											maxlength="35" required="true"
 											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 											requiredMessage="#{msg['startDate.required.message']}">

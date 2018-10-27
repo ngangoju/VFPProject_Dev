@@ -137,8 +137,8 @@
 						<h:inputText locale="#{facesContext.viewRoot.locale}"
 							autocomplete="off" id="from_due_date_id"
 							binding="#{from_due_date_id}" class="form-control" escape="true"
-							value="#{act.dueDate}" maxlength="35"
-							required="true" rendered="#{act.editable}"
+							value="#{act.dueDate}" maxlength="35" required="true"
+							rendered="#{act.editable}"
 							converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 							requiredMessage="#{msg['dueDate.required.message']}">
 							<f:convertDateTime type="date" dateType="short"

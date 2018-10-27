@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "StrategicPlan")
 @NamedQuery(name = "strategicPlan.findAll", query = "SELECT r FROM StrategicPlan r order by v desc")
-public class StrategicPlan  extends CommonDomain implements Serializable {
+public class StrategicPlan extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -47,11 +47,10 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	@Column(name = "endDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "Users")
 	private Users users;
-	
 
 	public int getPlanId() {
 		return planId;
@@ -108,6 +107,5 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	public void setUsers(Users users) {
 		this.users = users;
 	}
-
 
 }
