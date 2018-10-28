@@ -151,7 +151,7 @@ public class BoardController implements Serializable, DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.board"));
 				LOGGER.info(CLASSNAME + ":::Contact Details is saved");
 				clearContactFuileds();
-				return "/menu/Organigram.xhtml?faces-redirect=true";
+				return "/menu/boardOrganigram.xhtml?faces-redirect=true";
 			}
 			return "/menu/Organigram.xhtml?faces-redirect=true";
 		} catch (HibernateException e) {
