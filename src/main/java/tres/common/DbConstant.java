@@ -125,4 +125,9 @@ public  interface  DbConstant {
  public static final String GLYPHICONGLYPHICONDOWNLOAD="glyphicon glyphicon-download";
  public static final String GLYPHICONGLYPHICONUPLOAD="glyphicon glyphicon-upload";
  public static final String GLYPHICONGLYPHICONINBOX="glyphicon glyphicon-inbox";
+ public static final String SUPER_ADMIN="Super Admin";
+ public static final String INSTITUTE_REP="Institution Representative";
+ public static final String FAILED="failed";
+ public static final String DONE="done";
+ public static final String ESCALET="escalet";
 }

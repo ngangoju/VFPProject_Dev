@@ -1,5 +1,6 @@
 package tres.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,8 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Evaluation")
 
-
-public class Evaluation {
+public class Evaluation extends CommonDomain implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
@@ -25,12 +25,15 @@ public class Evaluation {
 	@Column(name = "EvaluationType")
 	private String EvaluationType;
 
+	@Column(name = "details")
+	private String details;
+
 	@Column(name = "EvaluationDate")
 	private Date EvaluationDate;
-	
+
 	@Column(name = "EvaluationOverAllMarks")
 	private int EvaluationOverAllMarks;
-	
+
 	public int getEvaluationOverAllMarks() {
 		return EvaluationOverAllMarks;
 	}
@@ -49,9 +52,7 @@ public class Evaluation {
 
 	@Column(name = "EvaluationMarks")
 	private int EvaluationMarks;
-	
-	
-	
+
 	@ManyToOne
 	@JoinColumn(name = "ACTIVITYID")
 	private Activity activity;
@@ -88,9 +89,12 @@ public class Evaluation {
 		this.activity = activity;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getDetails() {
+		return details;
 	}
-	
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
 
 }

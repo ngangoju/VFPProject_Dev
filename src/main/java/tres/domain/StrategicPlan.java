@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "StrategicPlan")
 @NamedQuery(name = "strategicPlan.findAll", query = "SELECT r FROM StrategicPlan r order by v desc")
-public class StrategicPlan  extends CommonDomain implements Serializable {
+public class StrategicPlan extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -35,12 +35,22 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	@Column(name = "recordedDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date recordedDate;
-	
-	
+
+	@Column(name = "startDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startDate;
+
+	@Column(name = "dueDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dueDate;
+
+	@Column(name = "endDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endDate;
+
 	@ManyToOne
 	@JoinColumn(name = "Users")
 	private Users users;
-	
 
 	public int getPlanId() {
 		return planId;
@@ -66,6 +76,30 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 		this.recordedDate = recordedDate;
 	}
 
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 	public Users getUsers() {
 		return users;
 	}
@@ -73,6 +107,5 @@ public class StrategicPlan  extends CommonDomain implements Serializable {
 	public void setUsers(Users users) {
 		this.users = users;
 	}
-
 
 }

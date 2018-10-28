@@ -139,6 +139,9 @@
 
 									</div>
 								</div>
+								<div class="col-md-4 col-sm-6">
+								<p:chart type="line" model="#{chartView.lineModel1}" style="height:300px;" responsive="true"/>
+								</div>
 							</p:outputPanel>
 						</h:panelGroup>
 						<!-- Div for dashbord ends-->
@@ -151,22 +154,18 @@
 						<h:panelGroup>
 							<p:outputPanel rendered="#{institutionController.renderDiv}"
 								id="update" autoUpdate="true">
-								<div class="card-header">
-									<h4 class="card-title">INSTITUTION REQUESTS</h4>
-								</div>
-
 
 								<div class="card-body" style="padding-top: 10px">
 									<div class="form-group row">
 										<div class="card">
-											<div class="card-title">
-												<h4 class="panel-title">Institution Registration
-													Request</h4>
-											</div>
+
 											<div class="card-body">
 												<p:outputPanel
 													rendered="#{not institutionController.selctDiv}"
 													id="selct11" autoUpdate="true">
+													<div class="card-header">
+														<h4 class="card-title">INSTITUTION REQUESTS</h4>
+													</div>
 													<div class="card-text">
 														<h:panelGrid columns="3">
 															<h:column>
@@ -215,6 +214,25 @@
 								<div class="card-footer" style="padding-top: 10px">
 									<p:outputPanel rendered="#{institutionController.selctDiv}"
 										id="selct12" autoUpdate="true">
+										<div class="col-md-12 col-sm-2 col-xs-2 card-title">
+											<h:panelGrid columns="2" class="col-md-12 col-sm-2 col-xs-2">
+												<h:column style="text-align: left">
+													<div class="card-header">
+														<h4 class="card-title">INSTITUTION REQUESTS</h4>
+													</div>
+												</h:column>
+												<h:column style="text-align: right">
+													<h:commandLink href="institutionRegistration.xhtml"
+														class=" btn btn-primary btn-sm btn-block glyphicon glyphicon-triangle-left "
+														value="Back"
+														action="#{institutionController.backToReqFilterDiv()}">
+													</h:commandLink>
+												</h:column>
+											</h:panelGrid>
+										</div>
+										<br />
+										<br />
+										<br />
 										<p:dataTable value="#{institutionController.pendinGrequests}"
 											var="ls" rowIndexVar="index" class="table" paginator="true"
 											rows="4"
@@ -237,7 +255,9 @@
 															<td style="width: 170px; border: none;">
 																<div
 																	class="circle-tile-heading2 card-img-top #{menuAss.listOfMenu.menuColor}">
-																	<i class="glyphicon glyphicon-file fa-fw fa-3x"> </i>
+																	<i class=" fa-fw fa-3x"> 
+																	<h:graphicImage style="width:50%;margin: 5px" value="/images/dynamic/?file=#{ls.institution.institutionLogo.documents.sysFilename}"/>
+																	</i>
 																</div>
 															</td>
 															<td class="col-md-6"
@@ -320,9 +340,7 @@
 							<p:outputPanel
 								rendered="#{institutionController.renderrejected }"
 								id="rejected" autoUpdate="true">
-								<div class="card-header">
-									<h4 class="card-title">REJECTED INSTITUTION</h4>
-								</div>
+
 								<div class="card-body" style="padding-top: 10px">
 									<div class="form-group row">
 										<div class="card">
@@ -330,6 +348,10 @@
 												<p:outputPanel
 													rendered="#{not institutionController.selctDiv}"
 													id="selct22" autoUpdate="true">
+
+													<div class="card-header">
+														<h4 class="card-title">REJECTED INSTITUTION</h4>
+													</div>
 													<div class="card-title">
 														<h:panelGrid columns="3">
 															<h:column>
@@ -378,6 +400,26 @@
 								<div class="card-footer" style="padding-top: 10px">
 									<p:outputPanel rendered="#{institutionController.selctDiv}"
 										id="selct23" autoUpdate="true">
+
+										<div class="col-md-12 col-sm-2 col-xs-2 card-title">
+											<h:panelGrid columns="2" class="col-md-12 col-sm-2 col-xs-2">
+												<h:column style="text-align: left">
+													<div class="card-header">
+														<h4 class="card-title">REJECTED INSTITUTION</h4>
+													</div>
+												</h:column>
+												<h:column style="text-align: right">
+													<h:commandLink href="institutionRegistration.xhtml"
+														class=" btn btn-primary btn-sm btn-block glyphicon glyphicon-triangle-left "
+														value="Back"
+														action="#{institutionController.backToReqFilterDiv()}">
+													</h:commandLink>
+												</h:column>
+											</h:panelGrid>
+										</div>
+										<br />
+										<br />
+										<br />
 										<p:dataTable value="#{institutionController.pendinGrequests}"
 											var="ls" rowIndexVar="index" class="table" paginator="true"
 											rows="4"
@@ -439,7 +481,7 @@
 																						value="Revert">
 																						<p:ajax update="rejectedTable"
 																							listener="#{institutionController.RevertInstitution(ls)}" />
-																					<f:ajax render="Regtable" execute="@form"
+																						<f:ajax render="Regtable" execute="@form"
 																							onevent="showProgress" />
 																					</h:commandLink>
 																				</div></th>
@@ -480,15 +522,16 @@
 							<p:outputPanel
 								rendered="#{institutionController.renderallinstit}" id="all"
 								autoUpdate="true">
-								<div class="card-header">
-									<h4 class="card-title">INSTITUTION</h4>
-								</div>
+
 								<div class="card-body" style="padding-top: 10px">
 									<div class="form-group row">
 										<div class="card">
 											<p:outputPanel
 												rendered="#{not institutionController.selctDiv}"
 												id="selct33" autoUpdate="true">
+												<div class="card-header">
+													<h4 class="card-title">INSTITUTION</h4>
+												</div>
 												<div class="card-body">
 													<div class="card-title">
 														<h:panelGrid columns="3">
@@ -538,14 +581,33 @@
 								<div class="card-footer" style="padding-top: 10px">
 									<p:outputPanel rendered="#{institutionController.selctDiv}"
 										id="selct34" autoUpdate="true">
+										<div class="col-md-12 col-sm-2 col-xs-2 card-title">
+											<h:panelGrid columns="2" class="col-md-12 col-sm-2 col-xs-2">
+												<h:column style="text-align: left">
+													<div class="card-header">
+														<h4 class="card-title">INSTITUTION</h4>
+													</div>
+												</h:column>
+												<h:column style="text-align: right">
+													<h:commandLink href="institutionRegistration.xhtml"
+														class=" btn btn-primary btn-sm btn-block glyphicon glyphicon-triangle-left "
+														value="Back"
+														action="#{institutionController.backToReqFilterDiv()}">
+													</h:commandLink>
+												</h:column>
+											</h:panelGrid>
+										</div>
+										<br />
+										<br />
+										<br />
 										<p:dataTable value="#{institutionController.institutionDtos}"
 											var="ls" class="table" paginator="true" rows="4"
 											paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 											rowsPerPageTemplate="4,6,8,10,12" id="alltable">
 											<p:column style="border: none;">
 												<div class="circle-tile2 card">
-													<table class="circle-tile-content2   col-md-10 card-body"
-														style="height: 30px; padding: 10px; border: none;">
+													<table class="circle-tile-content2   col-md-3 card-body"
+														style="height: 15%; padding: 5%; border: none;">
 														<tr style="border: none">
 															<td style="border: none;">
 																<h3 class="card-title">
@@ -566,13 +628,13 @@
 															<td style="border: none"></td>
 														</tr>
 														<tr>
-															<td style="width: 170px; border: none;">
+															<td style="width: 30%; border: none;">
 																<div
 																	class="circle-tile-heading2 card-img-top #{menuAss.listOfMenu.menuColor}">
 																	<i class="glyphicon glyphicon-file fa-fw fa-3x"> </i>
 																</div>
 															</td>
-															<td class="col-md-6"
+															<td class="col-md-4"
 																style="float: left; width: 100%; border: none;">
 																<div class="circle-tile-content2 " style="padding: 20px">
 																	<table style="width: 100%; border: none;">

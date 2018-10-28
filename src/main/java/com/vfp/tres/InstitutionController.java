@@ -28,6 +28,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
 import org.primefaces.model.UploadedFile;
+import org.primefaces.model.chart.LineChartModel;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
@@ -39,6 +40,7 @@ import tres.dao.impl.CellImpl;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.CountryImpl;
 import tres.dao.impl.DistrictImpl;
+import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.InstitutionRegRequestImpl;
 import tres.dao.impl.ProvinceImpl;
@@ -50,6 +52,7 @@ import tres.domain.Contact;
 import tres.domain.Country;
 import tres.domain.District;
 import tres.domain.Institution;
+import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Province;
 import tres.domain.Sector;
@@ -79,6 +82,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private boolean renderallinstit;
 	private boolean btnRender;
 	private String name;
+	private int policyTime;
 	private Part file;
 	/* end manage validation messages */
 	private Institution institution;
@@ -96,7 +100,6 @@ public class InstitutionController implements Serializable, DbConstant {
 	private Cell cell;
 	private Contact contact;
 	private int institutionID;
-	private InstitutionDto institutionDto;
 	private int pid;
 	private int did;
 	private int cid;
@@ -104,6 +107,10 @@ public class InstitutionController implements Serializable, DbConstant {
 	private int sid;
 	private int cntryId;
 	private String useremail;
+	private InstitutionDto institutionDto;
+	private InstitutionEscaletePolicy policy;
+	private LineChartModel lineModel1;
+    private LineChartModel lineModel2;
 	/* arrays */
 	private List<Country> countries = new ArrayList<Country>();
 	private List<Province> provinces = new ArrayList<Province>();
@@ -130,6 +137,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	VillageImpl villageImpl = new VillageImpl();
 	CountryImpl countryImpl = new CountryImpl();
 	ContactImpl contactImpl = new ContactImpl();
+	InstitutionEscaletPolicyImpl policyImpl = new InstitutionEscaletPolicyImpl();
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -169,17 +177,12 @@ public class InstitutionController implements Serializable, DbConstant {
 		if (contact == null) {
 			contact = new Contact();
 		}
+		if (policy == null) {
+			policy = new InstitutionEscaletePolicy();
+		}
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			// institutions = institutionImpl
-			// .getListWithHQL("select f from Institution f where
-			// institutionRepresenative_userId="
-			// + usersSession.getUserId() + "");
-			// institutions = institutionImpl.getGenericListWithHQLParameter(
-			// new String[] { "institutionRepresenative_userId" }, new Object[] {
-			// usersSession }, "Institution",
-			// "institutionName asc");
 			validInstitution = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
 					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
@@ -211,7 +214,7 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	}
 
-	public String saveInstitutionRequest() throws Exception {
+	public String saveInstitutionRequest() {
 		try {
 
 			// LOGGER.info(processFileUpload());
@@ -226,6 +229,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setInstitutionRegDate(timestamp);
+			institution.setInstitutionLogo(null);
 			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
@@ -236,7 +240,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			request.setUpDtTime(timestamp);
 			request.setInstRegReqstStatus("pending");
 			requestImpl.saveInstitutionRegRequest(request);
-			saveContact();
+			saveContact(institution);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			nextpage = false;
@@ -451,6 +455,7 @@ public class InstitutionController implements Serializable, DbConstant {
 				institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
 				institutionDto.setCountry(inst.getInstitution().getCountry());
 				institutionDto.setVillage(inst.getInstitution().getVillage());
+				institutionDto.setInstitutionLogo(inst.getInstitution().getInstitutionLogo());
 				dtos.add(institutionDto);
 			}
 			return dtos;
@@ -638,82 +643,64 @@ public class InstitutionController implements Serializable, DbConstant {
 		}
 	}
 
-	public String saveContact() throws Exception {
+	public String saveContact(Institution institution11) {
 		try {
-
-			try {
-
-				Contact ct = new Contact();
-				if (null != useremail)
-					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
-							"from Contact");
-				if (null != ct) {
-
-					JSFMessagers.resetMessages();
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
-					LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
-					return null;
-				}
-				ct = contactImpl.getModelWithMyHQL(new String[] { "phone" }, new Object[] { contact.getPhone() },
-						"from Contact");
-				if (null != ct) {
-
-					JSFMessagers.resetMessages();
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
-					LOGGER.info(CLASSNAME + "sivaserside validation :: phone number already  recorded in the system! ");
-					return null;
-				}
-
-			} catch (Exception e) {
-				JSFMessagers.resetMessages();
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-				LOGGER.info(CLASSNAME + "" + e.getMessage());
-				e.printStackTrace();
-				return null;
-			}
-
-			FormSampleController sample = new FormSampleController();
 			contact.setCreatedBy(usersSession.getViewId());
 			contact.setCrtdDtTime(timestamp);
 			contact.setGenericStatus(ACTIVE);
 			contact.setUpDtTime(timestamp);
-			contact.setInstitution(institution);
-			isValid = sample.isValid();
-			if (isValid) {
-				contact.setEmail(useremail);
-				contact.setUpdatedBy(usersSession.getViewId());
-				contactImpl.saveContact(contact);
-
-				JSFMessagers.resetMessages();
-				setValid(true);
-				// JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
-				LOGGER.info(CLASSNAME + ":::Contact Details is saved");
-				return "/menu/ViewUsersContacts.xhtml?faces-redirect=true";
-			} else {
-				JSFMessagers.resetMessages();
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
-				return null;
-			}
-
+			contact.setInstitution(institution11);
+			contact.setEmail(useremail);
+			// contact.setUser(usersSession);
+			contact.setUpdatedBy(usersSession.getViewId());
+			contactImpl.saveContact(contact);
+			JSFMessagers.resetMessages();
+			setValid(true);
+			// JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+			LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+			clearFeilds();
+			return "";
 		} catch (HibernateException e) {
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error" + e.getMessage()));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 			return "";
 		}
 
+	}   
+
+	public void clearFeilds() {
+		contact = new Contact();
+		useremail="";
+	}
+	
+
+	public LineChartModel getLineModel1() {
+		return lineModel1;
+	}
+
+	public void setLineModel1(LineChartModel lineModel1) {
+		this.lineModel1 = lineModel1;
+	}
+
+	public LineChartModel getLineModel2() {
+		return lineModel2;
+	}
+
+	public void setLineModel2(LineChartModel lineModel2) {
+		this.lineModel2 = lineModel2;
 	}
 
 	public void backToFilterDiv() {
 		renderDiv = false;
+	}
+
+	public void backToReqFilterDiv() {
+		selctDiv = false;
 	}
 
 	public String getKey() {
@@ -1226,6 +1213,30 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	public void setUseremail(String useremail) {
 		this.useremail = useremail;
+	}
+
+	public InstitutionEscaletePolicy getPolicy() {
+		return policy;
+	}
+
+	public void setPolicy(InstitutionEscaletePolicy policy) {
+		this.policy = policy;
+	}
+
+	public InstitutionEscaletPolicyImpl getPolicyImpl() {
+		return policyImpl;
+	}
+
+	public void setPolicyImpl(InstitutionEscaletPolicyImpl policyImpl) {
+		this.policyImpl = policyImpl;
+	}
+
+	public int getPolicyTime() {
+		return policyTime;
+	}
+
+	public void setPolicyTime(int policyTime) {
+		this.policyTime = policyTime;
 	}
 
 }

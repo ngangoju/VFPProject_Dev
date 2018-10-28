@@ -12,7 +12,6 @@
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
-
 		<ui:define name="content">
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
@@ -41,6 +40,21 @@
 							</ul>
 						</h:panelGroup>
 
+						<h:panelGroup layout="block"
+							rendered="#{taskController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-success"
+										style="list-style: none; background-color: #32CD32; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
 						<fieldset>
 
 							<legend>#{msg['assign.task.form']}</legend>
@@ -58,44 +72,58 @@
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" />
-									<f:selectItems
-										value="#{taskController.userDetails}" var="option"
-										itemValue="#{option.userId}"
-										itemLabel="#{option.fname} #{option.lname}"
-										itemLabelEscaped="true" />
-<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
+											<f:selectItems value="#{taskController.userDetails}"
+												var="option" itemValue="#{option.userId}"
+												itemLabel="#{option.fname} #{option.lname}"
+												itemLabelEscaped="true" />
+											<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
 										</h:selectOneMenu>
 									</div>
 									<h:message for="categoryId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
 
-
 							<h:panelGroup id="categoryPanel1" layout="block">
+
 								<div class="form-group row">
+
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['task.form']}</label>
+
 									<div class="col-md-6 col-sm-6 col-xs-6">
+
+
 										<h:selectOneMenu id="categoryId1" styleClass="form-control"
 											required="false" value="#{taskController.taskID}"
 											requiredMessage="#{msg['task.required.form']}">
+
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" />
-									<f:selectItems
-										value="#{taskController.taskDetails}" var="option"
-										itemValue="#{option.taskId}"
-										itemLabel="#{option.taskName}"
-										itemLabelEscaped="true" />
-<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
+
+
+											<f:selectItems value="#{taskController.taskDetails}"
+												var="option" itemValue="#{option.taskId}"
+												itemLabel="#{option.taskName}" itemLabelEscaped="true" />
+											<!-- <f:ajax render="@form" execute="@form" onevent="showProgress" />-->
+
 										</h:selectOneMenu>
+
+
 									</div>
+
+
 									<h:message for="categoryId1" styleClass="help-block"></h:message>
+
+
 								</div>
+
+
 							</h:panelGroup>
 
-							
+
+
 							<div class="form-group row">
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-2 control-label"
@@ -109,10 +137,12 @@
 
 								</div>
 								<div class="col-md-5 col-sm-5 col-xs-5">
-									<h:commandLink class="btn btn-info glyphicon glyphicon-chevron-left"
-											actionListener="#{taskController.showAssignments()}" value="#{msg['UserRegForm.BackButton']}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-												</h:commandLink>
+									<h:commandLink
+										class="btn btn-info glyphicon glyphicon-chevron-left"
+										actionListener="#{taskController.backBtn()}"
+										value="#{msg['UserRegForm.BackButton']}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
 
 								</div>
 								<span class="text-danger" id="err"></span>

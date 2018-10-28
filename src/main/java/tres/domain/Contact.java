@@ -85,7 +85,6 @@ public class Contact extends CommonDomain implements Serializable {
 		this.phone = phone;
 	}
 
-	 
 	public Institution getInstitution() {
 		return institution;
 	}

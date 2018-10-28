@@ -38,8 +38,9 @@ public class Institution extends CommonDomain implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date institutionRegDate;
 
-	@Column(name = "institutionLogo")
-	private String institutionLogo;
+	@OneToOne
+	@JoinColumn(name = "institutionLogo")
+	private UploadingFiles institutionLogo;
 
 	public String getInstitutionAddress() {
 		return institutionAddress;
@@ -132,12 +133,17 @@ public class Institution extends CommonDomain implements Serializable {
 		this.institution = institution;
 	}
 
-	public String getInstitutionLogo() {
+	public UploadingFiles getInstitutionLogo() {
 		return institutionLogo;
 	}
 
-	public void setInstitutionLogo(String institutionLogo) {
+	public void setInstitutionLogo(UploadingFiles institutionLogo) {
 		this.institutionLogo = institutionLogo;
+	}
+
+	@Override
+	public String toString() {
+		return institutionName;
 	}
 
 }

@@ -20,13 +20,11 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ListOfMenuImpl;
 import tres.dao.impl.MenuGroupImpl;
-import tres.dao.impl.UserCategoryImpl;
 import tres.domain.ListOfMenu;
 import tres.domain.MenuGroup;
 import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.vfp.dto.ListOfMenuDto;
-import tres.vfp.dto.MenuGroupDto;;
 
 @SuppressWarnings("unused")
 @ManagedBean

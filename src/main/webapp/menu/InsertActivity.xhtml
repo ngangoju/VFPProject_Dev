@@ -12,7 +12,6 @@
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
-
 		<ui:define name="content">
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
@@ -53,7 +52,7 @@
 										style="color: black">#{msg['form.task.description']}<span
 										style="color: red">*</span>
 									</label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
+									<div class="col-md-5 col-sm-5 col-xs-7">
 										<h:inputTextarea id="descriptionId" styleClass="form-control"
 											value="#{activityController.activity.description}"
 											maxlength="150" required="true"
@@ -68,30 +67,87 @@
 							</h:panelGroup>
 
 
-							<!-- <h:panelGroup id="categoryPanel" layout="block">
+							<h:panelGroup id="fromDatePanel" layout="block">
+
 								<div class="form-group row">
 									<label for="todate"
 										class="col-md-3 col-sm-3 col-xs-3 control-label"
-										style="color: black">#{msg['form.activity.status']}<span
+										style="color: black">#{msg['form.task.startDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:selectOneMenu id="categoryId" styleClass="form-control"
-											required="true" value="#{activityController.activity.status}"
-											requiredMessage="#{msg['status.required.message']}">
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" />
-											<f:selectItems value="#{activityController.status}"
-												var="option" itemValue="#{option}" itemLabelEscaped="true" />
-											<f:ajax event="change" execute="@this"
-												listener="#{activityController.changeSelectBox('Junior')}"
-												render="ReasonPanel" />
-										</h:selectOneMenu>
+									<div class="col-md-5 col-sm-5 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_start_date_id"
+											binding="#{from_dob_date_id}" class="form-control"
+											escape="true"
+											value="#{activityController.activity.startDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['startDate.required.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_start_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
 									</div>
-									<h:message for="categoryId" styleClass="help-block"></h:message>
+									<h:message for="from_start_date_id" styleClass="help-block"></h:message>
 								</div>
-							</h:panelGroup> -->
+							</h:panelGroup>
 
+
+							<h:panelGroup id="fromDatePane" layout="block">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-3 col-sm-3 col-xs-3 control-label"
+										style="color: black">#{msg['form.task.dueDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-5 col-sm-5 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_due_date_id"
+											binding="#{from_due_date_id}" class="form-control"
+											escape="true" value="#{activityController.activity.dueDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['dueDate.required.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_due_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<h:message for="from_due_date_id" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
 
 
 							<h:panelGroup id="categoryPane" layout="block">
@@ -100,7 +156,7 @@
 										class="col-md-3 col-sm-3 col-xs-3 control-label"
 										style="color: black">#{msg['form.activity.weight']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5" style="">
+									<div class="col-md-5 col-sm-5 col-xs-7" style="">
 										<h:selectOneMenu id="weightId" styleClass="form-control"
 											required="true" value="#{activityController.activity.weight}"
 											requiredMessage="#{msg['weight.required.message']}">
@@ -123,7 +179,7 @@
 								<label for="todate"
 									class="col-md-3 col-sm-3 col-xs-3 control-label"
 									style="color: black"></label>
-								<div class="col-md-5 col-sm-5 col-xs-5">
+								<div class="col-md-5 col-sm-5 col-xs-7">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{activityController.saveActivite}"
 										value="#{msg['label.submit.message.save']}">

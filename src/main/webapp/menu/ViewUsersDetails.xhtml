@@ -174,7 +174,7 @@
 									<f:facet name="header">
 										<h4
 											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-											#{msg['message.header.userList.filter']}</h4>
+											#{msg['message.header.userdetails.filter']}</h4>
 									</f:facet>
 									<p:column headerText="No" style="width:5%;">
 
@@ -202,11 +202,6 @@
 									</p:column>
 									<p:column headerText="Category">
 										<h:outputText value="#{user.userCategory.usercategoryName}" />
-
-									</p:column>
-									<p:column headerText="Loginstatus">
-										<h:outputText value="#{user.status}" />
-
 									</p:column>
 									<p:column headerText="Genericstatus">
 										<h:outputText value="#{user.genericStatus}" />

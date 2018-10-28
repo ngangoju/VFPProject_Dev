@@ -1,8 +1,6 @@
 package tres.domain;
-/**
- * author Emma
- * */
 
+ 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;

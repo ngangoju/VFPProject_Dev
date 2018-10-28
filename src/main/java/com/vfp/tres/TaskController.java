@@ -25,9 +25,7 @@ import tres.domain.Activity;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
-import tres.domain.UserCategory;
 import tres.domain.Users;
-import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.TaskDto;
 
 @ManagedBean
@@ -36,11 +34,11 @@ public class TaskController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "TaskController :: ";
 	private static final long serialVersionUID = 1L;
-	/*to manage validation messages*/
+	/* to manage validation messages */
 	private boolean isValid;
 	private int taskID;
 	private int userId;
-	/*end  manage validation messages*/
+	/* end manage validation messages */
 	private Users users;
 	private Users usersSession;
 	private Task task;
@@ -56,46 +54,51 @@ public class TaskController implements Serializable, DbConstant {
 	private int listSize;
 	private int assignmentSize;
 	private boolean renderTable;
-	private boolean rendered=true;
+	private boolean rendered = true;
 	private boolean renderTaskForm;
-	
-	/*class injection*/
-	
+
+	/* class injection */
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	TaskImpl taskImpl = new TaskImpl();
 	StrategicPlanImpl planImpl = new StrategicPlanImpl();
 	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	UserCategoryImpl categoryImpl = new UserCategoryImpl();
-	
-	/*end class injection*/
+
+	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
-		usersSession= (Users) session.getAttribute("userSession");
-		
+		usersSession = (Users) session.getAttribute("userSession");
+
 		if (users == null) {
 			users = new Users();
 		}
-		
+
 		if (task == null) {
 			task = new Task();
 		}
 		if (assignment == null) {
 			assignment = new TaskAssignment();
 		}
-		
+
 		try {
-			userDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"}, new Object[] {ACTIVE,categoryImpl.getUserCategoryById(2, "userCatid")}, "Users", "userId asc");
-			taskAssignDetails=taskAssignImpl.getGenericListWithHQLParameter(new String[] {"createdBy"},new Object[] {usersSession.getFname()+" "+ usersSession.getLname()}, "TaskAssignment", "taskAssignmentId asc");
-			taskDetail=taskImpl.getListWithHQL(SELECT_TASK);
-			taskDetails=taskImpl.getGenericListWithHQLParameter(new String[] {"genericStatus", "createdBy"},new Object[] {ACTIVE, usersSession.getFname()+" "+ usersSession.getLname()}, "Task", "taskId asc");
-			listSize=taskDetails.size();
-			assignmentSize=taskAssignDetails.size();
-			for (Task task : taskDetails){
+			userDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "userCategory" },
+					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid") }, "Users", "userId asc");
+			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
+					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "TaskAssignment",
+					"taskAssignmentId asc");
+			taskDetail = taskImpl.getListWithHQL(SELECT_TASK);
+			taskDetails = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname() }, "Task",
+					"taskId asc");
+			listSize = taskDetails.size();
+			assignmentSize = taskAssignDetails.size();
+			for (Task task : taskDetails) {
 				TaskDto taskDto = new TaskDto();
 				taskDto.setTaskId(task.getTaskId());
 				taskDto.setEditable(false);
@@ -109,7 +112,7 @@ public class TaskController implements Serializable, DbConstant {
 				taskDto.setStatus(task.getGenericStatus());
 				taskDtoDetails.add(taskDto);
 			}
-			
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -117,48 +120,48 @@ public class TaskController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
-	
-		
 	}
 
 	public void saveTash() {
 		try {
-			task.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
+			task.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			task.setCrtdDtTime(timestamp);
 			task.setGenericStatus(ACTIVE);
 			task.setUpDtTime(timestamp);
-			task.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
+			task.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
-			plan = planImpl.getModelWithMyHQL(new String[] {"genericStatus","createdBy"},new Object[] {ACTIVE,usersSession.getFname()+" "+usersSession.getLname()}, SELECT_STRATEGIC_PLAN);
+			plan = planImpl.getModelWithMyHQL(new String[] { "genericStatus" }, new Object[] { ACTIVE },
+					SELECT_STRATEGIC_PLAN);
 			task.setStrategicPlan(plan);
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
-			LOGGER.info(CLASSNAME+":::Task Details is saved");
+			LOGGER.info(CLASSNAME + ":::Task Details is saved");
 			clearTaskFuileds();
-			//return"/menu/Task.xhtml?faces-redirect=true";
-			//showTasks();
-			
+			// return"/menu/Task.xhtml?faces-redirect=true";
+			// showTasks();
+
 		} catch (Exception e) {
-			LOGGER.info(CLASSNAME+":::Task Details is failling with HibernateException  error");
+			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
-			LOGGER.info(CLASSNAME+""+e.getMessage());
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 	}
+
 	public void saveAssign() {
 		try {
-			assignment.setCreatedBy(usersSession.getFname()+" "+usersSession.getLname());
+			assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			LOGGER.info(assignment.getCreatedBy());
 			assignment.setCrtdDtTime(timestamp);
 			assignment.setGenericStatus(ACTIVE);
 			assignment.setUpDtTime(timestamp);
-			assignment.setUpdatedBy(usersSession.getFname()+" "+usersSession.getLname());
+			assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			assignment.setTask(taskImpl.getTaskById(taskID, "taskId"));
 			LOGGER.info(assignment.getTask().getTaskName());
 			assignment.setUser(usersImpl.gettUserById(userId, "userId"));
@@ -167,21 +170,21 @@ public class TaskController implements Serializable, DbConstant {
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
-			LOGGER.info(CLASSNAME+":::Task Assignment is saved");
+			LOGGER.info(CLASSNAME + ":::Task Assignment is saved");
 			clearTaskFuileds();
-			//showAssignments();
-			//return"/menu/Task.xhtml?faces-redirect=true";
-			
+			// showAssignments();
+			// return"/menu/Task.xhtml?faces-redirect=true";
+
 		} catch (Exception e) {
-			LOGGER.info(CLASSNAME+":::Task Details is failling with HibernateException  error");
+			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-			LOGGER.info(CLASSNAME+""+e.getMessage());
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
-			//return"";	
+			// return"";
 		}
-		
+
 	}
 
 	public void taskApproval(Task act) {
@@ -195,8 +198,8 @@ public class TaskController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
 			LOGGER.info(CLASSNAME + ":::Task Status is updated");
 			clearTaskFuileds();
-			} catch (Exception e) {
-			LOGGER.info(CLASSNAME+":::Task GenericStatus is failling with HibernateException  error");
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + ":::Task GenericStatus is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -223,10 +226,9 @@ public class TaskController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public void showTasks() {
-			rendered = false;
+		rendered = false;
 		renderTaskForm = false;
 		renderTable = true;
 	}
@@ -234,66 +236,69 @@ public class TaskController implements Serializable, DbConstant {
 	public void showAssignments() {
 		renderTaskForm = true;
 		renderTable = false;
-		rendered=false;
+		rendered = false;
 	}
-	
+
 	public void back() {
-		renderTaskForm=false;
-		renderTable=false;
-		rendered=true;
+		renderTaskForm = false;
+		renderTable = false;
+		rendered = true;
 	}
 
-private void clearTaskFuileds() {
-	task=new Task();
-	taskDetails=null;
-}
+	public String backBtn() {
+		return "/menu/Task.xhtml?faces-redirect=true";
+		// showAssignments();
+	}
 
-public String newTask() {
-	return "/menu/InsertTask.xhtml?faces-redirect=true";
-}
+	private void clearTaskFuileds() {
+		task = new Task();
+		taskDetails = null;
+	}
 
-public String newAssign() {
-	return "/menu/TaskAssignment.xhtml?faces-redirect=true";
-}
+	public String newTask() {
+		return "/menu/InsertTask.xhtml?faces-redirect=true";
+	}
 
+	public String newAssign() {
+		return "/menu/TaskAssignment.xhtml?faces-redirect=true";
+	}
 
 	public void changeSelectBox(String name) {
-		
-		LOGGER.info("Ajax is working with listener::::::"+name);
+
+		LOGGER.info("Ajax is working with listener::::::" + name);
 	}
 
 	public String saveAction(TaskDto task) {
 		LOGGER.info("update  saveAction method");
-		//get all existing value but set "editable" to false 
-		Task act=new Task();
-		act=new Task();
-		act=taskImpl.getTaskById(task.getTaskId(), "taskId");
-		
-			LOGGER.info("here update sart for "+act +" taskiD "+act.getTaskId());
+		// get all existing value but set "editable" to false
+		Task act = new Task();
+		act = new Task();
+		act = taskImpl.getTaskById(task.getTaskId(), "taskId");
 
-			task.setEditable(false);
-			act.setDescription(task.getDescription());
-			act.setTaskName(task.getTaskName());
-		
-			taskImpl.UpdateTask(act);
-			
-		//return to current page
+		LOGGER.info("here update sart for " + act + " taskiD " + act.getTaskId());
+
+		task.setEditable(false);
+		act.setDescription(task.getDescription());
+		act.setTaskName(task.getTaskName());
+
+		taskImpl.UpdateTask(act);
+
+		// return to current page
 		return null;
-		
+
 	}
 
 	public String cancel(TaskDto task) {
 		task.setEditable(false);
-		//usersImpl.UpdateUsers(user);
+		// usersImpl.UpdateUsers(user);
 		return null;
-		
-		
+
 	}
 
 	public String editAction(TaskDto task) {
-	    
+
 		task.setEditable(true);
-		//usersImpl.UpdateUsers(user);
+		// usersImpl.UpdateUsers(user);
 		return null;
 	}
 
@@ -480,6 +485,5 @@ public String newAssign() {
 	public void setRenderTaskForm(boolean renderTaskForm) {
 		this.renderTaskForm = renderTaskForm;
 	}
-
 
 }

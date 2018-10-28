@@ -12,7 +12,6 @@
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
-
 		<ui:define name="content">
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
@@ -78,7 +77,7 @@
 										style="color: black">#{msg['form.strategicPlan.details']}<span
 										style="color: red">*</span>
 									</label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
+									<div class="col-md-5 col-sm-5 col-xs-7">
 										<h:inputTextarea id="descriptionId" styleClass="form-control"
 											value="#{strategicPlanController.strategicPlan.details}"
 											maxlength="150" required="true"
@@ -93,13 +92,95 @@
 								</div>
 							</h:panelGroup>
 
+							<h:panelGroup id="fromDatePanel" layout="block">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black">#{msg['form.task.startDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-5 col-sm-5 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_start_date_id"
+											binding="#{from_dob_date_id}" class="form-control"
+											escape="true"
+											value="#{strategicPlanController.strategicPlan.startDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['startDate.required.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_start_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<h:message for="from_start_date_id" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="fromDatePane" layout="block">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black">#{msg['form.task.dueDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-5 col-sm-5 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_due_date_id"
+											binding="#{from_due_date_id}" class="form-control"
+											escape="true"
+											value="#{strategicPlanController.strategicPlan.dueDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['dueDate.required.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_due_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	//yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<h:message for="from_due_date_id" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
 
 
 							<div class="form-group row">
 								<label for="todate"
 									class="col-md-4 col-sm-4 col-xs-4 control-label"
 									style="color: black"></label>
-								<div class="col-md-5 col-sm-5 col-xs-5">
+								<div class="col-md-5 col-sm-5 col-xs-7">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{strategicPlanController.savePlan}"
 										value="#{msg['label.submit.message.save']}">

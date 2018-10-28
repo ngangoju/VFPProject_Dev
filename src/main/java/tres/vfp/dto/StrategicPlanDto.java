@@ -14,6 +14,12 @@ public class StrategicPlanDto implements Serializable {
 
 	private Date recordedDate;
 
+	private Date startDate;
+
+	private Date dueDate;
+
+	private Date endDate;
+	
 	private Users users;
 
 	private String genericStatus;
@@ -42,6 +48,30 @@ public class StrategicPlanDto implements Serializable {
 
 	public void setRecordedDate(Date recordedDate) {
 		this.recordedDate = recordedDate;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public Users getUsers() {

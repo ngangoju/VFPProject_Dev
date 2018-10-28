@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "TaskAssignment",uniqueConstraints = @UniqueConstraint(columnNames = {"user","task"}))
+@Table(name = "TaskAssignment", uniqueConstraints = @UniqueConstraint(columnNames = { "user", "task" }))
 @NamedQuery(name = "TaskAssignment.findAll", query = "select r from TaskAssignment r order by v desc")
 public class TaskAssignment extends CommonDomain implements Serializable {
 
@@ -25,7 +25,7 @@ public class TaskAssignment extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user")
 	private Users user;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "task")
 	private Task task;
@@ -53,5 +53,5 @@ public class TaskAssignment extends CommonDomain implements Serializable {
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	
+
 }
