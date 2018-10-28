@@ -79,10 +79,10 @@ div.orgChart div.node {
 
 			<h:inputText value="#{organigram.jsonData}" class="jsonData"></h:inputText>
 			<!-- Modal -->
-			<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			<div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
 				aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
-					<div class="modal-content">
+					<div class="modal-content" style="width: auto;">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal"
 								aria-hidden="true">&times;</button>
@@ -133,7 +133,7 @@ div.orgChart div.node {
 							log('Created new node on node ' + node.data.id);
 
 							$(".childId").val(node.data.id);
-							$("#myModal").modal("show");
+							$("#myModal1").modal("show");
 						},
 						onDeleteNode : function(node) {
 							log('Deleted node ' + node.data.id);
