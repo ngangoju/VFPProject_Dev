@@ -58,6 +58,8 @@ public class BoardController implements Serializable, DbConstant {
 	BoardImpl boardImpl = new BoardImpl();
 	InstitutionImpl instituteImpl = new InstitutionImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+	private boolean rendered = true;
+	private boolean renderForm;
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -79,19 +81,11 @@ public class BoardController implements Serializable, DbConstant {
 			LOGGER.info("initialise lists:: ");
 			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Board", "boardId desc");
-			
+
 			institutionList = instituteImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Institution", "institutionId desc");
-			LOGGER.info("lis size :: "+institutionList.size());
-			for (Board board : boardList) {
-				BoardDto boardDto = new BoardDto();
-				boardDto.setEditable(false);
-				boardDto.setBoardName(board.getBoardName());
-				boardDto.setInstitution(board.getInstitution());
-				boardDto.setBoard(board.getBoard());
-				boardDtoList.add(boardDto);
-
-			}
+			LOGGER.info("lis size :: " + institutionList.size());
+			boardDtoList = allBoard(boardList);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -101,7 +95,162 @@ public class BoardController implements Serializable, DbConstant {
 
 	}
 
+	public List<BoardDto> allBoard(List<Board> boardlist) {
+
+		boardDtoList = new ArrayList<BoardDto>();
+		for (Board board : boardlist) {
+			BoardDto boardDto = new BoardDto();
+			boardDto.setEditable(false);
+			boardDto.setBoardId(board.getBoardId());
+			boardDto.setDescription(board.getDescription());
+			boardDto.setBoardName(board.getBoardName());
+			boardDto.setInstitution(board.getInstitution());
+			boardDto.setBoard(board.getBoard());
+			boardDto.setStatus(board.getStatus());
+			if (board.getStatus().equals(ACTIVE)) {
+				boardDto.setAction(DESACTIVE);
+			} else {
+				boardDto.setAction(ACTIVE);
+			}
+			boardDtoList.add(boardDto);
+			// boardList.add(boardDto);
+		}
+		return boardDtoList;
+
+	}
+
+	public String newAction(BoardDto board) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		Board bd = new Board();
+		bd = new Board();
+		if (board != null)
+			/* us = usersImpl.gettUserById(user.getUserId(), "userId"); */
+			bd = boardImpl.getBoardById(board.getBoardId(), "boardId");
+		if (bd != null)
+			LOGGER.info("here update sart for " + bd + " useriD " + bd.getGenericStatus());
+		board.setEditable(false);
+		bd.setBoardName(board.getBoardName());
+		bd.setDescription(board.getDescription());
+		boardImpl.UpdateBoard(bd);
+		// return to current page
+		return "null";
+		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+
+	}
+
+	public String editAction(BoardDto board) {
+
+		board.setEditable(true);
+		// usersImpl.UpdateUsers(user);
+		return null;
+	}
+
+	public String cancel(BoardDto board) {
+		board.setEditable(false);
+
+		// usersImpl.UpdateUsers(user);
+		return null;
+
+	}
+
+	public String updateStatus(BoardDto board) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		/* Users us = new Users(); */
+		Board bd = new Board();
+		bd = new Board();
+
+		if (board != null)
+			/* us = usersImpl.gettUserById(user.getUserId(), "userId"); */
+			bd = boardImpl.getBoardById(board.getBoardId(), "boardId");
+		if (bd != null)
+			LOGGER.info("here update sart for " + bd + " useriD " + bd.getGenericStatus());
+		if (board.getStatus().equals(ACTIVE)) {
+			bd.setStatus(DESACTIVE);
+
+			// us.setStatus(DESACTIVE)
+		} else {
+			bd.setStatus(ACTIVE);
+			/* us.setStatus(ACTIVE); */
+		}
+		boardImpl.UpdateBoard(bd);
+		boardDtoList = allBoard(boardList);
+		/* usersImpl.UpdateUsers(us); */
+		/* listUsersByDateBetween(); */
+		// return to current page
+		return "null";
+		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
+
+	}
+
 	public String saveBoard() throws Exception {
+		try {
+
+			try {
+
+				Board bd = new Board();
+				bd = boardImpl.getModelWithMyHQL(new String[] { "boardName" }, new Object[] { boardName },
+						"from Board");
+				if (null != bd) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.board"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: Board already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+
+			board.setCreatedBy(usersSession.getViewId());
+			board.setCrtdDtTime(timestamp);
+			board.setGenericStatus(ACTIVE);
+			board.setStatus(ACTIVE);
+			board.setUpDtTime(timestamp);
+			Institution inst = new Institution();
+			inst = instituteImpl.getModelWithMyHQL(new String[] { "institutionId", "genericstatus" },
+					new Object[] { instituteNumber, ACTIVE }, "from Institution ");
+
+			Board bd1 = new Board();
+
+			bd1 = boardImpl.getModelWithMyHQL(new String[] { "boardId", "genericstatus" },
+					new Object[] { boardNumber, ACTIVE }, "from Board ");
+			if ((null != inst) || (null != bd1)) {
+				LOGGER.info(inst.getInstitutionId() + ":::------->>>>>>Institute founded");
+				board.setInstitution(instituteImpl.getInstitutionById(inst.getInstitutionId(), "institutionId"));
+				board.setUpdatedBy(usersSession.getViewId());
+				board.setBoardName(boardName);
+				board.setBoard(bd1);
+				boardImpl.saveBoards(board);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.board"));
+				LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+				clearContactFuileds();
+				return "/menu/boardOrganigram.xhtml?faces-redirect=true";
+			}
+			return "/menu/Organigram.xhtml?faces-redirect=true";
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
+	}
+
+	public String saveBoardFromModal() throws Exception {
 		try {
 
 			try {
@@ -164,6 +313,11 @@ public class BoardController implements Serializable, DbConstant {
 			return "";
 		}
 
+	}
+
+	public void showBoardForm() {
+		renderForm = true;
+		rendered = false;
 	}
 
 	private void clearContactFuileds() {
@@ -394,6 +548,22 @@ public class BoardController implements Serializable, DbConstant {
 
 	public void setBoardName(String boardName) {
 		this.boardName = boardName;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public boolean isRenderForm() {
+		return renderForm;
+	}
+
+	public void setRenderForm(boolean renderForm) {
+		this.renderForm = renderForm;
 	}
 
 }

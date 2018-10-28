@@ -13,17 +13,55 @@
 
 		<ui:define name="content">
 			<h:form>
-				<div class="form-group row">
 
-					<div class="col-md-12 col-sm-12 col-xs-12">
-						<!--error massage  -->
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<table>
+							<tr>
+								<td><p:outputPanel rendered="#{boardController.renderForm}"
+										autoUpdate="true">
+										<div>
+											<a href="board.xhtml"
+												class="btn btn-primary btn-xlg btn-block glyphicon "
+												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+												#{msg['UserCatForm.BackBoardButtom']} </a>
+										</div>
+									</p:outputPanel> <p:outputPanel rendered="#{boardController.rendered}"
+										autoUpdate="true">
+										<div>
+
+											<h:commandLink
+												class="btn btn-primary btn-xlg btn-block glyphicon "
+												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+												value="#{msg['UserCatForm.NewBoardButtom']}"
+												actionListener="#{boardController.showBoardForm()}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+
+											</h:commandLink>
+										</div>
+									</p:outputPanel></td>
+								<p:outputPanel rendered="#{boardController.renderForm}"
+									autoUpdate="true">
+									<td>&nbsp;&nbsp;<span
+										style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
+											<span style="color: red">#{msg['header.title.asteriks']}</span>
+											#{msg['header.title.mandatory']}
+									</span></td>
+								</p:outputPanel>
+							</tr>
+						</table>
+
+					</div>
+					<div class="panel-body">
+
 						<h:panelGroup layout="block"
 							rendered="#{not boardController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li class="alert"
-										style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
 										<center>
 											<h:outputText value="#{facesMessage.summary}" escape="false" />
 										</center>
@@ -31,137 +69,229 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						<!--success massage  -->
+
 						<h:panelGroup layout="block"
 							rendered="#{boardController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li
-										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-										class="alert"><center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center></li>
+									<li style="list-style: none;" class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
+
+						<p:outputPanel autoUpdate="true"
+							rendered="#{boardController.renderForm}">
+
+							<fieldset>
+								<legend>
+									<h3 style="font-family: Open Sans sans-serif !important;">#{msg['message.header.boardInfo.details']}</h3>
+
+								</legend>
+								<div class="form-group row" style="margin-top: 15pt;">
+									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+										style="color: black">#{msg['form.board.boardName']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-4 col-sm-4 col-xs-4">
+
+										<h:inputText value="#{boardController.boardName}"
+											class="form-control" id="boardName" required="true"
+											converterMessage="#{msg['error.enter.invalid.boardName']}"
+											validatorMessage="#{msg['error.enter.invalid.boardName']}"
+											requiredMessage="#{msg['required.boardName.message']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+											<f:validateLength maximum="100" />
+										</h:inputText>
+
+
+									</div>
+									<h:message errorClass="errorMsg1" for="boardName"></h:message>
+								</div>
+
+								<div class="form-group row">
+									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+										style="color: black">#{msg['form.board.description']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-4 col-sm-4 col-xs-4">
+
+										<h:inputText value="#{boardController.board.description}"
+											class="form-control" id="desc" required="true"
+											validatorMessage="#{msg['error.enter.invalid.boardDescription']}"
+											converterMessage="#{msg['error.enter.invalid.boardDescription']}"
+											requiredMessage="#{msg['description.required.message']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+											<f:validateLength maximum="100" />
+										</h:inputText>
+
+									</div>
+									<h:message errorClass="errorMsg1" for="desc"></h:message>
+								</div>
+								<div class="form-group row">
+									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+										style="color: black">#{msg['form.board.institution']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-4 col-sm-4 col-xs-4">
+										<h:selectOneMenu id="instinfo" styleClass="form-control"
+											required="true" value="#{boardController.instituteNumber}"
+											converterMessage="#{msg['requiered.username.institution']}"
+											requiredMessage="#{msg['required.institution.message']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems value="#{boardController.institutionList}"
+												var="option" itemValue="#{option.institutionId}"
+												itemLabel="#{option.institutionName}"
+												itemLabelEscaped="true" />
+
+										</h:selectOneMenu>
+									</div>
+									<h:message errorClass="errorMsg1" for="instinfo"></h:message>
+								</div>
+
+								<div class="form-group row">
+									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+										style="color: black">#{msg['form.board.board']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-4 col-sm-4 col-xs-4">
+										<h:selectOneMenu id="boardinfo" styleClass="form-control"
+											value="#{boardController.boardNumber}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems value="#{boardController.boardList}"
+												var="option" itemValue="#{option.boardId}"
+												itemLabel="#{option.boardName}" itemLabelEscaped="true" />
+
+										</h:selectOneMenu>
+									</div>
+									<h:message errorClass="errorMsg1" for="boardinfo"></h:message>
+								</div>
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+									<div class="col-sm-4">
+										<h:commandButton class="btn btn-info btn-xlg btn-block"
+											action="#{boardController.saveBoard()}"
+											value="#{msg['label.subimit.message.submit']}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandButton>
+									</div>
+									<span class="text-danger" id="customeordererror"></span>
+								</div>
+
+							</fieldset>
+
+
+						</p:outputPanel>
+
+						<p:outputPanel id="toTable" rendered="#{boardController.rendered}"
+							autoUpdate="true">
+							<p:dataTable value="#{boardController.boardDtoList}" var="board"
+								rows="10" id="tables"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+								<f:facet name="header">
+									<h4
+										style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
+										#{msg['message.header.userList.filter']}</h4>
+								</f:facet>
+
+								<p:column headerText="boardName">
+
+									<h:inputText value="#{board.boardName}" size="10"
+										id="boardName" rendered="#{board.editable}" required="true"
+										requiredMessage="#{msg['requiered.fname.message']}"
+										converterMessage="#{msg['error.enter.invalid.fname']}"
+										validatorMessage="#{msg['error.enter.invalid.fname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
+									</h:inputText>
+
+									<h:outputText value="#{board.boardName}"
+										rendered="#{not board.editable}" />
+									<h:message errorClass="errorMsg1" for="boardName"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+								</p:column>
+
+
+								<p:column headerText="Description">
+
+
+									<h:inputText value="#{board.description}" size="10" id="desc"
+										rendered="#{board.editable}" required="true"
+										requiredMessage="#{msg['requiered.lname.message']}"
+										converterMessage="#{msg['error.enter.invalid.lname']}"
+										validatorMessage="#{msg['error.enter.invalid.lname']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										<f:validateLength maximum="100"></f:validateLength>
+									</h:inputText>
+									<h:outputText value="#{board.description}"
+										rendered="#{not board.editable}" />
+									<h:message errorClass="errorMsg1" for="desc"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+
+								</p:column>
+								<p:column headerText="Status">
+									<h:outputText value="#{board.status}"/>
+										
+								</p:column>
+								<p:column headerText=" Change Status">
+
+									<h:commandLink style="color:white"
+										class="btn btn-success 	glyphicon glyphicon-refresh"
+										value="#{board.action}"
+										action="#{boardController.updateStatus(board)}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</p:column>
+								<p:column headerText="Action">
+									<div class="btn-group btn btn-sm" role="group"
+										aria-label="Basic example">
+										<h:commandLink data-toggle="tooltip" data-placement="left"
+											title="Edit"
+											class="btn btn-success 	glyphicon glyphicon-edit"
+											style="color:white;"
+											action="#{boardController.editAction(board)}"
+											rendered="#{not board.editable}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+
+										<h:commandLink data-toggle="tooltip" data-placement="left"
+											title="Cancel"
+											class="btn btn-danger 	glyphicon glyphicon-remove"
+											action="#{boardController.cancel(board)}"
+											style="color:white;" rendered="#{board.editable}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+
+
+										<h:commandLink
+											class="btn btn-primary glyphicon glyphicon-floppy-disk"
+											style="color:white;" data-toggle="tooltip"
+											data-placement="right" title="Save Changes"
+											action="#{boardController.newAction(board)}"
+											rendered="#{board.editable}" execute="@this">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+
+										</h:commandLink>
+									</div>
+								</p:column>
+
+							</p:dataTable>
+						</p:outputPanel>
 					</div>
 				</div>
-				<div class="panel panel-info">
-					<!-- Default panel contents -->
-					<div class="panel-heading">
-						<center>
-							<span class="glyphicon glyphicon-save"></span>#{msg['message.header.boardInfo.details']}
-						</center>
-					</div>
-					<div class="panel-body">
-						<!-- Success and error massages from server -->
-
-						<span style="color: #737373; font-size: 10pt">Fields marked
-							with an asterisk <span style="color: red">(*)</span> are
-							mandatory.
-						</span>
-						<div style="display: none">
-							<input id="lat" name="lat" type="text" /> <input id="long"
-								name="long" type="text" />
-						</div>
-
-						<div class="form-group row" style="margin-top: 15pt;">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['form.board.boardName']}<span
-								style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
-
-								<h:inputText value="#{boardController.boardName}"
-									class="form-control" id="boardName" required="true"
-									converterMessage="#{msg['error.enter.invalid.boardName']}"
-									validatorMessage="#{msg['error.enter.invalid.boardName']}"
-									requiredMessage="#{msg['required.boardName.message']}">
-									<f:validateRegex
-										pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-									<f:validateLength maximum="100" />
-								</h:inputText>
 
 
-							</div>
-							<h:message errorClass="errorMsg1" for="boardName"></h:message>
-						</div>
 
-						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['form.board.description']}<span
-								style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
 
-								<h:inputText value="#{boardController.board.description}"
-									class="form-control" id="desc" required="true"
-									validatorMessage="#{msg['error.enter.invalid.boardDescription']}"
-									converterMessage="#{msg['error.enter.invalid.boardDescription']}"
-									requiredMessage="#{msg['description.required.message']}">
-									<f:validateRegex
-										pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-									<f:validateLength maximum="100" />
-								</h:inputText>
-
-							</div>
-							<h:message errorClass="errorMsg1" for="desc"></h:message>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['form.board.institution']}<span
-								style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
-								<h:selectOneMenu id="instinfo" styleClass="form-control"
-									required="true" value="#{boardController.instituteNumber}"
-									converterMessage="#{msg['requiered.username.institution']}"
-									requiredMessage="#{msg['required.institution.message']}">
-									<f:selectItem
-										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-									<f:selectItems value="#{boardController.institutionList}"
-										var="option" itemValue="#{option.institutionId}"
-										itemLabel="#{option.institutionName}" itemLabelEscaped="true" />
-									<f:ajax event="change" execute="@this" />
-								</h:selectOneMenu>
-							</div>
-							<h:message errorClass="errorMsg1" for="instinfo"></h:message>
-						</div>
-
-						<div class="form-group row">
-							<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-								style="color: black">#{msg['form.board.board']}<span
-								style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-4 col-xs-4">
-								<h:selectOneMenu id="boardinfo" styleClass="form-control"
-									value="#{boardController.boardNumber}">
-									<f:selectItem
-										itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-									<f:selectItems value="#{boardController.boardList}"
-										var="option" itemValue="#{option.boardId}"
-										itemLabel="#{option.boardName}" itemLabelEscaped="true" />
-									<f:ajax event="change" execute="@this" />
-								</h:selectOneMenu>
-							</div>
-							<h:message errorClass="errorMsg1" for="boardinfo"></h:message>
-						</div>
-						<div class="form-group row">
-							<label for="todate"
-								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
-							<div class="col-sm-4">
-								<h:commandButton class="btn btn-info btn-xlg btn-block"
-									action="#{boardController.saveBoard()}"
-									value="#{msg['label.subimit.message.submit']}">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandButton>
-							</div>
-							<span class="text-danger" id="customeordererror"></span>
-						</div>
-
-					</div>
-
-				</div>
+				<!-- End of category form -->
 			</h:form>
+
 		</ui:define>
 	</ui:composition>
 

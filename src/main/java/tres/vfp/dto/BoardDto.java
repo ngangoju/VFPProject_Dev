@@ -10,6 +10,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import tres.domain.Board;
+import tres.domain.CommonDomain;
 import tres.domain.Institution;
 import tres.domain.Users;
 
@@ -23,7 +24,10 @@ public class BoardDto implements Serializable {
 	private Date creationDate;
 	private Institution institution;
 	private Board board;		
-
+	private String action;
+	private String genericStatus;
+	private String status;
+	
 	private boolean editable;
 	
 	public boolean isEditable() {
@@ -82,8 +86,29 @@ public class BoardDto implements Serializable {
 		this.board = board;
 	}
 
-	
-	
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getGenericStatus() {
+		return genericStatus;
+	}
+
+	public void setGenericStatus(String genericStatus) {
+		this.genericStatus = genericStatus;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}	
 	
 	
 }
