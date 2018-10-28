@@ -84,10 +84,15 @@ public class SendSupportEmail extends HttpServlet {
  + "      <td>\n"
  + "		  " +msgContent+ "\n"
  + "	  </td></tr>"
+ 
+ + "	<tr>"
+ + "      <td class=\"labelbold\">Application URL</td>\n"
+ + "      <td> <a href='http://localhost:8080/vfpProject_v1/default.xhtml'>click here to acces the service</a>  </td></tr>"
+ 
          + "  </tbody>\n"
          + "</table>\n";
 		/*End send content in table sample*/
-		gen.sendEmailNotification("ngaboericngabo2@gmail.com","Support Team ",need,msg);
+		gen.sendEmailNotification("ngaboericngabo@gmail.com","Support Team ",need,msg);
 		LOGGER.info("::: notidficatio sent   ");
 	}
 	public boolean isValid() {
