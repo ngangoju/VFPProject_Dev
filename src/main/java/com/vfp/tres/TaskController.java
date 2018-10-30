@@ -27,6 +27,7 @@ import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.TaskDto;
+import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -56,6 +57,7 @@ public class TaskController implements Serializable, DbConstant {
 	private boolean renderTable;
 	private boolean rendered = true;
 	private boolean renderTaskForm;
+	private String btn;
 
 	/* class injection */
 
@@ -225,6 +227,25 @@ public class TaskController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	public String updateRepStatus(Task act) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		//act = new Task();
+			LOGGER.info("here update sart for " + act + " taskiD " + act.getGenericStatus());
+
+		if (act.getGenericStatus().equals(ACTIVE)) {
+
+			taskRejection(act);
+
+		} else if (act.getGenericStatus().equals(DESACTIVE)) {
+
+			taskApproval(act);
+		}
+		// return to current page
+		return "null";
+		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
+
 	}
 
 	public void showTasks() {

@@ -37,6 +37,9 @@
 		<mapping class="tres.domain.PaymentRecords" />
 		<mapping class="tres.domain.TaskAssignment" />
 		<mapping class="tres.domain.InstitutionEscaletePolicy" />
+		<mapping class="tres.domain.Comment" />
+		<mapping class="tres.domain.ActivityComment" />
+		<mapping class="tres.domain.TaskComment" />
 	</session-factory>
 </hibernate-configuration>
 
