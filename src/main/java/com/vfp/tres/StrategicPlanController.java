@@ -38,6 +38,8 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	private StrategicPlan strategicPlan;
 	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
 	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
+	private boolean renderUpload;
+	private boolean renderStPlan=true;
 
 	/* class injection */
 
@@ -138,6 +140,18 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		LOGGER.info("Ajax is working with listener::::::" + name);
 	}
 
+	public String uploadStratDocs(StrategicPlanDto act) {
+		HttpSession sessionuser = SessionUtils.getSession();
+		if(null!=act) {
+			sessionuser.setAttribute("StratPlanInfo", act);
+			LOGGER.info("Info Founded are strategicId:>>>>>>>>>>>>>>>>>>>>>>>:" +act.getStrategicPlanId()  + "Description:"
+					+ act.getDetails());
+			
+		return"/menu/FileUpload.xhtml?faces-redirect=true";
+		}
+		return null;
+		
+	}
 	public String saveAction(StrategicPlanDto strategicPlanDto) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -225,6 +239,22 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	public void setStrategicPlanImpl(StrategicPlanImpl strategicPlanImpl) {
 		this.strategicPlanImpl = strategicPlanImpl;
+	}
+
+	public boolean isRenderUpload() {
+		return renderUpload;
+	}
+
+	public void setRenderUpload(boolean renderUpload) {
+		this.renderUpload = renderUpload;
+	}
+
+	public boolean isRenderStPlan() {
+		return renderStPlan;
+	}
+
+	public void setRenderStPlan(boolean renderStPlan) {
+		this.renderStPlan = renderStPlan;
 	}
 
 }

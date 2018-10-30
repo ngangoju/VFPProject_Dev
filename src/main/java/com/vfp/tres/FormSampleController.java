@@ -29,12 +29,16 @@ import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
 import tres.dao.impl.UploadingFilesImpl;
+import tres.dao.impl.UploadingStrategicPlanImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Documents;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
+import tres.domain.StrategicPlan;
 import tres.domain.UploadingFiles;
+import tres.domain.UploadingStrategicPlan;
 import tres.domain.Users;
+import tres.vfp.dto.StrategicPlanDto;
 
 @ManagedBean
 @ViewScoped
@@ -63,7 +67,10 @@ public class FormSampleController implements Serializable, DbConstant {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	private Documents documents;
 	private UploadingFiles uploadingFiles;
-	
+	private UploadingStrategicPlan uploadingPlan;
+	private StrategicPlanDto planDto;
+	private UploadingStrategicPlanImpl uploadingStrImpl = new UploadingStrategicPlanImpl();
+	private List<UploadingStrategicPlan> planList = new ArrayList<UploadingStrategicPlan>();
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -75,15 +82,18 @@ public class FormSampleController implements Serializable, DbConstant {
 		if (documents == null) {
 			documents = new Documents();
 		}
-		
-
 		if (uploadingFiles == null) {
 			uploadingFiles = new UploadingFiles();
 		}
 		if (menuGroup == null) {
 			menuGroup = new MenuGroup();
 		}
-		
+		if (uploadingPlan == null) {
+			uploadingPlan = new UploadingStrategicPlan();
+		}
+		if (planDto == null) {
+			planDto = new StrategicPlanDto();
+		}
 		try {
 			//menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "MenuGroup", "menuGroupId asc");
 		} catch (Exception e) {
@@ -125,6 +135,54 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 	
 	}
+
+	// UPLOADING STRATEGIC PLAN DOCUMENTS
+	public void strategicPlanFileUpload(FileUploadEvent event) {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		boolean valid = checkStrategicUploadedFile();
+		try {
+			if (valid) {
+				planDto = (StrategicPlanDto) session.getAttribute("StratPlanInfo");
+				int planId = planDto.getStrategicPlanId();
+				
+				LOGGER.info("STRATEGIC PLAN ID:::::::::::::"+planId);
+				
+				if (0 != planId) {
+					UploadUtility ut = new UploadUtility();
+					String validationCode = "PROFILEIMAGE";
+
+					documents = ut.fileUploadUtil(event, validationCode);
+
+					// need to put exact users
+					/* Users u=new Users(); */
+					StrategicPlan pl = new StrategicPlan();
+					pl.setPlanId(planId);
+					uploadingPlan.setStrategicPlan(pl);
+					uploadingPlan.setCrtdDtTime(timestamp);
+					uploadingPlan.setGenericStatus(ACTIVE);
+					uploadingPlan.setDocuments(documents);
+					uploadingStrImpl.saveIntable(uploadingPlan);
+					LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("upload.message.success"));
+					stratPlanFileList();
+				}
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.size.internal.errosize"));
+			}
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + "testing save methode ");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			e.printStackTrace();
+		}
+
+	}
 	
 	public void downloadFile() {
 		UploadUtility ut=new UploadUtility();
@@ -148,7 +206,62 @@ public class FormSampleController implements Serializable, DbConstant {
 		return null;
 	}
 	 
-	
+	public boolean checkStrategicUploadedFile() {
+		int count = 0;
+		boolean valid = false;
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		planDto = (StrategicPlanDto) session.getAttribute("StratPlanInfo");
+		int planId = planDto.getStrategicPlanId();
+		LOGGER.info("SELECTED Strategic Id  Is:::::::::::::::::::" + planId);
+		List<UploadingStrategicPlan> list = stratPlanFileList();
+
+		try {
+
+			if (list.size() > 0) {
+				for (UploadingStrategicPlan plan : list) {
+					if (plan.getStrategicPlan().getPlanId() == planId) {
+
+						count++;
+					}
+
+				}
+				if (count<3) {
+					valid = true;
+					LOGGER.info("COUNT FOUND:::::::::::::::"+count);
+					LOGGER.info("List Size:::::::::::::::"+list.size());
+					return (valid);
+				}
+			}else {
+				valid = true;
+				return (valid);
+
+			}
+
+			return (valid);
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorfilter"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+		}
+		return (valid);
+	}
+
+	// listing strategicPlan documents
+	public List<UploadingStrategicPlan> stratPlanFileList() {
+
+		try {
+			return uploadingStrImpl.getListWithHQL("from UploadingStrategicPlan where genericStatus='"+ACTIVE+"'");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public  void sendMailTest() {
 		/*sending content in a table example*/
 		String name="Mukamana";
@@ -302,6 +415,54 @@ public class FormSampleController implements Serializable, DbConstant {
 
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
+	}
+	public DocumentsImpl getDocumentsImpl() {
+		return documentsImpl;
+	}
+	public void setDocumentsImpl(DocumentsImpl documentsImpl) {
+		this.documentsImpl = documentsImpl;
+	}
+	public UploadingFilesImpl getUploadingFilesImpl() {
+		return uploadingFilesImpl;
+	}
+	public void setUploadingFilesImpl(UploadingFilesImpl uploadingFilesImpl) {
+		this.uploadingFilesImpl = uploadingFilesImpl;
+	}
+	public Documents getDocuments() {
+		return documents;
+	}
+	public void setDocuments(Documents documents) {
+		this.documents = documents;
+	}
+	public UploadingFiles getUploadingFiles() {
+		return uploadingFiles;
+	}
+	public void setUploadingFiles(UploadingFiles uploadingFiles) {
+		this.uploadingFiles = uploadingFiles;
+	}
+	public UploadingStrategicPlan getUploadingPlan() {
+		return uploadingPlan;
+	}
+	public void setUploadingPlan(UploadingStrategicPlan uploadingPlan) {
+		this.uploadingPlan = uploadingPlan;
+	}
+	public StrategicPlanDto getPlanDto() {
+		return planDto;
+	}
+	public void setPlanDto(StrategicPlanDto planDto) {
+		this.planDto = planDto;
+	}
+	public UploadingStrategicPlanImpl getUploadingStrImpl() {
+		return uploadingStrImpl;
+	}
+	public void setUploadingStrImpl(UploadingStrategicPlanImpl uploadingStrImpl) {
+		this.uploadingStrImpl = uploadingStrImpl;
+	}
+	public List<UploadingStrategicPlan> getPlanList() {
+		return planList;
+	}
+	public void setPlanList(List<UploadingStrategicPlan> planList) {
+		this.planList = planList;
 	}
 
 }
