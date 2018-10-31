@@ -56,7 +56,6 @@ import tres.vfp.dto.UserDto;
 @ManagedBean
 @ViewScoped
 public class UserAccountController implements Serializable, DbConstant {
-
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "UserAccountController :: ";
 	private static final long serialVersionUID = 1L;
@@ -380,6 +379,7 @@ public class UserAccountController implements Serializable, DbConstant {
 								users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
 								users.setViewName(loginImpl.criptPassword(password));
 								users.setStatus(DESACTIVE);
+								users.setLoginStatus(OFFLINE);
 								usersImpl.saveUsers(users);
 								JSFMessagers.resetMessages();
 								setValid(true);
@@ -400,6 +400,7 @@ public class UserAccountController implements Serializable, DbConstant {
 						users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
 						users.setViewName(loginImpl.criptPassword(password));
 						users.setStatus(DESACTIVE);
+						users.setLoginStatus(OFFLINE);
 						usersImpl.saveUsers(users);
 						JSFMessagers.resetMessages();
 						setValid(true);

@@ -12,6 +12,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.ejb.criteria.Renderable;
+
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
@@ -46,8 +48,10 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
 	private List<Users> userDetails = new ArrayList<Users>();
 	private boolean renderUpload;
-	private boolean renderStPlan=true;
-
+	private boolean renderStPlan = true;
+	private boolean renderTable = true;
+	private boolean rendered;
+	private boolean renderHideBtn;
 	/* class injection */
 
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -201,6 +205,26 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		return null;
 	}
 
+	public void uploadnewDoc() {
+		LOGGER.info("RENDER IS WORKING");
+		rendered = true;
+		renderTable = false;
+		renderUpload = true;
+	}
+
+	public void showUploaded() {
+		renderUpload = false;
+		renderHideBtn = true;
+		renderTable = true;
+
+	}
+
+	public void hideUploaded() {
+		renderHideBtn = false;
+		renderUpload = true;
+		renderTable = false;
+	}
+
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
@@ -273,36 +297,28 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		this.renderStPlan = renderStPlan;
 	}
 
-	public UserCategory getUserCategory() {
-		return userCategory;
+	public boolean isRenderTable() {
+		return renderTable;
 	}
 
-	public void setUserCategory(UserCategory userCategory) {
-		this.userCategory = userCategory;
+	public void setRenderTable(boolean renderTable) {
+		this.renderTable = renderTable;
 	}
 
-	public Contact getContact() {
-		return contact;
+	public boolean isRendered() {
+		return rendered;
 	}
 
-	public void setContact(Contact contact) {
-		this.contact = contact;
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
 	}
 
-	public List<Users> getUserDetails() {
-		return userDetails;
+	public boolean isRenderHideBtn() {
+		return renderHideBtn;
 	}
 
-	public void setUserDetails(List<Users> userDetails) {
-		this.userDetails = userDetails;
-	}
-
-	public ContactImpl getContactImpl() {
-		return contactImpl;
-	}
-
-	public void setContactImpl(ContactImpl contactImpl) {
-		this.contactImpl = contactImpl;
+	public void setRenderHideBtn(boolean renderHideBtn) {
+		this.renderHideBtn = renderHideBtn;
 	}
 
 }
