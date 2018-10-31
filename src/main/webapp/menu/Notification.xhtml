@@ -72,9 +72,13 @@
 												#{msg['message.alluser.total']}</label>
 
 										</div>
-										<a href="ViewUsersDetails.xhtml" class="circle-tile-footer">More
-											Info <i class="glyphicon glyphicon-chevron-right"></i>
-										</a>
+										
+								<h:commandLink styleClass="circle-tile-footer"
+									actionListener="#{userContactController.showPlan()}"
+									value="More Info">
+									<i class="glyphicon glyphicon-chevron-right"></i>
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
 
 									</div>
 								</div>
@@ -115,6 +119,54 @@
 							<!-- End of login -->
 						</ui:repeat>
 					</div>
+				</p:outputPanel>
+				
+				
+				<p:outputPanel id="dash1" autoUpdate="true"
+					rendered="#{userContactController.planRender}">
+					<h:form>
+								
+								<button class="btn btn-default"><a href="InsertTask.xhtml">#{msg['form.task.new']}</a></button>
+								<p:growl id="messages" showDetail="true" />
+							</h:form>
+							
+								<p:dataTable value="#{formSampleController.stratPlanFileList()}" var="fileDetails">
+									
+									<p:column headerText="Strategic Plan">
+										<h:outputText value="#{fileDetails.strategicPlan.details}" />
+
+									</p:column>
+									<p:column headerText="#{msg['form.strategicPlan.recordedDate']}">
+										<h:outputText	value="#{fileDetails.strategicPlan.recordedDate}" >
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+
+									</p:column>
+									<p:column headerText="#{msg['form.groupmenu.genericstatus']}">
+										<h:outputText value="#{fileDetails.strategicPlan.genericStatus}" />
+
+									</p:column>
+
+									<p:column headerText="#{msg['form.task.startDate']}">
+										<h:outputText value="#{fileDetails.strategicPlan.startDate}"/>
+									</p:column>
+
+									<p:column headerText="#{msg['form.task.endDate']}">
+										<h:outputText value="#{fileDetails.strategicPlan.endDate}"/>
+									</p:column>
+
+									<p:column headerText="Download Document">
+										<h:form>
+											<h:commandLink target="_blank"
+												value="#{fileDetails.documents.originalFileName}"
+												action="#{formSampleController.downloadFile}">
+												<f:param name="docId" value="#{fileDetails.documents.docId}" />
+											</h:commandLink>
+										</h:form>
+									</p:column>
+
+
+								</p:dataTable>
 				</p:outputPanel>
 			</h:form>
 			<!-- End of Dashboard -->

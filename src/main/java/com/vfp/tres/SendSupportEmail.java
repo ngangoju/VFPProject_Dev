@@ -87,7 +87,7 @@ public class SendSupportEmail extends HttpServlet {
          + "  </tbody>\n"
          + "</table>\n";
 		/*End send content in table sample*/
-		gen.sendEmailNotification("ngaboericngabo2@gmail.com","Support Team ",need,msg);
+		gen.sendEmailNotification("ngangoju@gmail.com","Support Team ",need,msg);
 		LOGGER.info("::: notidficatio sent   ");
 	}
 	public boolean isValid() {

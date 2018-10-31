@@ -54,6 +54,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private List<Users> holdCountedList = new ArrayList<Users>();
 	private String choice;
 	private boolean rendered;
+	private boolean planRender;
 	private boolean renderForeignCountry = true;
 	private boolean renderContactForm;
 	private boolean renderTable;
@@ -347,6 +348,7 @@ public class UserContactController implements Serializable, DbConstant {
 		renderContactForm = false;
 		renderTable = true;
 		renderLoginTable = false;
+		planRender= false;
 	}
 
 	public void showContacts() {
@@ -354,6 +356,7 @@ public class UserContactController implements Serializable, DbConstant {
 			rendered = true;
 		renderTable = false;
 		renderLoginTable = false;
+		planRender= false;
 	}
 	
 	public void showLoginUsers() {
@@ -361,8 +364,15 @@ public class UserContactController implements Serializable, DbConstant {
 			renderTable = false;
 		renderLoginTable = true;
 		rendered = false;
+		planRender= false;
 	}
 
+	public void showPlan() {
+		planRender= true;
+		renderTable=false;
+		rendered = false;
+		renderLoginTable = false;
+	}
 	public List displayContactByDateBetween(List<Contact> contactDto) {
 
 		List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
@@ -870,6 +880,14 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public boolean isPlanRender() {
+		return planRender;
+	}
+
+	public void setPlanRender(boolean planRender) {
+		this.planRender = planRender;
 	}
 
 	public boolean isRenderContactForm() {

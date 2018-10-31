@@ -16,10 +16,14 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.dao.impl.ContactImpl;
 import tres.dao.impl.StrategicPlanImpl;
+import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
+import tres.domain.Contact;
 import tres.domain.StrategicPlan;
+import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.StrategicPlanDto;
@@ -35,9 +39,12 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	/* end manage validation messages */
 	private Users users;
 	private Users usersSession;
+	private UserCategory userCategory;
 	private StrategicPlan strategicPlan;
+	private Contact contact;
 	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
 	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
+	private List<Users> userDetails = new ArrayList<Users>();
 	private boolean renderUpload;
 	private boolean renderStPlan=true;
 
@@ -46,6 +53,8 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	StrategicPlanImpl strategicPlanImpl = new StrategicPlanImpl();
+	UserCategoryImpl categoryImpl = new UserCategoryImpl();
+	ContactImpl contactImpl = new ContactImpl();
 
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -112,6 +121,13 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
 			LOGGER.info(CLASSNAME + ":::StrategicPlan Details is saved");
 			clearPlanFuileds();
+			//userDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"}, new Object[] {ACTIVE, categoryImpl.getModelWithMyHQL(new String[] {"userCatid"}, new Object[] {4}, "UserCategory")}, "Users", "userId asc");
+			//LOGGER.info("LIST OF SUPERVISORS : "+userDetails.size());
+			//for(Users user : userDetails) {
+			//	contact= contactImpl.getModelWithMyHQL(new String[] {"user"}, new Object[] {user.getUserId()}, "Contact");
+				SendSupportEmail email = new SendSupportEmail();
+				email.sendMailTest("Junior", "Ngango", "ngangoju@gmail.com", "Communication", "I hope this email finds you well, this is to inform you that you have a new strategic plan.");
+			//}
 			return "/menu/StrategicPlan.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
@@ -255,6 +271,38 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	public void setRenderStPlan(boolean renderStPlan) {
 		this.renderStPlan = renderStPlan;
+	}
+
+	public UserCategory getUserCategory() {
+		return userCategory;
+	}
+
+	public void setUserCategory(UserCategory userCategory) {
+		this.userCategory = userCategory;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	public List<Users> getUserDetails() {
+		return userDetails;
+	}
+
+	public void setUserDetails(List<Users> userDetails) {
+		this.userDetails = userDetails;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
 	}
 
 }

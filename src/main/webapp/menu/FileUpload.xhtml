@@ -71,17 +71,14 @@
 							</h:form>
 							<br /> <br />
 							
-								<p:dataTable value="#{formSampleController.stratPlanFileList()}"
-									var="fileDetails">
+								<p:dataTable value="#{formSampleController.stratPlanFileList()}" var="fileDetails">
 									
 									<p:column headerText="Strategic Plan">
-										<h:outputText
-											value="#{fileDetails.strategicPlan.details}" />
+										<h:outputText value="#{fileDetails.strategicPlan.details}" />
 
 									</p:column>
 									<p:column headerText="Recorded Date">
-										<h:outputText
-											value="#{fileDetails.strategicPlan.recordedDate}" >
+										<h:outputText	value="#{fileDetails.strategicPlan.recordedDate}" >
 											<f:convertDateTime pattern="dd/MM/yyyy" />
 											</h:outputText>
 
