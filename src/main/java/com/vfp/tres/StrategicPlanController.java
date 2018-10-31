@@ -12,6 +12,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.ejb.criteria.Renderable;
+
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
@@ -39,8 +41,10 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
 	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
 	private boolean renderUpload;
-	private boolean renderStPlan=true;
-
+	private boolean renderStPlan = true;
+	private boolean renderTable = true;
+	private boolean rendered;
+	private boolean renderHideBtn;
 	/* class injection */
 
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -142,16 +146,17 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	public String uploadStratDocs(StrategicPlanDto act) {
 		HttpSession sessionuser = SessionUtils.getSession();
-		if(null!=act) {
+		if (null != act) {
 			sessionuser.setAttribute("StratPlanInfo", act);
-			LOGGER.info("Info Founded are strategicId:>>>>>>>>>>>>>>>>>>>>>>>:" +act.getStrategicPlanId()  + "Description:"
-					+ act.getDetails());
-			
-		return"/menu/FileUpload.xhtml?faces-redirect=true";
+			LOGGER.info("Info Founded are strategicId:>>>>>>>>>>>>>>>>>>>>>>>:" + act.getStrategicPlanId()
+					+ "Description:" + act.getDetails());
+
+			return "/menu/FileUpload.xhtml?faces-redirect=true";
 		}
 		return null;
-		
+
 	}
+
 	public String saveAction(StrategicPlanDto strategicPlanDto) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -183,6 +188,26 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		strategicPlanDto.setEditable(true);
 		// usersImpl.UpdateUsers(user);
 		return null;
+	}
+
+	public void uploadnewDoc() {
+		LOGGER.info("RENDER IS WORKING");
+		rendered = true;
+		renderTable = false;
+		renderUpload = true;
+	}
+
+	public void showUploaded() {
+		renderUpload = false;
+		renderHideBtn = true;
+		renderTable = true;
+
+	}
+
+	public void hideUploaded() {
+		renderHideBtn = false;
+		renderUpload = true;
+		renderTable = false;
 	}
 
 	public String getCLASSNAME() {
@@ -255,6 +280,30 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	public void setRenderStPlan(boolean renderStPlan) {
 		this.renderStPlan = renderStPlan;
+	}
+
+	public boolean isRenderTable() {
+		return renderTable;
+	}
+
+	public void setRenderTable(boolean renderTable) {
+		this.renderTable = renderTable;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public boolean isRenderHideBtn() {
+		return renderHideBtn;
+	}
+
+	public void setRenderHideBtn(boolean renderHideBtn) {
+		this.renderHideBtn = renderHideBtn;
 	}
 
 }

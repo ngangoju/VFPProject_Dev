@@ -96,6 +96,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		try {
 			//menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[] {"genericStatus"},new Object[] {ACTIVE}, "MenuGroup", "menuGroupId asc");
+			stratPlanFileList();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -148,7 +149,7 @@ public class FormSampleController implements Serializable, DbConstant {
 				
 				LOGGER.info("STRATEGIC PLAN ID:::::::::::::"+planId);
 				
-				if (0 != planId) {
+				if ((0 != planId)&&(planDto.getGenericStatus().equals(ACTIVE))) {
 					UploadUtility ut = new UploadUtility();
 					String validationCode = "PROFILEIMAGE";
 
@@ -217,7 +218,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		List<UploadingStrategicPlan> list = stratPlanFileList();
 
 		try {
-
+			
 			if (list.size() > 0) {
 				for (UploadingStrategicPlan plan : list) {
 					if (plan.getStrategicPlan().getPlanId() == planId) {

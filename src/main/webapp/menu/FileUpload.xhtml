@@ -10,15 +10,16 @@
 <h:body>
 	<ui:composition template="/template/common/commonLayout.xhtml">
 		<ui:define name="content">
+			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<table>
 							<tr>
 								<td>
 									<div>
-										<a href="InsertStrategicPlan.xhtml"
-											style='font-family: "Open Sans sans-serif !important"; font-size: 14px !important;'
-											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['form.strategicPlan.new']}<b><span
+										<a href="StrategicPlan.xhtml"
+											style="font-size: 14px ! important"
+											class="btn btn-primary glyphicon glyphicon-chevron-left ">#{msg['UserRegForm.BackButton']}<b><span
 												style="background-color: red; color: white" class="badge"></span></b>
 										</a>
 									</div>
@@ -53,41 +54,84 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-
-
 						<fieldset>
 							<legend
 								style='font-weight: bold; font-family: "Open Sans sans-serif !important"; font-size: 18px !important;'>
 								#{msg['message.header.uploadStrategic.info']}</legend>
 
-							<h:form>
-								<p:fileUpload
-									fileUploadListener="#{formSampleController.strategicPlanFileUpload}"
-									mode="advanced" dragDropSupport="false" multiple="true"
-									update="messages" sizeLimit="1000000" fileLimit="3"
-									allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
+							<table class="table table-hover">
+								<tbody>
+									<tr>
+										<td><h:commandLink style="color:white;margin-left:5px;"
+												class="btn btn-primary 	glyphicon glyphicon-upload"
+												action="#{strategicPlanController.uploadnewDoc()}"
+												value="Upload new document">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink></td>
 
-								<p:growl id="messages" showDetail="true" />
-							</h:form>
+										<td><p:outputPanel
+												rendered="#{strategicPlanController.renderUpload}"
+												autoUpdate="true">
+												<h:commandLink style="color:white;margin-left:5px;"
+													class="btn btn-primary 	glyphicon glyphicon-upload"
+													action="#{strategicPlanController.showUploaded()}"
+													value="Show uploaded files">
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+											</p:outputPanel> <p:outputPanel
+												rendered="#{strategicPlanController.renderHideBtn}"
+												autoUpdate="true">
+												<h:commandLink style="color:white;margin-left:5px;"
+													class="btn btn-primary 	glyphicon glyphicon-upload"
+													action="#{strategicPlanController.hideUploaded()}"
+													value="Hide uploaded files">
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink>
+											</p:outputPanel></td>
+										
+									</tr>
+									<p:outputPanel rendered="#{strategicPlanController.rendered}"
+										autoUpdate="true">
+										<tr class="blue2">
+											<td colspan="2"><h:form>
+													<p:fileUpload
+														fileUploadListener="#{formSampleController.strategicPlanFileUpload}"
+														mode="advanced" dragDropSupport="false" multiple="true"
+														update="messages" sizeLimit="1000000" fileLimit="3"
+														allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
+
+													<p:growl id="messages" showDetail="true" />
+												</h:form></td>
+
+										</tr>
+									</p:outputPanel>
+
+								</tbody>
+							</table>
+
 							<br /> <br />
-							
+							<p:outputPanel rendered="#{strategicPlanController.renderTable}"
+								autoUpdate="true">
 								<p:dataTable value="#{formSampleController.stratPlanFileList()}"
 									var="fileDetails">
-									
+
 									<p:column headerText="Strategic Plan">
-										<h:outputText
-											value="#{fileDetails.strategicPlan.details}" />
+										<h:outputText value="#{fileDetails.strategicPlan.details}" />
 
 									</p:column>
 									<p:column headerText="Recorded Date">
 										<h:outputText
-											value="#{fileDetails.strategicPlan.recordedDate}" >
+											value="#{fileDetails.strategicPlan.recordedDate}">
 											<f:convertDateTime pattern="dd/MM/yyyy" />
-											</h:outputText>
+										</h:outputText>
 
 									</p:column>
 									<p:column headerText="Generic Status">
-										<h:outputText value="#{fileDetails.strategicPlan.genericStatus}" />
+										<h:outputText
+											value="#{fileDetails.strategicPlan.genericStatus}" />
 
 									</p:column>
 
@@ -107,15 +151,29 @@
 										</h:form>
 									</p:column>
 
-
+									<p:column headerText="Action">
+										<h:form>
+											<div class="btn-group btn btn-sm" role="group"
+												aria-label="Basic example">
+												<h:commandLink style="margin-left:15px;color:white"
+													data-toggle="tooltip" data-placement="left"
+													title="Change document"
+													class="btn btn-primary glyphicon glyphicon-edit" />
+												<h:commandLink
+													class="btn btn-danger glyphicon glyphicon-trash"
+													style="margin-left:5px;color:white" data-toggle="tooltip"
+													data-placement="right" title="Delete document" />
+											</div>
+										</h:form>
+									</p:column>
 								</p:dataTable>
+							</p:outputPanel>
 						</fieldset>
-
-
-
 					</div>
 				</div>
+			</h:form>
 		</ui:define>
+
 	</ui:composition>
 </h:body>
 </html>
