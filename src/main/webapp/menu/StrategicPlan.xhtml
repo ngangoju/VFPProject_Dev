@@ -102,7 +102,8 @@
 												class="btn btn-success 	glyphicon glyphicon-edit"
 												action="#{strategicPlanController.editAction(act)}"
 												rendered="#{not act.editable}" />
-											<h:commandLink style="color:white;margin-left:5px;"
+												
+												<h:commandLink style="color:white;margin-left:5px;"
 												data-toggle="tooltip" data-placement="bottom"
 												title="Upload document"
 												class="btn btn-primary 	glyphicon glyphicon-upload"
@@ -111,7 +112,7 @@
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 												</h:commandLink>
-
+													
 											<h:commandLink style="margin-left:15px;color:white"
 												data-toggle="tooltip" data-placement="left" title="Cancel"
 												class="btn btn-danger 	glyphicon glyphicon-remove"
