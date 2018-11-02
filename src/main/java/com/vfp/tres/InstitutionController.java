@@ -110,7 +110,7 @@ public class InstitutionController implements Serializable, DbConstant {
 	private InstitutionDto institutionDto;
 	private InstitutionEscaletePolicy policy;
 	private LineChartModel lineModel1;
-    private LineChartModel lineModel2;
+	private LineChartModel lineModel2;
 	/* arrays */
 	private List<Country> countries = new ArrayList<Country>();
 	private List<Province> provinces = new ArrayList<Province>();
@@ -395,6 +395,7 @@ public class InstitutionController implements Serializable, DbConstant {
 						institutionDtos = display(pendinGrequests);
 						if (institutionDtos != null) {
 							renderDiv = true;
+							selctDiv = true;
 						} else {
 							renderDiv = false;
 						}
@@ -477,25 +478,35 @@ public class InstitutionController implements Serializable, DbConstant {
 	}
 
 	public void displayRequest() {
-		try {
-			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
-			Formating fmt = new Formating();
-			for (Object[] data : requestImpl.reportList(
-					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-							+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
-				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+		if (to.after(from)) {
+			if ((Formating.daysBetween(from, to) <= 30)) {
+				try {
+					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+					Formating fmt = new Formating();
+					for (Object[] data : requestImpl.reportList(
+							"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+									+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
+						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 
-				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
-				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
-				request.setInstitution(((Institution) data[2]));
-				pendinGrequests.add(request);
+						request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+						request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+						request.setInstitution(((Institution) data[2]));
+						pendinGrequests.add(request);
+					}
+					if (pendinGrequests != null) {
+						selctDiv = true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 			}
-			if (pendinGrequests != null) {
-				selctDiv = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 		}
 	}
 
@@ -508,26 +519,38 @@ public class InstitutionController implements Serializable, DbConstant {
 	}
 
 	public void displayRejected() {
-		try {
-			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
-			Formating fmt = new Formating();
-			for (Object[] data : requestImpl.reportList(
-					"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-							+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='desactive'")) {
-				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
+		if (to.after(from)) {
+			if ((Formating.daysBetween(from, to) <= 30)) {
+				try {
+					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+					Formating fmt = new Formating();
+					for (Object[] data : requestImpl.reportList(
+							"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+									+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='desactive'")) {
+						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 
-				request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
-				request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
-				request.setInstitution(((Institution) data[2]));
-				pendinGrequests.add(request);
+						request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
+						request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
+						request.setInstitution(((Institution) data[2]));
+						pendinGrequests.add(request);
+					}
+					if (pendinGrequests != null) {
+						selctDiv = true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 			}
-			if (pendinGrequests != null) {
-				selctDiv = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		} else {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 		}
+
 	}
 
 	public void displayAllInstitutionsDiv() {
@@ -541,22 +564,32 @@ public class InstitutionController implements Serializable, DbConstant {
 	}
 
 	public void displayAllInstitutions() {
-		try {
-			pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
-			Formating fmt = new Formating();
-			for (Object[] data : requestImpl.reportList(
-					"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-							+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
-				pendinGrequests.add(
-						requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId"));
+		if (to.after(from)) {
+			if ((Formating.daysBetween(from, to) <= 30)) {
+				try {
+					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+					Formating fmt = new Formating();
+					for (Object[] data : requestImpl.reportList(
+							"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+									+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
+						pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
+								"instRegReqstId"));
+					}
+					institutionDtos = display(pendinGrequests);
+					if (institutionDtos != null) {
+						selctDiv = true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 			}
-			institutionDtos = display(pendinGrequests);
-			if (institutionDtos != null) {
-				selctDiv = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 		}
 	}
 
@@ -566,6 +599,22 @@ public class InstitutionController implements Serializable, DbConstant {
 			for (Object[] data : requestImpl.reportList(
 					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
 							+ PENDING + "' and i.genericStatus='" + ACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	public int countRequestsByRep() {
+		int a = 0;
+		try {
+			for (Object[] data : requestImpl.reportList(
+					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
+							+ PENDING + "' and i.genericStatus='" + ACTIVE + "' and i.institutionRepresenative_userId="
+							+ usersSession.getUserId() + "")) {
 				a = Integer.parseInt(data[0] + "");
 			}
 			return a;
@@ -671,13 +720,72 @@ public class InstitutionController implements Serializable, DbConstant {
 			return "";
 		}
 
-	}   
+	}
 
 	public void clearFeilds() {
-		contact = new Contact();
-		useremail="";
+		contact.setContactDetails("");
+		contact.setPhone("");
+		contact.setPobox("");
+		useremail = "";
 	}
-	
+
+	public String getContactEmail(InstitutionRegistrationRequest instReg) {
+
+		try {
+			Contact cnt = new Contact();
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "institution" },
+					new Object[] { instReg.getInstitution() }, "from Contact");
+			return cnt.getEmail();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public String getContactEmailDtos(InstitutionDto instReg) {
+
+		try {
+			Contact cnt = new Contact();
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "institution" },
+					new Object[] { institutionImpl.getInstitutionById(instReg.getInstitutionId(), "institutionId") },
+					"from Contact");
+			return cnt.getEmail();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public String getContactPhone(InstitutionRegistrationRequest instReg) {
+
+		try {
+			Contact cnt = new Contact();
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "institution" },
+					new Object[] { instReg.getInstitution() }, "from Contact");
+			return cnt.getPhone();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public String getContactPhoneDtos(InstitutionDto instReg) {
+
+		try {
+			Contact cnt = new Contact();
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "institution" },
+					new Object[] { institutionImpl.getInstitutionById(instReg.getInstitutionId(), "institutionId") },
+					"from Contact");
+			return cnt.getPhone();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public String institutionManagementTile(String tit) {
+		return tit;
+	}
 
 	public LineChartModel getLineModel1() {
 		return lineModel1;

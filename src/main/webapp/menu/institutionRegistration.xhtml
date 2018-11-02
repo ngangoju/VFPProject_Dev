@@ -83,7 +83,7 @@
 												itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
 											<!-- 											<p:ajax update="container,update" -->
 											<!-- 												listener="#{institutionController.renderProvMethod()}" /> -->
-											<f:ajax render="container" onevent="showProgress" />
+											<f:ajax render="container" />
 										</h:selectOneMenu>
 									</div>
 
@@ -114,7 +114,7 @@
 														itemLabelEscaped="true" />
 													<f:ajax
 														listener="#{institutionController.changeDistrict()}"
-														render="district" onevent="showProgress" />
+														render="district"  />
 												</h:selectOneMenu>
 											</div>
 											<h:message errorClass="errorMsg1" for="province"></h:message>
@@ -138,7 +138,7 @@
 														itemLabel="#{option.districtName_en}"
 														itemLabelEscaped="true" />
 													<f:ajax listener="#{institutionController.changeSector()}"
-														render="sector" onevent="showProgress" />
+														render="sector"  />
 												</h:selectOneMenu>
 											</div>
 											<h:message errorClass="errorMsg1" for="district"></h:message>
@@ -162,7 +162,7 @@
 														itemLabel="#{option.sectorName_en}"
 														itemLabelEscaped="true" />
 													<f:ajax listener="#{institutionController.changeCell()}"
-														render="cell" onevent="showProgress" />
+														render="cell" />
 												</h:selectOneMenu>
 											</div>
 											<h:message errorClass="errorMsg1" for="sector"></h:message>
@@ -185,7 +185,7 @@
 														var="option" itemValue="#{option.cellId}"
 														itemLabel="#{option.cellName_en}" itemLabelEscaped="true" />
 													<f:ajax listener="#{institutionController.changeVilages()}"
-														render="village" onevent="showProgress" />
+														render="village" />
 
 												</h:selectOneMenu>
 											</div>
