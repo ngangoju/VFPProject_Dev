@@ -23,7 +23,7 @@ public class TaskComment extends CommonDomain implements Serializable {
 	@Column(name = "commentTaskId")
 	private long commentTaskId;
 	@OneToOne
-	@JoinColumn(name = "documents")
+	@JoinColumn(name = "comment")
 	private Comment comment;
 	@ManyToOne
 	@JoinColumn(name="task")

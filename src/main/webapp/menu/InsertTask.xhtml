@@ -233,12 +233,10 @@
 					<h:form>
 						<div class="div-action pull pull-right"
 							style="padding-bottom: 20px;">
-							<h:commandLink
-								class="btn btn-info glyphicon glyphicon-chevron-left"
-								actionListener="#{taskController.backBtn()}"
-								value="#{msg['UserRegForm.BackButton']}">
-								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-							</h:commandLink>
+							<h:commandLink class="btn btn-info"
+								action="#{taskController.backBtn()}">
+								<i class="glyphicon glyphicon-chevron-left"></i>#{msg['UserRegForm.BackButton']}
+					</h:commandLink>
 						</div>
 					</h:form>
 				</div>

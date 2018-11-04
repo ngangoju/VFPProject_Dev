@@ -63,9 +63,9 @@
 							<h:panelGroup id="categoryPanel" layout="block">
 								<div class="form-group row">
 									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										class="col-md-2 col-sm-2 col-xs-3 control-label"
 										style="color: black">#{msg['message.liststaff.board']}</label>
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:selectOneMenu id="categoryId" styleClass="form-control"
 											required="false" value="#{taskController.userId}"
 											requiredMessage="#{msg['staff.required.form']}">
@@ -88,10 +88,10 @@
 								<div class="form-group row">
 
 									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										class="col-md-2 col-sm-2 control-label"
 										style="color: black">#{msg['task.form']}</label>
 
-									<div class="col-md-6 col-sm-6 col-xs-6">
+									<div class="col-md-6 col-sm-6 col-xs-7">
 
 
 										<h:selectOneMenu id="categoryId1" styleClass="form-control"
@@ -128,7 +128,7 @@
 								<label for="todate"
 									class="col-md-2 col-sm-2 col-xs-2 control-label"
 									style="color: black"></label>
-								<div class="col-md-5 col-sm-5 col-xs-5">
+								<div class="col-md-5 col-sm-5 col-xs-7">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{taskController.saveAssign}"
 										value="#{msg['assign.form']}">
@@ -137,12 +137,10 @@
 
 								</div>
 								<div class="col-md-5 col-sm-5 col-xs-5">
-									<h:commandLink
-										class="btn btn-info glyphicon glyphicon-chevron-left"
-										actionListener="#{taskController.backBtn()}"
-										value="#{msg['UserRegForm.BackButton']}">
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-									</h:commandLink>
+							<h:commandLink class="btn btn-info"
+								action="#{taskController.backBtn()}">
+								<i class="glyphicon glyphicon-chevron-left"></i>#{msg['UserRegForm.BackButton']}
+					</h:commandLink>
 
 								</div>
 								<span class="text-danger" id="err"></span>
