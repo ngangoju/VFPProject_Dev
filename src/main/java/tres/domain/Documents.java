@@ -34,10 +34,9 @@ public class Documents extends CommonDomain implements Serializable {
 
 	@Column(name = "validDocCode")
 	private String validDocCode;
-	
+
 	@Column(name = "fileSize")
 	private long fileSize;
-
 
 	public String getDocumentLoc() {
 		return documentLoc;
@@ -85,8 +84,6 @@ public class Documents extends CommonDomain implements Serializable {
 
 	public void setDocId(int docId) {
 		DocId = docId;
-	}	
-	
-	
-	
+	}
+
 }

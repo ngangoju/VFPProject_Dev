@@ -28,16 +28,15 @@ import tres.domain.MenuGroup;
 import tres.domain.UserCategory;
 import tres.domain.Users;
 
-
 @SuppressWarnings("unused")
 @ManagedBean
 @ViewScoped
-public class MenuAssignmentController implements Serializable, DbConstant{
+public class MenuAssignmentController implements Serializable, DbConstant {
 
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "MenuAssignmentController :: ";
 	private static final long serialVersionUID = 1L;
-	
+
 	/* to manage validation messages */
 	private boolean isValid;
 	/* end manage validation messages */
@@ -50,18 +49,18 @@ public class MenuAssignmentController implements Serializable, DbConstant{
 	private int menuAssignId;
 	private int listOfMenuId;
 	private int categoryId;
-	
+
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
+
 	private List<MenuAssignment> menuAssignmentDetails = new ArrayList<MenuAssignment>();
 	private List<UserCategory> userCategoryDetails = new ArrayList<UserCategory>();
 	private List<ListOfMenu> listOfMenuDetails = new ArrayList<ListOfMenu>();
-	
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserCategoryImpl userCategoryImpl = new UserCategoryImpl();
 	ListOfMenuImpl listOfMenuImpl = new ListOfMenuImpl();
 	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -71,13 +70,14 @@ public class MenuAssignmentController implements Serializable, DbConstant{
 		if (menuAssignment == null) {
 			menuAssignment = new MenuAssignment();
 		}
-		
+
 		try {
-			
-			//userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-				//	new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+
+			// userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new
+			// String[] { "genericStatus" },
+			// new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
 			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
-			
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -86,28 +86,29 @@ public class MenuAssignmentController implements Serializable, DbConstant{
 		}
 
 	}
-	
+
 	public String saveMenuAssignmentInfo() throws IOException {
 		String url = getContextPath();
 		System.out.print("+++++++++++++++++:" + url + "/");
 		try {
-			
-					menuAssignment.setCreatedBy(userSession.getViewId());
-					menuAssignment.setCrtdDtTime(timestamp);;
-					menuAssignment.setGenericStatus(ACTIVE);
-					menuAssignment.setUpdatedBy(userSession.getViewId());
-					menuAssignment.setCrtdDtTime(timestamp);
-					menuAssignment.setUpDtTime(timestamp);
-					menuAssignment.setUserCategory(userCategoryImpl.getUserCategoryById(categoryId, "userCatid"));
-					menuAssignment.setListOfMenu(listOfMenuImpl.getListOfMenuById(listOfMenuId, "menuId"));
-					menuAssignmentImpl.saveMenuAssignment(menuAssignment);
 
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::MenuAssignment is saved");
-					clearUserFuileds();
-					return "";
+			menuAssignment.setCreatedBy(userSession.getViewId());
+			menuAssignment.setCrtdDtTime(timestamp);
+			;
+			menuAssignment.setGenericStatus(ACTIVE);
+			menuAssignment.setUpdatedBy(userSession.getViewId());
+			menuAssignment.setCrtdDtTime(timestamp);
+			menuAssignment.setUpDtTime(timestamp);
+			menuAssignment.setUserCategory(userCategoryImpl.getUserCategoryById(categoryId, "userCatid"));
+			menuAssignment.setListOfMenu(listOfMenuImpl.getListOfMenuById(listOfMenuId, "menuId"));
+			menuAssignmentImpl.saveMenuAssignment(menuAssignment);
+
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+			LOGGER.info(CLASSNAME + ":::MenuAssignment is saved");
+			clearUserFuileds();
+			return "";
 
 		} catch (HibernateException ex) {
 			LOGGER.info(CLASSNAME + ":::MenuAssignment is fail with HibernateException  error");
@@ -125,6 +126,7 @@ public class MenuAssignmentController implements Serializable, DbConstant{
 		menuAssignment = new MenuAssignment();
 		menuAssignmentDetails = null;
 	}
+
 	public String getContextPath() {
 
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
@@ -288,8 +290,5 @@ public class MenuAssignmentController implements Serializable, DbConstant{
 	public static Logger getLogger() {
 		return LOGGER;
 	}
-	
-	
-	
 
 }

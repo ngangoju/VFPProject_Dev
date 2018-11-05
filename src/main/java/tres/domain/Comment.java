@@ -22,7 +22,7 @@ public class Comment extends CommonDomain implements Serializable {
 	@GeneratedValue
 	@Column(name = "commentId")
 	private int commentId;
-	
+
 	@Column(name = "description")
 	private String description;
 
@@ -41,6 +41,5 @@ public class Comment extends CommonDomain implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-		
-	
+
 }

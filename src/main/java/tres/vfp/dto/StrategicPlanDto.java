@@ -5,9 +5,9 @@ import java.util.Date;
 
 import tres.domain.Users;
 
-public class StrategicPlanDto implements Serializable {	
+public class StrategicPlanDto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int strategicPlanId;
 
 	private String details;
@@ -19,11 +19,11 @@ public class StrategicPlanDto implements Serializable {
 	private Date dueDate;
 
 	private Date endDate;
-	
+
 	private Users users;
 
 	private String genericStatus;
-	
+
 	private boolean editable;
 
 	public int getStrategicPlanId() {
@@ -98,5 +98,4 @@ public class StrategicPlanDto implements Serializable {
 		this.editable = editable;
 	}
 
-	
 }

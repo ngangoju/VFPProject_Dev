@@ -5,12 +5,11 @@ import java.util.Date;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 
-
-public class TaskDto implements Serializable {	
+public class TaskDto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int taskId;
-	
+
 	private String taskName;
 
 	private String description;
@@ -28,9 +27,9 @@ public class TaskDto implements Serializable {
 	private Task task;
 
 	private String genericstatus;
-	
+
 	private Date createdDate;
-	
+
 	private String createdBy;
 
 	private boolean editable;
@@ -122,10 +121,11 @@ public class TaskDto implements Serializable {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
-	
+
 	public boolean isEditable() {
 		return editable;
 	}
+
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
@@ -138,6 +138,4 @@ public class TaskDto implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-
 }
-

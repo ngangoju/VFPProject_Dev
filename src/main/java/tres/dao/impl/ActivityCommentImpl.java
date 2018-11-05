@@ -14,7 +14,7 @@ import tres.domain.Institution;
 public class ActivityCommentImpl extends AbstractDao<Long, ActivityComment> implements IActivityComment {
 
 	public ActivityComment saveActivityComment(ActivityComment activityComment) {
-		return saveIntable(activityComment); 
+		return saveIntable(activityComment);
 	}
 
 	public ActivityComment getActivityCommentById(int activityCommentId, String primaryKeyclomunName) {

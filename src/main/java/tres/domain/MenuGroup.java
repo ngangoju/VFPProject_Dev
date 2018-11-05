@@ -27,29 +27,26 @@ public class MenuGroup extends CommonDomain implements Serializable {
 
 	@Column(name = "groupMenuCode", unique = true)
 	private String groupMenuCode;
-	
+
 	@Column(name = "defaulGrouptMenu")
 	private String defaulGrouptMenu;
 
 	@Column(name = "menuGroupName")
 	private String menuGroupName;
-	
+
 	@Column(name = "iconImage")
 	private String iconImage;
-	
+
 	@Column(name = "menuColor")
 	private String menuColor;
 
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
-	
-	
+
 	@ManyToOne
 	@JoinColumn(name = "userCategory")
 	private UserCategory userCategory;
-
-
 
 	public int getMenuGroupId() {
 		return menuGroupId;
@@ -115,6 +112,4 @@ public class MenuGroup extends CommonDomain implements Serializable {
 		this.menuColor = menuColor;
 	}
 
-
-	
 }

@@ -6,11 +6,10 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IMenuGroup;
 import tres.domain.MenuGroup;
 
+public class MenuGroupImpl extends AbstractDao<Long, MenuGroup> implements IMenuGroup {
 
-public class MenuGroupImpl  extends AbstractDao<Long, MenuGroup> implements IMenuGroup  {
-	
 	public MenuGroup saveMenuGroupt(MenuGroup menuGroup) {
-		return saveIntable(menuGroup); 
+		return saveIntable(menuGroup);
 	}
 
 	public List<MenuGroup> getListMenuGroups() {

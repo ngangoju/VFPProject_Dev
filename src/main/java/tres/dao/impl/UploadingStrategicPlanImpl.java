@@ -7,7 +7,8 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IUploadingStrategicPlan;
 import tres.domain.UploadingStrategicPlan;
 
-public class UploadingStrategicPlanImpl extends AbstractDao<Long, UploadingStrategicPlan> implements IUploadingStrategicPlan{
+public class UploadingStrategicPlanImpl extends AbstractDao<Long, UploadingStrategicPlan>
+		implements IUploadingStrategicPlan {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
 	public String myName() {
@@ -40,6 +41,5 @@ public class UploadingStrategicPlanImpl extends AbstractDao<Long, UploadingStrat
 		}
 		return null;
 	}
-
 
 }

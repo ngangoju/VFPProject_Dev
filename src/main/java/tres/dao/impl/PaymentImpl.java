@@ -18,9 +18,9 @@ import tres.domain.PaymentRecords;
  * @author Emile
  */
 
-public class PaymentImpl extends AbstractDao<Long, PaymentRecords> implements IPaymentRecords{
+public class PaymentImpl extends AbstractDao<Long, PaymentRecords> implements IPaymentRecords {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	
+
 	public PaymentRecords savePaymentRecords(PaymentRecords paymentRecords) {
 		return saveIntable(paymentRecords);
 	}
@@ -32,7 +32,7 @@ public class PaymentImpl extends AbstractDao<Long, PaymentRecords> implements IP
 	public PaymentRecords gettPaymentRecordsById(int paymentId, String primaryKeyclomunName) {
 		return (PaymentRecords) getModelById(paymentId, primaryKeyclomunName);
 	}
-	
+
 	public PaymentRecords UpdatePaymentRecords(PaymentRecords paymentRecords) {
 		return updateIntable(paymentRecords);
 	}
@@ -47,12 +47,11 @@ public class PaymentImpl extends AbstractDao<Long, PaymentRecords> implements IP
 	}
 
 	public String myNane() {
-		return"nBAGO ERIC";
-	}
-	
-	public PaymentImpl() {
-		
+		return "nBAGO ERIC";
 	}
 
-	
+	public PaymentImpl() {
+
+	}
+
 }

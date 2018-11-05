@@ -1,4 +1,5 @@
 package com.vfp.tres;
+
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
@@ -11,13 +12,14 @@ import javax.servlet.http.Part;
 
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
- 
-@FacesValidator(value="fileUploadValidator")
-public class FileUploadValidator implements Validator{
+
+@FacesValidator(value = "fileUploadValidator")
+public class FileUploadValidator implements Validator {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	private boolean isValid;
-		public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+
+	public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 		Part file = (Part) value;
 
 		FacesMessage message = null;
@@ -48,17 +50,21 @@ public class FileUploadValidator implements Validator{
 		}
 
 	}
+
 	public boolean isValid() {
 		return isValid;
 	}
+
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
 	}
+
 	public JSFBoundleProvider getProvider() {
 		return provider;
 	}
+
 	public void setProvider(JSFBoundleProvider provider) {
 		this.provider = provider;
 	}
- 
+
 }

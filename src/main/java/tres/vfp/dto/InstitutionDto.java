@@ -28,9 +28,9 @@ public class InstitutionDto implements Serializable {
 	private Village village;
 
 	private Users user;
-	
+
 	private boolean editable;
-	
+
 	private UploadingFiles institutionLogo;
 
 	public boolean isEditable() {
@@ -117,7 +117,5 @@ public class InstitutionDto implements Serializable {
 	public void setInstitutionLogo(UploadingFiles institutionLogo) {
 		this.institutionLogo = institutionLogo;
 	}
-	
-	
 
 }

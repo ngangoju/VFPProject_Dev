@@ -18,9 +18,9 @@ import tres.domain.Users;
  * @author Emmanuel
  */
 
-public class UserImpl extends AbstractDao<Long, Users> implements IUsers{
+public class UserImpl extends AbstractDao<Long, Users> implements IUsers {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	
+
 	public Users saveUsers(Users users) {
 		return saveIntable(users);
 	}
@@ -47,10 +47,10 @@ public class UserImpl extends AbstractDao<Long, Users> implements IUsers{
 	}
 
 	public String myNane() {
-		return"nBAGO ERIC";
+		return "nBAGO ERIC";
 	}
-	
+
 	public UserImpl() {
-		
+
 	}
 }

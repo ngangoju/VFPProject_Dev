@@ -5,6 +5,7 @@
  */
 
 package tres.dao.impl;
+
 import java.util.List;
 import java.util.logging.Logger;
 import tres.dao.generic.AbstractDao;
@@ -16,8 +17,9 @@ import tres.domain.UploadingFiles;
  * @author Emmanuel
  */
 
-public class UploadingFilesImpl extends AbstractDao<Long, UploadingFiles> implements IUploadingFiles{
+public class UploadingFilesImpl extends AbstractDao<Long, UploadingFiles> implements IUploadingFiles {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
+
 	public UploadingFiles saveUploadedFile(UploadingFiles upload) {
 		return saveIntable(upload);
 	}

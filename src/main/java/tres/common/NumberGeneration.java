@@ -13,69 +13,69 @@ import java.util.Random;
  */
 public class NumberGeneration {
 
-    Formating fmt = new Formating();
+	Formating fmt = new Formating();
 
-    public String generateAppointNumber() {
-        long last = 0;
-        String requisitionDateId = null;
-        int auto = 0;
+	public String generateAppointNumber() {
+		long last = 0;
+		String requisitionDateId = null;
+		int auto = 0;
 
-        String y = null;
-        String m = null;
-        String d = null;
-        String hr = null;
-        String min = null;
-        String sec = null;
-        try {
-            Random rand = new Random();
-            auto = rand.nextInt(10);
-            String thedate[] = fmt.getCurrentMysqlDateFormt().split(" ");
-            String theTime[] = thedate[1].split(":");
-            String YMD[] = thedate[0].split("-");
-            y = YMD[0].substring(2, 4);
-            m = YMD[1];
-            d = YMD[2];
-            hr = theTime[0];
-            min = theTime[1];
-            sec = theTime[2];
-            requisitionDateId = "AP" + d + m + y + sec;
-        } catch (Exception j) {
+		String y = null;
+		String m = null;
+		String d = null;
+		String hr = null;
+		String min = null;
+		String sec = null;
+		try {
+			Random rand = new Random();
+			auto = rand.nextInt(10);
+			String thedate[] = fmt.getCurrentMysqlDateFormt().split(" ");
+			String theTime[] = thedate[1].split(":");
+			String YMD[] = thedate[0].split("-");
+			y = YMD[0].substring(2, 4);
+			m = YMD[1];
+			d = YMD[2];
+			hr = theTime[0];
+			min = theTime[1];
+			sec = theTime[2];
+			requisitionDateId = "AP" + d + m + y + sec;
+		} catch (Exception j) {
 
-        }
+		}
 
-        return requisitionDateId;
+		return requisitionDateId;
 
-    }
+	}
 
-    public String generatecOnsultationNumber() {
-        long last = 0;
-        String requisitionDateId = null;
-        int auto = 0;
+	public String generatecOnsultationNumber() {
+		long last = 0;
+		String requisitionDateId = null;
+		int auto = 0;
 
-        String y = null;
-        String m = null;
-        String d = null;
-        String hr = null;
-        String min = null;
-        String sec = null;
-        try {
-            Random rand = new Random();
-            auto = rand.nextInt(10);
-            String thedate[] = fmt.getCurrentMysqlDateFormt().split(" ");
-            String theTime[] = thedate[1].split(":");
-            String YMD[] = thedate[0].split("-");
-            y = YMD[0].substring(2, 4);
-            m = YMD[1];
-            d = YMD[2];
-            hr = theTime[0];
-            min = theTime[1];
-            sec = theTime[2];
-            requisitionDateId = "CS" + d + m + y + sec;
-        } catch (Exception j) {
+		String y = null;
+		String m = null;
+		String d = null;
+		String hr = null;
+		String min = null;
+		String sec = null;
+		try {
+			Random rand = new Random();
+			auto = rand.nextInt(10);
+			String thedate[] = fmt.getCurrentMysqlDateFormt().split(" ");
+			String theTime[] = thedate[1].split(":");
+			String YMD[] = thedate[0].split("-");
+			y = YMD[0].substring(2, 4);
+			m = YMD[1];
+			d = YMD[2];
+			hr = theTime[0];
+			min = theTime[1];
+			sec = theTime[2];
+			requisitionDateId = "CS" + d + m + y + sec;
+		} catch (Exception j) {
 
-        }
+		}
 
-        return requisitionDateId;
+		return requisitionDateId;
 
-    }
+	}
 }

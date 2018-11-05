@@ -7,8 +7,9 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IUploadingActivity;
 import tres.domain.UploadingActivity;
 
-public class UploadingActivityImpl extends AbstractDao<Long, UploadingActivity> implements IUploadingActivity{
+public class UploadingActivityImpl extends AbstractDao<Long, UploadingActivity> implements IUploadingActivity {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
+
 	public UploadingActivity saveUploadedFile(UploadingActivity upload) {
 		return saveIntable(upload);
 	}
@@ -53,10 +54,10 @@ public class UploadingActivityImpl extends AbstractDao<Long, UploadingActivity> 
 
 	public UploadingActivity getUploadedActivtyWithQuery(String[] propertyName, Object[] value, String hqlStatement) {
 		try {
-		return (UploadingActivity) getModelWithMyHQL(propertyName, value, hqlStatement);
-	} catch (Exception ex) {
-		LOGGER.info("getUsersWithQuery  Query error ::::" + ex.getMessage());
-	}
+			return (UploadingActivity) getModelWithMyHQL(propertyName, value, hqlStatement);
+		} catch (Exception ex) {
+			LOGGER.info("getUsersWithQuery  Query error ::::" + ex.getMessage());
+		}
 		return null;
 	}
 

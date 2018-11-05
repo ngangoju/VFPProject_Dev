@@ -6,23 +6,23 @@ import java.util.Date;
 import tres.domain.Evaluation;
 import tres.domain.Task;
 
-public class EvaluationDto implements Serializable {	
+public class EvaluationDto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int evaluationId;
-	
+
 	private String evaluationType;
 
 	private String description;
 
-    private Evaluation evauation;
+	private Evaluation evauation;
 
 	private String status;
 
 	private Task task;
 
 	private String genericstatus;
-	
+
 	private Date createdDate;
 
 	private boolean editable;
@@ -102,5 +102,5 @@ public class EvaluationDto implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 }

@@ -23,70 +23,68 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "LoginHistoric")
-@NamedQuery(name = "LoginHistoric.findAll",
-        query = "SELECT r FROM LoginHistoric r order by historicId desc")
+@NamedQuery(name = "LoginHistoric.findAll", query = "SELECT r FROM LoginHistoric r order by historicId desc")
 public class LoginHistoric extends CommonDomain implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue
-    @Column(name = "historicId")
-    private int historicId;
-    
-    @Column(name = "loginTimeIn", columnDefinition="DATETIME")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date loginTimeIn;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "historicId")
+	private int historicId;
 
-    @Column(name = "logOutTime", columnDefinition="DATETIME")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date logOutTime;
-    
-    @Column(name="IpAddress")
-    private String IpAddress;
+	@Column(name = "loginTimeIn", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date loginTimeIn;
 
-    @ManyToOne
-    @JoinColumn(name = "users")
-    private Users users;
+	@Column(name = "logOutTime", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date logOutTime;
 
-    public int getHistoricId() {
-        return historicId;
-    }
+	@Column(name = "IpAddress")
+	private String IpAddress;
 
-    public void setHistoricId(int historicId) {
-        this.historicId = historicId;
-    }
+	@ManyToOne
+	@JoinColumn(name = "users")
+	private Users users;
 
-    public Date getLoginTimeIn() {
-        return loginTimeIn;
-    }
+	public int getHistoricId() {
+		return historicId;
+	}
 
-    public void setLoginTimeIn(Date loginTimeIn) {
-        this.loginTimeIn = loginTimeIn;
-    }
+	public void setHistoricId(int historicId) {
+		this.historicId = historicId;
+	}
 
-    public Users getUsers() {
-        return users;
-    }
+	public Date getLoginTimeIn() {
+		return loginTimeIn;
+	}
 
-    public void setUsers(Users users) {
-        this.users = users;
-    }
+	public void setLoginTimeIn(Date loginTimeIn) {
+		this.loginTimeIn = loginTimeIn;
+	}
 
-    public Date getLogOutTime() {
-        return logOutTime;
-    }
+	public Users getUsers() {
+		return users;
+	}
 
-    public void setLogOutTime(Date logOutTime) {
-        this.logOutTime = logOutTime;
-    }
+	public void setUsers(Users users) {
+		this.users = users;
+	}
 
-    public String getIpAddress() {
-        return IpAddress;
-    }
+	public Date getLogOutTime() {
+		return logOutTime;
+	}
 
-    public void setIpAddress(String IpAddress) {
-        this.IpAddress = IpAddress;
-    }
+	public void setLogOutTime(Date logOutTime) {
+		this.logOutTime = logOutTime;
+	}
 
+	public String getIpAddress() {
+		return IpAddress;
+	}
+
+	public void setIpAddress(String IpAddress) {
+		this.IpAddress = IpAddress;
+	}
 
 }

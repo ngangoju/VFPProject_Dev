@@ -25,9 +25,8 @@ public class UploadingStrategicPlan extends CommonDomain implements Serializable
 	@JoinColumn(name = "documents")
 	private Documents documents;
 	@ManyToOne
-	@JoinColumn(name="strategicPlan")
+	@JoinColumn(name = "strategicPlan")
 	private StrategicPlan strategicPlan;
-
 
 	public long getUpLoadPlanId() {
 		return upLoadPlanId;

@@ -12,7 +12,6 @@ import tres.domain.InstitutionRegistrationRequest;
 public class InstitutionRegRequestImpl extends AbstractDao<Long, InstitutionRegistrationRequest>
 		implements IInstitutionRegRequest {
 
-
 	public List<InstitutionRegistrationRequest> getListInstitRegReqsts() {
 		return (List<InstitutionRegistrationRequest>) (Object) getModelList();
 	}

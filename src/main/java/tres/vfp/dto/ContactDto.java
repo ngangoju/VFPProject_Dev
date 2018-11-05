@@ -7,7 +7,7 @@ import tres.domain.Users;
 public class ContactDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private int contactId;
 
 	private String contactDetails;
@@ -18,7 +18,7 @@ public class ContactDto implements Serializable {
 
 	private Users user;
 	private boolean editable;
-	
+
 	public boolean isEditable() {
 		return editable;
 	}
@@ -43,8 +43,6 @@ public class ContactDto implements Serializable {
 		this.contactDetails = contactDetails;
 	}
 
-	
-
 	public Users getUser() {
 		return user;
 	}
@@ -68,9 +66,5 @@ public class ContactDto implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	
-	
+
 }
-
-

@@ -11,13 +11,17 @@ import tres.domain.Users;
 import java.util.List;
 
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 public interface IDocuments {
-     public Documents saveDocuments(Documents document);
-        public List<Documents> getListDocuments();
-         public Documents getDocumentById(int DocId,String primaryKeyclomunName);
-         public Documents UpdateDocuments(Documents document);
-public Documents getDocumentWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
+	public Documents saveDocuments(Documents document);
+
+	public List<Documents> getListDocuments();
+
+	public Documents getDocumentById(int DocId, String primaryKeyclomunName);
+
+	public Documents UpdateDocuments(Documents document);
+
+	public Documents getDocumentWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
 }

@@ -25,9 +25,8 @@ public class UploadingActivity extends CommonDomain implements Serializable {
 	@JoinColumn(name = "documents")
 	private Documents documents;
 	@ManyToOne
-	@JoinColumn(name="activity")
+	@JoinColumn(name = "activity")
 	private Activity activity;
-
 
 	public long getUpLoadActId() {
 		return upLoadActId;

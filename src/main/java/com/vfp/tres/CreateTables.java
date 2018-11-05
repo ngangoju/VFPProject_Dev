@@ -10,13 +10,13 @@ import tres.dao.impl.UserImpl;
 @ManagedBean
 @SessionScoped
 public class CreateTables {
-	   private static final Logger LOGGER = Logger.getLogger(
-	            Thread.currentThread().getStackTrace()[0].getClassName());
-	public void cretaAllTable() {
-UserImpl userImpl =new UserImpl();
+	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
-userImpl.creatingNewTable();
-LOGGER.info("table created");
+	public void cretaAllTable() {
+		UserImpl userImpl = new UserImpl();
+
+		userImpl.creatingNewTable();
+		LOGGER.info("table created");
 
 	}
 

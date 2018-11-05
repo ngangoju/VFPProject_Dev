@@ -13,8 +13,11 @@ import java.util.List;
  * @author Eric
  */
 public interface IGenericMethod<Long, Object> {
-      public Object saveObject(Object object);
-       public List<Object> getListOfObjects();
-       public Object getObjectById(int objectId,String primaryKeyclomunName);
-       public Object updateObject(Object object);   
+	public Object saveObject(Object object);
+
+	public List<Object> getListOfObjects();
+
+	public Object getObjectById(int objectId, String primaryKeyclomunName);
+
+	public Object updateObject(Object object);
 }

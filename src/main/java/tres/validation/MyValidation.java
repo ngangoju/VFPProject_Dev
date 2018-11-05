@@ -16,31 +16,29 @@ import java.util.regex.Pattern;
  * @author RTAP4
  */
 public class MyValidation {
-     List<String> errors=new ArrayList<String>();
- public  boolean validWithParthen(String regex,String value){
+	List<String> errors = new ArrayList<String>();
 
-Pattern pattern = Pattern.compile(regex);
- Matcher matcher = pattern.matcher(value);
-     boolean val=matcher.matches();
- 
- return val;
- } 
- 
- public List<String> listError(String error){
- 
- errors.add(error);
- return errors;
- }
+	public boolean validWithParthen(String regex, String value) {
 
-    public List<String> getErrors() {
-        return errors;
-    }
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(value);
+		boolean val = matcher.matches();
 
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
-    }
- 
+		return val;
+	}
 
-    
- 
+	public List<String> listError(String error) {
+
+		errors.add(error);
+		return errors;
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<String> errors) {
+		this.errors = errors;
+	}
+
 }

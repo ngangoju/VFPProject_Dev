@@ -1,6 +1,5 @@
 package tres.domain;
 
- 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +25,7 @@ public class TaskComment extends CommonDomain implements Serializable {
 	@JoinColumn(name = "comment")
 	private Comment comment;
 	@ManyToOne
-	@JoinColumn(name="task")
+	@JoinColumn(name = "task")
 	private Task task;
 
 	public long getCommentTaskId() {

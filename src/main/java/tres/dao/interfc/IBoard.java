@@ -10,13 +10,17 @@ import tres.domain.Board;
 import java.util.List;
 
 /**
-*
-* @author Gwiza
-*/
+ *
+ * @author Gwiza
+ */
 public interface IBoard {
-     public Board saveBoards(Board board);
-        public List<Board> getListBoards();
-         public Board getBoardById(int boardId,String primaryKeyclomunName);
-         public Board UpdateBoard(Board board);
-public Board getBoardsWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
+	public Board saveBoards(Board board);
+
+	public List<Board> getListBoards();
+
+	public Board getBoardById(int boardId, String primaryKeyclomunName);
+
+	public Board UpdateBoard(Board board);
+
+	public Board getBoardsWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
 }

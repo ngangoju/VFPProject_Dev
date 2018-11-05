@@ -42,12 +42,14 @@ public class FileUploadController implements Serializable, DbConstant {
 	private Part file;
 	private Users users;
 	UserImpl usersImpl = new UserImpl();
+
 	@PostConstruct
 	public void init() {
-		if(null==users) {
-			users= new Users();
+		if (null == users) {
+			users = new Users();
 		}
 	}
+
 	public Part getFile() {
 		return file;
 	}
@@ -76,8 +78,8 @@ public class FileUploadController implements Serializable, DbConstant {
 	// processing uploaded file
 	public String processFileUpload() throws IOException {
 		HttpSession session = SessionUtils.getSession();
-	int	userid=(Integer)session.getAttribute("userProfile");
-		LOGGER.info("USER PROFILE ID::::::::::::::::::::::::::"+userid);
+		int userid = (Integer) session.getAttribute("userProfile");
+		LOGGER.info("USER PROFILE ID::::::::::::::::::::::::::" + userid);
 		boolean valid = validateImage();
 		if (valid) {
 			Part uploadedFile = getFile();
@@ -93,22 +95,22 @@ public class FileUploadController implements Serializable, DbConstant {
 
 				// Copies bytes to destination.
 				Files.copy(bytes, destination);
-				//:::UPDATING USER PROFILE IN DATABASE::::
+				// :::UPDATING USER PROFILE IN DATABASE::::
 				try {
-				if(null!=users) {
-					users=usersImpl.gettUserById(userid, "userId");
-					if(null!=users) {
-						users.setImage(FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
-						usersImpl.UpdateUsers(users);
-						setValid(true);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.profile.edit"));
-					}else {
-						setValid(false);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.userprofile.error"));
-					} 
-						
-				}
-				}catch (Exception e) {
+					if (null != users) {
+						users = usersImpl.gettUserById(userid, "userId");
+						if (null != users) {
+							users.setImage(FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
+							usersImpl.UpdateUsers(users);
+							setValid(true);
+							JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.profile.edit"));
+						} else {
+							setValid(false);
+							JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.userprofile.error"));
+						}
+
+					}
+				} catch (Exception e) {
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.profileErro.internal"));
 				}
@@ -198,9 +200,11 @@ public class FileUploadController implements Serializable, DbConstant {
 	public void setUsers(Users users) {
 		this.users = users;
 	}
+
 	public UserImpl getUsersImpl() {
 		return usersImpl;
 	}
+
 	public void setUsersImpl(UserImpl usersImpl) {
 		this.usersImpl = usersImpl;
 	}

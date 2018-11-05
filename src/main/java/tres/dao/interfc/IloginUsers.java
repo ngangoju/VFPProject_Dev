@@ -15,8 +15,11 @@ import java.security.NoSuchAlgorithmException;
  * @author RTAP4
  */
 public interface IloginUsers {
-   public boolean  checkUserNameAndPasswod(String userName,String Password);
-   public Users userDetail(String userName);
-   public String criptPassword(String password)throws NoSuchAlgorithmException; 
-   public String getIpAddress()throws Exception;
+	public boolean checkUserNameAndPasswod(String userName, String Password);
+
+	public Users userDetail(String userName);
+
+	public String criptPassword(String password) throws NoSuchAlgorithmException;
+
+	public String getIpAddress() throws Exception;
 }

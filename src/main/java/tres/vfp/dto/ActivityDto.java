@@ -9,9 +9,9 @@ import javax.persistence.TemporalType;
 
 import tres.domain.Task;
 
-public class ActivityDto implements Serializable {	
+public class ActivityDto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int activityId;
 
 	private String description;
@@ -23,7 +23,7 @@ public class ActivityDto implements Serializable {
 	private Date date;
 
 	private Task task;
-	
+
 	private String createdBy;
 
 	private Date startDate;
@@ -33,7 +33,7 @@ public class ActivityDto implements Serializable {
 	private Date endDate;
 
 	private String genericstatus;
-	
+
 	private Date createdDate;
 
 	private boolean editable;
@@ -141,5 +141,5 @@ public class ActivityDto implements Serializable {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	
+
 }

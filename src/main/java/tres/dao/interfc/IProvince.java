@@ -8,13 +8,17 @@ package tres.dao.interfc;
 
 import java.util.List;
 import tres.domain.Province;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 public interface IProvince {
-  public Province saveProvince(Province province);
-       public List<Province> getListProvinces();
-       public Province getProvinceById(int ProvinceId,String primaryKeyclomunName);
-       public Province UpdateProvince(Province Province);    
+	public Province saveProvince(Province province);
+
+	public List<Province> getListProvinces();
+
+	public Province getProvinceById(int ProvinceId, String primaryKeyclomunName);
+
+	public Province UpdateProvince(Province Province);
 }

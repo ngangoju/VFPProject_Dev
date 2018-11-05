@@ -10,12 +10,15 @@ import java.util.List;
 import tres.domain.District;
 
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 public interface IDistrict {
-    public District saveDistrict(District district);
-       public List<District> getListDistricts();
-       public District getDistrictById(int districtId,String primaryKeyclomunName);
-       public District UpdateDistrict(District district);  
+	public District saveDistrict(District district);
+
+	public List<District> getListDistricts();
+
+	public District getDistrictById(int districtId, String primaryKeyclomunName);
+
+	public District UpdateDistrict(District district);
 }

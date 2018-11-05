@@ -6,10 +6,11 @@ import java.util.logging.Logger;
 import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IVillage;
 import tres.domain.Village;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 public class VillageImpl extends AbstractDao<Long, Village> implements IVillage {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 

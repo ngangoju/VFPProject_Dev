@@ -5,34 +5,33 @@ import tres.domain.MenuGroup;
 import tres.domain.ListOfMenu;
 import java.util.Date;
 
-
-public class ListOfMenuDto  implements Serializable{
+public class ListOfMenuDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int menuId;
-	
+
 	private String urlCode;
 
 	private String urlName;
-	
+
 	private String description;
 
 	private Date creationDate;
 
 	private String iconImage;
-	
+
 	private String menuColor;
-	
+
 	private ListOfMenu listOfMenu;
-	
+
 	private MenuGroup menuGroup;
-	
+
 	private boolean editable;
-	
+
 	private String genericStatus;
-	
+
 	private String action;
-	
+
 	public int getMenuId() {
 		return menuId;
 	}
@@ -65,7 +64,6 @@ public class ListOfMenuDto  implements Serializable{
 		this.creationDate = creationDate;
 	}
 
-	
 	public ListOfMenu getListOfMenu() {
 		return listOfMenu;
 	}
@@ -74,7 +72,6 @@ public class ListOfMenuDto  implements Serializable{
 		this.listOfMenu = listOfMenu;
 	}
 
-	
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
 	}
@@ -130,6 +127,5 @@ public class ListOfMenuDto  implements Serializable{
 	public void setGenericStatus(String genericStatus) {
 		this.genericStatus = genericStatus;
 	}
-	
-	
+
 }

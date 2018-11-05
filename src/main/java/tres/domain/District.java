@@ -15,10 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 @Entity
 @Table(name = "District")
 @NamedQuery(name = "District.findAll", query = "SELECT r FROM District r order by v desc")
@@ -30,10 +31,9 @@ public class District implements Serializable {
 	@Column(name = "districtId")
 	private int districtId;
 
-    
-    @Column(name = "code")
-    private String code;
-    
+	@Column(name = "code")
+	private String code;
+
 	@Column(name = "districtName_en")
 	private String districtName_en;
 
@@ -94,7 +94,5 @@ public class District implements Serializable {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
-	
 
 }

@@ -123,10 +123,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 	}
 
 	public void showCatTable() {
-		
-		if(categoryDtoDetails.size()!=0)
-			rendered=true;
+
+		if (categoryDtoDetails.size() != 0)
+			rendered = true;
 	}
+
 	private void clearCategoryFuileds() {
 		userCategory = new UserCategory();
 		categoryDetails = null;
@@ -169,6 +170,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 		}
 		return null;
 	}
+
 	public String editAction(UserCategoryDto cat) {
 
 		cat.setEditable(true);

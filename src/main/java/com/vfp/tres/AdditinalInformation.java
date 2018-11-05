@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 @ViewScoped
 public class AdditinalInformation {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	
-	public String  currentPage() {
-		 String str = ((HttpServletRequest) FacesContext.getCurrentInstance() 
-				 .getExternalContext().getRequest()).getRequestURI(); 
-		 String arr[]=str.split("/");
-		 
-				//LOGGER.info("currentPage:::"+arr[2]);
-				return arr[2];
+
+	public String currentPage() {
+		String str = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest())
+				.getRequestURI();
+		String arr[] = str.split("/");
+
+		// LOGGER.info("currentPage:::"+arr[2]);
+		return arr[2];
 	}
 }

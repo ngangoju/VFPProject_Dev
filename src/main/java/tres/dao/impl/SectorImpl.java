@@ -12,11 +12,12 @@ import tres.dao.interfc.IProvince;
 import tres.dao.interfc.ISector;
 import tres.domain.Province;
 import tres.domain.Sector;
+
 /**
-*
-* @author Emmanuel
-*/
-public class SectorImpl extends  AbstractDao<Long, Sector> implements  ISector  {
+ *
+ * @author Emmanuel
+ */
+public class SectorImpl extends AbstractDao<Long, Sector> implements ISector {
 
 	public Sector saveSector(Sector sector) {
 
@@ -24,20 +25,18 @@ public class SectorImpl extends  AbstractDao<Long, Sector> implements  ISector  
 	}
 
 	public List<Sector> getListSectors() {
-		
-		return (List<Sector>)(Object)getModelList();
+
+		return (List<Sector>) (Object) getModelList();
 	}
 
 	public Sector getSectorById(int sectorId, String primaryKeyclomunName) {
-		
-		return (Sector)getModelById(sectorId, primaryKeyclomunName);
+
+		return (Sector) getModelById(sectorId, primaryKeyclomunName);
 	}
 
 	public Sector UpdateSector(Sector sector) {
-		
+
 		return updateIntable(sector);
 	}
 
- 
-    
 }

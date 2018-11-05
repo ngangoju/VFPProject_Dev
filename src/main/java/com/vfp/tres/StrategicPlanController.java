@@ -125,13 +125,18 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
 			LOGGER.info(CLASSNAME + ":::StrategicPlan Details is saved");
 			clearPlanFuileds();
-			//userDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"}, new Object[] {ACTIVE, categoryImpl.getModelWithMyHQL(new String[] {"userCatid"}, new Object[] {4}, "UserCategory")}, "Users", "userId asc");
-			//LOGGER.info("LIST OF SUPERVISORS : "+userDetails.size());
-			//for(Users user : userDetails) {
-			//	contact= contactImpl.getModelWithMyHQL(new String[] {"user"}, new Object[] {user.getUserId()}, "Contact");
-				SendSupportEmail email = new SendSupportEmail();
-				email.sendMailTest("Junior", "Ngango", "ngangoju@gmail.com", "Communication", "I hope this email finds you well, this is to inform you that you have a new strategic plan.");
-			//}
+			// userDetails=usersImpl.getGenericListWithHQLParameter(new String[]
+			// {"genericStatus","userCategory"}, new Object[] {ACTIVE,
+			// categoryImpl.getModelWithMyHQL(new String[] {"userCatid"}, new Object[] {4},
+			// "UserCategory")}, "Users", "userId asc");
+			// LOGGER.info("LIST OF SUPERVISORS : "+userDetails.size());
+			// for(Users user : userDetails) {
+			// contact= contactImpl.getModelWithMyHQL(new String[] {"user"}, new Object[]
+			// {user.getUserId()}, "Contact");
+			SendSupportEmail email = new SendSupportEmail();
+			email.sendMailTest("Junior", "Ngango", "ngangoju@gmail.com", "Communication",
+					"I hope this email finds you well, this is to inform you that you have a new strategic plan.");
+			// }
 			return "/menu/StrategicPlan.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
@@ -162,16 +167,17 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	public String uploadStratDocs(StrategicPlanDto act) {
 		HttpSession sessionuser = SessionUtils.getSession();
-		if(null!=act) {
+		if (null != act) {
 			sessionuser.setAttribute("StratPlanInfo", act);
-			LOGGER.info("Info Founded are strategicId:>>>>>>>>>>>>>>>>>>>>>>>:" +act.getStrategicPlanId()  + "Description:"
-					+ act.getDetails());
-			
-		return"/menu/FileUpload.xhtml?faces-redirect=true";
+			LOGGER.info("Info Founded are strategicId:>>>>>>>>>>>>>>>>>>>>>>>:" + act.getStrategicPlanId()
+					+ "Description:" + act.getDetails());
+
+			return "/menu/FileUpload.xhtml?faces-redirect=true";
 		}
 		return null;
-		
+
 	}
+
 	public String saveAction(StrategicPlanDto strategicPlanDto) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false

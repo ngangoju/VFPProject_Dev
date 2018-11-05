@@ -7,19 +7,17 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IListOfMenu;
 import tres.domain.ListOfMenu;
 
+public class ListOfMenuImpl extends AbstractDao<Long, ListOfMenu> implements IListOfMenu, Serializable {
+	private static final long serialVersionUID = 1L;
 
-public class ListOfMenuImpl extends AbstractDao<Long, ListOfMenu> implements IListOfMenu,Serializable   {
-	  private static final long serialVersionUID = 1L;
 	public ListOfMenu saveListOfMenu(ListOfMenu listOfMenu) {
-		return saveIntable(listOfMenu); 
+		return saveIntable(listOfMenu);
 	}
 
-	
 	public ListOfMenu getListOfMenuById(int listOfMenuId, String primaryKeyclomunName) {
 		return (ListOfMenu) getModelById(listOfMenuId, primaryKeyclomunName);
 	}
 
-	
 	public List<ListOfMenu> getListListOfMenus() {
 		return (List<ListOfMenu>) (Object) getModelList();
 	}
@@ -28,5 +26,4 @@ public class ListOfMenuImpl extends AbstractDao<Long, ListOfMenu> implements ILi
 		return updateIntable(listOfMenu);
 	}
 
-	
 }

@@ -100,7 +100,5 @@ public class Contact extends CommonDomain implements Serializable {
 	public void setPobox(String pobox) {
 		this.pobox = pobox;
 	}
-	
-	
 
 }

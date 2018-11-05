@@ -228,11 +228,12 @@ public class TaskController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
+
 	public String updateRepStatus(Task act) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
-		//act = new Task();
-			LOGGER.info("here update sart for " + act + " taskiD " + act.getGenericStatus());
+		// act = new Task();
+		LOGGER.info("here update sart for " + act + " taskiD " + act.getGenericStatus());
 
 		if (act.getGenericStatus().equals(ACTIVE)) {
 

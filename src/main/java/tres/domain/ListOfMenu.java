@@ -17,19 +17,18 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "ListOfMenu")
 @NamedQuery(name = "ListOfMenu.findAll", query = "select r from ListOfMenu r order by menuId desc")
-public class ListOfMenu extends CommonDomain implements Serializable{
+public class ListOfMenu extends CommonDomain implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
 	@Column(name = "menuId")
 	private int menuId;
-	
+
 	@Column(name = "urlCode", unique = true)
 	private String urlCode;
 
 	@Column(name = "urlName", unique = true)
 	private String urlName;
-	
 
 	@Column(name = "description")
 	private String description;
@@ -38,20 +37,19 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 
-	
 	@Column(name = "iconImage")
 	private String iconImage;
-	
+
 	@Column(name = "menuColor")
 	private String menuColor;
 	@ManyToOne
 	@JoinColumn(name = "listOfMenu")
 	private ListOfMenu listOfMenu;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "menuGroup")
 	private MenuGroup menuGroup;
-	
+
 	public int getMenuId() {
 		return menuId;
 	}
@@ -84,7 +82,6 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 		this.creationDate = creationDate;
 	}
 
-	
 	public ListOfMenu getListOfMenu() {
 		return listOfMenu;
 	}
@@ -93,7 +90,6 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 		this.listOfMenu = listOfMenu;
 	}
 
-	
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
 	}
@@ -125,6 +121,5 @@ public class ListOfMenu extends CommonDomain implements Serializable{
 	public void setMenuColor(String menuColor) {
 		this.menuColor = menuColor;
 	}
-	
-	
+
 }

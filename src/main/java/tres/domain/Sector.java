@@ -15,56 +15,53 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 @Entity
 @Table(name = "Sector")
-@NamedQuery(name = "Sector.findAll",
-query = "SELECT r FROM Sector r order by v desc")
-public class Sector implements  Serializable{
-    
- private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue
-    @Column(name = "sectorId")
-    private int sectorId;
-    
-    @Column(name = "code")
-    private String code;
-    
-    
-    @Column(name = "sectorName_en")
-    private String sectorName_en;
-    
-    
-    @Column(name = "sectorName_fr")
-    private String sectorName_fr;
-    
-    @Column(name = "sectorName_rw")
-    private String sectorName_rw;
-    
-    @ManyToOne
-    @JoinColumn(name = "distric")
-    private District distric;
+@NamedQuery(name = "Sector.findAll", query = "SELECT r FROM Sector r order by v desc")
+public class Sector implements Serializable {
 
-    public int getSectorId() {
-        return sectorId;
-    }
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "sectorId")
+	private int sectorId;
 
-    public void setSectorId(int sectorId) {
-        this.sectorId = sectorId;
-    }
+	@Column(name = "code")
+	private String code;
 
+	@Column(name = "sectorName_en")
+	private String sectorName_en;
 
-    public District getDistric() {
-        return distric;
-    }
+	@Column(name = "sectorName_fr")
+	private String sectorName_fr;
 
-    public void setDistric(District distric) {
-        this.distric = distric;
-    }
+	@Column(name = "sectorName_rw")
+	private String sectorName_rw;
+
+	@ManyToOne
+	@JoinColumn(name = "distric")
+	private District distric;
+
+	public int getSectorId() {
+		return sectorId;
+	}
+
+	public void setSectorId(int sectorId) {
+		this.sectorId = sectorId;
+	}
+
+	public District getDistric() {
+		return distric;
+	}
+
+	public void setDistric(District distric) {
+		this.distric = distric;
+	}
 
 	public String getSectorName_en() {
 		return sectorName_en;
@@ -97,11 +94,5 @@ public class Sector implements  Serializable{
 	public void setCode(String code) {
 		this.code = code;
 	}
-    
-    
-    
-    
-    
-    
-    
+
 }

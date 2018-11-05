@@ -8,7 +8,7 @@ import tres.domain.TaskAssignment;
 
 public class TaskAssignmentImpl extends AbstractDao<Long, TaskAssignment> implements ITaskAssignment {
 	public TaskAssignment saveTaskAssignment(TaskAssignment taskAssignment) {
-		return saveIntable(taskAssignment); 
+		return saveIntable(taskAssignment);
 	}
 
 	public List<TaskAssignment> getListTaskAssignments() {

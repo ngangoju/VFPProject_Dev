@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "PaymentRecords")
 @NamedQuery(name = "PaymentRecords.findAll", query = "select r from PaymentRecords r order by paymentId desc")
@@ -27,39 +26,37 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 
 	@Column(name = "paymentCode", unique = true)
 	private String paymentCode;
-	
-    @Column(name = "paymentDate")
+
+	@Column(name = "paymentDate")
 	private Date paymentDate;
-	  
+
 	@Column(name = "paymentExpiretionDate")
 	private Date paymentExpiretionDate;
-	
+
 	@Column(name = "amount")
-    private String  amount;
-	   
-	   
+	private String amount;
+
 	@Column(name = "currency")
-	private String   currency;
-	    
+	private String currency;
+
 	@Column(name = "paymentChanel")
-	private String   paymentChanel;
-	  
-	  
-    @Column(name = "paymentStatus")
-	private String  paymentStatus;
-	
-    @Column(name = "bankRefernceNo")
-   	private String  bankRefernceNo;
-    
-    @Column(name = "comment")
-   	private String  comment;
- 
-    @ManyToOne
-    @JoinColumn(name = "paymentApprovedBy")
+	private String paymentChanel;
+
+	@Column(name = "paymentStatus")
+	private String paymentStatus;
+
+	@Column(name = "bankRefernceNo")
+	private String bankRefernceNo;
+
+	@Column(name = "comment")
+	private String comment;
+
+	@ManyToOne
+	@JoinColumn(name = "paymentApprovedBy")
 	private Users paymentApprovedBy;
-	
-    @ManyToOne
-    @JoinColumn(name = "institution")
+
+	@ManyToOne
+	@JoinColumn(name = "institution")
 	private Institution institution;
 
 	public int getPaymentId() {
@@ -78,12 +75,10 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.paymentCode = paymentCode;
 	}
 
-	
 	public void setPaymentDate(Date date) {
 		this.paymentDate = date;
 	}
 
-	
 	public Date getPaymentExpiretionDate() {
 		return paymentExpiretionDate;
 	}
@@ -164,8 +159,4 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.institution = institution;
 	}
 
-
-	
-	
-	
 }

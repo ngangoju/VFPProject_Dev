@@ -39,9 +39,9 @@ public class OrganigramBean {
 			if (x.getBoard() == null) {
 				t.setParent(0);
 			} else {
-				 t.setParent(x.getBoard().getBoardId());
+				t.setParent(x.getBoard().getBoardId());
 			}
-			
+
 			list2.add(t);
 		}
 		this.jsonData = new Gson().toJson(list2);
@@ -70,8 +70,5 @@ public class OrganigramBean {
 	public void setChildId(int childId) {
 		this.childId = childId;
 	}
-	
-	
-	
 
 }

@@ -30,75 +30,59 @@ public class SendSupportEmail extends HttpServlet {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "SendSupportEmail :: ";
 
-	/*to manage validation messages*/
+	/* to manage validation messages */
 	private boolean isValid;
 
-	/*class injection*/
-	GenerateNotificationTemplete gen =new GenerateNotificationTemplete();
+	/* class injection */
+	GenerateNotificationTemplete gen = new GenerateNotificationTemplete();
 	JSFBoundleProvider provider = new JSFBoundleProvider();
-	
-	/*end class injection*/
+
+	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	 
-  
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String fname=request.getParameter("name");
-		String lname=request.getParameter("surname");
-		String email=request.getParameter("email");
-		String need=request.getParameter("need");
-		String message=request.getParameter("message");
-		
-		sendMailTest(fname, lname,email,need, message);
-	
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String fname = request.getParameter("name");
+		String lname = request.getParameter("surname");
+		String email = request.getParameter("email");
+		String need = request.getParameter("need");
+		String message = request.getParameter("message");
+
+		sendMailTest(fname, lname, email, need, message);
+
 		LOGGER.info(CLASSNAME + ":::notification sent to Support team");
-		  response.sendRedirect("default.xhtml?msg=Your request sent successfully..");
-		
-		
-		
+		response.sendRedirect("default.xhtml?msg=Your request sent successfully..");
+
 	}
-	public  void sendMailTest(String fname,String lname,String email,String need,String msgContent) {
-	
-		
-		String msg=  "<p>Please take look on the bellow request.</p>"
-	      + "<table width=\"50%\" border=\"5px\">\n"
-         + "  <tbody>\n"
-         + "	<tr>"
-         + "      <td class=\"labelbold\">Custome Names</td>\n"
-         + "      <td>\n"
-         + "		  " +fname+" "+lname+ "\n"
-         + "	  </td>\n"
-         + "    </tr>"
-         + "	<tr>\n"
-         + "      <td class=\"labelbold\">Customer Email</td>\n"
-         + "      <td>\n"
-         + "		  " +email+ "\n"
-         + "	  </td></tr>"
-         + "	<tr>"
-         + "      <td class=\"labelbold\">Customer Need</td>\n"
-         + "      <td>\n"
-         + "		  " +need+ "\n"
-         + "	  </td></tr>"
-         
- + "	<tr>"
- + "      <td class=\"labelbold\">Customer Message</td>\n"
- + "      <td>\n"
- + "		  " +msgContent+ "\n"
- + "	  </td></tr>"
-         + "  </tbody>\n"
-         + "</table>\n";
-		/*End send content in table sample*/
-		gen.sendEmailNotification("ngangoju@gmail.com","Support Team ",need,msg);
+
+	public void sendMailTest(String fname, String lname, String email, String need, String msgContent) {
+
+		String msg = "<p>Please take look on the bellow request.</p>" + "<table width=\"50%\" border=\"5px\">\n"
+				+ "  <tbody>\n" + "	<tr>" + "      <td class=\"labelbold\">Custome Names</td>\n" + "      <td>\n"
+				+ "		  " + fname + " " + lname + "\n" + "	  </td>\n" + "    </tr>" + "	<tr>\n"
+				+ "      <td class=\"labelbold\">Customer Email</td>\n" + "      <td>\n" + "		  " + email + "\n"
+				+ "	  </td></tr>" + "	<tr>" + "      <td class=\"labelbold\">Customer Need</td>\n" + "      <td>\n"
+				+ "		  " + need + "\n" + "	  </td></tr>"
+
+				+ "	<tr>" + "      <td class=\"labelbold\">Customer Message</td>\n" + "      <td>\n" + "		  "
+				+ msgContent + "\n" + "	  </td></tr>" + "  </tbody>\n" + "</table>\n";
+		/* End send content in table sample */
+		gen.sendEmailNotification("ngangoju@gmail.com", "Support Team ", need, msg);
 		LOGGER.info("::: notidficatio sent   ");
 	}
+
 	public boolean isValid() {
 		return isValid;
 	}
+
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
 	}
+
 	public JSFBoundleProvider getProvider() {
 		return provider;
 	}
+
 	public void setProvider(JSFBoundleProvider provider) {
 		this.provider = provider;
 	}

@@ -10,14 +10,20 @@ import tres.domain.PaymentRecords;
 import java.util.List;
 
 /**
-*
-* @author Emile
-*/
+ *
+ * @author Emile
+ */
 public interface IPaymentRecords {
-     public PaymentRecords savePaymentRecords(PaymentRecords paymentRecords);
-        public List<PaymentRecords> getListPaymentRecords();
-         public PaymentRecords gettPaymentRecordsById(int paymentId,String primaryKeyclomunName);
-         public PaymentRecords UpdatePaymentRecords(PaymentRecords paymentRecords);
-         public String myNane();
-public PaymentRecords getPaymentRecordsWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
+	public PaymentRecords savePaymentRecords(PaymentRecords paymentRecords);
+
+	public List<PaymentRecords> getListPaymentRecords();
+
+	public PaymentRecords gettPaymentRecordsById(int paymentId, String primaryKeyclomunName);
+
+	public PaymentRecords UpdatePaymentRecords(PaymentRecords paymentRecords);
+
+	public String myNane();
+
+	public PaymentRecords getPaymentRecordsWithQuery(final String[] propertyName, final Object[] value,
+			final String hqlStatement);
 }

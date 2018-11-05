@@ -19,13 +19,13 @@ public class Country {
 
 	@Column(name = "code")
 	private String code;
-	
+
 	@Column(name = "countryName_en")
 	private String countryName_en;
-	
+
 	@Column(name = "countryName_fr")
 	private String countryName_fr;
-	
+
 	@Column(name = "countryName_rw")
 	private String countryName_rw;
 
@@ -68,7 +68,5 @@ public class Country {
 	public void setCountryName_rw(String countryName_rw) {
 		this.countryName_rw = countryName_rw;
 	}
-	
-	
 
 }

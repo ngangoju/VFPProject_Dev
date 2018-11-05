@@ -16,48 +16,45 @@ import tres.common.SessionUtils;
 public class ManageLanguages {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
- private String locale = "en";
- private String lg ="en";
- 
+	private String locale = "en";
+	private String lg = "en";
 
- public String getLocale() {
- return locale;
- }
+	public String getLocale() {
+		return locale;
+	}
 
- public void setLocale(String locale) {
- this.locale = locale;
- }
+	public void setLocale(String locale) {
+		this.locale = locale;
+	}
 
- public String changeLanguage(String locale) {
- this.locale = locale;
- FacesContext.getCurrentInstance().getViewRoot()
- .setLocale(new Locale(this.locale));
- HttpSession session = SessionUtils.getSession();
-	session.setAttribute("lg", locale);
- return locale;
- }
- 
- public String getLang() {
-	 HttpSession session = SessionUtils.getSession();
-		String lg ="en";
-		lg= (String) session.getAttribute("lg");
-		if(lg!=null){
-			ManageLanguages m=new ManageLanguages();
+	public String changeLanguage(String locale) {
+		this.locale = locale;
+		FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(this.locale));
+		HttpSession session = SessionUtils.getSession();
+		session.setAttribute("lg", locale);
+		return locale;
+	}
+
+	public String getLang() {
+		HttpSession session = SessionUtils.getSession();
+		String lg = "en";
+		lg = (String) session.getAttribute("lg");
+		if (lg != null) {
+			ManageLanguages m = new ManageLanguages();
 			m.changeLanguage(lg);
-			LOGGER.info("login languages:::"+lg);
-			this.locale=lg;
+			LOGGER.info("login languages:::" + lg);
+			this.locale = lg;
 		}
-		
-		
- return locale;
- }
 
-public String getLg() {
-	return lg;
-}
+		return locale;
+	}
 
-public void setLg(String lg) {
-	this.lg = lg;
-}
+	public String getLg() {
+		return lg;
+	}
+
+	public void setLg(String lg) {
+		this.lg = lg;
+	}
 
 }

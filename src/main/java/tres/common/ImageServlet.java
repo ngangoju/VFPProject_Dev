@@ -19,33 +19,32 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/images/*")
 public class ImageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-  
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
 
-			   // Get image file.
+			// Get image file.
 
-			   String file = request.getParameter("file");
+			String file = request.getParameter("file");
 
-			    BufferedInputStream in = new BufferedInputStream(new FileInputStream("C:\\Vfp_Document\\" + file));
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream("C:\\Vfp_Document\\" + file));
 
-			    // Get image contents.
+			// Get image contents.
 			byte[] bytes = new byte[in.available()];
 
-			   in.read(bytes);
-			   in.close();
+			in.read(bytes);
+			in.close();
 
-			   // Write image contents to response.
-			   response.getOutputStream().write(bytes);
+			// Write image contents to response.
+			response.getOutputStream().write(bytes);
 
-			} catch (IOException e) {
+		} catch (IOException e) {
 
 			e.printStackTrace();
 
-			}
+		}
 
-			
 	}
-
 
 }

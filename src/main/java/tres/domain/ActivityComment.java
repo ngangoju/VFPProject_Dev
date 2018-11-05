@@ -25,9 +25,8 @@ public class ActivityComment extends CommonDomain implements Serializable {
 	@JoinColumn(name = "comment")
 	private Comment comment;
 	@ManyToOne
-	@JoinColumn(name="activity")
+	@JoinColumn(name = "activity")
 	private Activity activity;
-
 
 	public long getCommentActId() {
 		return commentActId;

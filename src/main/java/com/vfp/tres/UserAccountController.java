@@ -127,6 +127,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private boolean nextButoon;
 	private String redirect;
 	private boolean renderBoard;
+
 	@SuppressWarnings({ "unchecked" })
 	@PostConstruct
 	public void init() {
@@ -167,8 +168,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto = new UserDto();
 		}
 		try {
-	
-		provinceList = provImpl.getListWithHQL(SELECT_PROVINCE);
+
+			provinceList = provImpl.getListWithHQL(SELECT_PROVINCE);
 			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Board", "boardId desc");
 			Users user = usersImpl.gettUserById(usersSession.getUserId(), "userId");
@@ -182,8 +183,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setUserId(user.getUserId());
 			userDto.setUserCategory(user.getUserCategory());
 			userDtoDetails.add(userDto);
-			repDtosDetails=displayRepresentativeByDateBetween();
-			
+			repDtosDetails = displayRepresentativeByDateBetween();
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -192,8 +193,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 
 	}
-	
-	
+
 	// Method to Display usercategory by user logged in
 
 	@SuppressWarnings("unchecked")
@@ -207,12 +207,12 @@ public class UserAccountController implements Serializable, DbConstant {
 					catDetails = catImpl.getGenericListWithHQLParameter(
 							new String[] { "genericStatus", "usercategoryName" },
 							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", "usercatid desc");
-					renderBoard=false;
+					renderBoard = false;
 					return (catDetails);
 				} else {
 					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 							new Object[] { ACTIVE }, "UserCategory", "usercatid desc");
-					renderBoard=true;
+					renderBoard = true;
 					return (catDetails);
 				}
 
@@ -441,28 +441,29 @@ public class UserAccountController implements Serializable, DbConstant {
 	public String changeOption() {
 		if (option.equals(Yes_Option)) {
 			rendered = true;
-			renderprofile=false;
+			renderprofile = false;
 			/* renderForeignCountry=true; */
 			rendersaveButton = true;
 			return (option);
 		} else {
 			rendered = false;
-			renderprofile=false;
+			renderprofile = false;
 			rendersaveButton = true;
 			return (option);
 		}
 	}
+
 	public void profilePage(UserDto user) {
 		if (redirect.equals(Next_Option)) {
-			if(null!=user) {
-				int userId=user.getUserId();
-			HttpSession sessionuser = SessionUtils.getSession();
-			sessionuser.setAttribute("userProfile", userId);
-			nextButoon = true;
+			if (null != user) {
+				int userId = user.getUserId();
+				HttpSession sessionuser = SessionUtils.getSession();
+				sessionuser.setAttribute("userProfile", userId);
+				nextButoon = true;
 			}
 		} else {
 			renderprofile = false;
-			nextButoon=false;
+			nextButoon = false;
 		}
 
 	}
@@ -485,13 +486,13 @@ public class UserAccountController implements Serializable, DbConstant {
 		renderForeignCountry = false;
 		rendersaveButton = false;
 		renderprofile = false;
-		nextButoon=false;
+		nextButoon = false;
 	}
 
 	public String cancel(UserDto user) {
 		user.setEditable(false);
 		optionCombine();
-		
+
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -519,8 +520,8 @@ public class UserAccountController implements Serializable, DbConstant {
 	public String saveAction(UserDto user) throws NoSuchAlgorithmException, IOException {
 		LOGGER.info("update  saveAction method");
 		if (user != null) {
-			
-			//Creating Session about user profile
+
+			// Creating Session about user profile
 			HttpSession sessionuser = SessionUtils.getSession();
 			sessionuser.setAttribute("userProfile", user);
 			optionCombine();
@@ -607,7 +608,6 @@ public class UserAccountController implements Serializable, DbConstant {
 		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
 
 	}
-	
 
 	public String updateStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
@@ -627,13 +627,14 @@ public class UserAccountController implements Serializable, DbConstant {
 
 			us.setStatus(ACTIVE);
 		}
-		usersImpl.UpdateUsers(us);		
-		 listUsersByDateBetween();
+		usersImpl.UpdateUsers(us);
+		listUsersByDateBetween();
 		// return to current page
 		return "null";
 		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
 
 	}
+
 	public String updateRepStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -652,8 +653,8 @@ public class UserAccountController implements Serializable, DbConstant {
 
 			us.setStatus(ACTIVE);
 		}
-		usersImpl.UpdateUsers(us);		
-		repDtosDetails=displayRepresentativeByDateBetween();
+		usersImpl.UpdateUsers(us);
+		repDtosDetails = displayRepresentativeByDateBetween();
 		// return to current page
 		return "null";
 		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
@@ -662,7 +663,7 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void updateTable() throws Exception {
 		if (choice.equalsIgnoreCase(country_rw)) {
-			
+
 			rendered = true;
 			renderForeignCountry = true;
 			showCategory();
@@ -684,38 +685,37 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	@SuppressWarnings("static-access")
 	public List<UserDto> displayRepresentativeByDateBetween() {
-		
-		try {
-			
-					userDtosDetails = new ArrayList<UserDto>();
-					for (Object[] data : usersImpl.reportList(
-							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.loginStatus,cat.usercategoryName from Users us,UserCategory cat where us.userCategory=cat.userCatid and cat.usercategoryName='"+INSTITUTE_REP+"'"
-								)) {
 
-						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
-								+ data[1] + "");
-						UserDto userDtos = new UserDto();
-						userDtos.setEditable(false);
-						userDtos.setUserId(Integer.parseInt(data[5] + ""));
-						userDtos.setFname(data[0] + "");
-						userDtos.setLname(data[1] + "");
-						userDtos.setViewId(data[2] + "");
-						userDtos.setUserCategory((UserCategory) data[3]);
-						userDtos.setStatus(data[4] + "");
-						/*userDtos.setEmail(data[6] + "");
-						userDtos.setPhone(data[7] + "");
-						userDtos.setInstitution(data[8] + "");
-						userDtos.setGenericStatus(data[9] + "");
-						userDtos.setBoard((Board)data[10]);*/
-						userDtos.setLoginStatus(data[6] + "");
-						if (data[4].equals(ACTIVE)) {
-							userDtos.setAction(DESACTIVE);
-						} else {
-							userDtos.setAction(ACTIVE);
-						}
-						userDtosDetails.add(userDtos);
-					}
-					return(userDtosDetails);
+		try {
+
+			userDtosDetails = new ArrayList<UserDto>();
+			for (Object[] data : usersImpl.reportList(
+					"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.loginStatus,cat.usercategoryName from Users us,UserCategory cat where us.userCategory=cat.userCatid and cat.usercategoryName='"
+							+ INSTITUTE_REP + "'")) {
+
+				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
+				UserDto userDtos = new UserDto();
+				userDtos.setEditable(false);
+				userDtos.setUserId(Integer.parseInt(data[5] + ""));
+				userDtos.setFname(data[0] + "");
+				userDtos.setLname(data[1] + "");
+				userDtos.setViewId(data[2] + "");
+				userDtos.setUserCategory((UserCategory) data[3]);
+				userDtos.setStatus(data[4] + "");
+				/*
+				 * userDtos.setEmail(data[6] + ""); userDtos.setPhone(data[7] + "");
+				 * userDtos.setInstitution(data[8] + ""); userDtos.setGenericStatus(data[9] +
+				 * ""); userDtos.setBoard((Board)data[10]);
+				 */
+				userDtos.setLoginStatus(data[6] + "");
+				if (data[4].equals(ACTIVE)) {
+					userDtos.setAction(DESACTIVE);
+				} else {
+					userDtos.setAction(ACTIVE);
+				}
+				userDtosDetails.add(userDtos);
+			}
+			return (userDtosDetails);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -724,6 +724,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 		return null;
 	}
+
 	@SuppressWarnings("static-access")
 	public void listUsersByDateBetween() {
 		try {
@@ -777,7 +778,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@SuppressWarnings("static-access")
 	public void displayUsersByDateBetween() {
 		try {
@@ -809,7 +810,7 @@ public class UserAccountController implements Serializable, DbConstant {
 						userDtos.setPhone(data[7] + "");
 						userDtos.setInstitution(data[8] + "");
 						userDtos.setGenericStatus(data[9] + "");
-						userDtos.setBoard((Board)data[10]);
+						userDtos.setBoard((Board) data[10]);
 						if (data[4].equals(ACTIVE)) {
 							userDtos.setAction(DESACTIVE);
 						} else {
@@ -1332,24 +1333,20 @@ public class UserAccountController implements Serializable, DbConstant {
 		this.nextButoon = nextButoon;
 	}
 
-
 	public boolean isRenderBoard() {
 		return renderBoard;
 	}
-
 
 	public void setRenderBoard(boolean renderBoard) {
 		this.renderBoard = renderBoard;
 	}
 
-
 	public List<UserDto> getRepDtosDetails() {
 		return repDtosDetails;
 	}
 
-
 	public void setRepDtosDetails(List<UserDto> repDtosDetails) {
 		this.repDtosDetails = repDtosDetails;
 	}
-	
+
 }

@@ -209,46 +209,44 @@ public class UserContactController implements Serializable, DbConstant {
 		return contactDtoDetails;
 
 	}
-	
+
 	public List<UserDto> boardStaffSize() {
 		HttpSession session = SessionUtils.getSession();
 		usersSession = (Users) session.getAttribute("userSession");
 
 		String usercatame = usersSession.getUserCategory().getUsercategoryName();
-		boardName= usersSession.getBoard().getBoardName();
-	
-					userDtoDetails = new ArrayList<UserDto>();
-					if ((null != usercatame) && (null != boardName)) {
+		boardName = usersSession.getBoard().getBoardName();
 
-						for (Object[] data : usersImpl.reportList(
-								"select us.userId,b.boardId, us.fname,us.lname,us.board,us.userCategory,co.email,co.phone,us.status from Users us,Board b,Contact co where us.board=b.boardId and us.userId=co.user and b.boardName='"
-										+ boardName + "'")) {
+		userDtoDetails = new ArrayList<UserDto>();
+		if ((null != usercatame) && (null != boardName)) {
 
-							LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
-									+ data[1] + "");
-							UserDto userDtos = new UserDto();
-							userDtos.setEditable(false);
-							userDtos.setUserId(Integer.parseInt(data[0] + ""));
-							userDtos.setFname(data[2] + "");
-							userDtos.setLname(data[3] + "");
-							userDtos.setBoard((Board) data[4]);
-							userDtos.setUserCategory((UserCategory) data[5]);
-							userDtos.setEmail(data[6] + "");
-							userDtos.setPhone(data[7] + "");
-							userDtos.setStatus(data[8] + "");
-							if (data[8].equals(ACTIVE)) {
-								userDtos.setAction(DESACTIVE);
-							} else {
-								userDtos.setAction(ACTIVE);
-							}
-							userDtoDetails.add(userDtos);
-						}
-						
-					}
-					return(userDtoDetails);
+			for (Object[] data : usersImpl.reportList(
+					"select us.userId,b.boardId, us.fname,us.lname,us.board,us.userCategory,co.email,co.phone,us.status from Users us,Board b,Contact co where us.board=b.boardId and us.userId=co.user and b.boardName='"
+							+ boardName + "'")) {
+
+				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
+				UserDto userDtos = new UserDto();
+				userDtos.setEditable(false);
+				userDtos.setUserId(Integer.parseInt(data[0] + ""));
+				userDtos.setFname(data[2] + "");
+				userDtos.setLname(data[3] + "");
+				userDtos.setBoard((Board) data[4]);
+				userDtos.setUserCategory((UserCategory) data[5]);
+				userDtos.setEmail(data[6] + "");
+				userDtos.setPhone(data[7] + "");
+				userDtos.setStatus(data[8] + "");
+				if (data[8].equals(ACTIVE)) {
+					userDtos.setAction(DESACTIVE);
+				} else {
+					userDtos.setAction(ACTIVE);
+				}
+				userDtoDetails.add(userDtos);
+			}
+
+		}
+		return (userDtoDetails);
 
 	}
-
 
 	@SuppressWarnings("static-access")
 	public List<UserDto> boardStaff() {
@@ -256,7 +254,7 @@ public class UserContactController implements Serializable, DbConstant {
 		usersSession = (Users) session.getAttribute("userSession");
 
 		String usercatame = usersSession.getUserCategory().getUsercategoryName();
-		boardName= usersSession.getBoard().getBoardName();
+		boardName = usersSession.getBoard().getBoardName();
 		try {
 			if (to.after(from)) {
 
@@ -272,9 +270,9 @@ public class UserContactController implements Serializable, DbConstant {
 					if ((null != usercatame) && (null != boardName)) {
 
 						for (Object[] data : usersImpl.reportList(
-								"select us.userId,b.boardId, us.fname,us.lname,us.board,us.userCategory,co.email,co.phone,us.status,us.loginStatus from Users us,Board b,Contact co where us.board=b.boardId and us.userId=co.user and us.createdDate between '" 
-								+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "' and b.boardName='"
-										+ boardName + "'")) {
+								"select us.userId,b.boardId, us.fname,us.lname,us.board,us.userCategory,co.email,co.phone,us.status,us.loginStatus from Users us,Board b,Contact co where us.board=b.boardId and us.userId=co.user and us.createdDate between '"
+										+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to)
+										+ "' and b.boardName='" + boardName + "'")) {
 
 							LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
 									+ data[1] + "");
@@ -288,8 +286,8 @@ public class UserContactController implements Serializable, DbConstant {
 							userDtos.setEmail(data[6] + "");
 							userDtos.setPhone(data[7] + "");
 							userDtos.setStatus(data[8] + "");
-							if((null!=data[9]+"")) {
-							userDtos.setLoginStatus(data[9] + "");
+							if ((null != data[9] + "")) {
+								userDtos.setLoginStatus(data[9] + "");
 							}
 							if (data[8].equals(ACTIVE)) {
 								userDtos.setAction(DESACTIVE);
@@ -348,7 +346,7 @@ public class UserContactController implements Serializable, DbConstant {
 		renderContactForm = false;
 		renderTable = true;
 		renderLoginTable = false;
-		planRender= false;
+		planRender = false;
 	}
 
 	public void showContacts() {
@@ -356,23 +354,24 @@ public class UserContactController implements Serializable, DbConstant {
 			rendered = true;
 		renderTable = false;
 		renderLoginTable = false;
-		planRender= false;
+		planRender = false;
 	}
-	
+
 	public void showLoginUsers() {
 		if (userLoginSize != 0)
 			renderTable = false;
 		renderLoginTable = true;
 		rendered = false;
-		planRender= false;
+		planRender = false;
 	}
 
 	public void showPlan() {
-		planRender= true;
-		renderTable=false;
+		planRender = true;
+		renderTable = false;
 		rendered = false;
 		renderLoginTable = false;
 	}
+
 	public List displayContactByDateBetween(List<Contact> contactDto) {
 
 		List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();

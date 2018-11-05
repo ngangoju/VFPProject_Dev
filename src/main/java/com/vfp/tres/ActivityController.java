@@ -17,9 +17,13 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.TaskAssignmentImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.InstitutionRegistrationRequest;
+import tres.domain.Task;
+import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.UserDto;
@@ -36,8 +40,11 @@ public class ActivityController implements Serializable, DbConstant {
 	private Users users;
 	private Users usersSession;
 	private Activity activity;
+	private Task task;
+	private TaskAssignment taskAssign;
 	private List<Activity> activityDetail = new ArrayList<Activity>();
 	private List<Activity> activityDetails = new ArrayList<Activity>();
+	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
 
@@ -50,6 +57,7 @@ public class ActivityController implements Serializable, DbConstant {
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
+	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -107,6 +115,9 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			activity.setDate(timestamp);
 			activity.setUser(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
+			taskAssign = taskAssignImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
+					new Object[] { ACTIVE, usersSession.getUserId() }, "TaskAssignment");
+			activity.setTask(taskAssign.getTask());
 			activityImpl.saveActivity(activity);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -304,6 +315,30 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setActivityDtoDetail(List<ActivityDto> activityDtoDetail) {
 		this.activityDtoDetail = activityDtoDetail;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public TaskAssignment getTaskAssign() {
+		return taskAssign;
+	}
+
+	public void setTaskAssign(TaskAssignment taskAssign) {
+		this.taskAssign = taskAssign;
+	}
+
+	public List<TaskAssignment> getTaskAssignDetails() {
+		return taskAssignDetails;
+	}
+
+	public void setTaskAssignDetails(List<TaskAssignment> taskAssignDetails) {
+		this.taskAssignDetails = taskAssignDetails;
 	}
 
 }

@@ -1,5 +1,4 @@
 
-
 package tres.domain;
 
 import java.io.Serializable;
@@ -10,79 +9,76 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @MappedSuperclass
-public abstract class CommonDomain  implements Serializable {
-private static final long serialVersionUID =  -6665275582900585705L;
-public CommonDomain() {
+public abstract class CommonDomain implements Serializable {
+	private static final long serialVersionUID = -6665275582900585705L;
 
-  }
+	public CommonDomain() {
 
-  @Column(name = "createdBy")
-  private String createdBy;
+	}
 
-  @Column(name = "crtdDtTime")
-  private Timestamp crtdDtTime;
+	@Column(name = "createdBy")
+	private String createdBy;
 
-  
-  @Column(name = "optLock")
-  private Timestamp optLock;
+	@Column(name = "crtdDtTime")
+	private Timestamp crtdDtTime;
 
-  @Column(name = "upDtTime")
-  private Timestamp upDtTime;
+	@Column(name = "optLock")
+	private Timestamp optLock;
 
-  @Column(name = "updatedBy")
-  private String updatedBy;
-  
-  @Column(name = "genericStatus")
-  private String genericStatus;
+	@Column(name = "upDtTime")
+	private Timestamp upDtTime;
 
+	@Column(name = "updatedBy")
+	private String updatedBy;
 
-   public String getCreatedBy() {
-    return this.createdBy;
-  }
+	@Column(name = "genericStatus")
+	private String genericStatus;
 
-   public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
 
-  @XmlJavaTypeAdapter(TimeStampAdapter.class)
-  public Timestamp getCrtdDtTime() {
-    return this.crtdDtTime;
-  }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-  public void setCrtdDtTime(Timestamp crtdDtTime) {
-    this.crtdDtTime = crtdDtTime;
-  }
+	@XmlJavaTypeAdapter(TimeStampAdapter.class)
+	public Timestamp getCrtdDtTime() {
+		return this.crtdDtTime;
+	}
 
-  @XmlJavaTypeAdapter(TimeStampAdapter.class)
-  public Timestamp getOptLock() {
-    return this.optLock;
-  }
+	public void setCrtdDtTime(Timestamp crtdDtTime) {
+		this.crtdDtTime = crtdDtTime;
+	}
 
+	@XmlJavaTypeAdapter(TimeStampAdapter.class)
+	public Timestamp getOptLock() {
+		return this.optLock;
+	}
 
-  @XmlJavaTypeAdapter(TimeStampAdapter.class)
-  public Timestamp getUpDtTime() {
-    return this.upDtTime;
-  }
+	@XmlJavaTypeAdapter(TimeStampAdapter.class)
+	public Timestamp getUpDtTime() {
+		return this.upDtTime;
+	}
 
-  public void setUpDtTime(Timestamp upDtTime) {
-    this.upDtTime = upDtTime;
-  }
+	public void setUpDtTime(Timestamp upDtTime) {
+		this.upDtTime = upDtTime;
+	}
 
-  public String getUpdatedBy() {
-    return this.updatedBy;
-  }
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
 
-  public void setUpdatedBy(String updatedBy) {
-    this.updatedBy = updatedBy;
-  }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-public String getGenericStatus() {
-	return genericStatus;
-}
+	public String getGenericStatus() {
+		return genericStatus;
+	}
 
-public void setGenericStatus(String genericStatus) {
-	this.genericStatus = genericStatus;
-}
-  
-  
+	public void setGenericStatus(String genericStatus) {
+		this.genericStatus = genericStatus;
+	}
+
 }

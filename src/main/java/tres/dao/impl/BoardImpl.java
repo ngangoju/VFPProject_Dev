@@ -7,7 +7,7 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IBoard;
 import tres.domain.Board;
 
-public class BoardImpl extends AbstractDao<Long, Board> implements IBoard{
+public class BoardImpl extends AbstractDao<Long, Board> implements IBoard {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
 	public Board saveBoards(Board board) {
@@ -25,7 +25,6 @@ public class BoardImpl extends AbstractDao<Long, Board> implements IBoard{
 	public Board UpdateBoard(Board board) {
 		return updateIntable(board);
 	}
-	
 
 	public Board getBoardsWithQuery(String[] propertyName, Object[] value, String hqlStatement) {
 		try {

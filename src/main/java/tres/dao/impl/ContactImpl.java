@@ -12,7 +12,6 @@ import tres.dao.interfc.IContact;
 import tres.domain.Contact;
 
 public class ContactImpl extends AbstractDao<Long, Contact> implements IContact {
-  
 
 	public List<Contact> getListContacts() {
 		return (List<Contact>) (Object) getModelList();
@@ -28,7 +27,7 @@ public class ContactImpl extends AbstractDao<Long, Contact> implements IContact 
 
 	public Contact saveContact(Contact contact) throws HibernateException {
 		return saveIntable(contact);
-			
+
 	}
 
 }

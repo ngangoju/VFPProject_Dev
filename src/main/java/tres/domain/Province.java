@@ -13,41 +13,40 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 @Entity
 @Table(name = "Province")
-@NamedQuery(name = "Province.findAll",
-        query = "SELECT r FROM Province r order by v desc")
-public class Province implements  Serializable{
-       private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue
-    @Column(name = "provenceId")
-    private int provenceId;
-    
-    
-    @Column(name = "code")
-    private String code;
-    
-     @Column(name = "provenceName_rw")
-    private String provenceName_rw;
-     
-     @Column(name = "provenceName_en")
-     private String provenceName_en;
-     
-     @Column(name = "provenceName_fr")
-     private String provenceName_fr;
+@NamedQuery(name = "Province.findAll", query = "SELECT r FROM Province r order by v desc")
+public class Province implements Serializable {
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "provenceId")
+	private int provenceId;
 
-    public int getProvenceId() {
-        return provenceId;
-    }
+	@Column(name = "code")
+	private String code;
 
-    public void setProvenceId(int provenceId) {
-        this.provenceId = provenceId;
-    }
+	@Column(name = "provenceName_rw")
+	private String provenceName_rw;
+
+	@Column(name = "provenceName_en")
+	private String provenceName_en;
+
+	@Column(name = "provenceName_fr")
+	private String provenceName_fr;
+
+	public int getProvenceId() {
+		return provenceId;
+	}
+
+	public void setProvenceId(int provenceId) {
+		this.provenceId = provenceId;
+	}
 
 	public String getProvenceName_rw() {
 		return provenceName_rw;
@@ -81,7 +80,4 @@ public class Province implements  Serializable{
 		this.code = code;
 	}
 
-   
-     
-     
 }

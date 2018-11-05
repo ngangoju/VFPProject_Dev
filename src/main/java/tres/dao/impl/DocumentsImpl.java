@@ -5,6 +5,7 @@
  */
 
 package tres.dao.impl;
+
 import java.util.List;
 import java.util.logging.Logger;
 import tres.dao.generic.AbstractDao;
@@ -16,7 +17,7 @@ import tres.domain.Documents;
  * @author Emmanuel
  */
 
-public class DocumentsImpl extends AbstractDao<Long, Documents> implements IDocuments{
+public class DocumentsImpl extends AbstractDao<Long, Documents> implements IDocuments {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
 	public Documents saveDocuments(Documents document) {

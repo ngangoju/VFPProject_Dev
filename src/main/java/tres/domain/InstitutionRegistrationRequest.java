@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "InstitutionRegistrationRequest")
 @NamedQuery(name = "InstitutionRegistrationRequest.findAll", query = "SELECT r FROM InstitutionRegistrationRequest r order by v desc")
-public class InstitutionRegistrationRequest  extends CommonDomain implements Serializable {
+public class InstitutionRegistrationRequest extends CommonDomain implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
@@ -57,7 +57,6 @@ public class InstitutionRegistrationRequest  extends CommonDomain implements Ser
 		this.instRegReqstStatus = instRegReqstStatus;
 	}
 
-
 	public Institution getInstitution() {
 		return institution;
 	}
@@ -81,7 +80,5 @@ public class InstitutionRegistrationRequest  extends CommonDomain implements Ser
 	public void setInstRegReqstDate(Date instRegReqstDate) {
 		this.instRegReqstDate = instRegReqstDate;
 	}
-	
-	
 
 }

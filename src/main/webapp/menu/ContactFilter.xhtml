@@ -229,43 +229,48 @@
 
 									<p:column headerText="Action">
 										<div class="btn-group" role="group" aria-label="Basic example">
-											<h:commandLink style="color:white" data-toggle="tooltip" data-placement="left" title="Edit"
+											<h:commandLink style="color:white" data-toggle="tooltip"
+												data-placement="left" title="Edit"
 												class="btn btn-success 	glyphicon glyphicon-edit"
 												action="#{userContactController.editContactAction(cont)}"
 												rendered="#{not cont.editable}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
-											<h:commandLink style="margin-left:2px;color:white" data-toggle="tooltip" data-placement="right" title="Cancel"
+											<h:commandLink style="margin-left:2px;color:white"
+												data-toggle="tooltip" data-placement="right" title="Cancel"
 												class="btn btn-danger glyphicon glyphicon-remove"
 												action="#{userContactController.cancelContact(cont)}"
 												rendered="#{cont.editable}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
-											<h:commandLink  data-toggle="tooltip" data-placement="right" title="Save Changes"
-												 class="btn btn-primary glyphicon glyphicon-floppy-disk"
+											<h:commandLink data-toggle="tooltip" data-placement="right"
+												title="Save Changes"
+												class="btn btn-primary glyphicon glyphicon-floppy-disk"
 												action="#{userContactController.saveContactAction(cont)}"
 												rendered="#{cont.editable}" render="userConatactPanel">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
-											
-											<h:commandLink style="color:white" data-toggle="tooltip" data-placement="right" title="Other contact"
+
+											<h:commandLink style="color:white" data-toggle="tooltip"
+												data-placement="right" title="Other contact"
 												class="btn btn-info glyphicon glyphicon-new-window"
-												action="#{userContactController.otherUserContact(cont)}" rendered="#{not cont.editable}">
+												action="#{userContactController.otherUserContact(cont)}"
+												rendered="#{not cont.editable}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
-											
-											
+
+
 										</div>
 									</p:column>
 
 								</p:dataTable>
 							</p:outputPanel>
 						</fieldset>
-						
+
 					</div>
 				</div>
 			</h:form>

@@ -2,7 +2,6 @@ package tres.dao.interfc;
 
 import java.util.List;
 
-
 import tres.domain.Evaluation;
 
 public interface IEvaluation {

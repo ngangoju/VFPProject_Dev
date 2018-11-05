@@ -57,7 +57,7 @@ public class Board extends CommonDomain implements Serializable {
 	/* this is for status */
 	@Column(name = "status")
 	private String status;
-	
+
 	@Transient
 	private String action;
 

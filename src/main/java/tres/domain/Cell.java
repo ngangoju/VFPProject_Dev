@@ -8,42 +8,38 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 @Entity
 @Table(name = "Cell")
-@NamedQuery(name = "Cell.findAll",
-query = "SELECT r FROM Cell r order by v desc")
+@NamedQuery(name = "Cell.findAll", query = "SELECT r FROM Cell r order by v desc")
 public class Cell {
-    
- private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue
-    @Column(name = "cellId")
-    private int cellId;
-    
-    @Column(name = "Code")
-    private String Code;
-    
-    @Column(name = "cellName_rw")
-    private String cellName_rw;
 
-    
-    @Column(name = "cellName_fr")
-    private String cellName_fr;
-    
-    
-    @Column(name = "cellName_en")
-    private String cellName_en;
-    
-    
-    @ManyToOne
-    @JoinColumn(name = "sector")
-    private Sector sector;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	@Column(name = "cellId")
+	private int cellId;
 
-    
+	@Column(name = "Code")
+	private String Code;
+
+	@Column(name = "cellName_rw")
+	private String cellName_rw;
+
+	@Column(name = "cellName_fr")
+	private String cellName_fr;
+
+	@Column(name = "cellName_en")
+	private String cellName_en;
+
+	@ManyToOne
+	@JoinColumn(name = "sector")
+	private Sector sector;
+
 	public Sector getSector() {
 		return sector;
 	}
@@ -91,9 +87,5 @@ public class Cell {
 	public void setCellName_en(String cellName_en) {
 		this.cellName_en = cellName_en;
 	}
-
-
-    
-    
 
 }

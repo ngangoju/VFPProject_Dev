@@ -5,15 +5,15 @@ import java.sql.Timestamp;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class TimeStampAdapter extends XmlAdapter<String, Timestamp> {
-  @Override
-  public String marshal(Timestamp v) {
+	@Override
+	public String marshal(Timestamp v) {
 
-    return v.toString();
-  }
+		return v.toString();
+	}
 
-  @Override
-  public Timestamp unmarshal(String v) {
+	@Override
+	public Timestamp unmarshal(String v) {
 
-    return new Timestamp(Long.parseLong(v));
-  }
+		return new Timestamp(Long.parseLong(v));
+	}
 }

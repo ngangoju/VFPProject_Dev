@@ -17,19 +17,19 @@ import tres.domain.Users;
 public class BoardDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private int boardId;
 	private String boardName;
 	private String description;
 	private Date creationDate;
 	private Institution institution;
-	private Board board;		
+	private Board board;
 	private String action;
 	private String genericStatus;
 	private String status;
-	
+
 	private boolean editable;
-	
+
 	public boolean isEditable() {
 		return editable;
 	}
@@ -108,9 +108,6 @@ public class BoardDto implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}	
-	
-	
+	}
+
 }
-
-

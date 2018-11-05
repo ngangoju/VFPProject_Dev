@@ -1,6 +1,5 @@
 package tres.domain;
 
- 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +25,7 @@ public class UploadingFiles extends CommonDomain implements Serializable {
 	@JoinColumn(name = "documents")
 	private Documents documents;
 	@ManyToOne
-	@JoinColumn(name="user")
+	@JoinColumn(name = "user")
 	private Users user;
 
 	public long getUpLoadId() {
@@ -52,5 +51,5 @@ public class UploadingFiles extends CommonDomain implements Serializable {
 	public void setUser(Users user) {
 		this.user = user;
 	}
-	
+
 }

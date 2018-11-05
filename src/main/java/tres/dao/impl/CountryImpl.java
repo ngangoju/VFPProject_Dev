@@ -6,7 +6,7 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.ICountry;
 import tres.domain.Country;
 
-public class CountryImpl extends AbstractDao<Long, Country> implements ICountry{
+public class CountryImpl extends AbstractDao<Long, Country> implements ICountry {
 
 	public Country saveCountry(Country country) {
 		return saveIntable(country);

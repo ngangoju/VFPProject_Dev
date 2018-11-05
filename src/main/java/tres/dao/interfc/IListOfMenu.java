@@ -4,7 +4,6 @@ import java.util.List;
 
 import tres.domain.ListOfMenu;
 
-
 public interface IListOfMenu {
 	public ListOfMenu saveListOfMenu(ListOfMenu listOfMenu);
 

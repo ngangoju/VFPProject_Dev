@@ -4,6 +4,6 @@ import javax.ejb.Local;
 
 @Local
 public interface ILoginControllerService {
-	public String getMyNgaboName() ;
-		
+	public String getMyNgaboName();
+
 }

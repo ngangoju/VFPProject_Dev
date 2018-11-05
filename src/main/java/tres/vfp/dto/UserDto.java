@@ -49,6 +49,7 @@ public class UserDto implements Serializable {
 	private String phone;
 	private String email;
 	private String genericStatus;
+
 	public String getAction() {
 		return action;
 	}
@@ -221,5 +222,5 @@ public class UserDto implements Serializable {
 	public void setGenericStatus(String genericStatus) {
 		this.genericStatus = genericStatus;
 	}
-	
+
 }

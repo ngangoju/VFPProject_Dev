@@ -15,8 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @WebFilter(filterName = "AuthFilter", urlPatterns = { "*.xhtml" })
-public class AuthorizationFilter implements Filter,DbConstant  {
+public class AuthorizationFilter implements Filter, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
+
 	public AuthorizationFilter() {
 	}
 
@@ -33,7 +34,10 @@ public class AuthorizationFilter implements Filter,DbConstant  {
 			HttpSession ses = reqt.getSession(false);
 
 			String reqURI = reqt.getRequestURI();
-					if ((reqURI.indexOf("FormExampleV1.xhtml") >= 0||reqURI.indexOf("503.xhtml") >= 0 ||reqURI.indexOf("500.xhtml") >= 0 ||reqURI.indexOf("404.xhtml") >= 0 ||reqURI.indexOf("FormExample.xhtml") >= 0 ||reqURI.indexOf("default.xhtml") >= 0 ||reqURI.indexOf(HOMEURL) >= 0) || (ses != null && ses.getAttribute(USERSESSION) != null)
+			if ((reqURI.indexOf("FormExampleV1.xhtml") >= 0 || reqURI.indexOf("503.xhtml") >= 0
+					|| reqURI.indexOf("500.xhtml") >= 0 || reqURI.indexOf("404.xhtml") >= 0
+					|| reqURI.indexOf("FormExample.xhtml") >= 0 || reqURI.indexOf("default.xhtml") >= 0
+					|| reqURI.indexOf(HOMEURL) >= 0) || (ses != null && ses.getAttribute(USERSESSION) != null)
 					|| reqURI.indexOf(PUBLICPATH) >= 0 || reqURI.contains(JAVAFACERESOURCE))
 				chain.doFilter(request, response);
 			else

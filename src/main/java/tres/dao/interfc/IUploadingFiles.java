@@ -12,14 +12,20 @@ import tres.domain.Users;
 import java.util.List;
 
 /**
-*
-* @author Emmanuel
-*/
+ *
+ * @author Emmanuel
+ */
 public interface IUploadingFiles {
-     public UploadingFiles saveUploadedFile(UploadingFiles upload);
-        public List<UploadingFiles> getListUploadedFiles();
-         public UploadingFiles getUploadedFileById(int UploadId,String primaryKeyclomunName);
-         public UploadingFiles UpdateUploadedFile(UploadingFiles upload);
-         public String myName();
-public UploadingFiles getUploadedFilesWithQuery(final String[] propertyName, final Object[] value, final String hqlStatement);
+	public UploadingFiles saveUploadedFile(UploadingFiles upload);
+
+	public List<UploadingFiles> getListUploadedFiles();
+
+	public UploadingFiles getUploadedFileById(int UploadId, String primaryKeyclomunName);
+
+	public UploadingFiles UpdateUploadedFile(UploadingFiles upload);
+
+	public String myName();
+
+	public UploadingFiles getUploadedFilesWithQuery(final String[] propertyName, final Object[] value,
+			final String hqlStatement);
 }

@@ -1,6 +1,6 @@
 package tres.dao.generic;
-import java.util.List;
 
+import java.util.List;
 
 public interface IRootDao<K, T> {
 	int NO_OF_RECORDS = 10;
@@ -34,14 +34,13 @@ public interface IRootDao<K, T> {
 	 * @throws Exception
 	 */
 	T getModel(K modelId) throws Exception;
-	
-	
+
 	/**
-     * @param modelId
-     * @return
-     * @throws Exception
-     */
- 
+	 * @param modelId
+	 * @return
+	 * @throws Exception
+	 */
+
 	/**
 	 * @param model
 	 * @return
@@ -62,8 +61,7 @@ public interface IRootDao<K, T> {
 	 * @return
 	 * @throws Exception
 	 */
-	List<T> getList(int startRecord, int numberOfRecord)
-			throws Exception;
+	List<T> getList(int startRecord, int numberOfRecord) throws Exception;
 
 	/**
 	 * @param model
@@ -84,15 +82,13 @@ public interface IRootDao<K, T> {
 	 * @throws Exception
 	 */
 	T saveOrUpdate(final T model) throws Exception;
-	
-	
+
 	/**
-     * @param model
-     * @return
-     * @throws Exception
-     */
-   
-	
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+
 	T saveOnFlush(final T model) throws Exception;
 
 	/**
@@ -108,7 +104,7 @@ public interface IRootDao<K, T> {
 	 * @throws Exception
 	 */
 	T mergeT(final T model) throws Exception;
-	
+
 	/**
 	 * 
 	 * @param model
