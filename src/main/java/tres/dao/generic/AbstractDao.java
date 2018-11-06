@@ -24,7 +24,6 @@ public class AbstractDao<K, T> implements IRootDao<K, T> {
 	public Transaction t = null;
 	protected Class<T> entityClass;
 	private String CLASSNAME = "AbstractDao :: ";
-
 	private static final java.util.logging.Logger LOGGER = java.util.logging.Logger
 			.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private static final int TRIM_CYCLE = 4;

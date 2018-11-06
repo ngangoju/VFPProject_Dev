@@ -91,8 +91,7 @@ public  void sendMailTest(String fname,String lname,String email,String need,Str
 		/*End send content in table sample*/
 		gen.sendEmailNotification("ngangoju@gmail.com","Support Team ",need,msg);
 		LOGGER.info("::: notidficatio sent   ");
-	}
-	
+	}	
 public  boolean sendMailTestVersion(String fname,String lname,String email) {
 	
 		boolean valid;

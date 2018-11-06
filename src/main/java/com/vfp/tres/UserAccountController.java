@@ -150,7 +150,6 @@ public class UserAccountController implements Serializable, DbConstant {
 	private boolean renderRepContactAvailTable;
 	private boolean renderOtherContForm;
 	ContactImpl contactImpl = new ContactImpl();
-
 	@SuppressWarnings({ "unchecked" })
 	@PostConstruct
 	public void init() {

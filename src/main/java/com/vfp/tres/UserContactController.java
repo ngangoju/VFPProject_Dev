@@ -38,6 +38,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
 	private boolean isValid;
+	
 	/* end manage validation messages */
 	private Contact contact;
 	private Users users;

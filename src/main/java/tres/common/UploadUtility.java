@@ -50,7 +50,6 @@ public class UploadUtility implements Serializable, DbConstant {
 		final Path destination = Paths.get(FILELOCATION + systemFileName);
 		LOGGER.info("Path::" + destination);
 		InputStream bytes = null;
-
 		try {
 			bytes = event.getFile().getInputstream();
 			Files.copy(bytes, destination);

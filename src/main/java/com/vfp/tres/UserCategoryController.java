@@ -49,7 +49,6 @@ public class UserCategoryController implements Serializable, DbConstant {
 	private boolean rendered;
 	UserCategoryImpl userCatImpl = new UserCategoryImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {

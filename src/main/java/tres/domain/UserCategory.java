@@ -27,7 +27,6 @@ public class UserCategory  extends CommonDomain implements Serializable {
     @GeneratedValue
     @Column(name = "userCatid")
     private int userCatid;
-
     @Column(name = "usercategoryName",unique=true)
     private String usercategoryName;
 

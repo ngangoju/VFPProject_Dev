@@ -50,7 +50,6 @@ public class FormSampleController implements Serializable, DbConstant {
 	private Users users;
 	private MenuAssignment menuAssignment;
 	private MenuGroup menuGroup;
-
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
 
 	/* class injection */
