@@ -18,19 +18,27 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.FilenameUtils;
 import org.primefaces.event.FileUploadEvent;
 
 import tres.dao.impl.DocumentsImpl;
+import tres.dao.impl.UserImpl;
+import tres.domain.Board;
 import tres.domain.Documents;
+import tres.domain.Users;
 
 public class UploadUtility implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "FormSampleController :: ";
 	private static final long serialVersionUID = 1L;
 	DocumentsImpl documentsImpl = new DocumentsImpl();
+	private boolean isValid;
+	private Users usersSession;
+	UserImpl usersImpl = new UserImpl();
+	JSFBoundleProvider provider = new JSFBoundleProvider();
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -61,6 +69,59 @@ public class UploadUtility implements Serializable, DbConstant {
 
 		return documents;
 	}
+	public Documents fileUploadUtilUsers(FileUploadEvent event, String validationCode) throws Exception {
+		LOGGER.info("FILE ::::" + event.getFile().getFileName());
+		Documents documents = new Documents();
+		String systemFileName = UUID.randomUUID().toString() + "."
+				+ FilenameUtils.getName(event.getFile().getFileName());
+		final Path destination = Paths.get(FILELOCATION + systemFileName);
+		LOGGER.info("Path::" + destination);
+		InputStream bytes = null;
+		HttpSession session = SessionUtils.getSession();
+		usersSession = (Users) session.getAttribute("userSession");
+		
+		try {
+			bytes = event.getFile().getInputstream();
+			Files.copy(bytes, destination);
+
+			documents.setCrtdDtTime(timestamp);
+			documents.setFileSize(event.getFile().getSize());
+			documents.setOriginalFileName(event.getFile().getFileName());
+			documents.setSysFilename(systemFileName);
+			documents.setValidDocCode(validationCode);
+			documents.setDocumentLoc(FILELOCATION);
+			documents = documentsImpl.saveIntable(documents);
+			///Updating user image in db start here
+			Users us = new Users();
+			us.setUserId(usersSession.getUserId());
+			us.setViewId(usersSession.getViewId());
+			us.setViewName(usersSession.getViewName());
+			us.setAddress(usersSession.getAddress());
+			us.setFname(usersSession.getFname());
+			us.setLname(usersSession.getLname());
+			us.setBoard(usersSession.getBoard());
+			us.setUserCategory(usersSession.getUserCategory());
+			us.setCreatedBy(usersSession.getCreatedBy());
+			us.setGender(usersSession.getGender());
+			us.setDateOfBirth(usersSession.getDateOfBirth());
+			us.setUpdatedBy(usersSession.getUpdatedBy());
+			us.setCreatedDate(usersSession.getCreatedDate());
+			us.setCrtdDtTime(usersSession.getCrtdDtTime());
+			us.setUpDtTime(usersSession.getUpDtTime());
+			us.setLoginStatus(usersSession.getLoginStatus());
+			us.setStatus(usersSession.getStatus());
+			us.setVillage(usersSession.getVillage());
+			us.setImage(systemFileName);
+			usersImpl.UpdateUsers(us);
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		} //
+
+		return documents;
+	}
+	
+	
 
 	public static String getSubmittedFileName(Part filePart) {
 		String header = filePart.getHeader("content-disposition");
@@ -156,4 +217,41 @@ public class UploadUtility implements Serializable, DbConstant {
 
 		}
 	}
+
+	public DocumentsImpl getDocumentsImpl() {
+		return documentsImpl;
+	}
+
+	public void setDocumentsImpl(DocumentsImpl documentsImpl) {
+		this.documentsImpl = documentsImpl;
+	}
+
+	public boolean isValid() {
+		return isValid;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+
+	public JSFBoundleProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(JSFBoundleProvider provider) {
+		this.provider = provider;
+	}
+	public Users getUsersSession() {
+		return usersSession;
+	}
+	public void setUsersSession(Users usersSession) {
+		this.usersSession = usersSession;
+	}
+	public UserImpl getUsersImpl() {
+		return usersImpl;
+	}
+	public void setUsersImpl(UserImpl usersImpl) {
+		this.usersImpl = usersImpl;
+	}
+	
 }

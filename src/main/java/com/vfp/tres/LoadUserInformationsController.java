@@ -3,8 +3,10 @@ package com.vfp.tres;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -50,7 +52,8 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	UserImpl usersImpl = new UserImpl();
 	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
-
+	private String userCatName;
+	private String dob;
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -76,7 +79,9 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 		if (null != users) {
 			LOGGER.info("HHH>>" + users.getUserCategory().getUsercategoryName());
 			userCategory = users.getUserCategory();
-
+			userCatName = users.getUserCategory().getUsercategoryName();
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy/dd/MM");
+			dob = fmt.format(users.getDateOfBirth());
 			try {
 				menuAssignmentDetails = menuAssignmentImpl.getGenericListWithHQLParameter(
 						new String[] { "userCategory", "genericStatus" },
@@ -232,6 +237,22 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 
 	public void setUserCategory(UserCategory userCategory) {
 		this.userCategory = userCategory;
+	}
+
+	public String getUserCatName() {
+		return userCatName;
+	}
+
+	public void setUserCatName(String userCatName) {
+		this.userCatName = userCatName;
+	}
+
+	public String getDob() {
+		return dob;
+	}
+
+	public void setDob(String dob) {
+		this.dob = dob;
 	}
 
 }

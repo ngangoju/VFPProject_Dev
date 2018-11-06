@@ -12,39 +12,41 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
 /**
- *
- * @author Emmanuel
- */
+*
+* @author Emmanuel
+*/
 @Entity
 @Table(name = "UserCategory")
-@NamedQuery(name = "UserCategory.findAll", query = "SELECT r FROM UserCategory r order by userCatid desc")
-public class UserCategory extends CommonDomain implements Serializable {
+@NamedQuery(name = "UserCategory.findAll",
+        query = "SELECT r FROM UserCategory r order by userCatid desc")
+public class UserCategory  extends CommonDomain implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue
-	@Column(name = "userCatid")
-	private int userCatid;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue
+    @Column(name = "userCatid")
+    private int userCatid;
 
-	@Column(name = "usercategoryName")
-	private String usercategoryName;
+    @Column(name = "usercategoryName",unique=true)
+    private String usercategoryName;
 
-	public int getUserCatid() {
-		return userCatid;
-	}
+    public int getUserCatid() {
+        return userCatid;
+    }
 
-	public void setUserCatid(int userCatid) {
-		this.userCatid = userCatid;
-	}
+    public void setUserCatid(int userCatid) {
+        this.userCatid = userCatid;
+    }
 
-	public String getUsercategoryName() {
-		return usercategoryName;
-	}
+    public String getUsercategoryName() {
+        return usercategoryName;
+    }
 
-	public void setUsercategoryName(String usercategoryName) {
-		this.usercategoryName = usercategoryName;
-	}
+    public void setUsercategoryName(String usercategoryName) {
+        this.usercategoryName = usercategoryName;
+    }
+
+	
 
 }

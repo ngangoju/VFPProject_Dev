@@ -14,12 +14,27 @@
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<center>
-							<span style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
-								<span style="color: red">#{msg['header.title.asteriks']}</span>
-								#{msg['header.title.mandatory']}
-							</span>
-						</center>
+						<table>
+							<tr>
+								<td>
+										<div>
+											<a href="ViewUsersList.xhtml"
+												class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left"
+												style="font-size: 14px !important;">
+												#{msg['UserCatForm.BackBoardButtom']} </a>
+										</div>
+									
+									</td>
+								
+									<td>&nbsp;&nbsp;<span
+										style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
+											<span style="color: red">#{msg['header.title.asteriks']}</span>
+											#{msg['header.title.mandatory']}
+									</span></td>
+								
+							</tr>
+						</table>
+
 					</div>
 					<div class="panel-body">
 

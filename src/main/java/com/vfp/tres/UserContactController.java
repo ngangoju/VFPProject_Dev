@@ -50,6 +50,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private List<UserDto> userDtofiltered = new ArrayList<UserDto>();
 	private List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 	private List<Contact> contactDetails = new ArrayList<Contact>();
+	private List<UserDto> userDtosDetails = new ArrayList<UserDto>();
 	private List<Users> countUsersList = new ArrayList<Users>();
 	private List<Users> holdCountedList = new ArrayList<Users>();
 	private String choice;
@@ -59,6 +60,10 @@ public class UserContactController implements Serializable, DbConstant {
 	private boolean renderContactForm;
 	private boolean renderTable;
 	private boolean renderLoginTable;
+	private boolean renderContactDash;
+	private boolean renderEditedTableByBoard;
+	private boolean renderDatePanel;
+	private boolean renderDataTable;
 	private String useremail;
 	private int listSize;
 	private int contactSize;
@@ -69,6 +74,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private int days;
 	private int staffSize;
 	private String boardName;
+	private String selection;
 	/*
 	 * private String viewId; private String fname; private String lname;
 	 */
@@ -99,7 +105,6 @@ public class UserContactController implements Serializable, DbConstant {
 			contactDto = new ContactDto();
 		}
 		try {
-
 			contactDetails = contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Contact", "contactId asc");
 
@@ -351,10 +356,79 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void showContacts() {
 		if (listSize != 0)
-			rendered = true;
-		renderTable = false;
-		renderLoginTable = false;
-		planRender = false;
+			this.rendered = true;
+		this.renderContactDash = false;
+		/*
+		 * renderTable = false; renderLoginTable = false; planRender= false;
+		 */
+	}
+
+	public void showContactDashBoard() {
+		this.renderContactDash = true;
+		this.renderForeignCountry = false;
+		this.rendered = false;
+		this.renderLoginTable = false;
+		this.renderDatePanel = false;
+		this.renderEditedTableByBoard = false;
+		this.renderDataTable=false;
+		
+	}
+	@SuppressWarnings("static-access")
+	public void displayUsersByDateBetween() {
+		try {
+			if (to.after(from)) {
+
+				Formating fmt = new Formating();
+				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+						+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+				days = fmt.daysBetween(from, to);
+
+				LOGGER.info("Days founded:......................" + days);
+				if (days <= 30) {
+					renderDataTable=true;
+					userDtosDetails = new ArrayList<UserDto>();
+					for (Object[] data : usersImpl.reportList(
+							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,co.email,co.phone,ins.institutionName,us.genericStatus,us.board from Users us,Contact co,Institution ins,Board b where b.institution=ins.institutionId and b.boardId=us.board and co.user=us.userId and us.createdDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
+						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
+								+ data[1] + "");
+						UserDto userDtos = new UserDto();
+						userDtos.setEditable(false);
+						userDtos.setUserId(Integer.parseInt(data[5] + ""));
+						userDtos.setFname(data[0] + "");
+						userDtos.setLname(data[1] + "");
+						userDtos.setViewId(data[2] + "");
+						userDtos.setUserCategory((UserCategory) data[3]);
+						userDtos.setStatus(data[4] + "");
+						userDtos.setEmail(data[6] + "");
+						userDtos.setPhone(data[7] + "");
+						userDtos.setInstitution(data[8] + "");
+						userDtos.setGenericStatus(data[9] + "");
+						userDtos.setBoard((Board) data[10]);
+						if (data[4].equals(ACTIVE)) {
+							userDtos.setAction(DESACTIVE);
+						} else {
+							userDtos.setAction(ACTIVE);
+						}
+						userDtosDetails.add(userDtos);
+					}
+
+				} else {
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
+				}
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void showLoginUsers() {
@@ -363,6 +437,9 @@ public class UserContactController implements Serializable, DbConstant {
 		renderLoginTable = true;
 		rendered = false;
 		planRender = false;
+		this.renderContactDash = false;
+		this.renderForeignCountry = false;
+
 	}
 
 	public void showPlan() {
@@ -370,6 +447,7 @@ public class UserContactController implements Serializable, DbConstant {
 		renderTable = false;
 		rendered = false;
 		renderLoginTable = false;
+
 	}
 
 	public List displayContactByDateBetween(List<Contact> contactDto) {
@@ -429,49 +507,48 @@ public class UserContactController implements Serializable, DbConstant {
 			addcontacts();
 			// :::End of Method :::::::::://
 
-			FormSampleController sample = new FormSampleController();
-			contact.setCreatedBy(usersSession.getViewId());
-			contact.setCrtdDtTime(timestamp);
-			contact.setGenericStatus(ACTIVE);
-			contact.setUpDtTime(timestamp);
-			contact.setCreatedBy(usersSession.getViewId());
-			contact.setCrtdDtTime(timestamp);
-			contact.setGenericStatus(ACTIVE);
-			contact.setUpDtTime(timestamp);
-			LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
-			contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
+			/* FormSampleController sample = new FormSampleController(); */
+			SendSupportEmail support = new SendSupportEmail();
+			if (null != users) {
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				contact.setUpdatedBy(usersSession.getViewId());
+				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
+				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
+				// :::sending email action:::::::::::://
 
-			contact.setEmail(useremail);
-			contact.setUpdatedBy(usersSession.getViewId());
-			// :::saving contact action:::::::::::://
+				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), useremail);
+				// ::: end sending email action:::::::::::://
+				if (verifyemail) {
+					contact.setEmail(useremail);
+					contact.setUpdatedBy(usersSession.getViewId());
+					// :::saving contact action:::::::::::://
+					contactImpl.saveContact(contact);
 
-			contactImpl.saveContact(contact);
-			return "/menu/ViewUsersContacts.xhtml?faces-redirect=true";
-			/*
-			 * sample.sendUserMailTest(useremail, users.getFname(), users.getLname());
-			 * isValid = sample.isValid(); if (isValid) { contact.setEmail(useremail);
-			 * contact.setUpdatedBy(usersSession.getViewId()); // :::saving contact
-			 * action:::::::::::://
-			 * 
-			 * contactImpl.saveContact(contact);
-			 * 
-			 * // :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
-			 * setValid(true); //
-			 * JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"))
-			 * ; JSFMessagers.addErrorMessage(getProvider().getValue(
-			 * "com.server.side.email.notification")); LOGGER.info(CLASSNAME +
-			 * ":::Contact Details is saved"); clearContactFuileds(); return
-			 * "/menu/ViewUsersContacts.xhtml?faces-redirect=true"; } else {
-			 * JSFMessagers.resetMessages(); setValid(false);
-			 * JSFMessagers.addErrorMessage(getProvider().getValue(
-			 * "com.server.side.email.notifail")); return null; }
-			 */
+					// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+					LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+					clearContactFuileds();
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
 
+				}
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			}
+			return null;
 		} catch (HibernateException e) {
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 			return "";
@@ -518,54 +595,60 @@ public class UserContactController implements Serializable, DbConstant {
 			// :::Method to get user's info through session:::::::::://
 			addOthercontacts();
 			// :::End of Method :::::::::://
-			FormSampleController sample = new FormSampleController();
-			int userFrk = contactDto.getUser().getUserId();
-			if (0 != userFrk) {
+
+			/* FormSampleController sample = new FormSampleController(); */
+			SendSupportEmail support = new SendSupportEmail();
+
+			if (null != contactDto) {
+				users = contactDto.getUser();
+
 				contact.setCreatedBy(usersSession.getViewId());
 				contact.setCrtdDtTime(timestamp);
 				contact.setGenericStatus(ACTIVE);
 				contact.setUpDtTime(timestamp);
-				LOGGER.info("User Id:::::::::" + contactDto.getUser().getUserId() + "Fname:::::::"
-						+ contactDto.getUser().getFname() + ":::------->>>>>>User searched founded");
-				contact.setUser(usersImpl.gettUserById(userFrk, "userId"));
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
+				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
+				// :::sending email action:::::::::::://
 
-				contact.setEmail(useremail);
-				contact.setUpdatedBy(usersSession.getViewId());
-				// :::saving contact action:::::::::::://
-				contactImpl.saveContact(contact);
-				// :::::End of saving::::::::::::://
+				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), useremail);
+				// ::: end sending email action:::::::::::://
+				if (verifyemail) {
+					contact.setEmail(useremail);
+					contact.setUpdatedBy(usersSession.getViewId());
+					// :::saving contact action:::::::::::://
+					contactImpl.saveContact(contact);
 
-				return "/menu/ViewUsersContacts.xhtml?faces-redirect=true";
-
-				/*
-				 * sample.sendUserMailTest(useremail, contactDto.getUser().getFname(),
-				 * contactDto.getUser().getLname()); isValid = sample.isValid(); if (isValid) {
-				 * contact.setEmail(useremail); contact.setUpdatedBy(usersSession.getViewId());
-				 * // :::saving contact action::::::::::::// contactImpl.saveContact(contact);
-				 * // :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
-				 * setValid(true); //
-				 * JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"))
-				 * ; JSFMessagers.addErrorMessage(getProvider().getValue(
-				 * "com.server.side.email.notification")); LOGGER.info(CLASSNAME +
-				 * ":::Contact Details is saved"); clearContactFuileds(); return
-				 * "/menu/ViewUsersContacts.xhtml?faces-redirect=true"; } else {
-				 * JSFMessagers.resetMessages(); setValid(false);
-				 * JSFMessagers.addErrorMessage(getProvider().getValue(
-				 * "com.server.side.email.notifail")); return null; }
-				 */
-
+					// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
+					setValid(true); //
+					/*
+					 * JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"))
+					 * ;
+					 */
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+					LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+					clearContactFuileds();
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+				}
 			} else {
+
 				JSFMessagers.resetMessages();
 				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.sessionuser.error"));
-				return null;
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
 			}
+			return null;
 
 		} catch (HibernateException e) {
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 			return "";
@@ -574,6 +657,7 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 
 	private void clearContactFuileds() {
+		this.useremail = null;
 		contact = new Contact();
 		userIdNumber = 0;
 		// usersDetails=null;
@@ -665,6 +749,8 @@ public class UserContactController implements Serializable, DbConstant {
 		cont.setContactDetails(contact.getContactDetails());
 		cont.setEmail(contact.getEmail());
 		cont.setPhone(contact.getPhone());
+		cont.setUpdatedBy(usersSession.getViewId());
+		cont.setUpDtTime(timestamp);
 		contactImpl.UpdateContact(cont);
 
 		// return to current page
@@ -711,6 +797,18 @@ public class UserContactController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.message.viewid"));
 		}
 
+	}
+
+	public void renderUserByDate() {
+		renderEditedTableByBoard = true;
+		renderContactDash = false;
+	}
+
+	public void showDatePanel() {
+
+		if (selection.equals(Date_opt)) {
+			renderDatePanel = true;
+		}
 	}
 
 	public String getCLASSNAME() {
@@ -999,6 +1097,54 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void setBoardName(String boardName) {
 		this.boardName = boardName;
+	}
+
+	public boolean isRenderContactDash() {
+		return renderContactDash;
+	}
+
+	public void setRenderContactDash(boolean renderContactDash) {
+		this.renderContactDash = renderContactDash;
+	}
+
+	public boolean isRenderEditedTableByBoard() {
+		return renderEditedTableByBoard;
+	}
+
+	public void setRenderEditedTableByBoard(boolean renderEditedTableByBoard) {
+		this.renderEditedTableByBoard = renderEditedTableByBoard;
+	}
+
+	public boolean isRenderDatePanel() {
+		return renderDatePanel;
+	}
+
+	public void setRenderDatePanel(boolean renderDatePanel) {
+		this.renderDatePanel = renderDatePanel;
+	}
+
+	public String getSelection() {
+		return selection;
+	}
+
+	public void setSelection(String selection) {
+		this.selection = selection;
+	}
+
+	public List<UserDto> getUserDtosDetails() {
+		return userDtosDetails;
+	}
+
+	public void setUserDtosDetails(List<UserDto> userDtosDetails) {
+		this.userDtosDetails = userDtosDetails;
+	}
+
+	public boolean isRenderDataTable() {
+		return renderDataTable;
+	}
+
+	public void setRenderDataTable(boolean renderDataTable) {
+		this.renderDataTable = renderDataTable;
 	}
 
 }

@@ -146,7 +146,7 @@
 											<td><br />#{msg['PswdEdit.option']}</td>
 											<td><h:selectOneRadio style="margin-top:18px;"
 													value="#{userAccountController.option}">
-													<f:selectItem itemLabel="Yes" itemValue="yes" />
+													<f:selectItem itemLabel="Yes &nbsp;&nbsp;" itemValue="yes" />
 													<f:selectItem itemLabel="No" itemValue="no" />
 													<f:ajax render="@form" execute="@form"
 														onevent="showProgress"
@@ -164,7 +164,7 @@
 											<td><br />#{msg['profileEdit.option']}</td>
 											<td><h:selectOneRadio style="margin-top:18px;"
 													value="#{userAccountController.redirect}">
-													<f:selectItem itemLabel="Yes" itemValue="next" />
+													<f:selectItem itemLabel="Yes &nbsp;&nbsp;" itemValue="next" />
 													<f:selectItem itemLabel="No" itemValue="back" />
 													<f:ajax render="@form" execute="@form"
 														onevent="showProgress"

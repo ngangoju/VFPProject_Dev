@@ -55,22 +55,78 @@ public class SendSupportEmail extends HttpServlet {
 
 	}
 
-	public void sendMailTest(String fname, String lname, String email, String need, String msgContent) {
-
-		String msg = "<p>Please take look on the bellow request.</p>" + "<table width=\"50%\" border=\"5px\">\n"
-				+ "  <tbody>\n" + "	<tr>" + "      <td class=\"labelbold\">Custome Names</td>\n" + "      <td>\n"
-				+ "		  " + fname + " " + lname + "\n" + "	  </td>\n" + "    </tr>" + "	<tr>\n"
-				+ "      <td class=\"labelbold\">Customer Email</td>\n" + "      <td>\n" + "		  " + email + "\n"
-				+ "	  </td></tr>" + "	<tr>" + "      <td class=\"labelbold\">Customer Need</td>\n" + "      <td>\n"
-				+ "		  " + need + "\n" + "	  </td></tr>"
-
-				+ "	<tr>" + "      <td class=\"labelbold\">Customer Message</td>\n" + "      <td>\n" + "		  "
-				+ msgContent + "\n" + "	  </td></tr>" + "  </tbody>\n" + "</table>\n";
-		/* End send content in table sample */
-		gen.sendEmailNotification("ngangoju@gmail.com", "Support Team ", need, msg);
+public  void sendMailTest(String fname,String lname,String email,String need,String msgContent) {
+	
+		
+		String msg=  "<p>Please take look on the bellow request.</p>"
+	      + "<table width=\"50%\" border=\"5px\">\n"
+         + "  <tbody>\n"
+         + "	<tr>"
+         + "      <td class=\"labelbold\">Custome Names</td>\n"
+         + "      <td>\n"
+         + "		  " +fname+" "+lname+ "\n"
+         + "	  </td>\n"
+         + "    </tr>"
+         + "	<tr>\n"
+         + "      <td class=\"labelbold\">Customer Email</td>\n"
+         + "      <td>\n"
+         + "		  " +email+ "\n"
+         + "	  </td></tr>"
+         + "	<tr>"
+         + "      <td class=\"labelbold\">Customer Need</td>\n"
+         + "      <td>\n"
+         + "		  " +need+ "\n"
+         + "	  </td></tr>"
+         
+ + "	<tr>"
+ + "      <td class=\"labelbold\">Customer Message</td>\n"
+ + "      <td>\n"
+ + "		  " +msgContent+ "\n"
+ + "	  </td></tr>"
+ +"<tr>"
+ + "      <td class=\"labelbold\">Application URL</td>\n"
+ + "      <td> <a href='http://localhost:8080/vfpProject_v1/default.xhtml'>click here to acces the service</a>  </td></tr>"
+         + "  </tbody>\n"
+         + "</table>\n";
+		/*End send content in table sample*/
+		gen.sendEmailNotification("ngangoju@gmail.com","Support Team ",need,msg);
 		LOGGER.info("::: notidficatio sent   ");
 	}
+	
+public  boolean sendMailTestVersion(String fname,String lname,String email) {
+	
+		boolean valid;
+		if((null!=fname)&&(null!=lname)&&(null!=email)) {
+		String msg=  "<p>Please take look on the bellow request.</p>"
+	      + "<table width=\"50%\" border=\"5px\">\n"
+         + "  <tbody>\n"
+         + "	<tr>"
+         + "      <td class=\"labelbold\">Custome Names</td>\n"
+         + "      <td>\n"
+         + "		  " +fname+" "+lname+ "\n"
+         + "	  </td>\n"
+         + "    </tr>"
+         + "	<tr>\n"
+         + "      <td class=\"labelbold\">Customer Email</td>\n"
+         + "      <td>\n"
+         + "		  " +email+ "\n"
+         + "	  </td></tr>"       
 
+ +"<tr>"
+ + "      <td class=\"labelbold\">Application URL</td>\n"
+ + "      <td> <a href='http://localhost:8080/vfpProject_v1/default.xhtml'>click here to acces the service</a>  </td></tr>"
+         + "  </tbody>\n"
+         + "</table>\n";
+		valid=true;
+		/*End send content in table sample*/
+		gen.sendEmailNotification(email,fname+" "+lname+"","Support Team",msg);
+		LOGGER.info("::: notidficatio sent   ");
+		}else {
+			valid=false;
+		}
+		return(valid);
+	}
+	
 	public boolean isValid() {
 		return isValid;
 	}

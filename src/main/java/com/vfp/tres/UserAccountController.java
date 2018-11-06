@@ -34,6 +34,7 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.BoardImpl;
 import tres.dao.impl.CellImpl;
+import tres.dao.impl.ContactImpl;
 import tres.dao.impl.DistrictImpl;
 import tres.dao.impl.LoginImpl;
 import tres.dao.impl.ProvinceImpl;
@@ -50,6 +51,7 @@ import tres.domain.Sector;
 import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.domain.Village;
+import tres.vfp.dto.ContactDto;
 import tres.vfp.dto.UserDto;
 
 @SuppressWarnings("unused")
@@ -83,6 +85,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private int boardId;
 	private String password;
 	private String confirmPswd;
+	private String useremail;
 	private UserDto userDto;
 	private List<Users> usersDetails = new ArrayList<Users>();
 	private List<UserCategory> catDetails = new ArrayList<UserCategory>();
@@ -99,6 +102,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private List<Village> villageByCell = new ArrayList<Village>();
 	private List<UserDto> userDtoDetails = new ArrayList<UserDto>();
 	private List<UserDto> userDtosDetails = new ArrayList<UserDto>();
+	List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 	private List<UserDto> repDtosDetails = new ArrayList<UserDto>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -113,20 +117,39 @@ public class UserAccountController implements Serializable, DbConstant {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	LoginImpl loginImpl = new LoginImpl();
 	private String choice;
+	private Contact contact;
+	private ContactDto contactDto;
 	private boolean rendered;
 	private boolean renderForeignCountry;
 	private boolean rendersaveButton;
 	private boolean renderprofile;
 	private String option;
+	private String selection;
 	private Date dateofBirth;
 	private int age;
 	private int days;
+	private int count;
+	private int listrepSize;
+	private int contactSize;
+	private int repavail;
 	private Date to;
 	private Date from;
 	private boolean renderDataTable;
 	private boolean nextButoon;
 	private String redirect;
 	private boolean renderBoard;
+	private boolean renderDatePanel;
+	private boolean renderEditedTableByDate;
+	private boolean renderEditedTableByBoard;
+	private boolean renderBoardOption;
+	private boolean renderHeading;
+	private boolean renderRepTable;
+	private boolean renderRepContactDash;
+	private boolean availrepSize;
+	private boolean renderContactForm;
+	private boolean renderRepContactAvailTable;
+	private boolean renderOtherContForm;
+	ContactImpl contactImpl = new ContactImpl();
 
 	@SuppressWarnings({ "unchecked" })
 	@PostConstruct
@@ -167,8 +190,14 @@ public class UserAccountController implements Serializable, DbConstant {
 		if (userDto == null) {
 			userDto = new UserDto();
 		}
-		try {
+		if (contact == null) {
+			contact = new Contact();
+		}
+		if (contactDto == null) {
+			contactDto = new ContactDto();
+		}
 
+		try {
 			provinceList = provImpl.getListWithHQL(SELECT_PROVINCE);
 			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Board", "boardId desc");
@@ -184,7 +213,24 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setUserCategory(user.getUserCategory());
 			userDtoDetails.add(userDto);
 			repDtosDetails = displayRepresentativeByDateBetween();
+			this.renderRepContactDash = true;
+			listrepSize = showAvailRep();
+			for (Object[] data : usersImpl.reportList(
+					"select us.fname,us.lname, us.viewId,us.address, us.userId from Contact co right  join  co.user us join us.userCategory cat where co.user is null and cat.usercategoryName='"
+							+ INSTITUTE_REP + "'")) {
 
+				LOGGER.info("users>>" + data[0] + ":: " + data[1] + "");
+				Users users = new Users();
+				users.setFname(data[0] + "");
+				users.setLname(data[1] + "");
+				users.setViewId(data[2] + "");
+				users.setAddress(data[3] + "");
+				users.setUserId(Integer.parseInt(data[4] + ""));
+				usersDetails.add(users);
+			}
+			contactSize = usersDetails.size();
+			contactDtoDetails = displayRepresentContact();
+			repavail = contactDtoDetails.size();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -194,12 +240,35 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
+	public List displayRepresentContact() {
+
+		List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
+		for (Object[] data : contactImpl.reportList(
+				"select co.contactDetails,co.email,co.phone,co.contactId,co.user from Contact co right  join  co.user us join us.userCategory cat where co.user is not null and cat.usercategoryName='"
+						+ INSTITUTE_REP + "'")) {
+			ContactDto contDto = new ContactDto();
+			contDto.setEditable(false);
+			contDto.setContactDetails(data[0] + "");
+			contDto.setEmail(data[1] + "");
+			contDto.setPhone(data[2] + "");
+			contDto.setContactId(Integer.parseInt(data[3] + ""));
+			contDto.setUser((Users) data[4]);
+			contactDtoDetails.add(contDto);
+		}
+		return (contactDtoDetails);
+	}
+
+	public void renderContactTable() {
+		this.rendered = true;
+		this.renderRepContactDash = false;
+	}
+
 	// Method to Display usercategory by user logged in
 
 	@SuppressWarnings("unchecked")
 	public List<UserCategory> showCategory() {
-		HttpSession session = SessionUtils.getSession();
-		usersSession = (Users) session.getAttribute("userSession");
+		// HttpSession session = SessionUtils.getSession();
+		// usersSession = (Users) session.getAttribute("userSession");
 		try {
 			if (null != usersSession) {
 				if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
@@ -231,6 +300,28 @@ public class UserAccountController implements Serializable, DbConstant {
 
 		return null;
 
+	}
+
+	public int showAvailRep() {
+		List<Users> repDetails = new ArrayList<Users>();
+		if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
+			for (Object[] data : usersImpl.reportList(
+					"select u.userCategory,cat.usercategoryName from Users u join u.userCategory cat where u.userCategory=cat.userCatid and cat.usercategoryName='"
+							+ INSTITUTE_REP + "'")) {
+				Users user = new Users();
+				user.setUserCategory((UserCategory) data[0]);
+				repDetails.add(user);
+			}
+
+		}
+		return (repDetails.size());
+	}
+
+	public void showRepresent() {
+
+		this.renderRepTable = true;
+		this.renderHeading = true;
+		this.renderRepContactDash = false;
 	}
 
 	// Method to display all district by province
@@ -367,13 +458,14 @@ public class UserAccountController implements Serializable, DbConstant {
 							if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
 								users.setViewName(loginImpl.criptPassword(password));
 								users.setStatus(DESACTIVE);
+								users.setLoginStatus(OFFLINE);
 								usersImpl.saveUsers(users);
 								JSFMessagers.resetMessages();
 								setValid(true);
 								JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
 								LOGGER.info(CLASSNAME + ":::User Details is saved");
 								clearUserFuileds();
-								return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+								return "";
 							} else {
 
 								users.setBoard(boardImpl.getBoardById(boardId, "boardId"));
@@ -386,7 +478,7 @@ public class UserAccountController implements Serializable, DbConstant {
 								JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
 								LOGGER.info(CLASSNAME + ":::User Details is saved");
 								clearUserFuileds();
-								return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+								return "";
 							}
 						} else {
 
@@ -407,7 +499,7 @@ public class UserAccountController implements Serializable, DbConstant {
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
 						LOGGER.info(CLASSNAME + ":::User Details is saved");
 						clearUserFuileds();
-						return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+						return "";
 					}
 
 				} else {
@@ -498,11 +590,27 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
+	public void manageOption() {
+
+		if (selection.equals(Date_opt)) {
+			this.renderDatePanel = true;
+			this.renderBoardOption = false;
+			this.renderEditedTableByBoard = false;
+			LOGGER.info("Option founded:::::::::::" + selection);
+		} else {
+			this.renderDatePanel = false;
+			this.renderBoardOption = true;
+			this.renderEditedTableByDate = false;
+		}
+
+	}
+
 	public String editAction(UserDto user) {
 
 		user.setEditable(true);
 		renderForeignCountry = true;
 		renderprofile = true;
+		rendersaveButton = true;
 		showCategory();
 		// usersImpl.UpdateUsers(user);
 		return null;
@@ -515,6 +623,14 @@ public class UserAccountController implements Serializable, DbConstant {
 			return (valid);
 		}
 		return (valid);
+	}
+
+	public String backPage() {
+		if (usersSession.getUserCategory().getUsercategoryName().equals(INSTITUTE_REP)) {
+			return "/menu/ViewUsersDetails.xhtml?faces-redirect=true";
+		} else {
+			return "/menu/ListOfUsers.xhtml?faces-redirect=true";
+		}
 	}
 
 	public String saveAction(UserDto user) throws NoSuchAlgorithmException, IOException {
@@ -540,6 +656,8 @@ public class UserAccountController implements Serializable, DbConstant {
 					us.setFname(user.getFname());
 					us.setLname(user.getLname());
 					us.setAddress(user.getAddress());
+					us.setUpdatedBy(usersSession.getViewId());
+					us.setUpDtTime(timestamp);
 					usersImpl.UpdateUsers(us);
 					optionCombine();
 					JSFMessagers.resetMessages();
@@ -561,22 +679,6 @@ public class UserAccountController implements Serializable, DbConstant {
 				usersImpl.UpdateUsers(us);
 				optionCombine();
 			}
-
-			/*
-			 * FileUploadController upload= new FileUploadController();
-			 * 
-			 * String filename=upload.processFileUpload();
-			 * 
-			 * 
-			 * LOGGER.info("File Name Uploaded One--------------------- ::::::::--->>"
-			 * +filename); if(null!=filename) {
-			 * LOGGER.info("File Name Uploaded ::::::::--->>"+filename);
-			 * 
-			 * 
-			 * user.setEditable(false); us.setFname(user.getFname());
-			 * us.setLname(user.getLname()); us.setAddress(user.getAddress());
-			 * us.setImage(filename); usersImpl.UpdateUsers(us);
-			 */
 			return null;
 		} else {
 			JSFMessagers.resetMessages();
@@ -601,8 +703,16 @@ public class UserAccountController implements Serializable, DbConstant {
 		us.setFname(user.getFname());
 		us.setLname(user.getLname());
 		us.setUserCategory(user.getUserCategory());
+		us.setBoard(user.getBoard());
+		us.setUpdatedBy(usersSession.getViewId());
+		us.setUpDtTime(timestamp);
 		usersImpl.UpdateUsers(us);
-		listUsersByDateBetween();
+		if ((null != from) && (null != to)) {
+			listUsersByDateBetween();
+		} else {
+			displayUsersByBoard();
+		}
+
 		// return to current page
 		return "null";
 		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
@@ -620,11 +730,13 @@ public class UserAccountController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
 
 		if (user.getStatus().equals(ACTIVE)) {
-
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
 			us.setStatus(DESACTIVE);
 
 		} else {
-
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
 			us.setStatus(ACTIVE);
 		}
 		usersImpl.UpdateUsers(us);
@@ -646,11 +758,13 @@ public class UserAccountController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
 
 		if (user.getStatus().equals(ACTIVE)) {
-
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
 			us.setStatus(DESACTIVE);
 
 		} else {
-
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
 			us.setStatus(ACTIVE);
 		}
 		usersImpl.UpdateUsers(us);
@@ -662,7 +776,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	}
 
 	public void updateTable() throws Exception {
-		if (choice.equalsIgnoreCase(country_rw)) {
+		if (choice.equals(country_rw)) {
 
 			rendered = true;
 			renderForeignCountry = true;
@@ -728,52 +842,57 @@ public class UserAccountController implements Serializable, DbConstant {
 	@SuppressWarnings("static-access")
 	public void listUsersByDateBetween() {
 		try {
-			if (to.after(from)) {
+			if ((null != from) && (null != to)) {
+				if (to.after(from)) {
+					Formating fmt = new Formating();
+					LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
+							+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+					days = fmt.daysBetween(from, to);
 
-				Formating fmt = new Formating();
-				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
-						+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
-				days = fmt.daysBetween(from, to);
+					LOGGER.info("Days founded:......................" + days);
+					if (days <= 30) {
+						renderEditedTableByDate = true;
+						userDtosDetails = new ArrayList<UserDto>();
+						for (Object[] data : usersImpl.reportList(
+								"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.board from Users us where us.createdDate between '"
+										+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
 
-				LOGGER.info("Days founded:......................" + days);
-				if (days <= 30) {
-					renderDataTable = true;
-					userDtosDetails = new ArrayList<UserDto>();
-					for (Object[] data : usersImpl.reportList(
-							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId from Users us where us.createdDate between '"
-									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
-
-						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
-								+ data[1] + "");
-						UserDto userDtos = new UserDto();
-						userDtos.setEditable(false);
-						userDtos.setUserId(Integer.parseInt(data[5] + ""));
-						userDtos.setFname(data[0] + "");
-						userDtos.setLname(data[1] + "");
-						userDtos.setViewId(data[2] + "");
-						userDtos.setUserCategory(((UserCategory) data[3]));
-						userDtos.setStatus(data[4] + "");
-						if (data[4].equals(ACTIVE)) {
-							userDtos.setAction(DESACTIVE);
-						} else {
-							userDtos.setAction(ACTIVE);
+							LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
+									+ data[1] + "");
+							UserDto userDtos = new UserDto();
+							userDtos.setEditable(false);
+							userDtos.setUserId(Integer.parseInt(data[5] + ""));
+							userDtos.setFname(data[0] + "");
+							userDtos.setLname(data[1] + "");
+							userDtos.setViewId(data[2] + "");
+							userDtos.setUserCategory(((UserCategory) data[3]));
+							userDtos.setStatus(data[4] + "");
+							userDtos.setBoard(((Board) data[6]));
+							if (data[4].equals(ACTIVE)) {
+								userDtos.setAction(DESACTIVE);
+							} else {
+								userDtos.setAction(ACTIVE);
+							}
+							userDtosDetails.add(userDtos);
 						}
-						userDtosDetails.add(userDtos);
+					} else {
+						setValid(false);
+						JSFMessagers
+								.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 					}
 
 				} else {
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 				}
-
 			} else {
 				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.InvalDate"));
 			}
 
 		} catch (Exception e) {
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.InvalDate"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
@@ -836,6 +955,342 @@ public class UserAccountController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
+
+	public void displayUsersByBoard() {
+		try {
+			if (null != choice) {
+				renderEditedTableByBoard = true;
+				userDtosDetails = new ArrayList<UserDto>();
+				for (Object[] data : usersImpl.reportList(
+						"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.board,b.boardName from Users us ,Board b where us.board=b.boardId and b.boardName='"
+								+ choice + "'")) {
+					LOGGER.info(
+							"users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
+					UserDto userDtos = new UserDto();
+					userDtos.setEditable(false);
+					userDtos.setUserId(Integer.parseInt(data[5] + ""));
+					userDtos.setFname(data[0] + "");
+					userDtos.setLname(data[1] + "");
+					userDtos.setViewId(data[2] + "");
+					userDtos.setUserCategory(((UserCategory) data[3]));
+					userDtos.setStatus(data[4] + "");
+					userDtos.setBoard(((Board) data[6]));
+					if (data[4].equals(ACTIVE)) {
+						userDtos.setAction(DESACTIVE);
+					} else {
+						userDtos.setAction(ACTIVE);
+					}
+					userDtosDetails.add(userDtos);
+				}
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidchoice"));
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void addcontacts() {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		users = (Users) session.getAttribute("userinfo");
+	}
+
+	public void showDatePanel() {
+
+		if (selection.equals(Date_opt)) {
+			renderDatePanel = true;
+		}
+	}
+
+	public String saveUserNewContact() {
+
+		try {
+
+			try {
+
+				Contact ct = new Contact();
+				if (null != useremail)
+					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+							"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
+					return null;
+				}
+				ct = contactImpl.getModelWithMyHQL(new String[] { "phone" }, new Object[] { contact.getPhone() },
+						"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: phone number already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			// :::Method to get user's info through session:::::::::://
+			addcontacts();
+			// :::End of Method :::::::::://
+
+			/* FormSampleController sample = new FormSampleController(); */
+			SendSupportEmail support = new SendSupportEmail();
+			if (null != users) {
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				contact.setUpdatedBy(usersSession.getViewId());
+				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
+				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
+				// :::sending email action:::::::::::://
+
+				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), useremail);
+				// ::: end sending email action:::::::::::://
+				if (verifyemail) {
+					contact.setEmail(useremail);
+					contact.setUpdatedBy(usersSession.getViewId());
+					// :::saving contact action:::::::::::://
+					contactImpl.saveContact(contact);
+
+					// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+					LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+					clearContactFuileds();
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+
+				}
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			}
+			return null;
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
+	}
+
+	private void clearContactFuileds() {
+		this.useremail = null;
+		contact = new Contact();
+		userIdNumber = 0;
+		// usersDetails=null;
+	}
+
+	public String cancelContact(ContactDto contact) {
+		contact.setEditable(false);
+		// usersImpl.UpdateUsers(user);
+		return null;
+
+	}
+	public void showRepresentContAvail() {
+		this.renderRepContactDash=false;
+		this.renderRepContactAvailTable=true;
+	}
+
+	public String changePage() {
+
+		if (usersSession.getUserCategory().getUsercategoryName().equals(INSTITUTE_REP)) {
+			return "/menu/ListOfUsers.xhtml?faces-redirect=true";
+		}
+		return null;
+	}
+
+	public void addOthercontacts() {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		contactDto = (ContactDto) session.getAttribute("continfo");
+	}
+
+	public void otherUserContact(ContactDto cont) {
+		HttpSession sessionuser = SessionUtils.getSession();
+
+		if (null != cont) {
+			/*
+			 * renderContactForm = true;
+			 * 
+			 * rendered = false; renderForeignCountry = false;
+			 */
+
+			// Session creation to get user info from dataTable row
+			sessionuser.setAttribute("continfo", cont);
+			addOthercontacts();
+			this.renderOtherContForm=true;
+			this.renderRepContactAvailTable=false;
+		
+		}
+	
+	}
+
+	public String saveContactAction(ContactDto contact) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		Contact cont = new Contact();
+		cont = new Contact();
+		cont = contactImpl.getContactById(contact.getContactId(), "contactId");
+
+		LOGGER.info("here update sart for " + cont + " useriD " + cont.getContactId());
+
+		contact.setEditable(false);
+		cont.setContactDetails(contact.getContactDetails());
+		cont.setEmail(contact.getEmail());
+		cont.setPhone(contact.getPhone());
+		cont.setUpdatedBy(usersSession.getViewId());
+		cont.setUpDtTime(timestamp);
+		contactImpl.UpdateContact(cont);
+
+		// return to current page
+		return null;
+
+	}
+
+	public void editUserContact(Users user) {
+		HttpSession sessionuser = SessionUtils.getSession();
+
+		if (null != user)
+			renderContactForm = true;
+		rendered = false;
+		// Session creation to get user info from dataTable row
+		sessionuser.setAttribute("userinfo", user);
+		LOGGER.info("Info Founded are userid:>>>>>>>>>>>>>>>>>>>>>>fname:" + user.getFname());
+		addcontacts();
+	}
+
+	public String editContactAction(ContactDto contact) {
+
+		contact.setEditable(true);
+		// usersImpl.UpdateUsers(user);
+		return null;
+	}
+	public String saveContact() throws Exception {
+		try {
+
+			try {
+
+				Contact ct = new Contact();
+				if (null != useremail)
+					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+							"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
+					return null;
+				}
+				ct = contactImpl.getModelWithMyHQL(new String[] { "phone" }, new Object[] { contact.getPhone() },
+						"from Contact");
+				if (null != ct) {
+
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.dupicate.phone.number"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: phone number already  recorded in the system! ");
+					return null;
+				}
+
+			} catch (Exception e) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+				LOGGER.info(CLASSNAME + "" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			// :::Method to get user's info through session:::::::::://
+			addOthercontacts();
+			// :::End of Method :::::::::://
+
+			/* FormSampleController sample = new FormSampleController(); */
+			SendSupportEmail support = new SendSupportEmail();
+
+			if (null != contactDto) {
+				users = contactDto.getUser();
+
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
+				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
+				// :::sending email action:::::::::::://
+
+				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), useremail);
+				// ::: end sending email action:::::::::::://
+				if (verifyemail) {
+					contact.setEmail(useremail);
+					contact.setUpdatedBy(usersSession.getViewId());
+					// :::saving contact action:::::::::::://
+					contactImpl.saveContact(contact);
+
+					// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
+					setValid(true); //
+					/*
+					 * JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"))
+					 * ;
+					 */
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+					LOGGER.info(CLASSNAME + ":::Contact Details is saved");
+					clearContactFuileds();
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+				}
+			} else {
+
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			}
+			return null;
+
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
+	}
+
 
 	public String getCLASSNAME() {
 		return CLASSNAME;
@@ -1347,6 +1802,174 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setRepDtosDetails(List<UserDto> repDtosDetails) {
 		this.repDtosDetails = repDtosDetails;
+	}
+
+	public boolean isRenderEditedTableByDate() {
+		return renderEditedTableByDate;
+	}
+
+	public void setRenderEditedTableByDate(boolean renderEditedTableByDate) {
+		this.renderEditedTableByDate = renderEditedTableByDate;
+	}
+
+	public boolean isRenderEditedTableByBoard() {
+		return renderEditedTableByBoard;
+	}
+
+	public void setRenderEditedTableByBoard(boolean renderEditedTableByBoard) {
+		this.renderEditedTableByBoard = renderEditedTableByBoard;
+	}
+
+	public boolean isRenderDatePanel() {
+		return renderDatePanel;
+	}
+
+	public void setRenderDatePanel(boolean renderDatePanel) {
+		this.renderDatePanel = renderDatePanel;
+	}
+
+	public boolean isRenderBoardOption() {
+		return renderBoardOption;
+	}
+
+	public void setRenderBoardOption(boolean renderBoardOption) {
+		this.renderBoardOption = renderBoardOption;
+	}
+
+	public String getSelection() {
+		return selection;
+	}
+
+	public void setSelection(String selection) {
+		this.selection = selection;
+	}
+
+	public boolean isRenderHeading() {
+		return renderHeading;
+	}
+
+	public void setRenderHeading(boolean renderHeading) {
+		this.renderHeading = renderHeading;
+	}
+
+	public boolean isRenderRepTable() {
+		return renderRepTable;
+	}
+
+	public void setRenderRepTable(boolean renderRepTable) {
+		this.renderRepTable = renderRepTable;
+	}
+
+	public boolean isRenderRepContactDash() {
+		return renderRepContactDash;
+	}
+
+	public void setRenderRepContactDash(boolean renderRepContactDash) {
+		this.renderRepContactDash = renderRepContactDash;
+	}
+
+	public int getListrepSize() {
+		return listrepSize;
+	}
+
+	public void setListrepSize(int listrepSize) {
+		this.listrepSize = listrepSize;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public boolean isAvailrepSize() {
+		return availrepSize;
+	}
+
+	public void setAvailrepSize(boolean availrepSize) {
+		this.availrepSize = availrepSize;
+	}
+
+	public int getContactSize() {
+		return contactSize;
+	}
+
+	public void setContactSize(int contactSize) {
+		this.contactSize = contactSize;
+	}
+
+	public String getUseremail() {
+		return useremail;
+	}
+
+	public void setUseremail(String useremail) {
+		this.useremail = useremail;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	public boolean isRenderContactForm() {
+		return renderContactForm;
+	}
+
+	public void setRenderContactForm(boolean renderContactForm) {
+		this.renderContactForm = renderContactForm;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public List<ContactDto> getContactDtoDetails() {
+		return contactDtoDetails;
+	}
+
+	public void setContactDtoDetails(List<ContactDto> contactDtoDetails) {
+		this.contactDtoDetails = contactDtoDetails;
+	}
+
+	public int getRepavail() {
+		return repavail;
+	}
+
+	public void setRepavail(int repavail) {
+		this.repavail = repavail;
+	}
+
+	public boolean isRenderRepContactAvailTable() {
+		return renderRepContactAvailTable;
+	}
+
+	public void setRenderRepContactAvailTable(boolean renderRepContactAvailTable) {
+		this.renderRepContactAvailTable = renderRepContactAvailTable;
+	}
+
+	public ContactDto getContactDto() {
+		return contactDto;
+	}
+
+	public void setContactDto(ContactDto contactDto) {
+		this.contactDto = contactDto;
+	}
+
+	public boolean isRenderOtherContForm() {
+		return renderOtherContForm;
+	}
+
+	public void setRenderOtherContForm(boolean renderOtherContForm) {
+		this.renderOtherContForm = renderOtherContForm;
 	}
 
 }

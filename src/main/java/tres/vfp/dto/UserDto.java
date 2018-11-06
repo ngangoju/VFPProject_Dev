@@ -1,6 +1,7 @@
 package tres.vfp.dto;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import tres.domain.Board;
 import tres.domain.UserCategory;
@@ -49,7 +50,8 @@ public class UserDto implements Serializable {
 	private String phone;
 	private String email;
 	private String genericStatus;
-
+	private Timestamp upDtTime;
+	private String updatedBy;
 	public String getAction() {
 		return action;
 	}
@@ -223,4 +225,20 @@ public class UserDto implements Serializable {
 		this.genericStatus = genericStatus;
 	}
 
+	public Timestamp getUpDtTime() {
+		return upDtTime;
+	}
+
+	public void setUpDtTime(Timestamp upDtTime) {
+		this.upDtTime = upDtTime;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -9,213 +9,558 @@
 <h:body>
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
+
 		<ui:define name="content">
 
+			<h4>
+				#{loadUserInformationsController.users.userCategory.usercategoryName}
+				<span class="glyphicon glyphicon-dashboard">
+					#{msg['message.com.userManagement.dashaboard']}</span>
+			</h4>
+			<div
+				style="border-bottom: 1.5px solid #91DBFA; margin-bottom: 6px; width: 100%"></div>
+			<!-- Start of user management Dashboard -->
 
-			<h:form>
-				<div class="panel panel-info">
-					<div class="panel-heading">
-						<table>
-							<tr>
-								<td>
-									<div>
-										<a href="UsersAccount.xhtml"
-											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-											class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserRegForm.addButton']}<b><span
-												style="background-color: red; color: white" class="badge"></span></b>
-										</a>
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div class="panel-body">
+			<div class="panel panel-default">
 
-						<h:panelGroup layout="block"
-							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
-										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center>
-									</li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
+				<div class="panel-body"
+					style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 
-						<h:panelGroup layout="block"
-							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li style="list-style: none;" class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
-
+					<h:form>
 						<fieldset>
 							<legend
 								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
-								#{msg['message.header.userFilter.info']}</legend>
-							<div class="panel-body">
+								#{msg['message.com.Staff.dashaboard']}</legend>
 
-								<div style="display: none">
-									<input id="lat" name="lat" type="text" /> <input id="long"
-										name="long" type="text" />
+							<table class="table table-hover"
+								style="font-size: 15px; font-family: Times New Roman; width: 50%; margin-left: 20px;">
+
+								<thead>
+									<tr class="info">
+										<th colspan="2"><center>
+												<div>
+													<a href="UsersAccount.xhtml"
+														style="font-family: Open Sans sans-serif !important; font-size: 14px !important; width: 30%; float: left;"
+														class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserRegForm.addButton']}<b><span
+															style="background-color: red; color: white" class="badge"></span></b>
+													</a>
+												</div>
+											</center></th>
+									</tr>
+									<tr class="success">
+										<th colspan="2">
+											<center>
+												<label
+													style="font-family: Open Sans sans-serif !important; font-size: 14px !important; text-transform: uppercase;">#{msg['boardDate.option']}</label>
+											</center>
+										</th>
+									</tr>
+								</thead>
+								<tbody class="details">
+
+									<tr class="warning">
+										<td colspan="2"><h:selectOneRadio
+												style="font-family: Open Sans sans-serif !important; font-size: 13px !important;margin-top:18px; margin-left:30%;"
+												value="#{userAccountController.selection}">
+												<f:selectItem
+													itemLabel="&nbsp;Board &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+													itemValue="board" />
+												<f:selectItem itemLabel="&nbsp;Registered date"
+													itemValue="dates" />
+											</h:selectOneRadio></td>
+									</tr>
+									<tr class="danger">
+										<td colspan="2"><h:commandButton
+												style="width:50%; margin-left:25%;"
+												class="btn btn-info btn-sm btn-block"
+												action="#{userAccountController.manageOption()}"
+												value="Submit">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+
+											</h:commandButton></td>
+									</tr>
+								</tbody>
+							</table>
+							<hr />
+							<!-- START OF FILTER USER BY DATE CALENDAR -->
+							<p:outputPanel
+								rendered="#{userAccountController.renderDatePanel}"
+								autoUpdate="true">
+
+								<div class="panel-body">
+									<!-- Validation msg start here -->
+									<h:panelGroup layout="block"
+										rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
+										<ul>
+											<ui:repeat value="#{facesContext.messageList}"
+												var="facesMessage">
+												<li class="alert alert-danger"
+													style="list-style: none; background-color: #FF2400; color: white">
+													<center>
+														<h:outputText value="#{facesMessage.summary}"
+															escape="false" />
+													</center>
+												</li>
+											</ui:repeat>
+										</ul>
+									</h:panelGroup>
+
+									<h:panelGroup layout="block"
+										rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+										<ul>
+											<ui:repeat value="#{facesContext.messageList}"
+												var="facesMessage">
+												<li
+													style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+													class="alert alert-success"><h:outputText
+														value="#{facesMessage.summary}" escape="false" /></li>
+											</ui:repeat>
+										</ul>
+									</h:panelGroup>
+									<!-- End of Date validation -->
+									<div style="display: none">
+										<input id="lat" name="lat" type="text" /> <input id="long"
+											name="long" type="text" />
+									</div>
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">From<span style="color: red">*</span></label>
+										<div class="col-md-4 col-sm-3 col-xs-4">
+											<h:inputText locale="#{facesContext.viewRoot.locale}"
+												autocomplete="off" id="from" binding="#{from}"
+												class="form-control input-sm" escape="true"
+												value="#{userAccountController.from}" maxlength="35"
+												converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+												<f:convertDateTime type="date" dateType="short"
+													pattern="dd/MM/yyyy" />
+												<f:validateLength maximum="35" />
+											</h:inputText>
+											<script>
+												$(function() {
+													$('input[id*="from"]')
+															.datepicker(
+																	{
+																		changeMonth : true,
+																		changeYear : true,
+																		maxDate : 0,
+																		//minDate: 0,
+																		dateFormat : "dd/mm/yy",
+																		yearRange : "-100:+0",
+																		buttonImage : "/resources/image/calendar1.png"
+																	});
+												});
+											</script>
+										</div>
+										<div class="col-md-2">
+											<span class="tooltips-input-main"><a
+												class="tooltips-input"> <h:panelGroup
+														id="tooltips-contactDetails" layout="block">
+														<img
+															src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+															style="width: 15%" alt="question" />
+													</h:panelGroup> <p:tooltip id="toolTipContent"
+														for="tooltips-contactDetails" position="bottom">
+														<span> #{msg['help.userFilter.message']} </span>
+													</p:tooltip>
+											</a></span>
+
+										</div>
+										<h:message for="from" styleClass="help-block"></h:message>
+									</div>
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">To<span style="color: red">*</span></label>
+										<div class="col-md-4 col-sm-3 col-xs-4">
+											<h:inputText locale="#{facesContext.viewRoot.locale}"
+												autocomplete="off" id="to" binding="#{to}"
+												class="form-control input-sm" escape="true"
+												value="#{userAccountController.to}" maxlength="35"
+												converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+												<f:convertDateTime type="date" dateType="short"
+													pattern="dd/MM/yyyy" />
+												<f:validateLength maximum="35" />
+											</h:inputText>
+
+										</div>
+										<h:message for="to" styleClass="help-block"></h:message>
+									</div>
+									<script>
+										$(function() {
+											$('input[id*="to"]')
+													.datepicker(
+															{
+																changeMonth : true,
+																changeYear : true,
+																maxDate : 0,
+																//minDate:$msg,
+																dateFormat : "dd/mm/yy",
+																yearRange : "-100:+0",
+																buttonImage : "/resources/image/calendar1.png"
+															});
+										});
+									</script>
 								</div>
 								<div class="form-group row">
 									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">From<span style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-3 col-xs-4">
-										<h:inputText locale="#{facesContext.viewRoot.locale}"
-											autocomplete="off" id="from" binding="#{from}"
-											class="form-control input-sm" escape="true"
-											value="#{userAccountController.from}" maxlength="35"
-											required="true"
-											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-											requiredMessage="#{msg['strartdate_institution.message']}">
-											<f:convertDateTime type="date" dateType="short"
-												pattern="dd/MM/yyyy" />
-											<f:validateLength maximum="35" />
-										</h:inputText>
-										<script>
-											$(function() {
-												$('input[id*="from"]')
-														.datepicker(
-																{
-																	changeMonth : true,
-																	changeYear : true,
-																	maxDate : 0,
-																	//minDate: 0,
-																	dateFormat : "dd/mm/yy",
-																	yearRange : "-100:+0",
-																	buttonImage : "/resources/image/calendar1.png"
-																});
-											});
-										</script>
-									</div>
-									<div class="col-md-2">
-										<span class="tooltips-input-main"><a
-											class="tooltips-input"> <h:panelGroup
-													id="tooltips-contactDetails" layout="block">
-													<img
-														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-														style="width: 15%" alt="question" />
-												</h:panelGroup> <p:tooltip id="toolTipContent"
-													for="tooltips-contactDetails" position="bottom">
-													<span> #{msg['help.userFilter.message']} </span>
-												</p:tooltip>
-										</a></span>
+										class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+									<div class="col-sm-4">
+										<h:commandButton class="btn btn-info btn-sm btn-block"
+											action="#{userAccountController.listUsersByDateBetween()}"
+											value="Submit">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+
+										</h:commandButton>
 
 									</div>
-									<h:message for="from" styleClass="help-block"></h:message>
+									<span class="text-danger" id="customeordererror"></span>
 								</div>
+								<hr />
+
+							</p:outputPanel>
+							<!-- END OF FILTER USER BY DATE CALENDAR -->
+
+							<!-- START OF FILTER USER BY BOARD -->
+							<p:outputPanel
+								rendered="#{userAccountController.renderBoardOption}"
+								autoUpdate="true">
+								<h:panelGroup id="BoardPanel" layout="block">
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.board']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+											<h:selectOneMenu id="brd" styleClass="form-control"
+												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+												required="true" value="#{userAccountController.choice}"
+												requiredMessage="#{msg[required.boardName.message]}">
+												<f:selectItem
+													itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItems value="#{userAccountController.boardList}"
+													var="option" itemValue="#{option.boardName}"
+													itemLabel="#{option.boardName}" itemLabelEscaped="true" />
+
+											</h:selectOneMenu>
+										</div>
+										<h:message for="brd" styleClass="help-block"></h:message>
+									</div>
+								</h:panelGroup>
 								<div class="form-group row">
 									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">To<span style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-3 col-xs-4">
-										<h:inputText locale="#{facesContext.viewRoot.locale}"
-											autocomplete="off" id="to" binding="#{to}"
-											class="form-control input-sm" escape="true"
-											value="#{userAccountController.to}" maxlength="35"
-											required="true"
-											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-											requiredMessage="#{msg['enddate_institution.message']}">
-											<f:convertDateTime type="date" dateType="short"
-												pattern="dd/MM/yyyy" />
-											<f:validateLength maximum="35" />
-										</h:inputText>
+										class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+									<div class="col-sm-4">
+										<h:commandButton class="btn btn-info btn-sm btn-block"
+											action="#{userAccountController.displayUsersByBoard()}"
+											value="Submit">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+
+										</h:commandButton>
 
 									</div>
-									<h:message for="to" styleClass="help-block"></h:message>
+									<span class="text-danger" id="customeordererror"></span>
 								</div>
-								<script>
-									$(function() {
-										$('input[id*="to"]')
-												.datepicker(
-														{
-															changeMonth : true,
-															changeYear : true,
-															maxDate : 0,
-															//minDate:$msg,
-															dateFormat : "dd/mm/yy",
-															yearRange : "-100:+0",
-															buttonImage : "/resources/image/calendar1.png"
-														});
-									});
-								</script>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
-								<div class="col-sm-4">
-									<h:commandButton class="btn btn-info btn-sm btn-block"
-										action="#{userAccountController.displayUsersByDateBetween()}"
-										value="Submit">
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								<hr />
+							</p:outputPanel>
 
-									</h:commandButton>
+							<!-- END OF FILTER USER BY BOARD -->
 
-								</div>
-								<span class="text-danger" id="customeordererror"></span>
-							</div>
-							<p:outputPanel id="toTable" autoUpdate="true"
-								rendered="#{userAccountController.renderDataTable}">
-								<p:dataTable value="#{userAccountController.userDtosDetails}" rowIndexVar="row"  sortOrder="ASCENDING" rowKey="#{user.fname}" 
-									var="user" rows="10" id="tables" sortBy="#{user.fname}" style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
-								
-									
+							<!-- TABLE  HOLDING USERS EDITED DETAILS DISPLAY -->
+							<p:outputPanel id="toTable1" autoUpdate="true"
+								rendered="#{userAccountController.renderEditedTableByDate}">
+								<p:dataTable value="#{userAccountController.userDtosDetails}"
+									var="user" rows="10" id="tables"
+									style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
 									<f:facet name="header">
 										<h4
 											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-											#{msg['message.header.userdetails.filter']}</h4>
+											#{msg['message.header.userList.filter']}</h4>
 									</f:facet>
-									<p:column headerText="No" style="width:5%;">
 
-										<h:outputText value="#{row+1}" />
+									<p:column headerText="Firstname">
+
+										<h:inputText value="#{user.fname}" size="10" id="fname"
+											rendered="#{user.editable}" required="true"
+											requiredMessage="#{msg['requiered.fname.message']}"
+											converterMessage="#{msg['error.enter.invalid.fname']}"
+											validatorMessage="#{msg['error.enter.invalid.fname']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+											<f:validateLength maximum="100"></f:validateLength>
+										</h:inputText>
+
+										<h:outputText value="#{user.fname}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="fname"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
 									</p:column>
-									<p:column headerText="Names">
-										<h:outputText value="#{user.fname} &nbsp; #{user.lname}" />
+
+
+									<p:column headerText="Lastname">
+
+
+										<h:inputText value="#{user.lname}" size="10" id="lname"
+											rendered="#{user.editable}" required="true"
+											requiredMessage="#{msg['requiered.lname.message']}"
+											converterMessage="#{msg['error.enter.invalid.lname']}"
+											validatorMessage="#{msg['error.enter.invalid.lname']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+											<f:validateLength maximum="100"></f:validateLength>
+										</h:inputText>
+										<h:outputText value="#{user.lname}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="lname"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+
 									</p:column>
+									<p:column headerText="Board">
+										<h:selectOneMenu id="brd" styleClass="form-control"
+											rendered="#{user.editable}"
+											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											required="true" value="#{user.board.boardId}"
+											requiredMessage="#{msg[required.boardName.message]}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems value="#{userAccountController.boardList}"
+												var="option" itemValue="#{option.boardId}"
+												itemLabel="#{option.boardName}" itemLabelEscaped="true" />
 
-									<p:column headerText="Email">
-										<h:outputText value="#{user.email}"/>
+										</h:selectOneMenu>
 
-									</p:column>
-									<p:column headerText="Phone">
-										<h:outputText value="#{user.phone}" />
-
-									</p:column>
-									<p:column headerText="Institution">
-										<h:outputText value="#{user.institution}" />
-
-									</p:column>
-									<p:column headerText="Boardname">
-										<h:outputText value="#{user.board.boardName}" />
-
+										<h:outputText value="#{user.board.boardName}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="brd"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
 									</p:column>
 									<p:column headerText="Category">
-										<h:outputText value="#{user.userCategory.usercategoryName}" />
-									</p:column>
-									<p:column headerText="Genericstatus">
-										<h:outputText value="#{user.genericStatus}" />
 
+										<h:selectOneMenu id="cat" styleClass="form-control"
+											rendered="#{user.editable}" required="true"
+											value="#{user.userCategory.userCatid}"
+											requiredMessage="#{msg['requiered.categoryname.message']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems value="#{userAccountController.catDetails}"
+												var="option" itemValue="#{option.userCatid}"
+												itemLabel="#{option.usercategoryName}"
+												itemLabelEscaped="true" />
+											<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+										</h:selectOneMenu>
+
+										<h:outputText value="#{user.userCategory.usercategoryName}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="cat"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+									</p:column>
+									<p:column headerText="Status">
+										<h:outputText value="#{user.status}" />
+
+									</p:column>
+									<p:column headerText=" Change Status">
+
+										<h:commandLink style="color:white"
+											class="btn btn-success 	glyphicon glyphicon-refresh"
+											value="#{user.action}"
+											action="#{userAccountController.updateStatus(user)}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+									</p:column>
+									<p:column headerText="Action">
+										<div class="btn-group btn btn-sm" role="group"
+											aria-label="Basic example">
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="Edit"
+												class="btn btn-success 	glyphicon glyphicon-edit"
+												style="color:white;"
+												action="#{userAccountController.editAction(user)}"
+												rendered="#{not user.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="Cancel"
+												class="btn btn-danger 	glyphicon glyphicon-remove"
+												action="#{userAccountController.cancel(user)}"
+												style="color:white;" rendered="#{user.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+
+
+											<h:commandLink
+												class="btn btn-primary glyphicon glyphicon-floppy-disk"
+												style="color:white;" data-toggle="tooltip"
+												data-placement="right" title="Save Changes"
+												action="#{userAccountController.newAction(user)}"
+												rendered="#{user.editable}" execute="@this">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+
+											</h:commandLink>
+										</div>
 									</p:column>
 
 								</p:dataTable>
 							</p:outputPanel>
+
+							<!-- END TABLE  HOLDING USERS EDITED DETAILS DISPLAY -->
+
+
+
+
+
+							<!-- TABLE  HOLDING USERS EDITED DETAILS DISPLAY -->
+							<p:outputPanel id="toTable2" autoUpdate="true"
+								rendered="#{userAccountController.renderEditedTableByBoard}">
+								<p:dataTable value="#{userAccountController.userDtosDetails}"
+									var="user" rows="10" id="tables2"
+									style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+									<f:facet name="header">
+										<h4
+											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
+											#{msg['message.header.userList.filter']}</h4>
+									</f:facet>
+
+									<p:column headerText="Firstname">
+
+										<h:inputText value="#{user.fname}" size="10" id="fname"
+											rendered="#{user.editable}" required="true"
+											requiredMessage="#{msg['requiered.fname.message']}"
+											converterMessage="#{msg['error.enter.invalid.fname']}"
+											validatorMessage="#{msg['error.enter.invalid.fname']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+											<f:validateLength maximum="100"></f:validateLength>
+										</h:inputText>
+
+										<h:outputText value="#{user.fname}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="fname"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+									</p:column>
+
+
+									<p:column headerText="Lastname">
+
+
+										<h:inputText value="#{user.lname}" size="10" id="lname"
+											rendered="#{user.editable}" required="true"
+											requiredMessage="#{msg['requiered.lname.message']}"
+											converterMessage="#{msg['error.enter.invalid.lname']}"
+											validatorMessage="#{msg['error.enter.invalid.lname']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+											<f:validateLength maximum="100"></f:validateLength>
+										</h:inputText>
+										<h:outputText value="#{user.lname}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="lname"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+
+									</p:column>
+									<p:column headerText="Category">
+
+										<h:selectOneMenu id="cat" styleClass="form-control"
+											rendered="#{user.editable}" required="true"
+											value="#{user.userCategory.userCatid}"
+											requiredMessage="#{msg['requiered.categoryname.message']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems value="#{userAccountController.catDetails}"
+												var="option" itemValue="#{option.userCatid}"
+												itemLabel="#{option.usercategoryName}"
+												itemLabelEscaped="true" />
+											<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+										</h:selectOneMenu>
+
+										<h:outputText value="#{user.userCategory.usercategoryName}"
+											rendered="#{not user.editable}" />
+										<h:message errorClass="errorMsg1" for="cat"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+									</p:column>
+									<p:column headerText="Board">
+										<h:outputText value="#{user.board.boardName}" />
+									</p:column>
+									<p:column headerText="Status">
+										<h:outputText value="#{user.status}" />
+
+									</p:column>
+									<p:column headerText=" Change Status">
+
+										<h:commandLink style="color:white"
+											class="btn btn-success 	glyphicon glyphicon-refresh"
+											value="#{user.action}"
+											action="#{userAccountController.updateStatus(user)}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+									</p:column>
+									<p:column headerText="Action">
+										<div class="btn-group btn btn-sm" role="group"
+											aria-label="Basic example">
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="Edit"
+												class="btn btn-success 	glyphicon glyphicon-edit"
+												style="color:white;"
+												action="#{userAccountController.editAction(user)}"
+												rendered="#{not user.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="Cancel"
+												class="btn btn-danger 	glyphicon glyphicon-remove"
+												action="#{userAccountController.cancel(user)}"
+												style="color:white;" rendered="#{user.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+
+
+											<h:commandLink
+												class="btn btn-primary glyphicon glyphicon-floppy-disk"
+												style="color:white;" data-toggle="tooltip"
+												data-placement="right" title="Save Changes"
+												action="#{userAccountController.newAction(user)}"
+												rendered="#{user.editable}" execute="@this">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+
+											</h:commandLink>
+										</div>
+									</p:column>
+
+								</p:dataTable>
+							</p:outputPanel>
+
+							<!-- END TABLE  HOLDING USERS EDITED DETAILS DISPLAY -->
+							<!-- Back FilterContact Page -->
+							<br /> <a href="ViewUsersList.xhtml"
+								style="font-size: 14px !important; width: 25%; margin-left: 5%;"
+								class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
+									style="background-color: red; color: white" class="badge"></span></b>
+							</a>
+							<!-- End Back -->
 						</fieldset>
 
-					</div>
+					</h:form>
+
 				</div>
-			</h:form>
+			</div>
+
+			<!-- End of Dashboard -->
 		</ui:define>
 	</ui:composition>
+
 </h:body>
+
 </html>

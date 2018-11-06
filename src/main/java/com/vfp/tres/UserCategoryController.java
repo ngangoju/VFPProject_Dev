@@ -102,7 +102,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 				e.printStackTrace();
 				return null;
 			}
-
+			userCategory.setCreatedBy(usersSession.getViewId());
+			userCategory.setCrtdDtTime(timestamp);
+			userCategory.setGenericStatus(ACTIVE);
+			userCategory.setUpdatedBy(usersSession.getViewId());
+			userCategory.setCrtdDtTime(timestamp);
 			userCatImpl.saveUsercategory(userCategory);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -121,6 +125,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 		}
 		return "";
 	}
+
 
 	public void showCatTable() {
 
@@ -145,6 +150,8 @@ public class UserCategoryController implements Serializable, DbConstant {
 		LOGGER.info("here update sart for " + usercat + " useriD " + usercat.getUserCatid());
 
 		cat.setEditable(false);
+		usercat.setUpdatedBy(usersSession.getViewId());
+		usercat.setUpDtTime(timestamp);
 		usercat.setUsercategoryName(cat.getUsercategoryName());
 
 		userCatImpl.UpdateUsercategory(usercat);

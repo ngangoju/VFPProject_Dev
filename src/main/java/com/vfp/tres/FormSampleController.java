@@ -67,6 +67,7 @@ public class FormSampleController implements Serializable, DbConstant {
 	private UploadingFiles uploadingFiles;
 	private UploadingStrategicPlan uploadingPlan;
 	private StrategicPlanDto planDto;
+	private Users usersSession;
 	private UploadingStrategicPlanImpl uploadingStrImpl = new UploadingStrategicPlanImpl();
 	private List<UploadingStrategicPlan> planList = new ArrayList<UploadingStrategicPlan>();
 
@@ -74,6 +75,7 @@ public class FormSampleController implements Serializable, DbConstant {
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
+		usersSession = (Users) session.getAttribute("userSession");
 		if (users == null) {
 			users = new Users();
 		}
@@ -120,6 +122,7 @@ public class FormSampleController implements Serializable, DbConstant {
 			uploadingFiles.setCrtdDtTime(timestamp);
 			uploadingFiles.setGenericStatus(ACTIVE);
 			uploadingFiles.setDocuments(documents);
+			uploadingFiles.setCreatedBy(usersSession.getViewId());
 			uploadingFilesImpl.saveIntable(uploadingFiles);
 
 			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
@@ -134,6 +137,38 @@ public class FormSampleController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+	public String uploadProfile(FileUploadEvent event) {
+
+		try {
+			if (null != usersSession) {
+				UploadUtility ut = new UploadUtility();
+				String validationCode = "PROFILEIMAGE";
+				documents = ut.fileUploadUtilUsers(event, validationCode);
+				
+					uploadingFiles.setUser(usersSession);
+					uploadingFiles.setCrtdDtTime(timestamp);
+					uploadingFiles.setGenericStatus(ACTIVE);
+					uploadingFiles.setDocuments(documents);
+					uploadingFilesImpl.saveIntable(uploadingFiles);
+					LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("upload.message.success"));
+					return "/menu/EditProfile.xhtml?faces-redirect=true";
+				}else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+				}		
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + "testing profile upload methode ");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.userprofile.error"));
+			e.printStackTrace();
+		}
+		return "/menu/EditProfile.xhtml?faces-redirect=true";
 	}
 
 	// UPLOADING STRATEGIC PLAN DOCUMENTS
@@ -161,6 +196,7 @@ public class FormSampleController implements Serializable, DbConstant {
 					uploadingPlan.setStrategicPlan(pl);
 					uploadingPlan.setCrtdDtTime(timestamp);
 					uploadingPlan.setGenericStatus(ACTIVE);
+					uploadingPlan.setCreatedBy(usersSession.getViewId());
 					uploadingPlan.setDocuments(documents);
 					uploadingStrImpl.saveIntable(uploadingPlan);
 					LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
@@ -251,10 +287,12 @@ public class FormSampleController implements Serializable, DbConstant {
 	}
 
 	// listing strategicPlan documents
+	@SuppressWarnings("unchecked")
 	public List<UploadingStrategicPlan> stratPlanFileList() {
 
 		try {
-			return uploadingStrImpl.getListWithHQL("from UploadingStrategicPlan where genericStatus='" + ACTIVE + "'");
+			return uploadingStrImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "UploadingStrategicPlan", " upLoadPlanId asc");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -460,6 +498,14 @@ public class FormSampleController implements Serializable, DbConstant {
 
 	public void setPlanList(List<UploadingStrategicPlan> planList) {
 		this.planList = planList;
+	}
+
+	public Users getUsersSession() {
+		return usersSession;
+	}
+
+	public void setUsersSession(Users usersSession) {
+		this.usersSession = usersSession;
 	}
 
 }
