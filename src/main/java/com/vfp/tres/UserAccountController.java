@@ -274,12 +274,12 @@ public class UserAccountController implements Serializable, DbConstant {
 
 					catDetails = catImpl.getGenericListWithHQLParameter(
 							new String[] { "genericStatus", "usercategoryName" },
-							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", "usercatid desc");
+							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", " userCatid desc");
 					renderBoard = false;
 					return (catDetails);
 				} else {
 					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-							new Object[] { ACTIVE }, "UserCategory", "usercatid desc");
+							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
 					renderBoard = true;
 					return (catDetails);
 				}

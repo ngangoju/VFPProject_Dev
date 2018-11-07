@@ -155,7 +155,10 @@ public class AbstractDao<K, T> implements IRootDao<K, T> {
 		} catch (Exception ex) {
 			LOGGER.info("System Error has occured. " + ex);
 			throw new Exception(ex);
-		} 
+		} finally {
+			session.close();
+			factory.close();
+		}
 	}
 
 	public List<T> getListWithHQL(final String hqlStatement) throws Exception {
