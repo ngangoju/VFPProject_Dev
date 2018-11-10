@@ -130,4 +130,5 @@ public  interface  DbConstant {
  public static final String ESCALET="escalet";
  public static final String Board_opt="board";
  public static final String Date_opt="dates";
+ public static final String UN_AVAILABLE = "Unavailable";
 }

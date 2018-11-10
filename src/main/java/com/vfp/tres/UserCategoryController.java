@@ -16,6 +16,7 @@ import org.hibernate.HibernateException;
 import org.jboss.marshalling.ClassExternalizerFactory;
 
 import tres.common.DbConstant;
+import tres.common.Formating;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
@@ -41,6 +42,8 @@ public class UserCategoryController implements Serializable, DbConstant {
 	private UserCategory userCategory;
 	private Users usersSession;
 	private List<UserCategory> categoryDetails = new ArrayList<UserCategory>();
+	private List<Contact> contactDetails = new ArrayList<Contact>();
+	private List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 	private List<UserCategoryDto> categoryDtoDetails = new ArrayList<UserCategoryDto>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -49,6 +52,10 @@ public class UserCategoryController implements Serializable, DbConstant {
 	private boolean rendered;
 	UserCategoryImpl userCatImpl = new UserCategoryImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+	private String repEmail;
+	private String option;
+	private Contact cont = new Contact();
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -58,16 +65,25 @@ public class UserCategoryController implements Serializable, DbConstant {
 		if (userCategory == null) {
 			userCategory = new UserCategory();
 		}
+		if (cont == null) {
+			cont = new Contact();
+		}
 
 		try {
-			categoryDetails = userCatImpl.getListWithHQL(SELECT_USERCATEGORY);
-			for (UserCategory userCat : categoryDetails) {
-				UserCategoryDto catDto = new UserCategoryDto();
-				catDto.setEditable(false);
-				catDto.setUserCatid(userCat.getUserCatid());
-				catDto.setUsercategoryName(userCat.getUsercategoryName());
-				categoryDtoDetails.add(catDto);
-			}
+			categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+			/*
+			 * categoryDetails=userCatImpl.getListWithHQL(SELECT_USERCATEGORY);
+			 * 
+			 * for (UserCategory userCat : categoryDetails) { UserCategoryDto catDto = new
+			 * UserCategoryDto(); catDto.setEditable(false);
+			 * catDto.setUserCatid(userCat.getUserCatid());
+			 * catDto.setUsercategoryName(userCat.getUsercategoryName()); if
+			 * (userCat.getStatus().equals(ACTIVE)) { catDto.setAction(DESACTIVE); } else {
+			 * catDto.setAction(ACTIVE); } categoryDtoDetails.add(catDto); }
+			 */
+
+			categoryDtoDetails = listCategory(categoryDetails);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -75,6 +91,129 @@ public class UserCategoryController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List listCategory(List<UserCategory> userCatDetails) {
+		List<UserCategoryDto> categoryDtoDetails = new ArrayList<UserCategoryDto>();
+		for (UserCategory userCat : userCatDetails) {
+			UserCategoryDto catDto = new UserCategoryDto();
+			catDto.setEditable(false);
+			catDto.setNotify(false);
+			catDto.setUserCatid(userCat.getUserCatid());
+			catDto.setUsercategoryName(userCat.getUsercategoryName());
+			catDto.setStatus(userCat.getStatus());
+			if (userCat.getStatus().equals(ACTIVE)) {
+				catDto.setAction(DESACTIVE);
+			} else {
+				catDto.setAction(ACTIVE);
+			}
+			categoryDtoDetails.add(catDto);
+		}
+		return (categoryDtoDetails);
+	}
+
+	@SuppressWarnings("unchecked")
+	public String updateStatus(UserCategoryDto categ) throws Exception {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		UserCategory cat = new UserCategory();
+
+		if (categ != null)
+			cat = userCatImpl.getUserCategoryById(categ.getUserCatid(), "userCatid");
+		if (cat != null)
+			LOGGER.info("here update sart for " + cat + " useriD " + cat.getStatus());
+		if (categ.getStatus().equals(ACTIVE)) {
+			cat.setUpdatedBy(usersSession.getViewId());
+			cat.setUpDtTime(timestamp);
+			cat.setStatus(DESACTIVE);
+			categ.setNotify(false);
+		} else {
+			cat.setUpdatedBy(usersSession.getViewId());
+			cat.setUpDtTime(timestamp);
+			cat.setStatus(ACTIVE);
+			categ.setNotify(false);
+		}
+		Contact ct = new Contact();
+
+		if (null != repEmail) {
+			ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { repEmail }, "from Contact");
+			if (null != ct) {
+				userCatImpl.UpdateUsercategory(cat);
+				categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+						new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+				categoryDtoDetails = listCategory(categoryDetails);
+				LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + repEmail);
+				boolean valid = notifyRepresentativeChange(repEmail);
+				if (valid) {
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.notify.representative.cat"));
+					LOGGER.info(CLASSNAME + "::Email sent successuful!!");
+					this.repEmail=null;
+					// return to current page
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.cat"));
+					LOGGER.info(CLASSNAME + "::Fail to send Email!!");
+					this.repEmail=null;
+				}
+			} else {
+				this.repEmail=null;
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+				LOGGER.info(CLASSNAME + "sivaserside validation :: email not recorded in the system! ");
+				return null;
+			}
+
+		} else {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
+		}
+
+		return "";
+
+	}
+
+	public Boolean notifyRepresentativeChange(String email) throws Exception {
+		boolean valid = false;
+		try {
+			SendSupportEmail support = new SendSupportEmail();
+			Contact ct = new Contact();
+
+			if (null != email) {
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { email }, "from Contact");
+				if (null != ct) {
+					boolean verifyemail = support.sendMailTestVersion(ct.getUser().getFname(), ct.getUser().getLname(),
+							ct.getEmail());
+					if (verifyemail) {
+						valid = true;
+					}
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email not recorded in the system! ");
+					return null;
+				}
+
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
+			}
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+		}
+		return (valid);
 	}
 
 	public String SaveUserCategory() {
@@ -104,6 +243,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 			userCategory.setCreatedBy(usersSession.getViewId());
 			userCategory.setCrtdDtTime(timestamp);
 			userCategory.setGenericStatus(ACTIVE);
+			userCategory.setStatus(ACTIVE);
 			userCategory.setUpdatedBy(usersSession.getViewId());
 			userCategory.setCrtdDtTime(timestamp);
 			userCatImpl.saveUsercategory(userCategory);
@@ -124,7 +264,6 @@ public class UserCategoryController implements Serializable, DbConstant {
 		}
 		return "";
 	}
-
 
 	public void showCatTable() {
 
@@ -170,6 +309,12 @@ public class UserCategoryController implements Serializable, DbConstant {
 		return null;
 	}
 
+	public String cancelChange(UserCategoryDto cat) {
+		cat.setNotify(false);
+		this.repEmail=null;
+		return null;
+	}
+
 	public String otherUserCategory(UserCategoryDto cat) {
 		if (null != cat) {
 			return "/menu/UserCategory.xhtml?faces-redirect=true";
@@ -180,6 +325,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 	public String editAction(UserCategoryDto cat) {
 
 		cat.setEditable(true);
+		return null;
+	}
+
+	public String renderAction(UserCategoryDto cat) {
+		cat.setNotify(true);
 		return null;
 	}
 
@@ -271,4 +421,51 @@ public class UserCategoryController implements Serializable, DbConstant {
 		this.rendered = rendered;
 	}
 
+	public String getRepEmail() {
+		return repEmail;
+	}
+
+	public void setRepEmail(String repEmail) {
+		this.repEmail = repEmail;
+	}
+
+	public List<Contact> getContactDetails() {
+		return contactDetails;
+	}
+
+	public void setContactDetails(List<Contact> contactDetails) {
+		this.contactDetails = contactDetails;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
+	}
+
+	public Contact getCont() {
+		return cont;
+	}
+
+	public void setCont(Contact cont) {
+		this.cont = cont;
+	}
+
+	public List<ContactDto> getContactDtoDetails() {
+		return contactDtoDetails;
+	}
+
+	public void setContactDtoDetails(List<ContactDto> contactDtoDetails) {
+		this.contactDtoDetails = contactDtoDetails;
+	}
 }

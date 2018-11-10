@@ -273,12 +273,12 @@ public class UserAccountController implements Serializable, DbConstant {
 				if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
 
 					catDetails = catImpl.getGenericListWithHQLParameter(
-							new String[] { "genericStatus", "usercategoryName" },
+							new String[] { "status", "usercategoryName" },
 							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", " userCatid desc");
 					renderBoard = false;
 					return (catDetails);
 				} else {
-					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
 							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
 					renderBoard = true;
 					return (catDetails);
@@ -912,7 +912,7 @@ public class UserAccountController implements Serializable, DbConstant {
 					renderDataTable = true;
 					userDtosDetails = new ArrayList<UserDto>();
 					for (Object[] data : usersImpl.reportList(
-							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,co.email,co.phone,ins.institutionName,us.genericStatus,us.board from Users us,Contact co,Institution ins,Board b where b.institution=ins.institutionId and b.boardId=us.board and co.user=us.userId and us.createdDate between '"
+							"select DICTINCT us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,co.email,co.phone,ins.institutionName,us.genericStatus,us.board from Users us,Contact co,Institution ins,Board b where b.institution=ins.institutionId and b.boardId=us.board and co.user=us.userId and us.createdDate between '"
 									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
 						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
 								+ data[1] + "");

@@ -8,7 +8,9 @@ public class UserCategoryDto implements Serializable {
 	private int userCatid;
 	private String usercategoryName;
 	private boolean editable;
-
+	private boolean notify;
+	private String action;
+	private String status;
 	public int getUserCatid() {
 		return userCatid;
 	}
@@ -31,6 +33,30 @@ public class UserCategoryDto implements Serializable {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public boolean isNotify() {
+		return notify;
+	}
+
+	public void setNotify(boolean notify) {
+		this.notify = notify;
 	}
 
 }

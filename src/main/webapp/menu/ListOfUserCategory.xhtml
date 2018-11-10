@@ -19,12 +19,13 @@
 							<tr>
 								<td>
 									<div>
-										<h:commandLink 
+										<h:commandLink
 											class="btn btn-primary btn-xlg btn-block glyphicon "
 											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-											value="#{msg['UserCatForm.availButtom']}" actionListener="#{userCategoryController.showCatTable()}">
+											value="#{msg['UserCatForm.availButtom']}"
+											actionListener="#{userCategoryController.showCatTable()}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-											
+
 										</h:commandLink>
 									</div>
 
@@ -34,6 +35,20 @@
 					</div>
 					<div class="panel-body">
 
+						
+						<fieldset>
+							<legend> </legend>
+							<h:panelGrid columns="1" columnClasses="left,right"
+								style="width:100%">
+								<p:chart type="pie"
+									model="#{chartPresentationController.pieModel2}"
+									style="width:350px;height:300px" />
+							</h:panelGrid>
+
+
+
+						</fieldset>
+						<br />
 						<h:panelGroup layout="block"
 							rendered="#{not userCategoryController.valid and not facesContext.validationFailed}">
 							<ul>
@@ -59,36 +74,32 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						<fieldset>
-							<legend> </legend>
-							<h:panelGrid columns="1" columnClasses="left,right"
-								style="width:100%">
-								<p:chart type="pie"
-									model="#{chartPresentationController.pieModel2}"
-									style="width:350px;height:300px" />
-							</h:panelGrid>
-
-
-
-						</fieldset>
-
+						
 						<p:outputPanel id="toTable"
 							rendered="#{userCategoryController.rendered}" autoUpdate="true">
+							<hr />
 							<p:dataTable value="#{userCategoryController.categoryDtoDetails}"
 								style="width:70%; margin-top:10px;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 								var="cat" rowIndexVar="row" sortBy="#{cat.usercategoryName}"
 								sortOrder="ASCENDING" rowKey="#{cat.usercategoryName}">
-								
+
 								<f:facet name="header">
+									<h:commandLink style="color:white;float:left;"
+										value="New category"
+										class="btn btn-info glyphicon glyphicon-new-window"
+										action="#{userCategoryController.otherUserCategory(cat)}"
+										rendered="#{not cat.editable}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
 									<h4
-										style="font-family: Open Sans sans-serif !important; font-size: 18px !important; color: black; font-weight: bold; margin-top:10px;">
+										style="font-family: Open Sans sans-serif !important; font-size: 18px !important; color: black; font-weight: bold; margin-top: 10px;">
 										#{msg['message.header.userCat.filter']}</h4>
 								</f:facet>
 								<p:column headerText="No" style="width:10%;">
 
 									<h:outputText value="#{row+1}" />
 								</p:column>
-								<p:column headerText="CategoryName" style="width:35%;">
+								<p:column headerText="Categoryname" style="width:50%;">
 
 									<h:inputText value="#{cat.usercategoryName}" size="20"
 										rendered="#{cat.editable}" required="true" id="catname"
@@ -107,34 +118,80 @@
 										rendered="#{not cat.editable}" />
 
 								</p:column>
-								<p:column headerText="Action" style="width:30%;">
-								<div class="btn-group btn btn-sm" role="group" aria-label="Basic example">
-									<h:commandLink data-toggle="tooltip" data-placement="left" title="#{msg['UserCategoryView.editButton']}" class="btn btn-success glyphicon glyphicon-edit"
-										action="#{userCategoryController.editAction(cat)}"
-										rendered="#{not cat.editable}" >
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />								
-										</h:commandLink>
-									<h:commandLink data-toggle="tooltip" data-placement="left" title="#{msg['UserCategoryView.cancelButton']}"
-												class="btn btn-danger 	glyphicon glyphicon-remove"
-										action="#{userCategoryController.cancel(cat)}"
-										rendered="#{cat.editable}" >
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />										
-										</h:commandLink>
-									<h:commandLink  class="btn btn-primary glyphicon glyphicon-floppy-disk"
-												style="color:white;" data-toggle="tooltip"
-												data-placement="right" title="#{msg['UserCategoryView.savechangeButton']}"
-										action="#{userCategoryController.saveAction(cat)}"
-										rendered="#{cat.editable}" render="userConatactPanel" >
+								<p:column headerText="Status" style="width:30%;">
+									<h:outputText value="#{cat.status}" />
+								</p:column>
+
+								<p:column headerText="Changestatus" style="width:70%;">
+									<!-- Start of change Status Action -->
+									<h:commandLink data-toggle="tooltip" data-placement="left"
+										title="#{msg['UserCategoryView.changeButton']}"
+										class="btn btn-success glyphicon glyphicon-refresh"
+										action="#{userCategoryController.renderAction(cat)}"
+										rendered="#{not cat.notify}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-											
+									</h:commandLink>
+									<!-- End -->
+									<!-- EMail text Box -->
+									<h:outputText rendered="#{cat.notify}" value="Notify representative by email:" style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;"/>
+									<h:inputText rendered="#{cat.notify}" style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;width:100%;height:60%;"
+										value="#{userCategoryController.repEmail}"
+										class="form-control" id="email"
+										validatorMessage="#{msg['error.enter.invalid.email']}"
+										converterMessage="#{msg['error.enter.invalid.email']}"
+										requiredMessage="#{msg['error.enter.required.email']}">
+										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+									<h:message errorClass="errorMsg1" for="email"></h:message>
+									<!-- End of Email Box -->
+									<!-- Cancel Button -->
+									<h:commandLink data-toggle="tooltip" data-placement="left" style="margin-left:8%;"
+										title="#{msg['UserCategoryView.cancelButton']}"
+										class="btn btn-danger 	glyphicon glyphicon-remove"
+										action="#{userCategoryController.cancelChange(cat)}"
+										rendered="#{cat.notify}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+									<!-- End of Cancel Btn -->
+									<!-- Update Status Btn -->
+									<h:commandLink style="color:white" rendered="#{cat.notify}"
+										class="btn btn-success 	glyphicon glyphicon-refresh"
+										value="#{cat.action}"
+										action="#{userCategoryController.updateStatus(cat)}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+									<!-- End  -->
+								</p:column>
+								<p:column headerText="Action" style="width:50%;">
+									<div class="btn-group btn btn-sm" role="group"
+										aria-label="Basic example">
+										<h:commandLink data-toggle="tooltip" data-placement="left"
+											title="#{msg['UserCategoryView.editButton']}"
+											class="btn btn-success glyphicon glyphicon-edit"
+											action="#{userCategoryController.editAction(cat)}"
+											rendered="#{not cat.editable}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
-										<h:commandLink style="color:white" data-toggle="tooltip" data-placement="right" title="New category"
-												class="btn btn-info glyphicon glyphicon-new-window"
-												action="#{userCategoryController.otherUserCategory(cat)}" rendered="#{not cat.editable}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-										</div>
+										<h:commandLink data-toggle="tooltip" data-placement="left"
+											title="#{msg['UserCategoryView.cancelButton']}"
+											class="btn btn-danger 	glyphicon glyphicon-remove"
+											action="#{userCategoryController.cancel(cat)}"
+											rendered="#{cat.editable}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+										<h:commandLink
+											class="btn btn-primary glyphicon glyphicon-floppy-disk"
+											style="color:white;" data-toggle="tooltip"
+											data-placement="right"
+											title="#{msg['UserCategoryView.savechangeButton']}"
+											action="#{userCategoryController.saveAction(cat)}"
+											rendered="#{cat.editable}" render="userConatactPanel">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+
+										</h:commandLink>
+
+									</div>
 								</p:column>
 
 							</p:dataTable>
