@@ -138,8 +138,7 @@
 										value="#{userCategoryController.repEmail}"
 										class="form-control" id="email"
 										validatorMessage="#{msg['error.enter.invalid.email']}"
-										converterMessage="#{msg['error.enter.invalid.email']}"
-										requiredMessage="#{msg['error.enter.required.email']}">
+										converterMessage="#{msg['error.enter.invalid.email']}">
 										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
 										<f:validateLength maximum="100" />
 									</h:inputText>

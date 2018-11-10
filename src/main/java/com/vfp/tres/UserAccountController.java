@@ -104,6 +104,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private List<UserDto> userDtosDetails = new ArrayList<UserDto>();
 	List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 	private List<UserDto> repDtosDetails = new ArrayList<UserDto>();
+	private List<UserCategory> userCatDetails = new ArrayList<UserCategory>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -278,11 +279,18 @@ public class UserAccountController implements Serializable, DbConstant {
 					renderBoard = false;
 					return (catDetails);
 				} else {
-					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
+					userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
 							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
 					renderBoard = true;
+					for(Object[]data:catImpl.reportList("select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"+INSTITUTE_REP+"' and cat.usercategoryName<>'"+SUPER_ADMIN+"'")) {
+						UserCategory cat= new UserCategory();
+						cat.setUserCatid(Integer.parseInt(data[0]+""));
+						cat.setStatus(data[1]+"");
+						cat.setUsercategoryName(data[2]+"");
+						catDetails.add(cat);
+						}
 					return (catDetails);
-				}
+					}
 
 			} else {
 
@@ -1969,6 +1977,14 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setRenderOtherContForm(boolean renderOtherContForm) {
 		this.renderOtherContForm = renderOtherContForm;
+	}
+
+	public List<UserCategory> getUserCatDetails() {
+		return userCatDetails;
+	}
+
+	public void setUserCatDetails(List<UserCategory> userCatDetails) {
+		this.userCatDetails = userCatDetails;
 	}
 
 }
