@@ -59,23 +59,7 @@
 
 					<p:column headerText="#{msg['form.activity.status']}">
 
-
-						<h:selectOneMenu id="categoryId" styleClass="form-control"
-							required="true" value="#{act.status}"
-							requiredMessage="#{msg['status.required.message']}"
-							rendered="#{act.editable}">
-							<f:selectItem
-								itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-								itemValue="#{null}" itemLabelEscaped="false" />
-							<f:selectItems value="#{activityController.status}" var="option"
-								itemValue="#{option}" itemLabelEscaped="true" />
-							<f:ajax event="change" execute="@this"
-								listener="#{activityController.changeSelectBox('Junior')}"
-								render="ReasonPanel" />
-						</h:selectOneMenu>
-						<h:message for="categoryId" styleClass="help-block"></h:message>
-
-						<h:outputText value="#{act.status}" rendered="#{not act.editable}" />
+						<h:outputText value="#{act.status}"/>
 
 					</p:column>
 

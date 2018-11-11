@@ -91,6 +91,8 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setStatus(activity.getStatus());
 				activityDto.setWeight(activity.getWeight());
 				activityDto.setCreatedDate(activity.getCrtdDtTime());
+				activityDto.setStartDate(activity.getStartDate());
+				activityDto.setDueDate(activity.getDueDate());
 				activityDto.setTask(activity.getTask());
 				activityDto.setGenericstatus(activity.getGenericStatus());
 				activityDtoDetails.add(activityDto);
@@ -114,10 +116,12 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setEndDate(activity.getDueDate());
 			activity.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			activity.setDate(timestamp);
-			activity.setUser(usersImpl.gettUserById(usersSession.getUserId(), "userId"));
-			taskAssign = taskAssignImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
-					new Object[] { ACTIVE, usersSession.getUserId() }, "TaskAssignment");
-			activity.setTask(taskAssign.getTask());
+			users = usersImpl.gettUserById(usersSession.getUserId(), "userId");
+			activity.setUser(users);
+//			taskAssign = taskAssignImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
+//					new Object[] { ACTIVE, users}, "TaskAssignment");
+//			activity.setTask(taskAssign.getTask());
+			LOGGER.info("ASSIGNMENT YINJIYE");
 			activityImpl.saveActivity(activity);
 			JSFMessagers.resetMessages();
 			setValid(true);
