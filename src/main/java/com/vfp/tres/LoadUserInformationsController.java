@@ -82,7 +82,7 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 			userCatName = users.getUserCategory().getUsercategoryName();
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy/dd/MM");
 			if(null!=users&&users.getDateOfBirth()!=null)
-			dob = fmt.format(users.getDateOfBirth());
+			dob = fmt.format(users.getDateOfBirth()); 
 			try {
 				menuAssignmentDetails = menuAssignmentImpl.getGenericListWithHQLParameter(
 						new String[] { "userCategory", "genericStatus" },

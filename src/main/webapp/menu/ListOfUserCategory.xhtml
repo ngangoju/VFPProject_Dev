@@ -87,10 +87,9 @@
 									<h:commandLink style="color:white;float:left;"
 										value="New category"
 										class="btn btn-info glyphicon glyphicon-new-window"
-										action="#{userCategoryController.otherUserCategory(cat)}"
-										rendered="#{not cat.editable}">
+										action="#{userCategoryController.otherUserCategory}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-									</h:commandLink>
+									</h:commandLink>t
 									<h4
 										style="font-family: Open Sans sans-serif !important; font-size: 18px !important; color: black; font-weight: bold; margin-top: 10px;">
 										#{msg['message.header.userCat.filter']}</h4>

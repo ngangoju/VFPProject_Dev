@@ -252,7 +252,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.usercategory"));
 			LOGGER.info(CLASSNAME + "::UserCategory Details is saved");
 			clearCategoryFuileds();
-			return "/menu/ListOfUserCategory.xhtml?faces-redirect=true";
+			return null;
 		} catch (HibernateException e) {
 			// TODO: handle exception
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
@@ -262,7 +262,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 		}
-		return "";
+		return null;
 	}
 
 	public void showCatTable() {
@@ -279,20 +279,27 @@ public class UserCategoryController implements Serializable, DbConstant {
 	public String saveAction(UserCategoryDto cat) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
+		try {
+			
+			LOGGER.info("UserCat:++++++++++++++++++++++++++" + cat.getUserCatid());
+			UserCategory usercat = new UserCategory();
+			usercat = new UserCategory();
+			usercat = userCatImpl.getUserCategoryById(cat.getUserCatid(), "userCatid");
 
-		LOGGER.info("UserCat:++++++++++++++++++++++++++" + cat.getUserCatid());
-		UserCategory usercat = new UserCategory();
-		usercat = new UserCategory();
-		usercat = userCatImpl.getUserCategoryById(cat.getUserCatid(), "userCatid");
+			LOGGER.info("here update sart for " + usercat + " useriD " + usercat.getUserCatid());
 
-		LOGGER.info("here update sart for " + usercat + " useriD " + usercat.getUserCatid());
-
-		cat.setEditable(false);
-		usercat.setUpdatedBy(usersSession.getViewId());
-		usercat.setUpDtTime(timestamp);
-		usercat.setUsercategoryName(cat.getUsercategoryName());
-
-		userCatImpl.UpdateUsercategory(usercat);
+			cat.setEditable(false);
+			usercat.setUpdatedBy(usersSession.getViewId());
+			usercat.setUpDtTime(timestamp);
+			usercat.setUsercategoryName(cat.getUsercategoryName());
+			userCatImpl.UpdateUsercategory(usercat);
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateError"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		
 
 		// return to current page
 		return null;
@@ -315,11 +322,8 @@ public class UserCategoryController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String otherUserCategory(UserCategoryDto cat) {
-		if (null != cat) {
+	public String otherUserCategory() {	
 			return "/menu/UserCategory.xhtml?faces-redirect=true";
-		}
-		return null;
 	}
 
 	public String editAction(UserCategoryDto cat) {
