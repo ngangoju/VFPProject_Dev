@@ -33,7 +33,7 @@
 							</tr>
 						</table>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 
 						
 						<fieldset>
@@ -87,8 +87,7 @@
 									<h:commandLink style="color:white;float:left;"
 										value="New category"
 										class="btn btn-info glyphicon glyphicon-new-window"
-										action="#{userCategoryController.otherUserCategory(cat)}"
-										rendered="#{not cat.editable}">
+										action="#{userCategoryController.otherUserCategory}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 									</h:commandLink>
 									<h4
@@ -99,7 +98,7 @@
 
 									<h:outputText value="#{row+1}" />
 								</p:column>
-								<p:column headerText="Categoryname" style="width:50%;">
+								<p:column headerText="Categoryname" style="width:80%;">
 
 									<h:inputText value="#{cat.usercategoryName}" size="20"
 										rendered="#{cat.editable}" required="true" id="catname"
