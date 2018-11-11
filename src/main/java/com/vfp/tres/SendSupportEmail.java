@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import tres.common.DbConstant;
 import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
@@ -25,7 +26,7 @@ import tres.domain.Users;
 /**
  * Servlet implementation class SendSupportEmail
  */
-public class SendSupportEmail extends HttpServlet {
+public class SendSupportEmail extends HttpServlet implements DbConstant {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "SendSupportEmail :: ";
@@ -113,7 +114,7 @@ public  boolean sendMailTestVersion(String fname,String lname,String email) {
 
  +"<tr>"
  + "      <td class=\"labelbold\">Application URL</td>\n"
- + "      <td> <a href='http://localhost:8080/vfpProject_v1/default.xhtml'>click here to acces the service</a>  </td></tr>"
+ + "      <td> <a href="+LINK+"vfpProject_v1/default.xhtml>click here to acces the service</a>  </td></tr>"
          + "  </tbody>\n"
          + "</table>\n";
 		valid=true;
