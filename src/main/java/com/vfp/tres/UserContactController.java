@@ -667,6 +667,8 @@ public class UserContactController implements Serializable, DbConstant {
 	public String saveAction(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
+		try {
+			if(null!=user) {
 		Users us = new Users();
 		us = new Users();
 		us = usersImpl.gettUserById(user.getUserId(), "userId");
@@ -678,10 +680,23 @@ public class UserContactController implements Serializable, DbConstant {
 		us.setLname(user.getLname());
 
 		usersImpl.UpdateUsers(us);
-
 		// return to current page
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contactupdate"));
 		return "/menu/ListOfUsers.xhtml?faces-redirect=true";
-
+		}else {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.errorupdatecontact"));
+		}
+	}catch (Exception e) {
+		setValid(false);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateErrorcontact"));
+		LOGGER.info(e.getMessage());
+		e.printStackTrace();
+	}
+	return null;
 	}
 
 	public String cancel(UserDto user) {
@@ -740,6 +755,8 @@ public class UserContactController implements Serializable, DbConstant {
 	public String saveContactAction(ContactDto contact) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
+		try {
+			if(null!=contact) {
 		Contact cont = new Contact();
 		cont = new Contact();
 		cont = contactImpl.getContactById(contact.getContactId(), "contactId");
@@ -753,10 +770,22 @@ public class UserContactController implements Serializable, DbConstant {
 		cont.setUpdatedBy(usersSession.getViewId());
 		cont.setUpDtTime(timestamp);
 		contactImpl.UpdateContact(cont);
-
-		// return to current page
-		return null;
-
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contactupdate"));
+		return null ;
+		}else {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.errorupdatecontact"));
+		}
+	}catch (Exception e) {
+		setValid(false);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateErrorcontact"));
+		LOGGER.info(e.getMessage());
+		e.printStackTrace();
+	}
+	return null;
 	}
 
 	public String cancelContact(ContactDto contact) {

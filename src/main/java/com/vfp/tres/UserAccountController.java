@@ -151,6 +151,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private boolean renderRepContactAvailTable;
 	private boolean renderOtherContForm;
 	ContactImpl contactImpl = new ContactImpl();
+
 	@SuppressWarnings({ "unchecked" })
 	@PostConstruct
 	public void init() {
@@ -273,8 +274,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			if (null != usersSession) {
 				if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
 
-					catDetails = catImpl.getGenericListWithHQLParameter(
-							new String[] { "status", "usercategoryName" },
+					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status", "usercategoryName" },
 							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", " userCatid desc");
 					renderBoard = false;
 					return (catDetails);
@@ -282,15 +282,17 @@ public class UserAccountController implements Serializable, DbConstant {
 					userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
 							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
 					renderBoard = true;
-					for(Object[]data:catImpl.reportList("select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"+INSTITUTE_REP+"' and cat.usercategoryName<>'"+SUPER_ADMIN+"'")) {
-						UserCategory cat= new UserCategory();
-						cat.setUserCatid(Integer.parseInt(data[0]+""));
-						cat.setStatus(data[1]+"");
-						cat.setUsercategoryName(data[2]+"");
+					for (Object[] data : catImpl.reportList(
+							"select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"
+									+ INSTITUTE_REP + "' and cat.usercategoryName<>'" + SUPER_ADMIN + "'")) {
+						UserCategory cat = new UserCategory();
+						cat.setUserCatid(Integer.parseInt(data[0] + ""));
+						cat.setStatus(data[1] + "");
+						cat.setUsercategoryName(data[2] + "");
 						catDetails.add(cat);
-						}
-					return (catDetails);
 					}
+					return (catDetails);
+				}
 
 			} else {
 
@@ -699,36 +701,81 @@ public class UserAccountController implements Serializable, DbConstant {
 	public String newAction(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
-		Users us = new Users();
-		us = new Users();
-		if (null != user)
-			us = usersImpl.gettUserById(user.getUserId(), "userId");
-
-		if (null != us)
-			LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
-		user.setEditable(false);
-		us.setFname(user.getFname());
-		us.setLname(user.getLname());
-		us.setUserCategory(user.getUserCategory());
-		us.setBoard(user.getBoard());
-		us.setUpdatedBy(usersSession.getViewId());
-		us.setUpDtTime(timestamp);
-		usersImpl.UpdateUsers(us);
-		if ((null != from) && (null != to)) {
-			listUsersByDateBetween();
-		} else {
-			displayUsersByBoard();
+		try {
+			Users us = new Users();
+			us = new Users();
+			if (null != user)
+				us = usersImpl.gettUserById(user.getUserId(), "userId");
+			if (null != us)
+				LOGGER.info("here update sart for " + us + " useriD " + us.getUserId());
+			user.setEditable(false);
+			us.setFname(user.getFname());
+			us.setLname(user.getLname());
+			us.setUserCategory(user.getUserCategory());
+			us.setBoard(user.getBoard());
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
+			usersImpl.UpdateUsers(us);
+			if ((null != from) && (null != to)) {
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+				listUsersByDateBetween();
+			} else {
+				displayUsersByBoard();
+			}
+			return "null";
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 		}
-
-		// return to current page
-		return "null";
-		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+		return null;
 
 	}
 
+	
+	public String boardUpdateStatus(UserDto user) {
+		LOGGER.info("update  saveAction method");
+		// get all existing value but set "editable" to false
+		try {
+		Users us = new Users();
+		us = new Users();
+		if (user != null)
+			us = usersImpl.gettUserById(user.getUserId(), "userId");
+		if (us != null)
+			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
+
+		if (user.getStatus().equals(ACTIVE)) {
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
+			us.setStatus(DESACTIVE);
+
+		} else {
+			us.setUpdatedBy(usersSession.getViewId());
+			us.setUpDtTime(timestamp);
+			us.setStatus(ACTIVE);
+		}
+		usersImpl.UpdateUsers(us);
+		displayUsersByBoard();
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+		return null;
+		}  catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 	public String updateStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
+		try {
 		Users us = new Users();
 		us = new Users();
 		if (user != null)
@@ -748,38 +795,57 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 		usersImpl.UpdateUsers(us);
 		listUsersByDateBetween();
-		// return to current page
-		return "null";
-		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
-
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+		return null;
+		}  catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public String updateRepStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
-		Users us = new Users();
-		us = new Users();
-		if (user != null)
-			us = usersImpl.gettUserById(user.getUserId(), "userId");
-		if (us != null)
-			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
+		try {
+			Users us = new Users();
+			us = new Users();
+			if (user != null)
+				us = usersImpl.gettUserById(user.getUserId(), "userId");
+			if (us != null)
+				LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
 
-		if (user.getStatus().equals(ACTIVE)) {
-			us.setUpdatedBy(usersSession.getViewId());
-			us.setUpDtTime(timestamp);
-			us.setStatus(DESACTIVE);
+			if (user.getStatus().equals(ACTIVE)) {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(DESACTIVE);
 
-		} else {
-			us.setUpdatedBy(usersSession.getViewId());
-			us.setUpDtTime(timestamp);
-			us.setStatus(ACTIVE);
+			} else {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(ACTIVE);
+			}
+			usersImpl.UpdateUsers(us);
+			repDtosDetails = displayRepresentativeByDateBetween();
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+			// return to current page
+			return "null";
+			/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
+
+		}  catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 		}
-		usersImpl.UpdateUsers(us);
-		repDtosDetails = displayRepresentativeByDateBetween();
-		// return to current page
-		return "null";
-		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
-
+		return null;
+		
 	}
 
 	public void updateTable() throws Exception {
@@ -793,7 +859,6 @@ public class UserAccountController implements Serializable, DbConstant {
 			renderForeignCountry = true;
 			showCategory();
 		}
-
 	}
 
 	public void showDataTable() {
@@ -1119,9 +1184,10 @@ public class UserAccountController implements Serializable, DbConstant {
 		return null;
 
 	}
+
 	public void showRepresentContAvail() {
-		this.renderRepContactDash=false;
-		this.renderRepContactAvailTable=true;
+		this.renderRepContactDash = false;
+		this.renderRepContactAvailTable = true;
 	}
 
 	public String changePage() {
@@ -1151,11 +1217,11 @@ public class UserAccountController implements Serializable, DbConstant {
 			// Session creation to get user info from dataTable row
 			sessionuser.setAttribute("continfo", cont);
 			addOthercontacts();
-			this.renderOtherContForm=true;
-			this.renderRepContactAvailTable=false;
-		
+			this.renderOtherContForm = true;
+			this.renderRepContactAvailTable = false;
+
 		}
-	
+
 	}
 
 	public String saveContactAction(ContactDto contact) {
@@ -1198,6 +1264,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
+
 	public String saveContact() throws Exception {
 		try {
 
@@ -1297,7 +1364,6 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 
 	}
-
 
 	public String getCLASSNAME() {
 		return CLASSNAME;

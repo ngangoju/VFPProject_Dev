@@ -323,7 +323,6 @@ public class UserCategoryController implements Serializable, DbConstant {
 		cat.setEditable(false);
 		return null;
 	}
-
 	public String cancelChange(UserCategoryDto cat) {
 		cat.setNotify(false);
 		this.repEmail=null;

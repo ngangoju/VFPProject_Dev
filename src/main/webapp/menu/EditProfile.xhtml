@@ -12,7 +12,42 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
+			<style>
+.ui-growl-item-container {
+	background-color: #337ab7;
+}
 
+.ui-growl-icon-close {
+	cursor: pointer;
+	position: absolute;
+	left: 335px;
+	top: 15px;
+}
+.ui-growl-title {
+	font: 13px "Open Sans sans-serif !important;
+	/* text-align: center; */
+}
+
+.ui-growl-message p {
+	font: 12px "Open Sans sans-serif !important;
+letter-spacing: -1px; 
+}
+.ui-growl-image-info ~ .ui-growl-message {
+	color:#fff;
+}
+
+.ui-growl-image-error ~ .ui-growl-message {
+	color: black;
+}
+
+.ui-growl-image-warn ~ .ui-growl-message {
+	color: black;
+}
+
+.ui-growl-image-fatal ~ .ui-growl-message {
+	color: black;
+}
+</style>
 			<div class="panel panel-default">
 
 				<div class="panel-body"
@@ -70,9 +105,9 @@
 											</tr>
 										</thead>
 										<tr>
-										<td></td>
-											<td><h:graphicImage class="w3-circle" style="width:25%; height:30%;"
-													alt="userImage"
+											<td></td>
+											<td><h:graphicImage class="w3-circle"
+													style="width:25%; height:30%;" alt="userImage"
 													value="/images/dynamic/?file=#{loadUserInformationsController.users.image}" /></td>
 										</tr>
 										<tr>
@@ -87,38 +122,38 @@
 										<tr>
 											<td><label>Address:</label></td>
 											<td><label>#{loadUserInformationsController.users.address}</label></td>
-											</tr>
-											<tr>
+										</tr>
+										<tr>
 											<td><label>Date Of Birth:</label></td>
 											<td><label>#{loadUserInformationsController.dob}</label></td>
-											</tr>
-											<tr>
+										</tr>
+										<tr>
 											<td><label>Gender:</label></td>
 											<td><label>#{loadUserInformationsController.users.gender}</label></td>
-											</tr>
-											<tr>
+										</tr>
+										<tr>
 											<td><label>Login Status:</label></td>
 											<td><label>#{loadUserInformationsController.users.loginStatus}</label></td>
-											</tr>
-											<tr>
+										</tr>
+										<tr>
 											<td><label>Category:</label></td>
 											<td><label>#{loadUserInformationsController.userCatName}</label></td>
-											</tr>
+										</tr>
 									</table>
 								</b:tab>
 								<b:tab title="Change Your Image">
 									<h:form>
-										<p:fileUpload style="width:70%;font-family: Open Sans sans-serif !important; font-size: 14px !important;" uploadLabel="Upload image" cancelLabel="Cancel" 
+										<p:fileUpload
+											style="width:70%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											uploadLabel="Upload image" cancelLabel="Cancel"
 											fileUploadListener="#{formSampleController.uploadProfile}"
 											mode="advanced" dragDropSupport="true" multiple="true"
 											update="messages" sizeLimit="500000" fileLimit="1"
 											allowTypes="/(\.|\/)(jpe?g|png)$/" />
-										<p:growl id="messages" showDetail="true" />
+										<p:growl id="messages" />
 									</h:form>
 								</b:tab>
-
 							</b:tabView>
-
 						</div>
 					</h:form>
 				</div>
