@@ -51,6 +51,7 @@ public class UserDto implements Serializable {
 	private String genericStatus;
 	private Timestamp upDtTime;
 	private String updatedBy;
+	private boolean notify;
 	public String getAction() {
 		return action;
 	}
@@ -238,6 +239,14 @@ public class UserDto implements Serializable {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public boolean isNotify() {
+		return notify;
+	}
+
+	public void setNotify(boolean notify) {
+		this.notify = notify;
 	}
 	
 }

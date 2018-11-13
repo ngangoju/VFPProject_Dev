@@ -132,4 +132,5 @@ public  interface  DbConstant {
  public static final String Date_opt="dates";
  public static final String UN_AVAILABLE = "Unavailable";
  public static final String LINK="http://localhost:8080/"; 
+ public static final String SUPER_VISOR="Superviser";
 }

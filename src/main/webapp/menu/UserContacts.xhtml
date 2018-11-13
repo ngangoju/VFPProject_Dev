@@ -186,14 +186,12 @@
 							</div>
 							<!-- Back FilterContact Page -->
 							<br />
-							<h:commandLink value="#{msg['UserRegForm.GoBackButton']}"
-								action="#{userAccountController.changePage()}"
-								style=" font-size: 14px !important;width:25%;margin-left:5%;"
-								class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">
+							<a href="ViewUsersList.xhtml" style=" font-size: 14px !important;width:25%;margin-left:5%;"
+								class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}
 								<b><span style="background-color: red; color: white"
 									class="badge"></span></b>
-								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-							</h:commandLink>
+								</a>
+							
 							<!-- End Back -->
 						</fieldset>
 					</h:form>

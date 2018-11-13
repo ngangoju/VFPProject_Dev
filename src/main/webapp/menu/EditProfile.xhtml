@@ -143,14 +143,14 @@ letter-spacing: -1px;
 								</b:tab>
 								<b:tab title="Change Your Image">
 									<h:form>
-										<p:fileUpload
+										<p:fileUpload accept="image/*" oncomplete="window.location.reload();"
 											style="width:70%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 											uploadLabel="Upload image" cancelLabel="Cancel"
 											fileUploadListener="#{formSampleController.uploadProfile}"
 											mode="advanced" dragDropSupport="true" multiple="true"
 											update="messages" sizeLimit="500000" fileLimit="1"
 											allowTypes="/(\.|\/)(jpe?g|png)$/" />
-										<p:growl id="messages" />
+										<p:growl id="messages"  life="300000"/>
 									</h:form>
 								</b:tab>
 							</b:tabView>

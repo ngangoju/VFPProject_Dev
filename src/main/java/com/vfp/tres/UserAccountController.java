@@ -52,6 +52,7 @@ import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.domain.Village;
 import tres.vfp.dto.ContactDto;
+import tres.vfp.dto.UserCategoryDto;
 import tres.vfp.dto.UserDto;
 
 @SuppressWarnings("unused")
@@ -279,9 +280,10 @@ public class UserAccountController implements Serializable, DbConstant {
 					renderBoard = false;
 					return (catDetails);
 				} else {
-					userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
-							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
+				/*	userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
+							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");*/
 					renderBoard = true;
+					catDetails = new ArrayList<UserCategory>();
 					for (Object[] data : catImpl.reportList(
 							"select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"
 									+ INSTITUTE_REP + "' and cat.usercategoryName<>'" + SUPER_ADMIN + "'")) {
@@ -613,7 +615,15 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 
 	}
-
+	public String renderAction(UserDto user) {
+		user.setNotify(true);
+		return null;
+	}
+	public String cancelChange(UserDto user) {
+		user.setNotify(false);
+		this.useremail=null;
+		return null;
+	}
 	public String editAction(UserDto user) {
 
 		user.setEditable(true);
@@ -734,78 +744,188 @@ public class UserAccountController implements Serializable, DbConstant {
 		return null;
 
 	}
-
-	
 	public String boardUpdateStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
-		// get all existing value but set "editable" to false
 		try {
-		Users us = new Users();
-		us = new Users();
-		if (user != null)
-			us = usersImpl.gettUserById(user.getUserId(), "userId");
-		if (us != null)
-			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
+			Users us = new Users();
+			us = new Users();
+			if (user != null)
+				us = usersImpl.gettUserById(user.getUserId(), "userId");
+			if (us != null)
+				LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
 
-		if (user.getStatus().equals(ACTIVE)) {
-			us.setUpdatedBy(usersSession.getViewId());
-			us.setUpDtTime(timestamp);
-			us.setStatus(DESACTIVE);
+			if (user.getStatus().equals(ACTIVE)) {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(DESACTIVE);
+				user.setNotify(false);
+			} else {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(ACTIVE);
+				user.setNotify(false);
+			}
+			Contact ct = new Contact();
 
-		} else {
-			us.setUpdatedBy(usersSession.getViewId());
-			us.setUpDtTime(timestamp);
-			us.setStatus(ACTIVE);
-		}
-		usersImpl.UpdateUsers(us);
-		displayUsersByBoard();
-		JSFMessagers.resetMessages();
-		setValid(true);
-		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
-		return null;
-		}  catch (Exception e) {
+			if (null != useremail) {
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail }, "from Contact");
+				if (null != ct) {
+					usersImpl.UpdateUsers(us);
+					/* displayUsersByBoard(); */
+					userDtosDetails = showUsersByBoard(choice);
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+					LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + useremail);
+					boolean valid = notifyRepresentativeChange(useremail);
+					if (valid) {
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
+						this.useremail=null;
+						// return to current page
+					} else {
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
+						LOGGER.info(CLASSNAME + "::Fail to send Email!!");
+						this.useremail=null;
+					}
+				} else {
+					this.useremail=null;
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email not recorded in the system! ");
+					return null;
+				}
+
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
+			}
+			return "";
+		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
+
 	public String updateStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
 		try {
-		Users us = new Users();
-		us = new Users();
-		if (user != null)
-			us = usersImpl.gettUserById(user.getUserId(), "userId");
-		if (us != null)
-			LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
+			Users us = new Users();
+			us = new Users();
+			if (user != null)
+				us = usersImpl.gettUserById(user.getUserId(), "userId");
+			if (us != null)
+				LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
 
-		if (user.getStatus().equals(ACTIVE)) {
-			us.setUpdatedBy(usersSession.getViewId());
-			us.setUpDtTime(timestamp);
-			us.setStatus(DESACTIVE);
+			if (user.getStatus().equals(ACTIVE)) {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(DESACTIVE);
+				user.setNotify(false);
+			} else {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(ACTIVE);
+				user.setNotify(false);
+			}
+			Contact ct = new Contact();
 
-		} else {
-			us.setUpdatedBy(usersSession.getViewId());
-			us.setUpDtTime(timestamp);
-			us.setStatus(ACTIVE);
-		}
-		usersImpl.UpdateUsers(us);
-		listUsersByDateBetween();
-		JSFMessagers.resetMessages();
-		setValid(true);
-		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
-		return null;
-		}  catch (Exception e) {
+			if (null != useremail) {
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail }, "from Contact");
+				if (null != ct) {
+					usersImpl.UpdateUsers(us);
+					listUsersByDateBetween();
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+					/*usersImpl.UpdateUsers(us);
+					listUsersByDateBetween();*/
+					LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + useremail);
+					boolean valid = notifyRepresentativeChange(useremail);
+					if (valid) {
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
+						this.useremail=null;
+						// return to current page
+					} else {
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
+						LOGGER.info(CLASSNAME + "::Fail to send Email!!");
+						this.useremail=null;
+					}
+				} else {
+					this.useremail=null;
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email not recorded in the system! ");
+					return null;
+				}
+
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
+			}			
+			return null;
+		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public Boolean notifyRepresentativeChange(String email) throws Exception {
+		boolean valid = false;
+		try {
+			SendSupportEmail support = new SendSupportEmail();
+			Contact ct = new Contact();
+
+			if (null != email) {
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { email }, "from Contact");
+				if (null != ct) {
+					boolean verifyemail = support.sendMailTestVersion(ct.getUser().getFname(), ct.getUser().getLname(),
+							ct.getEmail());
+					if (verifyemail) {
+						valid = true;
+					}
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email not recorded in the system! ");
+					return null;
+				}
+
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
+			}
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+		}
+		return (valid);
 	}
 
 	public String updateRepStatus(UserDto user) {
@@ -829,23 +949,59 @@ public class UserAccountController implements Serializable, DbConstant {
 				us.setUpDtTime(timestamp);
 				us.setStatus(ACTIVE);
 			}
-			usersImpl.UpdateUsers(us);
-			repDtosDetails = displayRepresentativeByDateBetween();
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
-			// return to current page
-			return "null";
+			Contact ct = new Contact();
+
+			if (null != useremail) {
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail }, "from Contact");
+				if (null != ct) {
+					usersImpl.UpdateUsers(us);
+					repDtosDetails = displayRepresentativeByDateBetween();
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+					/*usersImpl.UpdateUsers(us);
+					listUsersByDateBetween();*/
+					LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + useremail);
+					boolean valid = notifyRepresentativeChange(useremail);
+					if (valid) {
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
+						this.useremail=null;
+					
+					} else {
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
+						LOGGER.info(CLASSNAME + "::Fail to send Email!!");
+						this.useremail=null;
+					}
+				} else {
+					this.useremail=null;
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+					LOGGER.info(CLASSNAME + "sivaserside validation :: email not recorded in the system! ");
+					return null;
+				}
+
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
+			}			
+			return "";
 			/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
 
-		}  catch (Exception e) {
+		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
 
 	public void updateTable() throws Exception {
@@ -882,6 +1038,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
 				UserDto userDtos = new UserDto();
 				userDtos.setEditable(false);
+				userDtos.setNotify(false);
 				userDtos.setUserId(Integer.parseInt(data[5] + ""));
 				userDtos.setFname(data[0] + "");
 				userDtos.setLname(data[1] + "");
@@ -933,6 +1090,7 @@ public class UserAccountController implements Serializable, DbConstant {
 									+ data[1] + "");
 							UserDto userDtos = new UserDto();
 							userDtos.setEditable(false);
+							userDtos.setNotify(false);
 							userDtos.setUserId(Integer.parseInt(data[5] + ""));
 							userDtos.setFname(data[0] + "");
 							userDtos.setLname(data[1] + "");
@@ -991,6 +1149,7 @@ public class UserAccountController implements Serializable, DbConstant {
 								+ data[1] + "");
 						UserDto userDtos = new UserDto();
 						userDtos.setEditable(false);
+						userDtos.setNotify(false);
 						userDtos.setUserId(Integer.parseInt(data[5] + ""));
 						userDtos.setFname(data[0] + "");
 						userDtos.setLname(data[1] + "");
@@ -1020,12 +1179,53 @@ public class UserAccountController implements Serializable, DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
 
+		}catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public List<UserDto> showUsersByBoard(String boardName) {
+		try {
+			if (null != boardName) {
+				userDtosDetails = new ArrayList<UserDto>();
+				for (Object[] data : usersImpl.reportList(
+						"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.board,b.boardName from Users us ,Board b where us.board=b.boardId and b.boardName='"
+								+ boardName + "'")) {
+					LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
+					UserDto userDtos = new UserDto();
+					userDtos.setEditable(false);
+					userDtos.setNotify(false);
+					userDtos.setUserId(Integer.parseInt(data[5] + ""));
+					userDtos.setFname(data[0] + "");
+					userDtos.setLname(data[1] + "");
+					userDtos.setViewId(data[2] + "");
+					userDtos.setUserCategory(((UserCategory) data[3]));
+					userDtos.setStatus(data[4] + "");
+					userDtos.setBoard(((Board) data[6]));
+					if (data[4].equals(ACTIVE)) {
+						userDtos.setAction(DESACTIVE);
+					} else {
+						userDtos.setAction(ACTIVE);
+					}
+					userDtosDetails.add(userDtos);
+				}
+				return (userDtosDetails);
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidchoice"));
+			}
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+		return (userDtosDetails);
+
 	}
 
 	public void displayUsersByBoard() {
@@ -1040,6 +1240,7 @@ public class UserAccountController implements Serializable, DbConstant {
 							"users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
 					UserDto userDtos = new UserDto();
 					userDtos.setEditable(false);
+					userDtos.setNotify(false);
 					userDtos.setUserId(Integer.parseInt(data[5] + ""));
 					userDtos.setFname(data[0] + "");
 					userDtos.setLname(data[1] + "");

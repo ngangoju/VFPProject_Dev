@@ -154,16 +154,50 @@
 										<h:outputText value="#{user.loginStatus}" />
 
 									</p:column>
-									<p:column headerText=" Change Status">
-
-										<h:commandLink style="color:white"
+									<p:column headerText="Change Status" style="width:25%;">
+									<h:message errorClass="errorMsg1" for="email"></h:message>
+									<div class="btn-group btn btn-sm" role="group" aria-label="Basic example">
+									<!-- Start of change Status Action -->				
+									<h:commandLink data-toggle="tooltip" data-placement="left"
+										title="#{msg['UserCategoryView.changeButton']}"
+										class="btn btn-success glyphicon glyphicon-refresh"
+										action="#{userAccountController.renderAction(user)}"
+										rendered="#{not user.notify}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+									<!-- End -->
+									<!-- EMail text Box -->
+									<h:outputText rendered="#{user.notify}" value="Notify Representative by email:" style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;float:left;"/>
+									<h:inputText rendered="#{user.notify}" style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;height:60%;"
+										value="#{userAccountController.useremail}"
+										class="form-control" id="email"
+										validatorMessage="#{msg['error.enter.invalid.email']}"
+										converterMessage="#{msg['error.enter.invalid.email']}">
+										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+									
+									<!-- End of Email Box -->
+									
+									<!-- Cancel Button -->
+									<h:commandLink data-toggle="tooltip" data-placement="left"
+										title="#{msg['UserCategoryView.cancelButton']}"
+										class="btn btn-danger 	glyphicon glyphicon-remove"
+										action="#{userAccountController.cancelChange(user)}"
+										rendered="#{user.notify}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+									<!-- End of Cancel Btn -->
+										<h:commandLink style="color:white" rendered="#{user.notify}"
 											class="btn btn-success 	glyphicon glyphicon-refresh"
-											value="#{user.action}"
+											 data-toggle="tooltip" data-placement="left"
+										title="#{user.action}"
 											action="#{userAccountController.updateRepStatus(user)}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
+										</div>
 									</p:column>
-									<p:column headerText="Action">
+									<p:column headerText="Action" style="width:15%;">
 										<div class="btn-group btn btn-sm" role="group"
 											aria-label="Basic example">
 											<h:commandLink data-toggle="tooltip" data-placement="left"
