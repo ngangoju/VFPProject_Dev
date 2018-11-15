@@ -7,35 +7,38 @@ import java.util.Date;
 import tres.domain.Users;
 import tres.domain.Institution;
 
+
+
+
 public class PaymentRecordsDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int paymentId;
 
 	private String paymentCode;
-
+	
 	private Date paymentDate;
-
+	  
 	private Date paymentExpiretionDate;
-
-	private String amount;
-
-	private String currency;
-
-	private String paymentChanel;
-
-	private String paymentStatus;
-
-	private String bankRefernceNo;
-
-	private String comment;
-
+	
+    private String  amount;
+	   
+	private String   currency;
+	    
+	private String   paymentChanel;
+	  
+	private String  paymentStatus;
+	
+   	private String  bankRefernceNo;
+    
+   	private String  comment;
+ 
 	private Users paymentApprovedBy;
-
+	
 	private Institution institution;
-
-	private boolean editable;
-
+	
+	private boolean editables;
+	
 	private String action;
 
 	public int getPaymentId() {
@@ -54,14 +57,7 @@ public class PaymentRecordsDto implements Serializable {
 		this.paymentCode = paymentCode;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
-		this.paymentDate = paymentDate;
-	}
-
-	public void setPaymentExpiretionDate(Timestamp paymentExpiretionDate) {
-		this.paymentExpiretionDate = paymentExpiretionDate;
-	}
-
+	
 	public String getAmount() {
 		return amount;
 	}
@@ -126,12 +122,12 @@ public class PaymentRecordsDto implements Serializable {
 		this.institution = institution;
 	}
 
-	public boolean isEditable() {
-		return editable;
+	public boolean iseditables() {
+		return editables;
 	}
 
-	public void setEditable(boolean editable) {
-		this.editable = editable;
+	public void seteditables(boolean editables) {
+		this.editables = editables;
 	}
 
 	public String getAction() {
@@ -158,4 +154,8 @@ public class PaymentRecordsDto implements Serializable {
 		this.paymentExpiretionDate = paymentExpiretionDate;
 	}
 
+
+	
+	
+	
 }

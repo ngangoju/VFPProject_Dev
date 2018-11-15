@@ -13,99 +13,125 @@
 
 		<ui:define name="content">
 
-			<h:panelGroup id="paymentRecordsPanel">
+
+
+
+
+			<h:panelGroup id="listGroupPanel">
 				<h:form>
 					<p:outputPanel>
 						<h:commandLink style="color:white;float:top;"
 							class="btn btn-success 	glyphicon glyphicon-user"
-							value=" Add New Payment Records" action="#{paymentRecordsContoller.addNewPaymentRecords()}" >
+							value=" Add New List Of Menu" action="#{listOfMenuController.addNewListOfMenu()}" >
 							<f:ajax render="@form" execute="@form" onevent="showProgress" />
 							</h:commandLink>
 
 					</p:outputPanel>
-					<p:dataTable value="#{paymentRecordsContoller.paymentRecordsDtoDetails}"
-						var="payment" rows="10" paginator="true"
+					<p:dataTable value="#{listOfMenuController.listOfMenuDtoDetails}"
+						var="list" rows="10" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15" id="tables">
+						<!-- <f:facet name="header">
+							<p:outputPanel style="margin-left:250px;">
+								<h:outputText value="Search all fields:" />
+								<h:inputText style="width:180px;"
+									placeholder="Enter keyword" value="{userContactController.keySearch}" >
+									  <p:ajax listener="{userContactController.searchAllFields()}" update="tables" event="keyup"/>	
+									</h:inputText>
+							</p:outputPanel>
+						</f:facet> -->
+
+						<p:column headerText="Description">
+
+							<h:inputText value="#{list.description}" size="10"
+								rendered="#{list.editable}" />
+
+							<h:outputText value="#{list.description}"
+								rendered="#{not list.editable}" />
+						</p:column>
+
+
+						<p:column headerText="Url Name">
+
+
+							<h:inputText value="#{list.urlName}" size="10"
+								rendered="#{list.editable}" />
+
+							<h:outputText value="#{list.urlName}"
+								rendered="#{not list.editable}" />
+
+						</p:column>
+
 						
-						<p:column headerText="#{msg['payment.instittution']}">
+
+						<p:column headerText="Menu Group">
 
 							<h:selectOneMenu id="cat" styleClass="form-control"
-								rendered="#{payment.editable}" required="true"
-								value="#{payment.institutionid}"
-								requiredMessage="#{msg['payment.institution.required']}">
+								rendered="#{list.editable}" required="true"
+								value="#{list.menuGroup.menuGroupId}"
+								requiredMessage="#{msg['listofmenu.menugroup.required']}">
 								<f:selectItem
 									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-								<f:selectItems value="#{paymentRecordsContoller.institutionDetails}"
-									var="option" itemValue="#{option.institutionId}"
-									itemLabel="#{option.institutionName}" itemLabelEscaped="true" />
+								<f:selectItems value="#{listOfMenuController.menuGroupDetails}"
+									var="option" itemValue="#{option.menuGroupId}"
+									itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
 								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
 							</h:selectOneMenu>
 
-							<h:outputText value="#{payment.institution.institutionName}"
-								rendered="#{not payment.editable}" />
+							<h:outputText value="#{list.menuGroup.menuGroupName}"
+								rendered="#{not list.editable}" />
 
 						</p:column>
 						
-						<p:column headerText="#{msg['payment.date']}">
+						<p:column headerText="Icon Image">
 
-							<h:inputText value="#{payment.paymentDate}" size="10"
-								rendered="#{payment.editable}" />
+							<h:selectOneMenu id="cat12" styleClass="form-control"
+								rendered="#{list.editable}" required="true"
+								value="#{list.iconImage}"
+								requiredMessage="#{msg['message.iconImage.required']}">
+								<f:selectItem
+									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+								<f:selectItems value="#{listOfMenuController.listOfMenuDetails}"
+									var="option" itemValue="#{option.iconImage}"
+									itemLabel="#{option.iconImage}" itemLabelEscaped="true" />
+								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+							</h:selectOneMenu>
 
-							<h:outputText value="#{payment.paymentDate}"
-								rendered="#{not payment.editable}" />
-						</p:column>
-
-
-						<p:column headerText="#{msg['payment.expired']}">
-
-							<h:inputText value="#{payment.paymentExpiretionDate}" size="10"
-								rendered="#{payment.editable}" />
-
-							<h:outputText value="#{payment.paymentExpiretionDate}"
-								rendered="#{not payment.editable}" />
-
-						</p:column>
-						
-						<p:column headerText="#{msg['payment.amount']}">
-
-							<h:inputText value="#{payment.amount}" size="10"
-								rendered="#{payment.editable}" />
-
-							<h:outputText value="#{payment.amount}"
-								rendered="#{not payment.editable}" />
-
-						</p:column>
-
-						<p:column headerText="#{msg['payment.currency']}">
-
-							<h:inputText value="#{payment.currency}" size="10"
-								rendered="#{payment.editable}" />
-
-							<h:outputText value="#{payment.currency}"
-								rendered="#{not payment.editable}" />
+							<h:outputText value="#{list.iconImage}"
+								rendered="#{not list.editable}" />
 
 						</p:column>
 						
-						<p:column headerText="#{msg['payment.bankRefNo']}">
+						<p:column headerText="Menu Color">
 
-							<h:inputText value="#{payment.bankRefernceNo}" size="10"
-								rendered="#{payment.editable}" />
+							<h:selectOneMenu id="cat13" styleClass="form-control"
+								rendered="#{list.editable}" required="true"
+								value="#{list.menuColor}"
+								requiredMessage="#{msg['listofmenu.menugroup.required']}">
+								<f:selectItem
+									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+								<f:selectItems value="#{listOfMenuController.listOfMenuDetails}"
+									var="option" itemValue="#{option.menuColor}"
+									itemLabel="#{option.menuColor}" itemLabelEscaped="true" />
+								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+							</h:selectOneMenu>
 
-							<h:outputText value="#{payment.bankRefernceNo}"
-								rendered="#{not payment.editable}" />
-
-						</p:column>
-						<p:column headerText="#{msg['payment.status']}">
-							<h:outputText value="#{payment.paymentStatus}" />
+							<h:outputText value="#{list.menuColor}"
+								rendered="#{not list.editable}" />
 
 						</p:column>
 						
-						<p:column headerText="#{msg['payment.change.status']}">
+						<p:column headerText="Menu Status">
+							<h:outputText value="#{list.genericStatus}" />
+
+						</p:column>
+						<p:column headerText=" Change Status">
 							
 							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{payment.action}" action="#{paymentRecordsContoller.updateStatus(payment)}" >
+								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{list.action}" action="#{listOfMenuController.updateStatus(list)}" >
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
 						</p:column>
@@ -114,18 +140,20 @@
 
 							<h:commandLink style="color:white"
 								class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
-								action="#{paymentRecordsContoller.editAction(payment)}"
-								rendered="#{not payment.editable}" />
+								action="#{listOfMenuController.editAction(list)}"
+								rendered="#{not list.editable}" >
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
 
 							<h:commandLink style="margin-left:2px;color:white"
 								class="btn btn-danger 	glyphicon glyphicon-remove"
-								value="Cancel" action="#{paymentRecordsContoller.cancel(payment)}"
-								rendered="#{payment.editable}" />
+								value="Cancel" action="#{listOfMenuController.cancel(list)}"
+								rendered="#{list.editable}" />
 
 
 							<h:commandButton value="Save Changes" class="btn btn-primary"
-								action="#{paymentRecordsContoller.newAction(payment)}"
-								rendered="#{payment.editable}" render="paymentRecordsPanel" >
+								action="#{listOfMenuController.newAction(list)}"
+								rendered="#{list.editable}" render="listGroupPanel" >
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandButton>
 						</p:column>

@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 @Entity
 @Table(name = "PaymentRecords")
@@ -26,37 +29,41 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 
 	@Column(name = "paymentCode", unique = true)
 	private String paymentCode;
-
-	@Column(name = "paymentDate")
+	
+	@Column(name = "paymentDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date paymentDate;
-
-	@Column(name = "paymentExpiretionDate")
+	  
+	@Column(name = "paymentExpiretionDate", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date paymentExpiretionDate;
-
+	
 	@Column(name = "amount")
-	private String amount;
-
+    private String  amount;
+	   
+	   
 	@Column(name = "currency")
-	private String currency;
-
+	private String   currency;
+	    
 	@Column(name = "paymentChanel")
-	private String paymentChanel;
-
-	@Column(name = "paymentStatus")
-	private String paymentStatus;
-
-	@Column(name = "bankRefernceNo")
-	private String bankRefernceNo;
-
-	@Column(name = "comment")
-	private String comment;
-
-	@ManyToOne
-	@JoinColumn(name = "paymentApprovedBy")
+	private String   paymentChanel;
+	  
+	  
+    @Column(name = "paymentStatus")
+	private String  paymentStatus;
+	
+    @Column(name = "bankRefernceNo")
+   	private String  bankRefernceNo;
+    
+    @Column(name = "comment")
+   	private String  comment;
+ 
+    @ManyToOne
+    @JoinColumn(name = "paymentApprovedBy")
 	private Users paymentApprovedBy;
-
-	@ManyToOne
-	@JoinColumn(name = "institution")
+	
+    @ManyToOne
+    @JoinColumn(name = "institution")
 	private Institution institution;
 
 	public int getPaymentId() {
@@ -75,10 +82,11 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.paymentCode = paymentCode;
 	}
 
-	public void setPaymentDate(Date date) {
-		this.paymentDate = date;
+	
+	public void setPaymentDate(Date setPaymentDate) {
+		this.paymentDate = setPaymentDate;
 	}
-
+	
 	public Date getPaymentExpiretionDate() {
 		return paymentExpiretionDate;
 	}
@@ -89,10 +97,6 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 
 	public Date getPaymentDate() {
 		return paymentDate;
-	}
-
-	public void setPaymentExpiretionDate(Timestamp paymentExpiretionDate) {
-		this.paymentExpiretionDate = paymentExpiretionDate;
 	}
 
 	public String getAmount() {
@@ -159,4 +163,8 @@ public class PaymentRecords extends CommonDomain implements Serializable {
 		this.institution = institution;
 	}
 
+
+	
+	
+	
 }

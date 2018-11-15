@@ -83,6 +83,47 @@
 								rendered="#{not list.editable}" />
 
 						</p:column>
+						
+						<p:column headerText="Icon Image">
+
+							<h:selectOneMenu id="cat12" styleClass="form-control"
+								rendered="#{list.editable}" required="true"
+								value="#{list.iconImage}"
+								requiredMessage="#{msg['message.iconImage.required']}">
+								<f:selectItem
+									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+								<f:selectItems value="#{listOfMenuController.listOfMenuDetails}"
+									var="option" itemValue="#{option.iconImage}"
+									itemLabel="#{option.iconImage}" itemLabelEscaped="true" />
+								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+							</h:selectOneMenu>
+
+							<h:outputText value="#{list.iconImage}"
+								rendered="#{not list.editable}" />
+
+						</p:column>
+						
+						<p:column headerText="Menu Color">
+
+							<h:selectOneMenu id="cat13" styleClass="form-control"
+								rendered="#{list.editable}" required="true"
+								value="#{list.menuColor}"
+								requiredMessage="#{msg['listofmenu.menugroup.required']}">
+								<f:selectItem
+									itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+									itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+								<f:selectItems value="#{listOfMenuController.listOfMenuDetails}"
+									var="option" itemValue="#{option.menuColor}"
+									itemLabel="#{option.menuColor}" itemLabelEscaped="true" />
+								<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+							</h:selectOneMenu>
+
+							<h:outputText value="#{list.menuColor}"
+								rendered="#{not list.editable}" />
+
+						</p:column>
+						
 						<p:column headerText="Menu Status">
 							<h:outputText value="#{list.genericStatus}" />
 
