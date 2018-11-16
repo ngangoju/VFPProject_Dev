@@ -46,31 +46,31 @@
 					value="#{activityController.activityDetail}" var="act">
 
 
-					<p:column headerText="#{msg['form.activity.description']}">
+					<p:column headerText="#{msg['form.activity.description']}" sortBy="#{act.description}">
 
 						<h:outputText value="#{act.description}" />
 					</p:column>
 
 
-					<p:column headerText="#{msg['form.activity.status']}">
+					<p:column headerText="#{msg['form.activity.status']}" sortBy="#{act.status}">
 
 						<h:outputText value="#{act.status}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.activity.weight']}">
+					<p:column headerText="#{msg['form.activity.weight']}" sortBy="#{act.weight}">
 
 						<h:outputText value="#{act.weight}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.groupmenu.creationdate']}">
+					<p:column headerText="#{msg['form.groupmenu.creationdate']}" sortBy="#{act.crtdDtTime}">
 
 						<h:outputText value="#{act.crtdDtTime}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.strategicPlan.users']}">
+					<p:column headerText="#{msg['form.strategicPlan.users']}" sortBy="#{act.createdBy}">
 
 						<h:outputText value="#{act.createdBy}" />
 

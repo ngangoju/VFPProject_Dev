@@ -44,9 +44,19 @@ public class ActivityController implements Serializable, DbConstant {
 	private TaskAssignment taskAssign;
 	private List<Activity> activityDetail = new ArrayList<Activity>();
 	private List<Activity> activityDetails = new ArrayList<Activity>();
+	private List<Activity> completedActDetails = new ArrayList<Activity>();
+	private List<Activity> approvedActDetails = new ArrayList<Activity>();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
+	private List<ActivityDto> approvedActDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
+	private int listSize;
+	private int completedSize;
+	private int approvedSize;
+	private boolean renderTable;
+	private boolean rendered = true;
+	private boolean renderTaskForm;
+	private boolean renderCompleted;
 
 	private String[] status = { NOTSTARTED, APPROVED, REJECT, INPROGRESS, COMPLETED };
 
@@ -80,9 +90,18 @@ public class ActivityController implements Serializable, DbConstant {
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
 					"Users");
 			activityDetail = activityImpl.getListWithHQL(SELECT_ACTIVITY);
-			activityDetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy" },
-					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname() }, "Activity",
+			activityDetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED}, "Activity",
 					"activityId asc");
+			approvedActDetails =activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), APPROVED}, "Activity",
+					"activityId asc");
+			completedActDetails= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(),COMPLETED }, "Activity",
+					"activityId asc");
+			listSize = activityDetails.size();
+			approvedSize = approvedActDetails.size();
+			completedSize = completedActDetails.size();
 			for (Activity activity : activityDetails) {
 				ActivityDto activityDto = new ActivityDto();
 				activityDto.setActivityId(activity.getActivityId());
@@ -96,6 +115,20 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setTask(activity.getTask());
 				activityDto.setGenericstatus(activity.getGenericStatus());
 				activityDtoDetails.add(activityDto);
+			}
+			for (Activity activity : approvedActDetails) {
+				ActivityDto activityDto = new ActivityDto();
+				activityDto.setActivityId(activity.getActivityId());
+				activityDto.setEditable(false);
+				activityDto.setDescription(activity.getDescription());
+				activityDto.setStatus(activity.getStatus());
+				activityDto.setWeight(activity.getWeight());
+				activityDto.setCreatedDate(activity.getCrtdDtTime());
+				activityDto.setStartDate(activity.getStartDate());
+				activityDto.setDueDate(activity.getDueDate());
+				activityDto.setTask(activity.getTask());
+				activityDto.setGenericstatus(activity.getGenericStatus());
+				approvedActDtoDetails.add(activityDto);
 			}
 		} catch (Exception e) {
 			setValid(false);
@@ -165,6 +198,29 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 	}
 
+	public void completeAction(Activity act) {
+		try {
+			act.setStatus(COMPLETED);
+			// if(act.getGenericStatus().equals(DESACTIVE))
+			act.setGenericStatus(ACTIVE);
+			activityImpl.UpdateActivity(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("completed.form.message"));
+			LOGGER.info(CLASSNAME + ":::Activity is completed");
+			clearActivityFuileds();
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + ":::Activity Status is failling with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void activityRejection(Activity act) {
 		try {
 			act.setStatus(REJECTED);
@@ -185,7 +241,36 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 	}
 
-	private void clearActivityFuileds() {
+
+	public void showTasks() {
+		rendered = false;
+		renderTaskForm = false;
+		renderTable = true;
+		renderCompleted= false;
+	}
+
+	public void showAssignments() {
+		renderTaskForm = true;
+		renderTable = false;
+		rendered = false;
+		renderCompleted= false;
+	}
+
+	public void back() {
+		renderTaskForm = false;
+		renderTable = false;
+		rendered = true;
+		renderCompleted= false;
+	}
+	
+	public void showCompleted() {
+		renderCompleted = true;
+		renderTaskForm = false;
+		renderTable = false;
+		rendered = false;		
+	}
+
+private void clearActivityFuileds() {
 		activity = new Activity();
 		activityDetails = null;
 	}
@@ -297,6 +382,22 @@ public class ActivityController implements Serializable, DbConstant {
 		this.weight = weight;
 	}
 
+	public List<Activity> getCompletedActDetails() {
+		return completedActDetails;
+	}
+
+	public void setCompletedActDetails(List<Activity> completedActDetails) {
+		this.completedActDetails = completedActDetails;
+	}
+
+	public List<Activity> getApprovedActDetails() {
+		return approvedActDetails;
+	}
+
+	public void setApprovedActDetails(List<Activity> approvedActDetails) {
+		this.approvedActDetails = approvedActDetails;
+	}
+
 	public List<Activity> getActivityDetail() {
 		return activityDetail;
 	}
@@ -343,6 +444,70 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setTaskAssignDetails(List<TaskAssignment> taskAssignDetails) {
 		this.taskAssignDetails = taskAssignDetails;
+	}
+
+	public int getListSize() {
+		return listSize;
+	}
+
+	public void setListSize(int listSize) {
+		this.listSize = listSize;
+	}
+
+	public boolean isRenderTable() {
+		return renderTable;
+	}
+
+	public void setRenderTable(boolean renderTable) {
+		this.renderTable = renderTable;
+	}
+
+	public boolean isRenderCompleted() {
+		return renderCompleted;
+	}
+
+	public void setRenderCompleted(boolean renderCompleted) {
+		this.renderCompleted = renderCompleted;
+	}
+
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public boolean isRenderTaskForm() {
+		return renderTaskForm;
+	}
+
+	public void setRenderTaskForm(boolean renderTaskForm) {
+		this.renderTaskForm = renderTaskForm;
+	}
+
+	public int getCompletedSize() {
+		return completedSize;
+	}
+
+	public void setCompletedSize(int completedSize) {
+		this.completedSize = completedSize;
+	}
+
+	public int getApprovedSize() {
+		return approvedSize;
+	}
+
+	public void setApprovedSize(int approvedSize) {
+		this.approvedSize = approvedSize;
+	}
+
+	public List<ActivityDto> getApprovedActDtoDetails() {
+		return approvedActDtoDetails;
+	}
+
+	public void setApprovedActDtoDetails(List<ActivityDto> approvedActDtoDetails) {
+		this.approvedActDtoDetails = approvedActDtoDetails;
 	}
 
 }

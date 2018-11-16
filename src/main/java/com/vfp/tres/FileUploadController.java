@@ -103,7 +103,7 @@ public class FileUploadController implements Serializable, DbConstant {
 							users.setImage(FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
 							usersImpl.UpdateUsers(users);
 							setValid(true);
-							JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.profile.edit"));
+							JSFMessagers.addInfoMessage(getProvider().getValue("com.server.side.profile.edit"));
 						} else {
 							setValid(false);
 							JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.userprofile.error"));

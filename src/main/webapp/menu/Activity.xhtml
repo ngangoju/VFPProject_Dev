@@ -25,9 +25,105 @@
 				</ul>
 			</h:panelGroup>
 
-			<legend>#{msg['form.activity.table']}</legend>
-
 			<h:form>
+			<p:outputPanel id="table" autoUpdate="true"
+					rendered="#{activityController.rendered}">
+					<h1>#{msg['manage.task.form']}</h1>
+					<div class="col-md-4 col-sm-6">
+						<div class="circle-tile2 ">
+
+							<div class="circle-tile-heading2 green2 ">
+								<h1 style="color: white;">#{activityController.listSize}</h1>
+							</div>
+
+							<div class="circle-tile-content2 green2 ">
+								<div class="circle-tile-description text-faded2">
+									<label
+										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+										#{msg['registered.activity.form']}</label>
+								</div>
+								<div class="circle-tile-number2 text-faded2">
+									<span class="glyphicon glyphicon-tasks"></span> <span
+										id="sparklineB"></span> <label
+										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+										&nbsp;#{msg['activity.form.message']}</label>
+								</div>
+								<h:commandLink styleClass="circle-tile-footer"
+									actionListener="#{activityController.showTasks()}"
+									value="More Info">
+									<i class="glyphicon glyphicon-chevron-right"></i>
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-md-4 col-sm-6">
+						<div class="circle-tile2">
+
+							<div class="circle-tile-heading2 blue2 text-white">
+								<h1 style="color: white;">#{activityController.approvedSize}</h1>
+							</div>
+
+							<div class="circle-tile-content2 blue2">
+								<div class="circle-tile-description text-faded2">
+									<label
+										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+										#{msg['approved.activity.form']}</label>
+								</div>
+								<div class="circle-tile-number2 text-faded2">
+									<span class="glyphicon glyphicon-user"></span> <span
+										id="sparklineB"></span><label
+										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+										&nbsp; #{msg['activity.form.message']}</label>
+
+								</div>
+								<h:commandLink styleClass="circle-tile-footer"
+									actionListener="#{activityController.showAssignments()}"
+									value="More Info">
+									<i class="glyphicon glyphicon-chevron-right"></i>
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="col-md-4 col-sm-6">
+						<div class="circle-tile2">
+
+							<div class="circle-tile-heading2 orange2 ">
+								<h1 style="color: white;">#{activityController.completedSize}</h1>
+							</div>
+
+							<div class="circle-tile-content2 orange2 ">
+								<div class="circle-tile-description text-faded2">
+									<label
+										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+										#{msg['completed.activity.form']}</label>
+								</div>
+								<div class="circle-tile-number2 text-faded2">
+									<span class="glyphicon glyphicon-cog"></span> <span
+										id="sparklineB"></span><label
+										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+										&nbsp;#{msg['activity.form.message']}</label>
+								</div>
+								<h:commandLink styleClass="circle-tile-footer"
+									actionListener="#{activityController.showCompleted()}"
+									value="More Info">
+									<i class="glyphicon glyphicon-chevron-right"></i>
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+
+							</div>
+						</div>
+
+					</div>
+				</p:outputPanel>
+				<p:outputPanel id="table1" autoUpdate="true"
+					rendered="#{activityController.renderTable}">
+			<h1>#{msg['form.activity.table']}</h1>
+					
 				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
 					<h:commandLink class="btn btn-primary"
 						action="#{activityController.newActivity()}">
@@ -37,36 +133,36 @@
 				<br />
 				<br />
 				<br />
-				<p:dataTable id="example" class="display" cellspacing="0"
+				<p:dataTable id="example1" class="display" cellspacing="0"
 					value="#{activityController.activityDtoDetails}" var="act">
 
 
-					<p:column headerText="#{msg['form.activity.description']}">
+					<p:column headerText="#{msg['form.activity.description']}" sortBy="#{act.description}">
 
-						<h:inputTextarea id="descriptionId" value="#{act.description}"
+						<h:inputTextarea id="descriptionId1" value="#{act.description}"
 							styleClass="form-control" size="10" rendered="#{act.editable}"
 							maxlength="250" required="true"
 							requiredMessage="#{msg['description.required.message']}"
 							validatorMessage="#{msg['error.address.maxlength']}">
 							<f:validateLength maximum="150" />
 						</h:inputTextarea>
-						<h:message for="descriptionId" styleClass="help-block"></h:message>
+						<h:message for="descriptionId1" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.description}"
 							rendered="#{not act.editable}" />
 					</p:column>
 
 
-					<p:column headerText="#{msg['form.activity.status']}">
+					<p:column headerText="#{msg['form.activity.status']}" sortBy="#{act.status}">
 
 						<h:outputText value="#{act.status}"/>
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.activity.weight']}">
+					<p:column headerText="#{msg['form.activity.weight']}" sortBy="#{act.weight}">
 
 
-						<h:selectOneMenu id="weightId" styleClass="form-control"
+						<h:selectOneMenu id="weightId1" styleClass="form-control"
 							required="true" rendered="#{act.editable}" value="#{act.weight}"
 							requiredMessage="#{msg['weight.required.message']}">
 							<f:selectItem
@@ -78,15 +174,15 @@
 								listener="#{activityController.changeSelectBox('Junior')}"
 								render="ReasonPanel" />
 						</h:selectOneMenu>
-						<h:message for="weightId" styleClass="help-block"></h:message>
+						<h:message for="weightId1" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.weight}" rendered="#{not act.editable}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.task.startDate']}">
+					<p:column headerText="#{msg['form.task.startDate']}" sortBy="#{act.startDate}">
 						<h:inputText locale="#{facesContext.viewRoot.locale}"
-							autocomplete="off" id="from_start_date_id"
+							autocomplete="off" id="from_start_date_id1"
 							binding="#{from_dob_date_id}" class="form-control" escape="true"
 							value="#{act.startDate}" maxlength="35" required="true"
 							rendered="#{act.editable}"
@@ -111,15 +207,15 @@
 												});
 							});
 						</script>
-						<h:message for="from_start_date_id" styleClass="help-block"></h:message>
+						<h:message for="from_start_date_id1" styleClass="help-block"></h:message>
 						<h:outputText value="#{act.startDate}"
 							rendered="#{not act.editable}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.task.dueDate']}">
+					<p:column headerText="#{msg['form.task.dueDate']}" sortBy="#{act.endDate}">
 						<h:inputText locale="#{facesContext.viewRoot.locale}"
-							autocomplete="off" id="from_due_date_id"
+							autocomplete="off" id="from_due_date_id1"
 							binding="#{from_due_date_id}" class="form-control" escape="true"
 							value="#{act.dueDate}" maxlength="35" required="true"
 							rendered="#{act.editable}"
@@ -144,14 +240,14 @@
 												});
 							});
 						</script>
-						<h:message for="from_due_date_id" styleClass="help-block"></h:message>
+						<h:message for="from_due_date_id1" styleClass="help-block"></h:message>
 
 						<h:outputText value="#{act.dueDate}"
 							rendered="#{not act.editable}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.groupmenu.creationdate']}">
+					<p:column headerText="#{msg['form.groupmenu.creationdate']}" sortBy="#{act.creationDate}">
 
 
 						<h:outputText value="#{act.createdDate}" />
@@ -162,12 +258,12 @@
 
 
 						<h:commandLink style="color:white"
-							class="btn btn-success 	glyphicon glyphicon-edit" value=" Edit"
+							class="btn btn-success 	glyphicon glyphicon-edit" value="#{msg['UserCategoryView.editButton']}"
 							action="#{activityController.editAction(act)}"
 							rendered="#{not act.editable}" />
 						<h:commandLink style="margin-left:2px;color:white"
 							class="btn btn-danger 	glyphicon glyphicon-remove"
-							value=" Cancel" action="#{activityController.cancel(act)}"
+							value="#{msg['UserCategoryView.cancelButton']}" action="#{activityController.cancel(act)}"
 							rendered="#{act.editable}" />
 						<h:commandButton value=" Save Changes" class="btn btn-primary"
 							action="#{activityController.saveAction(act)}"
@@ -175,7 +271,228 @@
 					</p:column>
 
 				</p:dataTable>
+</p:outputPanel>
+	<p:outputPanel id="table2" autoUpdate="true"
+					rendered="#{activityController.renderTaskForm}">
+			<h1>#{msg['approved.title.form']}</h1>
+					
+				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
+					<h:commandLink class="btn btn-primary"
+						action="#{activityController.newActivity()}">
+						<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']}
+					</h:commandLink>
+				</div>
+				<br />
+				<br />
+				<br />
+				<p:dataTable id="example2" class="display" cellspacing="0"
+					value="#{activityController.approvedActDtoDetails}" var="act">
 
+
+					<p:column headerText="#{msg['form.activity.description']}" sortBy="#{act.description}">
+
+						<h:inputTextarea id="descriptionId2" value="#{act.description}"
+							styleClass="form-control" size="10" rendered="#{act.editable}"
+							maxlength="250" required="true"
+							requiredMessage="#{msg['description.required.message']}"
+							validatorMessage="#{msg['error.address.maxlength']}">
+							<f:validateLength maximum="150" />
+						</h:inputTextarea>
+						<h:message for="descriptionId2" styleClass="help-block"></h:message>
+
+						<h:outputText value="#{act.description}"
+							rendered="#{not act.editable}" />
+					</p:column>
+
+
+					<p:column headerText="#{msg['form.activity.status']}" sortBy="#{act.status}">
+
+						<h:outputText value="#{act.status}"/>
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.activity.weight']}" sortBy="#{act.weight}">
+
+
+						<h:selectOneMenu id="weightId2" styleClass="form-control"
+							required="true" rendered="#{act.editable}" value="#{act.weight}"
+							requiredMessage="#{msg['weight.required.message']}">
+							<f:selectItem
+								itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+								itemValue="#{null}" itemLabelEscaped="false" />
+							<f:selectItems value="#{activityController.weight}" var="option"
+								itemValue="#{option}" itemLabelEscaped="true" />
+							<f:ajax event="change" execute="@this"
+								listener="#{activityController.changeSelectBox('Junior')}"
+								render="ReasonPanel" />
+						</h:selectOneMenu>
+						<h:message for="weightId2" styleClass="help-block"></h:message>
+
+						<h:outputText value="#{act.weight}" rendered="#{not act.editable}" />
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.task.startDate']}" sortBy="#{act.startDate}">
+						<h:inputText locale="#{facesContext.viewRoot.locale}"
+							autocomplete="off" id="from_start_date_id2"
+							binding="#{from_dob_date_id}" class="form-control" escape="true"
+							value="#{act.startDate}" maxlength="35" required="true"
+							rendered="#{act.editable}"
+							converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+							requiredMessage="#{msg['startDate.required.message']}">
+							<f:convertDateTime type="date" dateType="short"
+								pattern="dd/MM/yyyy" />
+							<f:validateLength maximum="35" />
+						</h:inputText>
+						<script>
+							$(function() {
+								$('input[id*="from_start_date_id"]')
+										.datepicker(
+												{
+													changeMonth : true,
+													changeYear : true,
+													//maxDate: 0,
+													minDate : 0,
+													dateFormat : "dd/mm/yy",
+													yearRange : "-100:+0",
+													buttonImage : "/resources/image/calendar1.png"
+												});
+							});
+						</script>
+						<h:message for="from_start_date_id2" styleClass="help-block"></h:message>
+						<h:outputText value="#{act.startDate}"
+							rendered="#{not act.editable}" />
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.task.dueDate']}" sortBy="#{act.endDate}">
+						<h:inputText locale="#{facesContext.viewRoot.locale}"
+							autocomplete="off" id="from_due_date_id2"
+							binding="#{from_due_date_id}" class="form-control" escape="true"
+							value="#{act.dueDate}" maxlength="35" required="true"
+							rendered="#{act.editable}"
+							converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+							requiredMessage="#{msg['dueDate.required.message']}">
+							<f:convertDateTime type="date" dateType="short"
+								pattern="dd/MM/yyyy" />
+							<f:validateLength maximum="35" />
+						</h:inputText>
+						<script>
+							$(function() {
+								$('input[id*="from_due_date_id"]')
+										.datepicker(
+												{
+													changeMonth : true,
+													changeYear : true,
+													//maxDate: 0,
+													minDate : 0,
+													dateFormat : "dd/mm/yy",
+													yearRange : "-100:+0",
+													buttonImage : "/resources/image/calendar1.png"
+												});
+							});
+						</script>
+						<h:message for="from_due_date_id2" styleClass="help-block"></h:message>
+
+						<h:outputText value="#{act.dueDate}"
+							rendered="#{not act.editable}" />
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.groupmenu.creationdate']}" sortBy="#{act.creationDate}">
+
+
+						<h:outputText value="#{act.createdDate}" />
+
+					</p:column>
+
+					<p:column headerText="Action">
+						<div class="btn-group" role="group" aria-label="Basic example">
+
+						<h:commandLink style="margin-left:5px;color:white"
+							data-toggle="tooltip" data-placement="bottom"
+												title="#{msg['upload.message.form']}"
+												class="btn btn-primary 	glyphicon glyphicon-upload"
+												rendered="#{not act.editable}"
+												action="#{strategicPlanController.uploadStratDocs(act)}" />
+						<h:commandLink style="color:white"
+							class="btn btn-success 	glyphicon glyphicon-ok" data-toggle="tooltip" 
+							data-placement="bottom" title="#{msg['completed.activity.form']}"
+							action="#{activityController.completeAction(act)}" rendered="#{not act.editable}" />
+						<h:commandLink style="color:white"
+							class="btn btn-primary 	glyphicon glyphicon-edit" data-toggle="tooltip" 
+							data-placement="bottom" title="#{msg['UserCategoryView.editButton']}"
+							action="#{activityController.editAction(act)}"
+							rendered="#{not act.editable}" />
+						<h:commandLink style="margin-left:2px;color:white"
+							class="btn btn-danger 	glyphicon glyphicon-remove"
+							value="#{msg['UserCategoryView.cancelButton']}" action="#{activityController.cancel(act)}"
+							rendered="#{act.editable}" />
+						<h:commandButton value=" Save Changes" class="btn btn-primary"
+							action="#{activityController.saveAction(act)}"
+							rendered="#{act.editable}" />
+
+							</div>
+					</p:column>
+
+				</p:dataTable>
+</p:outputPanel>
+	
+	<p:outputPanel id="table3" autoUpdate="true"
+					rendered="#{activityController.renderCompleted}">
+			<h1>#{msg['completed.title.form']}</h1>
+					
+				<div class="div-action pull pull-left" style="padding-bottom: 20px;">
+					<h:commandLink class="btn btn-primary"
+						action="#{activityController.newActivity()}">
+						<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']}
+					</h:commandLink>
+				</div>
+				<br />
+				<br />
+				<br />
+				<p:dataTable id="example3" class="display" cellspacing="0"
+					value="#{activityController.completedActDetails}" var="act">
+
+
+					<p:column headerText="#{msg['form.activity.description']}" sortBy="#{act.description}">
+
+						<h:outputText value="#{act.description}" />
+					</p:column>
+
+
+					<p:column headerText="#{msg['form.activity.status']}" sortBy="#{act.status}">
+
+						<h:outputText value="#{act.status}"/>
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.activity.weight']}" sortBy="#{act.weight}">
+
+						<h:outputText value="#{act.weight}"/>
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.task.startDate']}" sortBy="#{act.startDate}">
+						<h:outputText value="#{act.startDate}" />
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.task.dueDate']}" sortBy="#{act.endDate}">
+						
+						<h:outputText value="#{act.dueDate}" />
+
+					</p:column>
+
+					<p:column headerText="#{msg['form.groupmenu.creationdate']}" sortBy="#{act.creationDate}">
+
+
+						<h:outputText value="#{act.createdDate}" />
+
+					</p:column>
+
+				</p:dataTable>
+</p:outputPanel>
 
 			</h:form>
 		</ui:define>

@@ -49,37 +49,37 @@
 				<!-- 				</div> -->
 				<p:dataTable value="#{taskController.taskDetail}" var="act">
 
-					<p:column headerText="#{msg['form.task.name']}">
+					<p:column headerText="#{msg['form.task.name']}" sortBy="#{act.taskName}">
 
 						<h:outputText value="#{act.taskName}" />
 					</p:column>
 
 
-					<p:column headerText="#{msg['form.activity.description']}">
+					<p:column headerText="#{msg['form.activity.description']}" sortBy="#{act.description}">
 
 						<h:outputText value="#{act.description}" />
 					</p:column>
 
 
-					<p:column headerText="#{msg['form.task.startDate']}">
+					<p:column headerText="#{msg['form.task.startDate']}" sortBy="#{act.startDate}">
 
 						<h:outputText value="#{act.startDate}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.task.dueDate']}">
+					<p:column headerText="#{msg['form.task.dueDate']}" sortBy="#{act.dueDate}">
 
 						<h:outputText value="#{act.dueDate}" />
 
 					</p:column>
 
 
-					<p:column headerText="#{msg['form.strategicPlan.users']}">
+					<p:column headerText="#{msg['form.strategicPlan.users']}" sortBy="#{act.createdBy}">
 
 						<h:outputText value="#{act.createdBy}" />
 					</p:column>
 
-					<p:column headerText="#{msg['form.task.genericStatus']}">
+					<p:column headerText="#{msg['form.task.genericStatus']}" sortBy="#{act.genericStatus}">
 
 						<h:outputText value="#{act.genericStatus}" />
 					</p:column>
