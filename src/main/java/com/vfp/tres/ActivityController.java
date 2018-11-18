@@ -139,7 +139,7 @@ public class ActivityController implements Serializable, DbConstant {
 
 	}
 
-	public String saveActivite() {
+	public void saveActivite() {
 		try {
 			activity.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			activity.setCrtdDtTime(timestamp);
@@ -151,17 +151,17 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setDate(timestamp);
 			users = usersImpl.gettUserById(usersSession.getUserId(), "userId");
 			activity.setUser(users);
-//			taskAssign = taskAssignImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
-//					new Object[] { ACTIVE, users}, "TaskAssignment");
-//			activity.setTask(taskAssign.getTask());
-			LOGGER.info("ASSIGNMENT YINJIYE");
+			taskAssign = taskAssignImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
+					new Object[] { ACTIVE, users}, " from TaskAssignment");
+			activity.setTask(taskAssign.getTask());
+			LOGGER.info("ASSIGNMENT YINJIjwE na "+taskAssign.getCreatedBy());
 			activityImpl.saveActivity(activity);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.activity"));
 			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 			clearActivityFuileds();
-			return "/menu/Activity.xhtml?faces-redirect=true";
+//			return "/menu/Activity.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Activity Details is failling with HibernateException  error");
@@ -170,7 +170,7 @@ public class ActivityController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
-			return "";
+//			return "";
 		}
 
 	}

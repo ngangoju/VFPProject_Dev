@@ -41,6 +41,20 @@
 							</ul>
 						</h:panelGroup>
 
+			<h:panelGroup layout="block"
+				rendered="#{activityController.valid and  not facesContext.validationFailed}">
+				<ul>
+					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+						<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+							class="alert alert-success">
+										<center>
+										<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+						</li>
+					</ui:repeat>
+				</ul>
+			</h:panelGroup>
+
 						<fieldset>
 
 							<legend>#{msg['form.activity.title']}</legend>
@@ -195,6 +209,15 @@
 
 					</h:form>
 
+					<h:form>
+						<div class="div-action pull pull-right"
+							style="padding-bottom: 20px;">
+							<h:commandLink class="btn btn-info"
+								action="#{activityController.backBtn()}">
+								<i class="glyphicon glyphicon-chevron-left"></i>#{msg['UserRegForm.BackButton']}
+					</h:commandLink>
+						</div>
+					</h:form>
 
 				</div>
 			</div>
