@@ -9,7 +9,6 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:body>
 	<ui:composition template="/template/common/commonLayout.xhtml">
-
 		<ui:define name="content">
 			<a href="board.xhtml">Manage Board</a>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -21,15 +20,13 @@
 			<h:outputStylesheet name="jquery.orgchart.css" library="css" />
 			<script type="text/javascript"
 				src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-				
 			</script>
 			<style type="text/css">
-#orgChart {
+#orgChart{
 	margin-top: 10px;
 	width: auto;
 	height: auto;
 }
-
 #orgChartContainer {
 	margin-top: 10px;
 	width: 100%;
@@ -70,12 +67,10 @@ div.orgChart div.node {
 			<center>
 				<h1 style="margin-top: 10px;">View Company's Organigram</h1>
 			</center>
-
 			<div id="orgChartContainer">
 				<div id="orgChart"></div>
 			</div>
 			<div id="consoleOutput"></div>
-
 			<h:inputText value="#{organigram.jsonData}" class="jsonData"></h:inputText>
 			<!-- Modal -->
 			<div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
@@ -91,6 +86,7 @@ div.orgChart div.node {
 							<h:form class="form-horizontal">
 								<div class="form-group">
 									<div class="col-lg-12">
+									<inputLabel value="Board Name"/>
 										<h:inputText class=" childId" value="#{organigram.childId}"
 											id="childId" style="display:none;" />
 									</div>
@@ -173,7 +169,6 @@ div.orgChart div.node {
 			</script>
 		</ui:define>
 	</ui:composition>
-
 </h:body>
 
 </html>
