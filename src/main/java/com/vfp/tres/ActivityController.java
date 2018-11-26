@@ -93,11 +93,11 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
 					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED}, "Activity",
 					"activityId asc");
-			approvedActDetails =activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
+			approvedActDetails= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
 					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), APPROVED}, "Activity",
 					"activityId asc");
 			completedActDetails= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
-					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(),COMPLETED }, "Activity",
+					new Object[] { DESACTIVE, usersSession.getFname() + " " + usersSession.getLname(),COMPLETED }, "Activity",
 					"activityId asc");
 			listSize = activityDetails.size();
 			approvedSize = approvedActDetails.size();
@@ -116,20 +116,20 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setGenericstatus(activity.getGenericStatus());
 				activityDtoDetails.add(activityDto);
 			}
-			for (Activity activity : approvedActDetails) {
-				ActivityDto activityDto = new ActivityDto();
-				activityDto.setActivityId(activity.getActivityId());
-				activityDto.setEditable(false);
-				activityDto.setDescription(activity.getDescription());
-				activityDto.setStatus(activity.getStatus());
-				activityDto.setWeight(activity.getWeight());
-				activityDto.setCreatedDate(activity.getCrtdDtTime());
-				activityDto.setStartDate(activity.getStartDate());
-				activityDto.setDueDate(activity.getDueDate());
-				activityDto.setTask(activity.getTask());
-				activityDto.setGenericstatus(activity.getGenericStatus());
-				approvedActDtoDetails.add(activityDto);
-			}
+//			for (Activity activity : approvedActDetails) {
+//				ActivityDto activityDto = new ActivityDto();
+//				activityDto.setActivityId(activity.getActivityId());
+//				activityDto.setEditable(false);
+//				activityDto.setDescription(activity.getDescription());
+//				activityDto.setStatus(activity.getStatus());
+//				activityDto.setWeight(activity.getWeight());
+//				activityDto.setCreatedDate(activity.getCrtdDtTime());
+//				activityDto.setStartDate(activity.getStartDate());
+//				activityDto.setDueDate(activity.getDueDate());
+//				activityDto.setTask(activity.getTask());
+//				activityDto.setGenericstatus(activity.getGenericStatus());
+//				approvedActDtoDetails.add(activityDto);
+//			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -202,7 +202,7 @@ public class ActivityController implements Serializable, DbConstant {
 		try {
 			act.setStatus(COMPLETED);
 			// if(act.getGenericStatus().equals(DESACTIVE))
-			act.setGenericStatus(ACTIVE);
+			act.setGenericStatus(DESACTIVE);
 			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
@@ -309,6 +309,11 @@ private void clearActivityFuileds() {
 		// usersImpl.UpdateUsers(user);
 		return null;
 
+	}
+
+	public String backBtn() {
+		return "/menu/Activity.xhtml?faces-redirect=true";
+		// showAssignments();
 	}
 
 	public String editAction(ActivityDto activity) {

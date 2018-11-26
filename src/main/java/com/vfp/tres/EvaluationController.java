@@ -110,7 +110,7 @@ public class EvaluationController implements Serializable, DbConstant {
 	public boolean isCompleted(Activity activity) {
 		boolean isDone = false;
 		try {
-			if (activity.getStatus().equals(DONE)) {
+			if (activity.getStatus().equals(COMPLETED)) {
 				isDone = true;
 				LOGGER.info("ACTIVITY IS COMPLETED:::" + activity.getDescription());
 			}
