@@ -1,6 +1,7 @@
 package tres.domain;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -141,5 +142,14 @@ public class Activity extends CommonDomain implements Serializable {
 	public void setUser(Users user) {
 		this.user = user;
 	}
+	public String getFormatedDate1(){
+	       SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+	       return sdf.format(startDate);
+	   }
+	   public String getFormatedDate2(){
+	       SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+	     
+		return sdf.format(dueDate);
+	   }
 
 }
