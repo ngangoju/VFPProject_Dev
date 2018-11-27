@@ -183,10 +183,8 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			validInstitution = requestImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
-					"instRegReqstDate desc");
+			validInstitution = requestImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+			new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest","instRegReqstDate desc");
 
 		} catch (Exception e) {
 			setValid(false);
@@ -199,12 +197,7 @@ public class InstitutionController implements Serializable, DbConstant {
 		try
 
 		{
-
-			// requests = requestImpl.getGenericListWithHQLParameter(
-			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
-			// "InstitutionRegistrationRequest",
-			// "instRegReqstDate asc");
+               
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
