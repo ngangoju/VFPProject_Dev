@@ -13,16 +13,17 @@
 </head>
 <h:body>
 
-	<ui:composition template="/template/common/commonLayout.xhtml">	 
-    	 	<ui:define name="content">
-	<h:form id="form1">
-		<style>
+	<ui:composition template="/template/common/commonLayout.xhtml">
+		<ui:define name="content">
+			<h:form id="form1">
+				<style>
 .ui-organigram .ui-organigram-node.division {
 	background: #93e7ff;
 	background: -moz-linear-gradient(top, #93e7ff 0%, #007efc 100%);
 	background: -webkit-linear-gradient(top, #93e7ff 0%, #007efc 100%);
 	background: linear-gradient(to bottom, #93e7ff 0%, #007efc 100%);
 }
+
 .ui-organigram .ui-organigram-node.employee {
 	background: #88c048;
 	background: -moz-linear-gradient(top, #88c048 0%, #69a038 100%);
@@ -30,101 +31,103 @@
 	background: linear-gradient(to bottom, #88c048 0%, #69a038 100%);
 }
 </style>
-		<p:growl id="growl" />
+				<p:growl id="growl" />
 
-		<p:organigram id="organigram" widgetVar="organigram"
-			value="#{organigramView.rootNode}" var="node"
-			leafNodeConnectorHeight="#{organigramView.leafNodeConnectorHeight}"
-			autoScrollToSelection="#{organigramView.autoScrollToSelection}"
-			zoom="#{organigramView.zoom}" selection="#{organigramView.selection}"
-			style="#{organigramView.style}">
-			<p:ajax event="dragdrop" process="@this" update="@form:growl"
-				listener="#{organigramView.nodeDragDropListener}" />
-			<p:ajax event="select" process="@this" update="@form:growl"
-				listener="#{organigramView.nodeSelectListener}" />
-			<p:ajax event="contextmenu" process="@this" />
-			<p:ajax event="collapse" process="@this" update="@form:growl"
-				listener="#{organigramView.nodeCollapseListener}" />
-			<p:ajax event="expand" process="@this" update="@form:growl"
-				listener="#{organigramView.nodeExpandListener}" />
+				<p:organigram id="organigram" widgetVar="organigram"
+					value="#{organigramView.rootNode}" var="node"
+					leafNodeConnectorHeight="#{organigramView.leafNodeConnectorHeight}"
+					autoScrollToSelection="#{organigramView.autoScrollToSelection}"
+					zoom="#{organigramView.zoom}"
+					selection="#{organigramView.selection}"
+					style="#{organigramView.style}">
+					<p:ajax event="dragdrop" process="@this" update="@form:growl"
+						listener="#{organigramView.nodeDragDropListener}" />
+					<p:ajax event="select" process="@this" update="@form:growl"
+						listener="#{organigramView.nodeSelectListener}" />
+					<p:ajax event="contextmenu" process="@this" />
+					<p:ajax event="collapse" process="@this" update="@form:growl"
+						listener="#{organigramView.nodeCollapseListener}" />
+					<p:ajax event="expand" process="@this" update="@form:growl"
+						listener="#{organigramView.nodeExpandListener}" />
 
-			<p:organigramNode>
-				<h:outputText value="#{node.data}" />
-			</p:organigramNode>
+					<p:organigramNode>
+						<h:outputText value="#{node.data}" />
+					</p:organigramNode>
 
-			<p:organigramNode type="root" style="border-radius: 10px;">
-				<h:outputText value="#{node.data}" />
-			</p:organigramNode>
+					<p:organigramNode type="root" style="border-radius: 10px;">
+						<h:outputText value="#{node.data}" />
+					</p:organigramNode>
 
-			<p:organigramNode type="division" styleClass="division"
-				icon="ui-icon-suitcase" iconPos="left">
-				<h:outputText value="#{node.data}" />
-			</p:organigramNode>
+					<p:organigramNode type="division" styleClass="division"
+						icon="ui-icon-suitcase" iconPos="left">
+						<h:outputText value="#{node.data}" />
+					</p:organigramNode>
 
-			<p:organigramNode type="employee" styleClass="employee"
-				icon="ui-icon-person">
-				<h:outputText value="#{node.data}" />
-			</p:organigramNode>
-		</p:organigram>
+					<p:organigramNode type="employee" styleClass="employee"
+						icon="ui-icon-person">
+						<h:outputText value="#{node.data}" />
+					</p:organigramNode>
+				</p:organigram>
 
-		<p:contextMenu for="organigram" nodeType="employee">
-			<p:menuitem value="fire employee" update="organigram"
-				icon="ui-icon-close"
-				actionListener="#{organigramView.removeEmployee()}" />
-		</p:contextMenu>
+				<p:contextMenu for="organigram" nodeType="employee">
+					<p:menuitem value="fire employee" update="organigram"
+						icon="ui-icon-close"
+						actionListener="#{organigramView.removeEmployee()}" />
+				</p:contextMenu>
 
-		<p:contextMenu for="organigram" nodeType="division">
-			<p:menuitem value="Add employee" ajax="false" icon="ui-icon-plus"
-				onclick="PF('addEmployeeDialog').show(); return false;" />
-			<p:menuitem value="Remove division" update="organigram @form:growl"
-				icon="ui-icon-close"
-				actionListener="#{organigramView.removeDivision()}" />
-		</p:contextMenu>
+				<p:contextMenu for="organigram" nodeType="division">
+					<p:menuitem value="Add employee" ajax="false" icon="ui-icon-plus"
+						onclick="PF('addEmployeeDialog').show(); return false;" />
+					<p:menuitem value="Remove division" update="organigram @form:growl"
+						icon="ui-icon-close"
+						actionListener="#{organigramView.removeDivision()}" />
+				</p:contextMenu>
 
-		<p:dialog id="addEmployeeDialog" widgetVar="addEmployeeDialog"
-			header="Add employee">
+				<p:dialog id="addEmployeeDialog" widgetVar="addEmployeeDialog"
+					header="Add employee">
 
-			<p:inputText value="#{organigramView.employeeName}" />
+					<p:inputText value="#{organigramView.employeeName}" />
 
-			<p:commandButton process="@parent" update=":form:organigram"
-				value="Add" actionListener="#{organigramView.addEmployee()}"
-				oncomplete="PF('addEmployeeDialog').hide();" />
+					<p:commandButton process="@parent" update=":form:organigram"
+						value="Add" actionListener="#{organigramView.addEmployee()}"
+						oncomplete="PF('addEmployeeDialog').hide();" />
 
-		</p:dialog>
-	</h:form>
+				</p:dialog>
+			</h:form>
 
-	<h:form>
-		<p:panel header="Options">
-			<h:panelGrid columns="2">
-				<h:outputLabel value="zoom"/>
-				<p:selectBooleanCheckbox value="#{organigramView.zoom}">
-					<p:ajax process="@this" update=":form:organigram" />
-				</p:selectBooleanCheckbox>
+			<h:form>
+				<p:panel header="Options">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="zoom" />
+						<p:selectBooleanCheckbox value="#{organigramView.zoom}">
+							<p:ajax process="@this" update=":form:organigram" />
+						</p:selectBooleanCheckbox>
 
-				<h:outputLabel value="autoScrollToSelection" />
-				<p:selectBooleanCheckbox
-					value="#{organigramView.autoScrollToSelection}">
-					<p:ajax process="@this" update=":form:organigram" />
-				</p:selectBooleanCheckbox>
+						<h:outputLabel value="autoScrollToSelection" />
+						<p:selectBooleanCheckbox
+							value="#{organigramView.autoScrollToSelection}">
+							<p:ajax process="@this" update=":form:organigram" />
+						</p:selectBooleanCheckbox>
 
-				<h:outputLabel value="leafNodeConnectorHeight"/>
-				<p:inputText value="#{organigramView.leafNodeConnectorHeight}">
-					<p:ajax process="@this" update=":form:organigram" />
-				</p:inputText>
-				
-				<h:outputLabel value="style" />
-				<p:inputText value="#{organigramView.style}" size="100">
-					<p:ajax process="@this" update=":form1:organigram" />
-				</p:inputText>
-				
-				<p:commandButton value="scrollToSelection"
-					onclick="PF('organigram').scrollToSelection(); return false;" />
-				<p:commandButton value="Update Organigram" update=":form1:organigram" />
-			</h:panelGrid>
-		</p:panel>
-	</h:form>
-	
-	    		</ui:define>
-</ui:composition>
+						<h:outputLabel value="leafNodeConnectorHeight" />
+						<p:inputText value="#{organigramView.leafNodeConnectorHeight}">
+							<p:ajax process="@this" update=":form:organigram" />
+						</p:inputText>
+
+						<h:outputLabel value="style" />
+						<p:inputText value="#{organigramView.style}" size="100">
+							<p:ajax process="@this" update=":form1:organigram" />
+						</p:inputText>
+
+						<p:commandButton value="scrollToSelection"
+							onclick="PF('organigram').scrollToSelection(); return false;" />
+						<p:commandButton value="Update Organigram"
+							update=":form1:organigram" />
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
 </h:body>
 </html>

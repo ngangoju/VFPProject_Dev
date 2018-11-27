@@ -22,9 +22,10 @@
 					<p:outputPanel>
 						<h:commandLink style="color:white;float:top;"
 							class="btn btn-success 	glyphicon glyphicon-user"
-							value=" Add New List Of Menu" action="#{listOfMenuController.addNewListOfMenu()}" >
+							value=" Add New List Of Menu"
+							action="#{listOfMenuController.addNewListOfMenu()}">
 							<f:ajax render="@form" execute="@form" onevent="showProgress" />
-							</h:commandLink>
+						</h:commandLink>
 
 					</p:outputPanel>
 					<p:dataTable value="#{listOfMenuController.listOfMenuDtoDetails}"
@@ -62,7 +63,7 @@
 
 						</p:column>
 
-						
+
 
 						<p:column headerText="Menu Group">
 
@@ -83,7 +84,7 @@
 								rendered="#{not list.editable}" />
 
 						</p:column>
-						
+
 						<p:column headerText="Icon Image">
 
 							<h:selectOneMenu id="cat12" styleClass="form-control"
@@ -103,7 +104,7 @@
 								rendered="#{not list.editable}" />
 
 						</p:column>
-						
+
 						<p:column headerText="Menu Color">
 
 							<h:selectOneMenu id="cat13" styleClass="form-control"
@@ -123,17 +124,19 @@
 								rendered="#{not list.editable}" />
 
 						</p:column>
-						
+
 						<p:column headerText="Menu Status">
 							<h:outputText value="#{list.genericStatus}" />
 
 						</p:column>
 						<p:column headerText=" Change Status">
-							
+
 							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-refresh" value="#{list.action}" action="#{listOfMenuController.updateStatus(list)}" >
+								class="btn btn-success 	glyphicon glyphicon-refresh"
+								value="#{list.action}"
+								action="#{listOfMenuController.updateStatus(list)}">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
+							</h:commandLink>
 						</p:column>
 						<p:column headerText="Action">
 
@@ -141,9 +144,9 @@
 							<h:commandLink style="color:white"
 								class="btn btn-success 	glyphicon glyphicon-edit" value="Edit"
 								action="#{listOfMenuController.editAction(list)}"
-								rendered="#{not list.editable}" >
+								rendered="#{not list.editable}">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
+							</h:commandLink>
 
 							<h:commandLink style="margin-left:2px;color:white"
 								class="btn btn-danger 	glyphicon glyphicon-remove"
@@ -153,9 +156,9 @@
 
 							<h:commandButton value="Save Changes" class="btn btn-primary"
 								action="#{listOfMenuController.newAction(list)}"
-								rendered="#{list.editable}" render="listGroupPanel" >
+								rendered="#{list.editable}" render="listGroupPanel">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandButton>
+							</h:commandButton>
 						</p:column>
 
 					</p:dataTable>

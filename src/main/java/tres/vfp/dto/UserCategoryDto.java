@@ -11,6 +11,7 @@ public class UserCategoryDto implements Serializable {
 	private boolean notify;
 	private String action;
 	private String status;
+
 	public int getUserCatid() {
 		return userCatid;
 	}

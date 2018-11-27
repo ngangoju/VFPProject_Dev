@@ -98,22 +98,25 @@
 										<div class="btn-group btn btn-lg" role="group"
 											aria-label="Basic example">
 											<h:commandLink style="color:white;margin-left:15px;"
-												data-toggle="tooltip" data-placement="left" title="#{msg['UserCategoryView.editButton']}"
+												data-toggle="tooltip" data-placement="left"
+												title="#{msg['UserCategoryView.editButton']}"
 												class="btn btn-success 	glyphicon glyphicon-edit"
 												action="#{strategicPlanController.editAction(act)}"
 												rendered="#{not act.editable}" />
-												
-												<h:commandLink style="color:white;margin-left:5px;"
-												data-toggle="tooltip" data-placement="bottom" title="Upload document"
+
+											<h:commandLink style="color:white;margin-left:5px;"
+												data-toggle="tooltip" data-placement="bottom"
+												title="Upload document"
 												class="btn btn-primary 	glyphicon glyphicon-upload"
 												rendered="#{not act.editable}"
-												action="#{strategicPlanController.uploadStratDocs(act)}" >
+												action="#{strategicPlanController.uploadStratDocs(act)}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-												</h:commandLink>
-													
+											</h:commandLink>
+
 											<h:commandLink style="margin-left:15px;color:white"
-												data-toggle="tooltip" data-placement="left" title="#{msg['UserCategoryView.cancelButton']}"
+												data-toggle="tooltip" data-placement="left"
+												title="#{msg['UserCategoryView.cancelButton']}"
 												class="btn btn-danger 	glyphicon glyphicon-remove"
 												action="#{strategicPlanController.cancel(act)}"
 												rendered="#{act.editable}" />

@@ -159,7 +159,7 @@ public class UserContactController implements Serializable, DbConstant {
 		cat = usersSession.getUserCategory();
 		if (null != cat) {
 			if (cat.getUsercategoryName().equals(SUPER_VISOR)) {
-				LOGGER.info("FOUNDED CATEGORY::"+cat.getUsercategoryName());
+				LOGGER.info("FOUNDED CATEGORY::" + cat.getUsercategoryName());
 				staffSize = boardStaffSize().size();
 			} else {
 				staffSize = 0;

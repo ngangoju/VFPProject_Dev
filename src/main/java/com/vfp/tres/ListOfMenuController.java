@@ -31,7 +31,7 @@ import tres.vfp.dto.MenuGroupDto;;
 @SuppressWarnings("unused")
 @ManagedBean
 @ViewScoped
-public class ListOfMenuController implements Serializable, DbConstant{
+public class ListOfMenuController implements Serializable, DbConstant {
 
 	/**
 	 * 
@@ -39,7 +39,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "ListOfMenuController :: ";
 	private static final long serialVersionUID = 1L;
-	
+
 	/* to manage validation messages */
 	private boolean isValid;
 	/* end manage validation messages */
@@ -53,28 +53,31 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	private Users userSessions;
 	private Users users;
 	private int groupId;
-	
+
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
+
 	private List<ListOfMenu> listOfMenuDetails = new ArrayList<ListOfMenu>();
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
-	
-	private String[] menuColor= {DARKBLUE2,GREEN2,BLUE2,ORANGE2,RED2,PURPLE2,DARKGRAY2,GRAY2,LIGHTGRAY2,YELLOW2};
-	
-	private String[] menuIcon= {GLYPHICONGLYPHICONASTERISK,GLYPHICONGLYPHICONPLUS,GLYPHICONGLYPHICONMINUS,GLYPHICONGLYPHICONEURO,GLYPHICONGLYPHICONCLOUD,
-			GLYPHICONGLYPHICONENVELOPE,GLYPHICONGLYPHICONPENCIL,GLYPHICONGLYPHICONGLASS,GLYPHICONGLYPHICONMUSIC,GLYPHICONGLYPHICONSEARCH,
-			GLYPHICONGLYPHICONHEART,GLYPHICONGLYPHICONSTAR,GLYPHICONGLYPHICONSTAREMPTY,GLYPHICONGLYPHICONUSER,GLYPHICONGLYPHICONFILM,
-			GLYPHICONGLYPHICONTHLARGE,GLYPHICONGLYPHICONTH,GLYPHICONGLYPHICONTHLIST,GLYPHICONGLYPHICONOK,GLYPHICONGLYPHICONREMOVE,
-			GLYPHICONGLYPHICONZOOMIN,GLYPHICONGLYPHICONZOOMOUT,GLYPHICONGLYPHICONOFF,GLYPHICONGLYPHICONSIGNAL,GLYPHICONGLYPHICONCOG,
-			GLYPHICONGLYPHICONTRASH,GLYPHICONGLYPHICONHOME,GLYPHICONGLYPHICONFILE,GLYPHICONGLYPHICONTIME,GLYPHICONGLYPHICONROAD,GLYPHICONGLYPHICONDOWNLOADALT,
-			GLYPHICONGLYPHICONDOWNLOAD,GLYPHICONGLYPHICONUPLOAD,GLYPHICONGLYPHICONINBOX};
-	
+
+	private String[] menuColor = { DARKBLUE2, GREEN2, BLUE2, ORANGE2, RED2, PURPLE2, DARKGRAY2, GRAY2, LIGHTGRAY2,
+			YELLOW2 };
+
+	private String[] menuIcon = { GLYPHICONGLYPHICONASTERISK, GLYPHICONGLYPHICONPLUS, GLYPHICONGLYPHICONMINUS,
+			GLYPHICONGLYPHICONEURO, GLYPHICONGLYPHICONCLOUD, GLYPHICONGLYPHICONENVELOPE, GLYPHICONGLYPHICONPENCIL,
+			GLYPHICONGLYPHICONGLASS, GLYPHICONGLYPHICONMUSIC, GLYPHICONGLYPHICONSEARCH, GLYPHICONGLYPHICONHEART,
+			GLYPHICONGLYPHICONSTAR, GLYPHICONGLYPHICONSTAREMPTY, GLYPHICONGLYPHICONUSER, GLYPHICONGLYPHICONFILM,
+			GLYPHICONGLYPHICONTHLARGE, GLYPHICONGLYPHICONTH, GLYPHICONGLYPHICONTHLIST, GLYPHICONGLYPHICONOK,
+			GLYPHICONGLYPHICONREMOVE, GLYPHICONGLYPHICONZOOMIN, GLYPHICONGLYPHICONZOOMOUT, GLYPHICONGLYPHICONOFF,
+			GLYPHICONGLYPHICONSIGNAL, GLYPHICONGLYPHICONCOG, GLYPHICONGLYPHICONTRASH, GLYPHICONGLYPHICONHOME,
+			GLYPHICONGLYPHICONFILE, GLYPHICONGLYPHICONTIME, GLYPHICONGLYPHICONROAD, GLYPHICONGLYPHICONDOWNLOADALT,
+			GLYPHICONGLYPHICONDOWNLOAD, GLYPHICONGLYPHICONUPLOAD, GLYPHICONGLYPHICONINBOX };
+
 	private List<ListOfMenuDto> listOfMenuDtoDetails = new ArrayList<ListOfMenuDto>();
-	
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	ListOfMenuImpl listOfMenuImpl = new ListOfMenuImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -90,15 +93,16 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		if (menuGroup == null) {
 			menuGroup = new MenuGroup();
 		}
-		
+
 		try {
-			
-			//userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-				//	new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
-			
-			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);//This is for saving
-			listOfMenuDetails = listOfMenuImpl.getListWithHQL(SELECT_LISTOFMENU);//This is for View
-			
+
+			// userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new
+			// String[] { "genericStatus" },
+			// new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+
+			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);// This is for saving
+			listOfMenuDetails = listOfMenuImpl.getListWithHQL(SELECT_LISTOFMENU);// This is for View
+
 			for (ListOfMenu listOfMenus : listOfMenuDetails) {
 				ListOfMenuDto listOfMenuDtos = new ListOfMenuDto();
 				listOfMenuDtos.setMenuId(listOfMenus.getMenuId());
@@ -125,7 +129,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 				listOfMenuDtoDetails.add(listOfMenuDtos);
 
 			}
-			
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -134,28 +138,28 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		}
 
 	}
-	
+
 	public String saveListMenuInfo() throws IOException {
 		String url = getContextPath();
 		System.out.print("+++++++++++++++++:" + url + "/");
 		try {
-			
-					listOfMenu.setCreatedBy(userSessions.getViewId());
-					listOfMenu.setCrtdDtTime(timestamp);
-					listOfMenu.setCreationDate(timestamp);
-					listOfMenu.setGenericStatus(ACTIVE);
-					listOfMenu.setUpdatedBy(userSessions.getViewId());
-					listOfMenu.setCrtdDtTime(timestamp);
-					listOfMenu.setUpDtTime(timestamp);
-					listOfMenu.setMenuGroup(menuGroupImpl.getMenuGroupById(groupId, "menuGroupId"));
-					listOfMenuImpl.saveListOfMenu(listOfMenu);
 
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::List of Menu is saved");
-					clearUserFuileds();
-					return "";
+			listOfMenu.setCreatedBy(userSessions.getViewId());
+			listOfMenu.setCrtdDtTime(timestamp);
+			listOfMenu.setCreationDate(timestamp);
+			listOfMenu.setGenericStatus(ACTIVE);
+			listOfMenu.setUpdatedBy(userSessions.getViewId());
+			listOfMenu.setCrtdDtTime(timestamp);
+			listOfMenu.setUpDtTime(timestamp);
+			listOfMenu.setMenuGroup(menuGroupImpl.getMenuGroupById(groupId, "menuGroupId"));
+			listOfMenuImpl.saveListOfMenu(listOfMenu);
+
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+			LOGGER.info(CLASSNAME + ":::List of Menu is saved");
+			clearUserFuileds();
+			return "";
 
 		} catch (HibernateException ex) {
 			LOGGER.info(CLASSNAME + ":::List of Menu is fail to be sved with HibernateException  error");
@@ -167,7 +171,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		}
 		return "";
 	}
-	
+
 	public String cancel(ListOfMenuDto list) {
 		list.setEditable(false);
 		// usersImpl.UpdateUsers(user);
@@ -181,10 +185,10 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
-	
+
 	public String saveAction(ListOfMenuDto list) {
 		LOGGER.info("update  saveAction method");
-		
+
 		if (list != null) {
 
 			ListOfMenu lists = new ListOfMenu();
@@ -192,7 +196,8 @@ public class ListOfMenuController implements Serializable, DbConstant{
 			lists = listOfMenuImpl.getListOfMenuById(list.getMenuId(), "menuId");
 
 			LOGGER.info("here update sart for " + lists + " menuId " + lists.getMenuId());
-			System.out.println("++++++++++++++++++++++++++here update sart for " + lists + " menuGroupId " + lists.getMenuId());
+			System.out.println(
+					"++++++++++++++++++++++++++here update sart for " + lists + " menuGroupId " + lists.getMenuId());
 			list.setEditable(false);
 			lists.setDescription(list.getDescription());
 			lists.setUrlName(list.getUrlName());
@@ -209,7 +214,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		}
 
 	}
-	
+
 	public String newAction(ListOfMenuDto list) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -231,7 +236,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		return "/menu/ViewListOfMenu.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String updateStatus(ListOfMenuDto list) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -255,7 +260,7 @@ public class ListOfMenuController implements Serializable, DbConstant{
 		return "/menu/ViewListOfMenu.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String addNewListOfMenu() {
 
 		return "/menu/listOfMenuForm.xhtml?faces-redirect=true";
@@ -445,6 +450,5 @@ public class ListOfMenuController implements Serializable, DbConstant{
 	public void setMenuIcon(String[] menuIcon) {
 		this.menuIcon = menuIcon;
 	}
-	
-	
+
 }

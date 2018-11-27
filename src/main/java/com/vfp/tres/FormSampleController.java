@@ -137,6 +137,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 
 	}
+
 	public String uploadProfile(FileUploadEvent event) {
 
 		try {
@@ -144,23 +145,23 @@ public class FormSampleController implements Serializable, DbConstant {
 				UploadUtility ut = new UploadUtility();
 				String validationCode = "PROFILEIMAGE";
 				documents = ut.fileUploadUtilUsers(event, validationCode);
-				
-					uploadingFiles.setUser(usersSession);
-					uploadingFiles.setCrtdDtTime(timestamp);
-					uploadingFiles.setGenericStatus(ACTIVE);
-					uploadingFiles.setDocuments(documents);
-					uploadingFilesImpl.saveIntable(uploadingFiles);
-					LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addInfoMessage(getProvider().getValue("upload.message.success"));
-					/*addErrorMessage(getProvider().getValue("upload.message.success"));*/
-					return "/menu/EditProfile.xhtml?faces-redirect=true";
-				}else {
-					JSFMessagers.resetMessages();
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
-				}		
+
+				uploadingFiles.setUser(usersSession);
+				uploadingFiles.setCrtdDtTime(timestamp);
+				uploadingFiles.setGenericStatus(ACTIVE);
+				uploadingFiles.setDocuments(documents);
+				uploadingFilesImpl.saveIntable(uploadingFiles);
+				LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addInfoMessage(getProvider().getValue("upload.message.success"));
+				/* addErrorMessage(getProvider().getValue("upload.message.success")); */
+				return "/menu/EditProfile.xhtml?faces-redirect=true";
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + "testing profile upload methode ");
 			JSFMessagers.resetMessages();

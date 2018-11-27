@@ -17,10 +17,11 @@
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-				<center>
-					<span style="color: #fff; font-size: 10pt; align:center">#{msg['header.title.fieldmarked']}
-						with an asterisk <span style="color: red">#{msg['header.title.asteriks']}</span> #{msg['header.title.mandatory']}
-					</span>
+					<center>
+						<span style="color: #fff; font-size: 10pt; align: center">#{msg['header.title.fieldmarked']}
+							with an asterisk <span style="color: red">#{msg['header.title.asteriks']}</span>
+							#{msg['header.title.mandatory']}
+						</span>
 					</center>
 				</div>
 				<div class="panel-body"
@@ -48,9 +49,12 @@
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"	
-									 class="alert alert-success"><center><h:outputText
-											value="#{msg['listOfmenu.successfullsaved']}" escape="false" /></center></li>
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success"><center>
+											<h:outputText value="#{msg['listOfmenu.successfullsaved']}"
+												escape="false" />
+										</center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
@@ -74,10 +78,10 @@
 												value="#{listOfMenuController.menuGroupDetails}"
 												var="option" itemValue="#{option.menuGroupId}"
 												itemLabel="#{option.menuGroupName}" itemLabelEscaped="true" />
-											
+
 										</h:selectOneMenu>
 									</div>
-									
+
 									<h:message for="categoryId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
@@ -91,13 +95,13 @@
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="addressId" styleClass="form-control"
-											value="#{listOfMenuController.listOfMenu.description}" maxlength="35"
-											required="true"
+											value="#{listOfMenuController.listOfMenu.description}"
+											maxlength="35" required="true"
 											requiredMessage="#{msg['listofmenu.description.required']}"
 											validatorMessage="#{msg['error.address.maxlength']}">
 											<f:validateLength maximum="35" />
 										</h:inputText>
-										
+
 									</div>
 									<div class="col-md-1 col-sm-1 col-xs-1"></div>
 
@@ -115,8 +119,8 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId3" binding="#{surnameId3}"
 											styleClass="form-control"
-											value="#{listOfMenuController.listOfMenu.urlName}" maxlength="35"
-											required="true"
+											value="#{listOfMenuController.listOfMenu.urlName}"
+											maxlength="35" required="true"
 											validatorMessage="#{msg['error.enter.invalid.url']}"
 											converterMessage="#{msg['error.enter.invalid.url']}"
 											requiredMessage="#{msg['listofmenu.url.required']}">
@@ -138,8 +142,8 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId2" binding="#{surnameId2}"
 											styleClass="form-control"
-											value="#{listOfMenuController.listOfMenu.urlCode}" maxlength="35"
-											required="true"
+											value="#{listOfMenuController.listOfMenu.urlCode}"
+											maxlength="35" required="true"
 											validatorMessage="#{msg['listofmenug.listofMenuGroupCode']}"
 											converterMessage="#{msg['listofmenug.listofMenuGroupCode']}"
 											requiredMessage="#{msg['listofmenu.urlcode.required']}">
@@ -151,7 +155,7 @@
 									<h:message for="surnameId2" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-							
+
 							<h:panelGroup id="categoryPane" layout="block">
 								<div class="form-group row">
 									<label for="todate"
@@ -160,7 +164,8 @@
 										style="color: red">*</span></label>
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
 										<h:selectOneMenu id="weightId" styleClass="form-control"
-											required="true" value="#{listOfMenuController.listOfMenu.menuColor}"
+											required="true"
+											value="#{listOfMenuController.listOfMenu.menuColor}"
 											requiredMessage="#{msg['message.menuCorlor.required']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
@@ -175,7 +180,7 @@
 									<h:message for="weightId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-							
+
 							<h:panelGroup id="categoryPane2" layout="block">
 								<div class="form-group row">
 									<label for="todate"
@@ -184,7 +189,8 @@
 										style="color: red">*</span></label>
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
 										<h:selectOneMenu id="weightId2" styleClass="form-control"
-											required="true" value="#{listOfMenuController.listOfMenu.iconImage}"
+											required="true"
+											value="#{listOfMenuController.listOfMenu.iconImage}"
 											requiredMessage="#{msg['message.iconImage.required']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
@@ -207,9 +213,9 @@
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{listOfMenuController.saveListMenuInfo}"
-										value="#{msg['form.listofmenu.create']}" >
+										value="#{msg['form.listofmenu.create']}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+									</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="err"></span>
@@ -219,8 +225,8 @@
 						</fieldset>
 
 					</h:form>
-					
-					
+
+
 
 
 				</div>

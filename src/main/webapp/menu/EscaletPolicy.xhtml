@@ -52,7 +52,8 @@
 									mandatory.
 								</span> <br /> <br />
 								<h:panelGroup layout="block">
-									<p:outputPanel rendered="#{not institutionPolicyController.renderDiv}"
+									<p:outputPanel
+										rendered="#{not institutionPolicyController.renderDiv}"
 										id="pageOne" autoUpdate="true">
 										<div class="form-group row">
 											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
@@ -67,7 +68,7 @@
 													value="#{institutionPolicyController.nmbrTime}"
 													validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
 													<f:validateRegex
-														pattern="#{regex['regex.validation.message.DIGITS']}" /> 
+														pattern="#{regex['regex.validation.message.DIGITS']}" />
 												</h:inputText>
 											</div>
 											<h:message errorClass="errorMsg1" for="name"></h:message>

@@ -17,10 +17,11 @@
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-				<center>
-					<span style="color: #fff; font-size: 10pt; align:center">#{msg['header.title.fieldmarked']}
-						with an asterisk <span style="color: red">#{msg['header.title.asteriks']}</span> #{msg['header.title.mandatory']}
-					</span>
+					<center>
+						<span style="color: #fff; font-size: 10pt; align: center">#{msg['header.title.fieldmarked']}
+							with an asterisk <span style="color: red">#{msg['header.title.asteriks']}</span>
+							#{msg['header.title.mandatory']}
+						</span>
 					</center>
 				</div>
 				<div class="panel-body"
@@ -48,9 +49,13 @@
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"	
-									 class="alert alert-success"><center><h:outputText
-											value="#{msg['menuAssignment.assignedSuccessfull']}" escape="false" /></center></li>
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success"><center>
+											<h:outputText
+												value="#{msg['menuAssignment.assignedSuccessfull']}"
+												escape="false" />
+										</center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
@@ -73,8 +78,9 @@
 											<f:selectItems
 												value="#{groupOfMenuController.userCategoryDetails}"
 												var="option" itemValue="#{option.userCatid}"
-												itemLabel="#{option.usercategoryName}" itemLabelEscaped="true" />
-											
+												itemLabel="#{option.usercategoryName}"
+												itemLabelEscaped="true" />
+
 										</h:selectOneMenu>
 									</div>
 									<h:message for="categoryIdp" styleClass="help-block"></h:message>
@@ -97,7 +103,7 @@
 												value="#{groupOfMenuController.listOfMenuDetails}"
 												var="option" itemValue="#{option.menuId}"
 												itemLabel="#{option.description}" itemLabelEscaped="true" />
-											
+
 										</h:selectOneMenu>
 									</div>
 									<h:message for="categoryIds" styleClass="help-block"></h:message>
@@ -111,9 +117,9 @@
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{groupOfMenuController.saveMenuAssignmentInfo}"
-										value="#{msg['form.menuassignment.create']}" >
+										value="#{msg['form.menuassignment.create']}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+									</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="err"></span>

@@ -17,14 +17,15 @@
 			<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-				<center>
-					<span style="color: #fff; font-size: 10pt; align:center">#{msg['header.title.fieldmarked']}
-						 <span style="color: red">#{msg['header.title.asteriks']}</span> #{msg['header.title.mandatory']}
-					</span>
+					<center>
+						<span style="color: #fff; font-size: 10pt; align: center">#{msg['header.title.fieldmarked']}
+							<span style="color: red">#{msg['header.title.asteriks']}</span>
+							#{msg['header.title.mandatory']}
+						</span>
 					</center>
 				</div>
 				<div class="panel-body">
-					
+
 
 					<h:form>
 						<h:panelGroup layout="block"
@@ -47,9 +48,12 @@
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
-									<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"	
-									 class="alert alert-success"><center><h:outputText
-											value="#{msg['menugroup.successfullsaved']}" escape="false" /></center></li>
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success"><center>
+											<h:outputText value="#{msg['menugroup.successfullsaved']}"
+												escape="false" />
+										</center></li>
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
@@ -64,7 +68,8 @@
 										style="color: red">*</span></label>
 									<div class="col-md-6 col-sm-6 col-xs-6" style="">
 										<h:selectOneMenu id="institutionId" styleClass="form-control"
-											required="true" value="#{paymentRecordsContoller.institutionId}"
+											required="true"
+											value="#{paymentRecordsContoller.institutionId}"
 											requiredMessage="#{msg['payment.instittution.required']}">
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
@@ -72,8 +77,9 @@
 											<f:selectItems
 												value="#{paymentRecordsContoller.institutionDetails}"
 												var="option" itemValue="#{option.institutionId}"
-												itemLabel="#{option.institutionName}" itemLabelEscaped="true" />
-											
+												itemLabel="#{option.institutionName}"
+												itemLabelEscaped="true" />
+
 										</h:selectOneMenu>
 									</div>
 									<h:message for="institutionId" styleClass="help-block"></h:message>
@@ -89,8 +95,8 @@
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="addressId" styleClass="form-control"
-											value="#{paymentRecordsContoller.paymentRecords.paymentCode}" maxlength="35"
-											required="true"
+											value="#{paymentRecordsContoller.paymentRecords.paymentCode}"
+											maxlength="35" required="true"
 											requiredMessage="#{msg['payment.code.required']}"
 											validatorMessage="#{msg['payment.enter.invalid.code']}"
 											converterMessage="#{msg['payment.enter.invalid.code']}">
@@ -98,7 +104,7 @@
 												pattern="#{regex['regex.string.NumValidation']}" />
 											<f:validateLength maximum="35" />
 										</h:inputText>
-										
+
 									</div>
 									<div class="col-md-1 col-sm-1 col-xs-1"></div>
 
@@ -115,8 +121,8 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId3" binding="#{surnameId3}"
 											styleClass="form-control"
-											value="#{paymentRecordsContoller.paymentRecords.amount}" maxlength="35"
-											required="true"
+											value="#{paymentRecordsContoller.paymentRecords.amount}"
+											maxlength="35" required="true"
 											validatorMessage="#{msg['payment.enter.invalid.amount']}"
 											converterMessage="#{msg['payment.enter.invalid.amount']}"
 											requiredMessage="#{msg['payment.amount.required']}">
@@ -138,8 +144,8 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId2" binding="#{surnameId2}"
 											styleClass="form-control"
-											value="#{paymentRecordsContoller.paymentRecords.currency}" maxlength="35"
-											required="true"
+											value="#{paymentRecordsContoller.paymentRecords.currency}"
+											maxlength="35" required="true"
 											validatorMessage="#{msg['payment.enter.invalid.currency']}"
 											converterMessage="#{msg['payment.enter.invalid.currency']}"
 											requiredMessage="#{msg['payment.currency.required']}">
@@ -151,7 +157,7 @@
 									<h:message for="surnameId2" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-							
+
 							<h:panelGroup id="surnamePanl4" layout="block">
 								<div class="form-group row">
 									<label for="todate"
@@ -161,8 +167,8 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId4" binding="#{surnameId4}"
 											styleClass="form-control"
-											value="#{paymentRecordsContoller.paymentRecords.paymentChanel}" maxlength="35"
-											required="true"
+											value="#{paymentRecordsContoller.paymentRecords.paymentChanel}"
+											maxlength="35" required="true"
 											validatorMessage="#{msg['payment.enter.invalid.channel']}"
 											converterMessage="#{msg['payment.enter.invalid.channel']}"
 											requiredMessage="#{msg['payment.channel.required']}">
@@ -174,7 +180,7 @@
 									<h:message for="surnameId4" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-							
+
 							<h:panelGroup id="surnamePanl5" layout="block">
 								<div class="form-group row">
 									<label for="todate"
@@ -184,8 +190,8 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId5" binding="#{surnameId5}"
 											styleClass="form-control"
-											value="#{paymentRecordsContoller.paymentRecords.bankRefernceNo}" maxlength="35"
-											required="true"
+											value="#{paymentRecordsContoller.paymentRecords.bankRefernceNo}"
+											maxlength="35" required="true"
 											validatorMessage="#{msg['payment.enter.invalid.bankrefno']}"
 											converterMessage="#{msg['payment.enter.invalid.bankrefno']}"
 											requiredMessage="#{msg['payment.bankRefNo.required']}">
@@ -197,10 +203,10 @@
 									<h:message for="surnameId5" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-							
-							
-									
-									<h:panelGroup id="fromDatePanel" layout="block">
+
+
+
+							<h:panelGroup id="fromDatePanel" layout="block">
 
 								<div class="form-group row">
 									<label for="todate"
@@ -211,7 +217,8 @@
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_start_date_id"
 											binding="#{from_dob_date_id}" class="form-control"
-											escape="true" value="#{paymentRecordsContoller.paymentRecords.paymentDate}"
+											escape="true"
+											value="#{paymentRecordsContoller.paymentRecords.paymentDate}"
 											maxlength="35" required="true"
 											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 											requiredMessage="#{msg['payment.date.required']}">
@@ -239,28 +246,29 @@
 									<h:message for="from_start_date_id" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
-									
-									<h:panelGroup id="fromDatePanel1" layout="block">
 
-										<div class="form-group row"
-											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-											<label for="todate1"
-												class="col-md-2 col-sm-2 col-xs-2 control-label"
-												style="color: black">#{msg['payment.expired']}<span
-												style="color: red">*</span></label>
-											<div class="col-md-6 col-sm-6 col-xs-6">
-												<h:inputText locale="#{facesContext.viewRoot.locale}"
-													autocomplete="off" id="from_dob_date_id1"
-													binding="#{from_dob_date_id1}" class="form-control"
-													escape="true" value="#{paymentRecordsContoller.paymentRecords.paymentExpiretionDate}"
-													maxlength="35" required="true"
-													converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-													requiredMessage="#{msg['payment.expired.required']}">
-													<f:convertDateTime type="date" dateType="short"
-														pattern="dd/MM/yyyy" />
-													<f:validateLength maximum="35" />
-												</h:inputText>
-												<script>
+							<h:panelGroup id="fromDatePanel1" layout="block">
+
+								<div class="form-group row"
+									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+									<label for="todate1"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['payment.expired']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_dob_date_id1"
+											binding="#{from_dob_date_id1}" class="form-control"
+											escape="true"
+											value="#{paymentRecordsContoller.paymentRecords.paymentExpiretionDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['payment.expired.required']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
 													$(function() {
 														$(
 																'input[id*="from_dob_date_id1"]')
@@ -276,12 +284,12 @@
 																		});
 													});
 												</script>
-											</div>
-											
-											<h:message for="from_dob_date_id1" styleClass="help-block"></h:message>
-										</div>
-									</h:panelGroup>
-							
+									</div>
+
+									<h:message for="from_dob_date_id1" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
 							<h:panelGroup id="surnamePanl6" layout="block">
 								<div class="form-group row">
 									<label for="todate"
@@ -291,10 +299,10 @@
 									<div class="col-md-6 col-sm-6 col-xs-6">
 										<h:inputText id="surnameId6" binding="#{surnameId6}"
 											styleClass="form-control"
-											value="#{paymentRecordsContoller.paymentRecords.comment}" maxlength="35"
-											required="true"
+											value="#{paymentRecordsContoller.paymentRecords.comment}"
+											maxlength="35" required="true"
 											requiredMessage="#{msg['payment.comment.required']}">
-											
+
 											<f:validateLength maximum="100" />
 										</h:inputText>
 									</div>
@@ -309,9 +317,9 @@
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
 										action="#{paymentRecordsContoller.savePaymentInfo}"
-										value="#{msg['payment.record']}" >
+										value="#{msg['payment.record']}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+									</h:commandButton>
 
 								</div>
 								<span class="text-danger" id="err"></span>

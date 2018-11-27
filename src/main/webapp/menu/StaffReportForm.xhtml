@@ -106,20 +106,23 @@
 
 										</div>
 										<div class="panel-body">
-										
-											<p:dataTable id="tableId" var="a" value="#{staffReport.activities()}"
-												scrollable="true" scrollHeight="200" >
+
+											<p:dataTable id="tableId" var="a"
+												value="#{staffReport.activities()}" scrollable="true"
+												scrollHeight="200">
 												<f:facet name="header">List of activities</f:facet>
-												<p:column> #{a.formatedDate2}<f:facet name="header">Number</f:facet>
+												<p:column> #{a.formatedDate2}<f:facet
+														name="header">Number</f:facet>
 												</p:column>
 												<p:column> #{a.description}<f:facet name="header">description</f:facet>
 												</p:column>
-												<p:column> #{a.formatedDate1} to #{a.formatedDate2}<f:facet name="header">Week</f:facet>
+												<p:column> #{a.formatedDate1} to #{a.formatedDate2}<f:facet
+														name="header">Week</f:facet>
 												</p:column>
 												<p:column> #{a.status}<f:facet name="header">status</f:facet>
 												</p:column>
 											</p:dataTable>
-											
+
 										</div>
 
 									</div>
