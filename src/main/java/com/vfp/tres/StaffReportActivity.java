@@ -19,10 +19,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,7 +31,6 @@ import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
-import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
 import com.itextpdf.text.BaseColor;
@@ -53,12 +49,15 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
+import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.BoardImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
+import tres.domain.Board;
 import tres.domain.Task;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
@@ -75,6 +74,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private Users users;
 	private Users usersSession;
 	private Task tasks;
+	private Board board;
 	private int myTask;
 	private boolean rendered;
 	private boolean renderedx;
@@ -86,29 +86,26 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private boolean renderedtpdf;
 	private boolean renderedsxl;
 	private boolean renderedtxl;
-	private String myName;
+	private int myName;
 	private Date first = null;
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
+	private List<Activity> activityDetailz = new ArrayList<Activity>();
 	private List<Activity> activityDetailss = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<Users> usersDetails = new ArrayList<Users>();
 	private List<Task> taskDetail = new ArrayList<Task>();
 	private String[] status = { NOTSTARTED, APPROVED, REJECT, INPROGRESS, COMPLETED };
 	private String[] weight = { SHORT, MEDIUM, LONG };
-
 	private LineChartModel animatedModel1;
 	private BarChartModel animatedModel2;
 	private PieChartModel pieModel1;
 	private PieChartModel pieModel2;
-
 	Task tc = new Task();
-
 	TaskImpl taskImpl = new TaskImpl();
 	UserCategoryImpl usercatgoryImpl = new UserCategoryImpl();
-
+	BoardImpl boardImpl = new BoardImpl();
 	/* class injection */
-
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
@@ -133,19 +130,25 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		if (tasks == null) {
 			tasks = new Task();
 		}
+		if (board == null) {
+			board = new Board();
+		}
 
 		try {
-			activityDetailss = new ArrayList<Activity>();
 
-			taskDetail = taskImpl.getListWithHQL(SELECT_TASK);
 			taskDetail = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Task", "taskId asc");
 
-			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "userCategory" },
-					new Object[] { ACTIVE, usercatgoryImpl.getUserCategoryById(2, "userCatid") }, "Users",
-					"userId asc");
+			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE},
+					"Users", "userId asc");
+			
+			/*usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "board" },
+					new Object[] { ACTIVE, boardImpl.getBoardById(usersSession.getBoard().getBoardId(), "boardId") },
+					"Users", "userId asc");*/
 
 		} catch (Exception e) {
+			e.getMessage();
 		}
 	}
 
@@ -223,7 +226,6 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	// CREATING FOOTER AND HEADER
 
 	class MyFooter extends PdfPageEventHelper {
-
 		Font ffont1 = new Font(Font.FontFamily.UNDEFINED, 12, Font.ITALIC);
 
 		Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.ITALIC);
@@ -259,77 +261,163 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			document.open();
 		}
 
-		document.add(new Paragraph("\n"));
-		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-		PdfPTable table = new PdfPTable(5);
-		// Pdf table=new Pdftable(3);
-
-		Task t = taskImpl.getTaskById(myTask, "taskId");
-		String mytaskNane = t.getTaskName();
-		PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + mytaskNane));
-		pc.setColspan(5);
-		pc.setBackgroundColor(BaseColor.CYAN);
-		pc.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(pc);
-
-		table.setWidthPercentage(110);
-		PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
-		// pc1.setRowspan(3);
-		pc1.setBackgroundColor(BaseColor.ORANGE);
-		table.addCell(pc1);
-
-		PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
-		pc2.setBackgroundColor(BaseColor.ORANGE);
-		table.addCell(pc2);
-
-		PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
-		pc3.setBackgroundColor(BaseColor.ORANGE);
-		table.addCell(pc3);
-
-		PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", font0));
-		pc4.setBackgroundColor(BaseColor.ORANGE);
-		table.addCell(pc4);
-
-		PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", font0));
-		pc5.setBackgroundColor(BaseColor.ORANGE);
-		table.addCell(pc5);
-		table.setHeaderRows(2);
-		HttpSession session = SessionUtils.getSession();
-		usersSession = (Users) session.getAttribute("userSession");
-
-		if (users == null) {
-			users = new Users();
-		}
-
-		if (activity == null) {
-			activity = new Activity();
-		}
-
 		try {
 			activityDetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "task" },
 					new Object[] { ACTIVE, taskImpl.getTaskById(Integer.parseInt(myTask + ""), "taskId") }, "Activity",
 					"activityId asc");
-			for (Activity activity : activityDetails) {
-				table.addCell(activity.getCrtdDtTime() + "");
-				table.addCell(activity.getDescription());
-				table.addCell(activity.getWeight());
-				table.addCell(activity.getStatus());
-				table.addCell("" + activity.getCreatedBy());
+			if (activityDetails.size() > 0) {
+				setValid(true);
+				document.add(new Paragraph("\n"));
+				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+				PdfPTable table = new PdfPTable(5);
+
+				Task t = taskImpl.getTaskById(myTask, "taskId");
+				String mytaskNane = t.getTaskName();
+				PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + mytaskNane));
+				pc.setColspan(5);
+				pc.setBackgroundColor(BaseColor.CYAN);
+				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc);
+
+				table.setWidthPercentage(110);
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
+
+				pc1.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc1);
+
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
+				pc2.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc2);
+
+				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
+				pc3.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc3);
+
+				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", font0));
+				pc4.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc4);
+
+				PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", font0));
+				pc5.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc5);
+				table.setHeaderRows(2);
+				HttpSession session = SessionUtils.getSession();
+				usersSession = (Users) session.getAttribute("userSession");
+
+				if (users == null) {
+					users = new Users();
+				}
+
+				if (activity == null) {
+					activity = new Activity();
+				}
+
+				for (Activity activity : activityDetails) {
+					table.addCell(activity.getFormatedDate2() + "");
+					table.addCell(activity.getDescription());
+					table.addCell("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
+					table.addCell(activity.getStatus());
+					table.addCell("" + activity.getCreatedBy());
+				}
+				document.add(table);
+
+				document.close();
+
+				writePDFToResponse(context.getExternalContext(), baos, "Super_visor_report");
+
+				context.responseComplete();
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorTask"));
 			}
-			document.add(table);
-
-			document.close();
-
-			writePDFToResponse(context.getExternalContext(), baos, "Super_visor_report");
-
-			context.responseComplete();
-
 		} catch (Exception e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("Rachid " + myTask);
 			e.printStackTrace();
 		}
+	}
 
+	// Creating report for staff
+
+	@SuppressWarnings("unchecked")
+	public void createPdfforStaff() throws IOException, DocumentException {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		Document document = new Document();
+		Rectangle rect = new Rectangle(20, 20, 600, 600);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfWriter writer = PdfWriter.getInstance(document, baos);
+		MyFooter event = new MyFooter();
+		writer.setPageEvent(event);
+		writer.setBoxSize("art", rect);
+		document.setPageSize(rect);
+		if (!document.isOpen()) {
+			document.open();
+		}
+
+		try {
+			activityDetailz = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
+					new Object[] { ACTIVE, usersImpl.gettUserById(myName, "userId") }, "Activity", "activityId asc");
+			if (activityDetailz.size() > 0) {
+				setValid(true);
+				document.add(new Paragraph("\n"));
+				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+				PdfPTable table = new PdfPTable(5);
+
+				Users t = usersImpl.gettUserById(Integer.parseInt(myName + ""), "userId");
+				String myNane = t.getFname() + "" + t.getLname();
+				PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
+				pc.setColspan(5);
+				pc.setBackgroundColor(BaseColor.CYAN);
+				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc);
+
+				table.setWidthPercentage(110);
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
+
+				pc1.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc1);
+
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
+				pc2.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc2);
+
+				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
+				pc3.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc3);
+
+				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", font0));
+				pc4.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc4);
+
+				PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", font0));
+				pc5.setBackgroundColor(BaseColor.ORANGE);
+				table.addCell(pc5);
+				table.setHeaderRows(2);
+
+				for (Activity activity : activityDetailz) {
+					table.addCell(activity.getFormatedDate2() + "");
+					table.addCell(activity.getDescription());
+					table.addCell("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
+					table.addCell(activity.getStatus());
+					table.addCell("" + activity.getCreatedBy());
+				}
+				document.add(table);
+
+				document.close();
+
+				writePDFToResponse(context.getExternalContext(), baos, "Super_visor_report");
+
+				context.responseComplete();
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaff"));
+			}
+		} catch (Exception e) {
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputStream baos, String fileName) {
@@ -350,137 +438,153 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	}
 
 	// Method to print excel sheet
+	@SuppressWarnings("unchecked")
 	public void printXLSForStaff() throws IOException {
-		HSSFWorkbook book = new HSSFWorkbook();
-		HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
-		// create a heading
-		Row heading = sheet.createRow(0);
-		heading.createCell(0).setCellValue("Execution Period");
-		heading.createCell(1).setCellValue("Activity");
-		heading.createCell(2).setCellValue("Week");
-		heading.createCell(3).setCellValue("Status");
-		heading.createCell(4).setCellValue("Staff");
-		for (int i = 0; i < 5; i++) {
-			CellStyle cellStyle = book.createCellStyle();
-			HSSFFont font = book.createFont();
-			font.setFontName(HSSFFont.FONT_ARIAL);
-			font.setBoldweight((short) 100);
-			font.setColor(IndexedColors.DARK_RED.getIndex());
-			font.setFontHeightInPoints((short) 16);
-			cellStyle.setFont(font);
-			cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
-			heading.getCell(i).setCellStyle(cellStyle);
-		}
-
-		// From database
 
 		try {
 			activityDetailss = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
 					new Object[] { ACTIVE, usersImpl.gettUserById(Integer.parseInt(myName + ""), "userId") },
 					"Activity", "activityId asc");
 
-			int i = 1;
-			for (Activity activity : activityDetailss) {
-				Row row = sheet.createRow(i);
+			if (activityDetailss.size() > 0) {
+				HSSFWorkbook book = new HSSFWorkbook();
+				HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
+				// create a heading
+				Row heading = sheet.createRow(0);
+				heading.createCell(0).setCellValue("Execution Period");
+				heading.createCell(1).setCellValue("Activity");
+				heading.createCell(2).setCellValue("Week");
+				heading.createCell(3).setCellValue("Status");
+				heading.createCell(4).setCellValue("Staff");
+				for (int i = 0; i < 5; i++) {
+					CellStyle cellStyle = book.createCellStyle();
+					HSSFFont font = book.createFont();
+					font.setFontName(HSSFFont.FONT_ARIAL);
+					font.setBoldweight((short) 100);
+					font.setColor(IndexedColors.DARK_RED.getIndex());
+					font.setFontHeightInPoints((short) 16);
+					cellStyle.setFont(font);
+					cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
+					heading.getCell(i).setCellStyle(cellStyle);
+				}
 
-				Cell cell1 = row.createCell(0);
-				cell1.setCellValue("");
+				// From database
 
-				Cell cell2 = row.createCell(1);
-				cell2.setCellValue(activity.getDescription());
+				int i = 1;
+				for (Activity activity : activityDetailss) {
+					Row row = sheet.createRow(i);
 
-				Cell cell3 = row.createCell(2);
-				cell3.setCellValue("");
+					Cell cell1 = row.createCell(0);
+					cell1.setCellValue(activity.getFormatedDate2());
 
-				Cell cell4 = row.createCell(3);
-				cell4.setCellValue(activity.getStatus());
+					Cell cell2 = row.createCell(1);
+					cell2.setCellValue(activity.getDescription());
 
-				Cell cell5 = row.createCell(4);
-				cell5.setCellValue(activity.getCreatedBy());
-				i++;
+					Cell cell3 = row.createCell(2);
+					cell3.setCellValue("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
 
+					Cell cell4 = row.createCell(3);
+					cell4.setCellValue(activity.getStatus());
+
+					Cell cell5 = row.createCell(4);
+					cell5.setCellValue(activity.getCreatedBy());
+					i++;
+
+				}
+
+				sheet.autoSizeColumn(5);
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				ExternalContext externalContext = facesContext.getExternalContext();
+				externalContext.setResponseContentType("application/vnd.ms-excel");
+				externalContext.setResponseHeader("Content-Disposition",
+						"attachment; filename=\"SupervisorReport.xls\"");
+
+				book.write(externalContext.getResponseOutputStream());
+				facesContext.responseComplete();
+
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaff"));
 			}
-
-			sheet.autoSizeColumn(5);
 
 		} catch (Exception e) {
 			e.getMessage();
 
 		}
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		externalContext.setResponseContentType("application/vnd.ms-excel");
-		externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"SupervisorReport.xls\"");
-
-		book.write(externalContext.getResponseOutputStream());
-		facesContext.responseComplete();
 	}
 
 	// Excel report for staff name
+	@SuppressWarnings("unchecked")
 	public void printXLS() throws IOException {
-		HSSFWorkbook book = new HSSFWorkbook();
-		HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
-		// create a heading
-		Row heading = sheet.createRow(0);
-		heading.createCell(0).setCellValue("Execution Period");
-		heading.createCell(1).setCellValue("Activity");
-		heading.createCell(2).setCellValue("Week");
-		heading.createCell(3).setCellValue("Status");
-		heading.createCell(4).setCellValue("Staff");
-		for (int i = 0; i < 5; i++) {
-			CellStyle cellStyle = book.createCellStyle();
-			HSSFFont font = book.createFont();
-			font.setFontName(HSSFFont.FONT_ARIAL);
-			font.setBoldweight((short) 100);
-			font.setColor(IndexedColors.DARK_RED.getIndex());
-			font.setFontHeightInPoints((short) 16);
-			cellStyle.setFont(font);
-			cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
-			heading.getCell(i).setCellStyle(cellStyle);
-		}
-
-		// From database
-
 		try {
 			activityDetailss = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "task" },
 					new Object[] { ACTIVE, taskImpl.getTaskById(Integer.parseInt(myTask + ""), "taskId") }, "Activity",
 					"activityId asc");
+			if (activityDetailss.size() > 0) {
+				HSSFWorkbook book = new HSSFWorkbook();
+				HSSFSheet sheet = book.createSheet("SupervisorExcelReport");
+				// create a heading
+				Row heading = sheet.createRow(0);
+				heading.createCell(0).setCellValue("Execution Period");
+				heading.createCell(1).setCellValue("Activity");
+				heading.createCell(2).setCellValue("Week");
+				heading.createCell(3).setCellValue("Status");
+				heading.createCell(4).setCellValue("Staff");
+				for (int i = 0; i < 5; i++) {
+					CellStyle cellStyle = book.createCellStyle();
+					HSSFFont font = book.createFont();
+					font.setFontName(HSSFFont.FONT_ARIAL);
+					font.setBoldweight((short) 100);
+					font.setColor(IndexedColors.DARK_RED.getIndex());
+					font.setFontHeightInPoints((short) 16);
+					cellStyle.setFont(font);
+					cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
+					heading.getCell(i).setCellStyle(cellStyle);
+				}
 
-			int i = 1;
-			for (Activity activity : activityDetailss) {
-				Row row = sheet.createRow(i);
+				// From database
 
-				Cell cell1 = row.createCell(0);
-				cell1.setCellValue("");
+				int i = 1;
+				for (Activity activity : activityDetailss) {
+					Row row = sheet.createRow(i);
 
-				Cell cell2 = row.createCell(1);
-				cell2.setCellValue(activity.getDescription());
+					Cell cell1 = row.createCell(0);
+					cell1.setCellValue(activity.getFormatedDate2());
 
-				Cell cell3 = row.createCell(2);
-				cell3.setCellValue("");
+					Cell cell2 = row.createCell(1);
+					cell2.setCellValue(activity.getDescription());
 
-				Cell cell4 = row.createCell(3);
-				cell4.setCellValue(activity.getStatus());
+					Cell cell3 = row.createCell(2);
+					cell3.setCellValue("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
 
-				Cell cell5 = row.createCell(4);
-				cell5.setCellValue(activity.getCreatedBy());
-				i++;
+					Cell cell4 = row.createCell(3);
+					cell4.setCellValue(activity.getStatus());
 
+					Cell cell5 = row.createCell(4);
+					cell5.setCellValue(activity.getCreatedBy());
+					i++;
+
+				}
+
+				sheet.autoSizeColumn(5);
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				ExternalContext externalContext = facesContext.getExternalContext();
+				externalContext.setResponseContentType("application/vnd.ms-excel");
+				externalContext.setResponseHeader("Content-Disposition",
+						"attachment; filename=\"SupervisorReport.xls\"");
+
+				book.write(externalContext.getResponseOutputStream());
+				facesContext.responseComplete();
+			} else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorTask"));
 			}
-
-			sheet.autoSizeColumn(5);
 
 		} catch (Exception e) {
 			e.getMessage();
 
 		}
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		externalContext.setResponseContentType("application/vnd.ms-excel");
-		externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"SupervisorReport.xls\"");
 
-		book.write(externalContext.getResponseOutputStream());
-		facesContext.responseComplete();
 	}
 
 	public void updateTable() throws Exception {
@@ -536,6 +640,33 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			renderedspdf = false;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	
+	public List<Activity> activitiesFprStaff() throws Exception {
+		try {
+			activityDetailss = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
+					new Object[] { ACTIVE, usersImpl.gettUserById(Integer.parseInt(myName + ""), "userId") },
+					"Activity", "activityId asc");
+
+			if (activityDetailss.size() > 0) {
+				for (Activity activit : activityDetailss) {
+
+					activityDetailss.add(activit);
+				}
+
+			} else {
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaff"));
+			}
+
+		} catch (Exception e) {
+			e.getMessage();
+
+		}
+		return activityDetailss;
+	}
+	
+	
 
 	public String getCLASSNAME() {
 		return CLASSNAME;
@@ -761,14 +892,6 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		this.activityDetailss = activityDetailss;
 	}
 
-	public String getMyName() {
-		return myName;
-	}
-
-	public void setMyName(String myName) {
-		this.myName = myName;
-	}
-
 	public boolean isRendered() {
 		return rendered;
 	}
@@ -855,6 +978,22 @@ public class StaffReportActivity implements Serializable, DbConstant {
 
 	public void setRenderedtxl(boolean renderedtxl) {
 		this.renderedtxl = renderedtxl;
+	}
+
+	public int getMyName() {
+		return myName;
+	}
+
+	public void setMyName(int myName) {
+		this.myName = myName;
+	}
+
+	public List<Activity> getActivityDetailz() {
+		return activityDetailz;
+	}
+
+	public void setActivityDetailz(List<Activity> activityDetailz) {
+		this.activityDetailz = activityDetailz;
 	}
 
 }
