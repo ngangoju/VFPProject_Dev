@@ -54,6 +54,10 @@ public class Task extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "strategicPlan")
 	private StrategicPlan strategicPlan;
+	
+	@ManyToOne
+	@JoinColumn(name = "board")
+	private Board board;
 
 	public int getTaskId() {
 		return taskId;
@@ -117,6 +121,14 @@ public class Task extends CommonDomain implements Serializable {
 
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 
 }
