@@ -23,17 +23,11 @@
 						style="border: 0px solid blue; margin-top: 4px; height: 550px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 						<h:form>
 							<fieldset>
-
-								<center>
-									<legend> STAFF REPORT MENU </legend>
-								</center>
-
 								<div class="form-group row">
 
 									<div class="col-md-10 col-sm-10 col-xs-10">
 
 										<div class="panel panel-primary ">
-											<div class="panel-heading">Report by staff name.</div>
 
 											<div class="panel-body">
 
@@ -47,7 +41,7 @@
 															<h:selectOneMenu id="coun" styleClass="form-control"
 																value="#{staffReport.myChoice}">
 																<p:ajax listener="#{staffReport.updateTable()}"
-																update="pdfpanel" />
+																	update="pdfpanel,chartpanel,forchart" />
 																<f:ajax onevent="showProgress" />
 
 																<f:selectItem itemLabel="Select the report you want"
@@ -56,41 +50,76 @@
 																<f:selectItem itemLabel="CHART" itemValue="CHART" />
 															</h:selectOneMenu>
 														</div>
-
 													</div>
 												</h:panelGroup>
 												<h:panelGroup id="pdfpanel" layout="block">
-												<p:outputPanel id="toUpdatss" autoUpdate="true"
-													rendered="#{staffReport.renderedspdf}">
-													<h:panelGroup id="forpdfs" layout="block">
-														<div class="form-group row">
-															
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																
+													<p:outputPanel id="toUpdatss" autoUpdate="true"
+														rendered="#{staffReport.renderedspdf}">
+														<h:panelGroup id="forpdfs" layout="block">
+															<div class="form-group row">
+
+																<div class="col-md-6 col-sm-6 col-xs-6"></div>
+																<div class="panel-body">
+
+																	<label for="todate"
+																		class="col-md-3 col-sm-3 col-xs-3 control-label"
+																		style="color: black"></label>
+																	<div class="col-md-4 col-sm-4 col-xs-4">
+																		<h:commandButton
+																			class="btn btn-success btn-md btn-block"
+																			action="#{staffReport.createPdf}"
+																			value="#{msg['label.submit.message.printPdf']}" />
+																	</div>
+																</div>
 															</div>
-															<div class="panel-body">
-<!-- 
-												<div class="form-group row">
-													<label for="tod"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black"></label>
+														</h:panelGroup>
+													</p:outputPanel>
+												</h:panelGroup>
 
-												</div> -->
-												<label for="todate"
-														class="col-md-3 col-sm-3 col-xs-3 control-label"
-														style="color: black"></label>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{staffReport.createPdf}"
-														value="#{msg['label.submit.message.printPdf']}" />										
+												<h:panelGroup id="chartpanel" layout="block">
+													<p:outputPanel id="toUpdates" autoUpdate="true"
+														rendered="#{staffReport.renderedchart}">
+														<h:panelGroup id="forchart" layout="block">
+															<div class="form-group row">
+																<div class="col-md-6 col-sm-6 col-xs-6"></div>
+																<div class="panel-body">
+																	<div>
+																		<center>
+																			<div
+																				style="border-bottom: 2px solid blue; width: 500px">Chat
+																				for Activities in terms of Tasks</div>
+																		</center>
+																		<h:panelGrid columns="3" columnClasses="left,right"
+																			style="width:100%">
+																			<p:chart type="bar" model="#{chartView.barModel}"
+																				style="width:500px;height:300px" />
+
+																		</h:panelGrid>
+																	</div>
+																</div>
+															</div>
+														</h:panelGroup>
+													</p:outputPanel>
+												</h:panelGroup>
+
 											</div>
+
 										</div>
-														</div>
-													</h:panelGroup>
-												</p:outputPanel>
-											</h:panelGroup>
-
-											</div>
+										<div class="panel-body">
+										
+											<p:dataTable id="tableId" var="a" value="#{staffReport.activities()}"
+												scrollable="true" scrollHeight="200" >
+												<f:facet name="header">List of activities</f:facet>
+												<p:column> #{a.formatedDate2}<f:facet name="header">Number</f:facet>
+												</p:column>
+												<p:column> #{a.description}<f:facet name="header">description</f:facet>
+												</p:column>
+												<p:column> #{a.formatedDate1} to #{a.formatedDate2}<f:facet name="header">Week</f:facet>
+												</p:column>
+												<p:column> #{a.status}<f:facet name="header">status</f:facet>
+												</p:column>
+											</p:dataTable>
+											
 										</div>
 
 									</div>
