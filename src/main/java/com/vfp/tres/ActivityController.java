@@ -90,15 +90,18 @@ public class ActivityController implements Serializable, DbConstant {
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
 					"Users");
 			activityDetail = activityImpl.getListWithHQL(SELECT_ACTIVITY);
-			activityDetails = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
-					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED}, "Activity",
-					"activityId asc");
-			approvedActDetails= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
-					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), APPROVED}, "Activity",
-					"activityId asc");
-			completedActDetails= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy","status" },
-					new Object[] { DESACTIVE, usersSession.getFname() + " " + usersSession.getLname(),COMPLETED }, "Activity",
-					"activityId asc");
+			activityDetails = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "status" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED },
+					"Activity", "activityId asc");
+			approvedActDetails = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "status" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), APPROVED },
+					"Activity", "activityId asc");
+			completedActDetails = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "status" },
+					new Object[] { DESACTIVE, usersSession.getFname() + " " + usersSession.getLname(), COMPLETED },
+					"Activity", "activityId asc");
 			listSize = activityDetails.size();
 			approvedSize = approvedActDetails.size();
 			completedSize = completedActDetails.size();
@@ -152,9 +155,9 @@ public class ActivityController implements Serializable, DbConstant {
 			users = usersImpl.gettUserById(usersSession.getUserId(), "userId");
 			activity.setUser(users);
 			taskAssign = taskAssignImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
-					new Object[] { ACTIVE, users}, " from TaskAssignment");
+					new Object[] { ACTIVE, users }, " from TaskAssignment");
 			activity.setTask(taskAssign.getTask());
-			LOGGER.info("ASSIGNMENT YINJIjwE na "+taskAssign.getCreatedBy());
+			LOGGER.info("ASSIGNMENT YINJIjwE na " + taskAssign.getCreatedBy());
 			activityImpl.saveActivity(activity);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -241,36 +244,35 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 	}
 
-
 	public void showTasks() {
 		rendered = false;
 		renderTaskForm = false;
 		renderTable = true;
-		renderCompleted= false;
+		renderCompleted = false;
 	}
 
 	public void showAssignments() {
 		renderTaskForm = true;
 		renderTable = false;
 		rendered = false;
-		renderCompleted= false;
+		renderCompleted = false;
 	}
 
 	public void back() {
 		renderTaskForm = false;
 		renderTable = false;
 		rendered = true;
-		renderCompleted= false;
+		renderCompleted = false;
 	}
-	
+
 	public void showCompleted() {
 		renderCompleted = true;
 		renderTaskForm = false;
 		renderTable = false;
-		rendered = false;		
+		rendered = false;
 	}
 
-private void clearActivityFuileds() {
+	private void clearActivityFuileds() {
 		activity = new Activity();
 		activityDetails = null;
 	}

@@ -150,17 +150,17 @@ public class UserCategoryController implements Serializable, DbConstant {
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.notify.representative.cat"));
 					LOGGER.info(CLASSNAME + "::Email sent successuful!!");
-					this.repEmail=null;
+					this.repEmail = null;
 					// return to current page
 				} else {
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.cat"));
 					LOGGER.info(CLASSNAME + "::Fail to send Email!!");
-					this.repEmail=null;
+					this.repEmail = null;
 				}
 			} else {
-				this.repEmail=null;
+				this.repEmail = null;
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
@@ -266,8 +266,8 @@ public class UserCategoryController implements Serializable, DbConstant {
 	}
 
 	public void showCatTable() {
-		/*if (categoryDtoDetails.size() != 0)*/
-			rendered = true;
+		/* if (categoryDtoDetails.size() != 0) */
+		rendered = true;
 	}
 
 	private void clearCategoryFuileds() {
@@ -279,34 +279,33 @@ public class UserCategoryController implements Serializable, DbConstant {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
 		try {
-			if(null!=cat) {
-			LOGGER.info("UserCat:++++++++++++++++++++++++++" + cat.getUserCatid());
-			UserCategory usercat = new UserCategory();
-			usercat = new UserCategory();
-			usercat = userCatImpl.getUserCategoryById(cat.getUserCatid(), "userCatid");
+			if (null != cat) {
+				LOGGER.info("UserCat:++++++++++++++++++++++++++" + cat.getUserCatid());
+				UserCategory usercat = new UserCategory();
+				usercat = new UserCategory();
+				usercat = userCatImpl.getUserCategoryById(cat.getUserCatid(), "userCatid");
 
-			LOGGER.info("here update sart for " + usercat + " useriD " + usercat.getUserCatid());
+				LOGGER.info("here update sart for " + usercat + " useriD " + usercat.getUserCatid());
 
-			cat.setEditable(false);
-			usercat.setUpdatedBy(usersSession.getViewId());
-			usercat.setUpDtTime(timestamp);
-			usercat.setUsercategoryName(cat.getUsercategoryName());
-			userCatImpl.UpdateUsercategory(usercat);
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.categoryupdate"));
-			}else {
+				cat.setEditable(false);
+				usercat.setUpdatedBy(usersSession.getViewId());
+				usercat.setUpDtTime(timestamp);
+				usercat.setUsercategoryName(cat.getUsercategoryName());
+				userCatImpl.UpdateUsercategory(usercat);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.categoryupdate"));
+			} else {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.errorupdate"));
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateError"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-		
 
 		// return to current page
 		return null;
@@ -322,15 +321,16 @@ public class UserCategoryController implements Serializable, DbConstant {
 		cat.setEditable(false);
 		return null;
 	}
+
 	public String cancelChange(UserCategoryDto cat) {
 		cat.setNotify(false);
-		this.repEmail=null;
+		this.repEmail = null;
 		return null;
 	}
 
 	public String otherUserCategory() {
-			return "/menu/UserCategory.xhtml?faces-redirect=true";
-		
+		return "/menu/UserCategory.xhtml?faces-redirect=true";
+
 	}
 
 	public String editAction(UserCategoryDto cat) {

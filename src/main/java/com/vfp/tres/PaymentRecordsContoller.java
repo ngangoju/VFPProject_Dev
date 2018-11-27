@@ -32,16 +32,15 @@ import tres.domain.PaymentRecords;
 import tres.vfp.dto.PaymentRecordsDto;
 import tres.vfp.dto.UserDto;
 
-
 @SuppressWarnings("unused")
 @ManagedBean
 @ViewScoped
-public class PaymentRecordsContoller implements Serializable, DbConstant{
+public class PaymentRecordsContoller implements Serializable, DbConstant {
 
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "GroupOfMenuController :: ";
 	private static final long serialVersionUID = 1L;
-	
+
 	/* to manage validation messages */
 	private boolean isValid;
 	/* end manage validation messages */
@@ -49,12 +48,12 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 	private String paymentCode;
 	private Timestamp paymentDate;
 	private Timestamp paymentExpiretionDate;
-    private String  amount;
-	private String   currency;
-	private String   paymentChanel;
-	private String  paymentStatus;
-   	private String  bankRefernceNo;
-   	private String  comment;
+	private String amount;
+	private String currency;
+	private String paymentChanel;
+	private String paymentStatus;
+	private String bankRefernceNo;
+	private String comment;
 	private Users paymentApprovedBy;
 	private Institution institution;
 	private Users userSessions;
@@ -64,28 +63,27 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 	private int institutionId;
 	private Date dateofpayment;
 
-	
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
+
 	private List<PaymentRecords> paymentRecordsDetails = new ArrayList<PaymentRecords>();
 	private List<Institution> institutionDetails = new ArrayList<Institution>();
-	
+
 	private List<PaymentRecordsDto> paymentRecordsDtoDetails = new ArrayList<PaymentRecordsDto>();
-	
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
-	
+
 	InstitutionImpl institutionImpl = new InstitutionImpl();
-	
+
 	PaymentImpl paymentImpl = new PaymentImpl();
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
 		userSessions = (Users) session.getAttribute("userSession");
-		
-		paymentRecordsSession=(PaymentRecords)session.getAttribute("paymentRecordsSession");
-		
+
+		paymentRecordsSession = (PaymentRecords) session.getAttribute("paymentRecordsSession");
+
 		if (paymentRecords == null) {
 			paymentRecords = new PaymentRecords();
 		}
@@ -96,11 +94,11 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 		if (paymentRecordsDto == null) {
 			paymentRecordsDto = new PaymentRecordsDto();
 		}
-		
+
 		try {
 			institutionDetails = institutionImpl.getListWithHQL(SELECT_INSTITUTION);
-			//MenuGroup menu = new MenuGroup();
-			//menu = new MenuGroup();
+			// MenuGroup menu = new MenuGroup();
+			// menu = new MenuGroup();
 //			MenuGroup menu = menuGroupImpl.getMenuGroupById(menuGroupSession.getMenuGroupId(), "menuGroupId");
 //			
 //			MenuGroupDto menuGroupDto = new MenuGroupDto();
@@ -111,8 +109,7 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 //			menuGroupDtoDetails.add(menuGroupDto);
 //			// below list concern list of all users by changing their status
 			paymentRecordsDetails = paymentImpl.getListWithHQL(SELECT_PAYMENTRECORDS);
-			
-			
+
 			for (PaymentRecords paymentRecordss : paymentRecordsDetails) {
 				PaymentRecordsDto paymentRecordsDtos = new PaymentRecordsDto();
 				paymentRecordsDtos.setPaymentId(paymentRecordss.getPaymentId());
@@ -126,7 +123,7 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 				paymentRecordsDtos.setPaymentDate(paymentRecordss.getPaymentDate());
 				paymentRecordsDtos.setPaymentExpiretionDate(paymentRecordss.getPaymentExpiretionDate());
 				paymentRecordsDtos.setPaymentStatus(paymentRecordss.getPaymentStatus());
-				
+
 				if (paymentRecordss.getPaymentStatus().equals(ACTIVE)) {
 					paymentRecordsDtos.setAction(DESACTIVE);
 
@@ -149,38 +146,35 @@ public class PaymentRecordsContoller implements Serializable, DbConstant{
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-		
-		
 
 	}
-	
+
 	public String savePaymentInfo() throws IOException {
 		try {
-LOGGER.info("saving "+paymentRecords);
+			LOGGER.info("saving " + paymentRecords);
 
-PaymentRecords payment=new PaymentRecords();
+			PaymentRecords payment = new PaymentRecords();
 
-payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
-			new Object[] {paymentRecords.getPaymentCode()}, "from PaymentRecords ");
+			payment = paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
+					new Object[] { paymentRecords.getPaymentCode() }, "from PaymentRecords ");
 
-		paymentRecords.setCreatedBy(userSessions.getViewId());
-		paymentRecords.setCrtdDtTime(timestamp);
-		paymentRecords.setGenericStatus(ACTIVE);
-		paymentRecords.setPaymentStatus(ACTIVE);
-		paymentRecords.setUpdatedBy(userSessions.getViewId());
-		paymentRecords.setUpDtTime(timestamp);
-		
-		paymentRecords.setInstitution(institutionImpl.getInstitutionById(institutionId, "institutionId"));
-		
-		
-					paymentImpl.savePaymentRecords(paymentRecords);
+			paymentRecords.setCreatedBy(userSessions.getViewId());
+			paymentRecords.setCrtdDtTime(timestamp);
+			paymentRecords.setGenericStatus(ACTIVE);
+			paymentRecords.setPaymentStatus(ACTIVE);
+			paymentRecords.setUpdatedBy(userSessions.getViewId());
+			paymentRecords.setUpDtTime(timestamp);
 
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::PaymentRecords is saved");
-					clearUserFuileds();
-					return "";
+			paymentRecords.setInstitution(institutionImpl.getInstitutionById(institutionId, "institutionId"));
+
+			paymentImpl.savePaymentRecords(paymentRecords);
+
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+			LOGGER.info(CLASSNAME + ":::PaymentRecords is saved");
+			clearUserFuileds();
+			return "";
 
 		} catch (Exception ex) {
 			LOGGER.info(CLASSNAME + ":::PaymentRecords is fail with HibernateException  error");
@@ -192,7 +186,7 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		}
 		return "";
 	}
-	
+
 	public String cancel(PaymentRecordsDto paymentss) {
 		LOGGER.info("EMILE  EMILE  EMILE  EMILE  EMILE  EMILE  EMILE  EMILE  EMILE  ");
 		paymentss.seteditables(false);
@@ -207,7 +201,7 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
-	
+
 	public String saveAction(PaymentRecordsDto payment) {
 		LOGGER.info("update  saveAction method");
 		/* System.out.println("**************update  saveAction method"); */
@@ -220,7 +214,8 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 			payments = paymentImpl.gettPaymentRecordsById(payment.getPaymentId(), "paymentId");
 
 			LOGGER.info("here update sart for " + payments + " paymentId " + payments.getPaymentId());
-			System.out.println("++++++++++++++++++++++++++here update sart for " + payments + " paymentId " + payments.getPaymentId());
+			System.out.println("++++++++++++++++++++++++++here update sart for " + payments + " paymentId "
+					+ payments.getPaymentId());
 			payment.seteditables(false);
 			payments.setInstitution(payment.getInstitution());
 			payments.setPaymentDate(payment.getPaymentDate());
@@ -228,7 +223,7 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 			payments.setAmount(payment.getAmount());
 			payments.setCurrency(payment.getCurrency());
 			payments.setBankRefernceNo(payment.getBankRefernceNo());
-			
+
 			paymentImpl.UpdatePaymentRecords(payments);
 
 			// return to current page
@@ -241,7 +236,7 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		}
 
 	}
-	
+
 	public String newAction(PaymentRecordsDto payment) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editables" to false
@@ -258,14 +253,14 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		payments.setAmount(payment.getAmount());
 		payments.setCurrency(payment.getCurrency());
 		payments.setBankRefernceNo(payment.getBankRefernceNo());
-		
+
 		paymentImpl.UpdatePaymentRecords(payments);
-	
+
 		// return to current page
 		return "/menu/ViewPaymentRecords.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String updateStatus(PaymentRecordsDto payment) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editables" to false
@@ -289,19 +284,19 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 		return "/menu/ViewPaymentRecords.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String addNewPaymentRecords() {
 
 		return "/menu/PaymentRecords.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public void clearUserFuileds() {
 
 		paymentRecords = new PaymentRecords();
 		paymentRecordsDetails = null;
 	}
-	
+
 	public String getContextPath() {
 
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
@@ -309,6 +304,7 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 
 		return request.getContextPath();
 	}
+
 	public boolean isValid() {
 		return isValid;
 	}
@@ -524,8 +520,5 @@ payment= paymentImpl.getModelWithMyHQL(new String[] { "paymentCode" },
 	public void setDateofpayment(Date dateofpayment) {
 		this.dateofpayment = dateofpayment;
 	}
-
-	
-	
 
 }

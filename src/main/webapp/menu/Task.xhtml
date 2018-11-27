@@ -142,7 +142,8 @@
 						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 						var="act" rowIndexVar="row" sortBy="#{act.taskId}"
 						sortOrder="ASCENDING" rowKey="#{act.taskId}">
-						<p:column headerText="#{msg['form.task.name']}" sortBy="#{act.taskName}">
+						<p:column headerText="#{msg['form.task.name']}"
+							sortBy="#{act.taskName}">
 
 							<h:inputText id="tasknameId" binding="#{surnameId}"
 								value="#{act.taskName}" styleClass="form-control" size="10"
@@ -160,7 +161,8 @@
 						</p:column>
 
 
-						<p:column headerText="#{msg['form.activity.description']}" sortBy="#{act.description}">
+						<p:column headerText="#{msg['form.activity.description']}"
+							sortBy="#{act.description}">
 
 							<h:inputTextarea id="descriptionId" value="#{act.description}"
 								styleClass="form-control" size="10" rendered="#{act.editable}"
@@ -176,7 +178,8 @@
 						</p:column>
 
 
-						<p:column headerText="#{msg['form.task.startDate']}" sortBy="#{act.startDate}">
+						<p:column headerText="#{msg['form.task.startDate']}"
+							sortBy="#{act.startDate}">
 							<h:inputText locale="#{facesContext.viewRoot.locale}"
 								autocomplete="off" id="from_start_date_id"
 								binding="#{from_dob_date_id}" class="form-control" escape="true"
@@ -208,7 +211,8 @@
 								rendered="#{not act.editable}" />
 						</p:column>
 
-						<p:column headerText="#{msg['form.task.dueDate']}" sortBy="#{act.dueDate}">
+						<p:column headerText="#{msg['form.task.dueDate']}"
+							sortBy="#{act.dueDate}">
 							<h:inputText locale="#{facesContext.viewRoot.locale}"
 								autocomplete="off" id="from_due_date_id"
 								binding="#{from_due_date_id}" class="form-control" escape="true"
@@ -245,12 +249,14 @@
 						<p:column headerText="Action">
 
 							<h:commandLink style="color:white"
-								class="btn btn-success 	glyphicon glyphicon-edit" value="#{msg['UserCategoryView.editButton']}"
+								class="btn btn-success 	glyphicon glyphicon-edit"
+								value="#{msg['UserCategoryView.editButton']}"
 								action="#{taskController.editAction(act)}"
 								rendered="#{not act.editable}" />
 							<h:commandLink style="margin-left:2px;color:white"
 								class="btn btn-danger 	glyphicon glyphicon-remove"
-								value="#{msg['UserCategoryView.cancelButton']}" action="#{taskController.cancel(act)}"
+								value="#{msg['UserCategoryView.cancelButton']}"
+								action="#{taskController.cancel(act)}"
 								rendered="#{act.editable}" />
 							<h:commandButton value="Save Changes" class="btn btn-primary"
 								action="#{taskController.saveAction(act)}"
@@ -286,18 +292,21 @@
 						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 						var="act" rowIndexVar="row" sortBy="#{act.taskAssignmentId}"
 						sortOrder="ASCENDING" rowKey="#{act.taskAssignmentId}">
-						<p:column headerText="#{msg['form.task.name']}" sortBy="#{act.taskName}">
+						<p:column headerText="#{msg['form.task.name']}"
+							sortBy="#{act.taskName}">
 
 							<h:outputText value="#{act.task.taskName}" />
 						</p:column>
 
 
-						<p:column headerText="#{msg['message.liststaff.board']}" sortBy="#{act.user.fname}">
+						<p:column headerText="#{msg['message.liststaff.board']}"
+							sortBy="#{act.user.fname}">
 							<h:outputText value="#{act.user.fname} #{act.user.lname}" />
 						</p:column>
 
 
-						<p:column headerText="#{msg['institutionForm.startDate']}" sortBy="#{act.crtdDtTime}">
+						<p:column headerText="#{msg['institutionForm.startDate']}"
+							sortBy="#{act.crtdDtTime}">
 							<h:outputText value="#{act.crtdDtTime}" />
 
 						</p:column>

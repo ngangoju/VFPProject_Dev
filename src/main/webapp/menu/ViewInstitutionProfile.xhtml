@@ -131,8 +131,8 @@
 							<br />
 							<br />
 							<div class="card-footer" style="padding-top: 10px">
-								 
-								  <p:dataTable value="#{institutionController.institutionDtos}"
+
+								<p:dataTable value="#{institutionController.institutionDtos}"
 									var="ls" rowIndexVar="index" style="padding-top: 2px"
 									id="table" paginator="true" rows="4"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -204,8 +204,9 @@
 										<h:message errorClass="errorMsg1" for="address"></h:message>
 									</p:column>
 									<p:column headerText="Contact">
-									 
-									<h:graphicImage style="width:50%;margin: 5px" value="/images/dynamic/?file=#{ls.institutionLogo.documents.sysFilename}"/>
+
+										<h:graphicImage style="width:50%;margin: 5px"
+											value="/images/dynamic/?file=#{ls.institutionLogo.documents.sysFilename}" />
 									</p:column>
 									<p:column headerText="Action">
 										<h:commandLink style="color:white"
@@ -229,13 +230,13 @@
 										<p:commandLink
 											class="btn btn-primary glyphicon glyphicon-plus"
 											rendered="#{ls.editable}" value="">
-										</p:commandLink> 
+										</p:commandLink>
 									</p:column>
-								</p:dataTable> 
-     
+								</p:dataTable>
+
 							</div>
 						</p:outputPanel>
-						 
+
 					</div>
 				</div>
 			</h:form>

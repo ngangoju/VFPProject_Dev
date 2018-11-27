@@ -33,9 +33,10 @@
 							</tr>
 						</table>
 					</div>
-					<div class="panel-body" style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+					<div class="panel-body"
+						style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 
-						
+
 						<fieldset>
 							<legend> </legend>
 							<h:panelGrid columns="1" columnClasses="left,right"
@@ -74,7 +75,7 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						
+
 						<p:outputPanel id="toTable"
 							rendered="#{userCategoryController.rendered}" autoUpdate="true">
 							<hr />
@@ -132,8 +133,11 @@
 									</h:commandLink>
 									<!-- End -->
 									<!-- EMail text Box -->
-									<h:outputText rendered="#{cat.notify}" value="Notify representative by email:" style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;"/>
-									<h:inputText rendered="#{cat.notify}" style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;width:100%;height:60%;"
+									<h:outputText rendered="#{cat.notify}"
+										value="Notify representative by email:"
+										style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;" />
+									<h:inputText rendered="#{cat.notify}"
+										style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;width:100%;height:60%;"
 										value="#{userCategoryController.repEmail}"
 										class="form-control" id="email"
 										validatorMessage="#{msg['error.enter.invalid.email']}"
@@ -144,7 +148,8 @@
 									<h:message errorClass="errorMsg1" for="email"></h:message>
 									<!-- End of Email Box -->
 									<!-- Cancel Button -->
-									<h:commandLink data-toggle="tooltip" data-placement="left" style="margin-left:8%;"
+									<h:commandLink data-toggle="tooltip" data-placement="left"
+										style="margin-left:8%;"
 										title="#{msg['UserCategoryView.cancelButton']}"
 										class="btn btn-danger 	glyphicon glyphicon-remove"
 										action="#{userCategoryController.cancelChange(cat)}"

@@ -11,14 +11,14 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-		<form>
+			<form>
 
-							<div class="col-md-4 col-sm-4 col-xs-4">
-								<h:commandButton class="btn btn-success btn-md btn-block"
-									action="#{chartView.go}"
-									value="#{msg['label.submit.message.printPdf']}" />
-							</div>
-						</form>
+				<div class="col-md-4 col-sm-4 col-xs-4">
+					<h:commandButton class="btn btn-success btn-md btn-block"
+						action="#{chartView.go}"
+						value="#{msg['label.submit.message.printPdf']}" />
+				</div>
+			</form>
 			<h:form>
 				<div class="panel panel-info">
 					<!-- Default panel contents -->
@@ -337,7 +337,7 @@
 										</div>
 										<h:panelGroup id="seventhpanel" layout="block">
 											<p:outputPanel id="toUpdetcltable" autoUpdate="false">
-												
+
 												<h:panelGroup id="forcleareTable" layout="block">
 													<div class="form-group row">
 

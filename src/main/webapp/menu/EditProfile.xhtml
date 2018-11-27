@@ -23,17 +23,19 @@
 	left: 335px;
 	top: 15px;
 }
+
 .ui-growl-title {
-	font: 13px "Open Sans sans-serif !important;
+	font: 13px"Open Sans sans-serif !important;
 	/* text-align: center; */
 }
 
 .ui-growl-message p {
-	font: 12px "Open Sans sans-serif !important;
-letter-spacing: -1px; 
+	font: 12px"Open Sans sans-serif !important;
+	letter-spacing: -1px;
 }
+
 .ui-growl-image-info ~ .ui-growl-message {
-	color:#fff;
+	color: #fff;
 }
 
 .ui-growl-image-error ~ .ui-growl-message {
@@ -143,14 +145,15 @@ letter-spacing: -1px;
 								</b:tab>
 								<b:tab title="Change Your Image">
 									<h:form>
-										<p:fileUpload accept="image/*" oncomplete="window.location.reload();"
+										<p:fileUpload accept="image/*"
+											oncomplete="window.location.reload();"
 											style="width:70%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 											uploadLabel="Upload image" cancelLabel="Cancel"
 											fileUploadListener="#{formSampleController.uploadProfile}"
 											mode="advanced" dragDropSupport="true" multiple="true"
 											update="messages" sizeLimit="500000" fileLimit="1"
 											allowTypes="/(\.|\/)(jpe?g|png)$/" />
-										<p:growl id="messages"  life="300000"/>
+										<p:growl id="messages" life="300000" />
 									</h:form>
 								</b:tab>
 							</b:tabView>

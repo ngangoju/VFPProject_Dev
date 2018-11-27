@@ -17,7 +17,7 @@
 				<span class="glyphicon glyphicon-dashboard">
 					#{msg['message.com.userManagement.dashaboard']}</span>
 			</h4>
-			
+
 			<div
 				style="border-bottom: 1.5px solid #91DBFA; margin-bottom: 6px; width: 100%"></div>
 			<!-- Start of user management Dashboard -->
@@ -185,7 +185,9 @@
 											</label>
 
 										</div>
-										<h:commandLink action="#{userContactController.renderUserByDate()}" class="circle-tile-footer">More Info <i
+										<h:commandLink
+											action="#{userContactController.renderUserByDate()}"
+											class="circle-tile-footer">More Info <i
 												class="glyphicon glyphicon-chevron-right"></i>
 										</h:commandLink>
 										<!-- <a href="ViewUsersDetails.xhtml" class="circle-tile-footer">More
@@ -349,8 +351,8 @@
 											<img
 												src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
 												style="width: 15%" alt="question" />
-										</h:panelGroup> <p:tooltip id="toolTipContent2" for="tooltips-contactDetails2"
-											position="bottom">
+										</h:panelGroup> <p:tooltip id="toolTipContent2"
+											for="tooltips-contactDetails2" position="bottom">
 											<span> #{msg['help.userFilter.message']} </span>
 										</p:tooltip>
 								</a></span>

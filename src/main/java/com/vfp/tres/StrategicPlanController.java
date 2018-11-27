@@ -222,7 +222,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		this.renderUpload = false;
 		this.renderHideBtn = true;
 		this.renderTable = true;
-		this.renderHideBtn=false;
+		this.renderHideBtn = false;
 
 	}
 

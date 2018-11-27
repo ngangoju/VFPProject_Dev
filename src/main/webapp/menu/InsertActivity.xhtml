@@ -41,19 +41,21 @@
 							</ul>
 						</h:panelGroup>
 
-			<h:panelGroup layout="block"
-				rendered="#{activityController.valid and  not facesContext.validationFailed}">
-				<ul>
-					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
-						<li style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-							class="alert alert-success">
-									<center>
-										<h:outputText value="#{facesMessage.summary}" escape="false" />
-									</center>
-						</li>
-					</ui:repeat>
-				</ul>
-			</h:panelGroup>
+						<h:panelGroup layout="block"
+							rendered="#{activityController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
 
 						<fieldset>
 

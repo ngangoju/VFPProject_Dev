@@ -52,6 +52,7 @@ public class UserDto implements Serializable {
 	private Timestamp upDtTime;
 	private String updatedBy;
 	private boolean notify;
+
 	public String getAction() {
 		return action;
 	}
@@ -248,5 +249,5 @@ public class UserDto implements Serializable {
 	public void setNotify(boolean notify) {
 		this.notify = notify;
 	}
-	
+
 }

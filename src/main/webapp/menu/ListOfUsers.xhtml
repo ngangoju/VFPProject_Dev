@@ -15,7 +15,7 @@
 				<span class="glyphicon glyphicon-dashboard">
 					#{msg['message.com.userManagement.dashaboard']}</span>
 			</h4>
-			<div 
+			<div
 				style="border-bottom: 1.5px solid #91DBFA; margin-bottom: 6px; width: 100%"></div>
 			<h:form>
 				<div class="panel panel-info">
@@ -41,32 +41,32 @@
 
 
 						<fieldset>
-						
-						<h:panelGroup layout="block"
-							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
-										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center>
-									</li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
 
-						<h:panelGroup layout="block"
-							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li style="list-style: none;" class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
+							<h:panelGroup layout="block"
+								rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li class="alert alert-danger"
+											style="list-style: none; background-color: #FF2400; color: white">
+											<center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center>
+										</li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li style="list-style: none;" class="alert alert-success"><h:outputText
+												value="#{facesMessage.summary}" escape="false" /></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
 							<legend
 								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
 								#{msg['message.header.repFilter.info']}</legend>
@@ -155,46 +155,54 @@
 
 									</p:column>
 									<p:column headerText="Change Status" style="width:25%;">
-									<h:message errorClass="errorMsg1" for="email"></h:message>
-									<div class="btn-group btn btn-sm" role="group" aria-label="Basic example">
-									<!-- Start of change Status Action -->				
-									<h:commandLink data-toggle="tooltip" data-placement="left"
-										title="#{msg['UserCategoryView.changeButton']}"
-										class="btn btn-success glyphicon glyphicon-refresh"
-										action="#{userAccountController.renderAction(user)}"
-										rendered="#{not user.notify}">
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-									</h:commandLink>
-									<!-- End -->
-									<!-- EMail text Box -->
-									<h:outputText rendered="#{user.notify}" value="Notify Representative by email:" style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;float:left;"/>
-									<h:inputText rendered="#{user.notify}" style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;height:60%;"
-										value="#{userAccountController.useremail}"
-										class="form-control" id="email"
-										validatorMessage="#{msg['error.enter.invalid.email']}"
-										converterMessage="#{msg['error.enter.invalid.email']}">
-										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
-									
-									<!-- End of Email Box -->
-									
-									<!-- Cancel Button -->
-									<h:commandLink data-toggle="tooltip" data-placement="left"
-										title="#{msg['UserCategoryView.cancelButton']}"
-										class="btn btn-danger 	glyphicon glyphicon-remove"
-										action="#{userAccountController.cancelChange(user)}"
-										rendered="#{user.notify}">
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-									</h:commandLink>
-									<!-- End of Cancel Btn -->
-										<h:commandLink style="color:white" rendered="#{user.notify}"
-											class="btn btn-success 	glyphicon glyphicon-refresh"
-											 data-toggle="tooltip" data-placement="left"
-										title="#{user.action}"
-											action="#{userAccountController.updateRepStatus(user)}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
+										<h:message errorClass="errorMsg1" for="email"></h:message>
+										<div class="btn-group btn btn-sm" role="group"
+											aria-label="Basic example">
+											<!-- Start of change Status Action -->
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="#{msg['UserCategoryView.changeButton']}"
+												class="btn btn-success glyphicon glyphicon-refresh"
+												action="#{userAccountController.renderAction(user)}"
+												rendered="#{not user.notify}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+											<!-- End -->
+											<!-- EMail text Box -->
+											<h:outputText rendered="#{user.notify}"
+												value="Notify Representative by email:"
+												style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;float:left;" />
+											<h:inputText rendered="#{user.notify}"
+												style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;height:60%;"
+												value="#{userAccountController.useremail}"
+												class="form-control" id="email"
+												validatorMessage="#{msg['error.enter.invalid.email']}"
+												converterMessage="#{msg['error.enter.invalid.email']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.email']}" />
+												<f:validateLength maximum="100" />
+											</h:inputText>
+
+											<!-- End of Email Box -->
+
+											<!-- Cancel Button -->
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="#{msg['UserCategoryView.cancelButton']}"
+												class="btn btn-danger 	glyphicon glyphicon-remove"
+												action="#{userAccountController.cancelChange(user)}"
+												rendered="#{user.notify}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+											<!-- End of Cancel Btn -->
+											<h:commandLink style="color:white" rendered="#{user.notify}"
+												class="btn btn-success 	glyphicon glyphicon-refresh"
+												data-toggle="tooltip" data-placement="left"
+												title="#{user.action}"
+												action="#{userAccountController.updateRepStatus(user)}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
 										</div>
 									</p:column>
 									<p:column headerText="Action" style="width:15%;">
@@ -412,62 +420,207 @@
 							<!-- End of Data Table -->
 
 
-						
 
-						<p:outputPanel id="contactForm" autoUpdate="true"
-							rendered="#{userAccountController.renderContactForm}">
 
-							<fieldset>
-								
-								<legend> #{msg['message.header.contactDetails.info']}</legend>
+							<p:outputPanel id="contactForm" autoUpdate="true"
+								rendered="#{userAccountController.renderContactForm}">
 
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.username']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.users.viewId}"
-											readonly="true" class="form-control" />
+								<fieldset>
 
+									<legend> #{msg['message.header.contactDetails.info']}</legend>
+
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.username']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.users.viewId}"
+												readonly="true" class="form-control" />
+
+										</div>
 									</div>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['massages.cmn.common.first.fname']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.users.fname}"
-											readonly="true" class="form-control" />
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['massages.cmn.common.first.fname']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.users.fname}"
+												readonly="true" class="form-control" />
 
+										</div>
 									</div>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['massages.cmn.common.last.lname']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.users.lname}"
-											readonly="true" class="form-control" />
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['massages.cmn.common.last.lname']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.users.lname}"
+												readonly="true" class="form-control" />
 
+										</div>
 									</div>
-								</div>
 
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.contactDetails']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText
-											value="#{userAccountController.contact.contactDetails}"
-											class="form-control" id="contDetails" required="true"
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.contactDetails']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText
+												value="#{userAccountController.contact.contactDetails}"
+												class="form-control" id="contDetails" required="true"
+												converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
+												validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
+												requiredMessage="#{msg['requiered.contactDetails.message']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+												<f:validateLength maximum="100" />
+											</h:inputText>
+
+										</div>
+										<div class="col-md-2">
+											<span class="tooltips-input-main"><a
+												class="tooltips-input"> <h:panelGroup
+														id="tooltips-contactDetails" layout="block">
+														<img
+															src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+															style="width: 8%" alt="question" />
+													</h:panelGroup> <p:tooltip id="toolTipContent"
+														for="tooltips-contactDetails" position="bottom">
+														<span> #{msg['help.coantDetails.message']} </span>
+													</p:tooltip>
+											</a></span>
+
+										</div>
+										<h:message for="contDetails" styleClass="help-block"></h:message>
+									</div>
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.Email']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.useremail}"
+												class="form-control" id="email" required="true"
+												validatorMessage="#{msg['error.enter.invalid.email']}"
+												converterMessage="#{msg['error.enter.invalid.email']}"
+												requiredMessage="#{msg['error.enter.required.email']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.email']}" />
+												<f:validateLength maximum="100" />
+											</h:inputText>
+										</div>
+										<h:message errorClass="errorMsg1" for="email"></h:message>
+									</div>
+
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.Phone']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.contact.phone}"
+												class="form-control" id="phone" required="true"
+												converterMessage="#{msg['error.enter.invalid.phone']}"
+												requiredMessage="#{msg['requiered.phone.message']}"
+												validatorMessage="#{msg['error.enter.invalid.phone']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.phone']}" />
+												<f:validateLength maximum="25" />
+											</h:inputText>
+										</div>
+										<h:message errorClass="errorMsg1" for="phone"></h:message>
+									</div>
+
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black"></label>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+											<h:commandButton class="btn btn-info btn-xlg btn-block"
+												action="#{userAccountController.saveUserNewContact}"
+												value="#{msg['label.subimit.message.submit']}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandButton>
+										</div>
+										<span class="text-danger" id="err"></span>
+									</div>
+									<!-- Back FilterContact Page -->
+									<br /> <a href="ListOfUsers.xhtml"
+										style="font-size: 14px !important; width: 25%; margin-left: 5%;"
+										class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
+											style="background-color: red; color: white" class="badge"></span></b>
+									</a>
+									<!-- End Back -->
+								</fieldset>
+
+							</p:outputPanel>
+							<!-- Contact Available Table -->
+							<p:outputPanel id="toTable2" autoUpdate="true"
+								rendered="#{userAccountController.renderRepContactAvailTable}">
+								<p:dataTable value="#{userAccountController.contactDtoDetails}"
+									stclass="display" cellspacing="0"
+									style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+									var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
+									sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
+									<f:facet name="header">
+										<h4
+											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
+											#{msg['message.header.completeContact.filter']}</h4>
+									</f:facet>
+									<p:column headerText="No" style="width:5%;">
+
+										<h:outputText value="#{row+1}" />
+									</p:column>
+									<p:column headerText="Username">
+
+										<h:outputText value="#{cont.user.viewId}" />
+									</p:column>
+									<p:column headerText="Email">
+
+										<h:inputText value="#{cont.email}" size="15"
+											rendered="#{cont.editable}" id="email" required="true"
+											validatorMessage="#{msg['error.enter.invalid.email']}"
+											converterMessage="#{msg['error.enter.invalid.email']}"
+											requiredMessage="#{msg['error.enter.required.email']}">
+											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+											<f:validateLength maximum="100" />
+										</h:inputText>
+										<h:message errorClass="errorMsg1" for="email"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+
+										<h:outputText value="#{cont.email}"
+											rendered="#{not cont.editable}" />
+									</p:column>
+									<p:column headerText="Phone">
+
+										<h:inputText value="#{cont.phone}" size="15" id="phone"
+											rendered="#{cont.editable}" required="true"
+											converterMessage="#{msg['error.enter.invalid.phone']}"
+											requiredMessage="#{msg['requiered.phone.message']}"
+											validatorMessage="#{msg['error.enter.invalid.phone']}">
+											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+											<f:validateLength maximum="25" />
+										</h:inputText>
+										<h:message errorClass="errorMsg1" for="phone"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+										<h:outputText value="#{cont.phone}"
+											rendered="#{not cont.editable}" />
+									</p:column>
+									<p:column headerText="Contact Details">
+
+										<h:inputText value="#{cont.contactDetails}" size="15"
+											id="contDetails" rendered="#{cont.editable}" required="true"
 											converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
 											validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
 											requiredMessage="#{msg['requiered.contactDetails.message']}">
@@ -475,344 +628,212 @@
 												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
 											<f:validateLength maximum="100" />
 										</h:inputText>
+										<h:message errorClass="errorMsg1" for="contDetails"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+										<h:outputText value="#{cont.contactDetails}"
+											rendered="#{not cont.editable}" />
+									</p:column>
 
-									</div>
-									<div class="col-md-2">
-										<span class="tooltips-input-main"><a
-											class="tooltips-input"> <h:panelGroup
-													id="tooltips-contactDetails" layout="block">
-													<img
-														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-														style="width: 8%" alt="question" />
-												</h:panelGroup> <p:tooltip id="toolTipContent"
-													for="tooltips-contactDetails" position="bottom">
-													<span> #{msg['help.coantDetails.message']} </span>
-												</p:tooltip>
-										</a></span>
 
-									</div>
-									<h:message for="contDetails" styleClass="help-block"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Email']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.useremail}"
-											class="form-control" id="email" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="email"></h:message>
-								</div>
+									<p:column headerText="Action">
+										<div class="btn-group" role="group" aria-label="Basic example">
+											<h:commandLink style="color:white" data-toggle="tooltip"
+												data-placement="left" title="Edit"
+												class="btn btn-success 	glyphicon glyphicon-edit"
+												action="#{userAccountController.editContactAction(cont)}"
+												rendered="#{not cont.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+											<h:commandLink style="margin-left:2px;color:white"
+												data-toggle="tooltip" data-placement="right" title="Cancel"
+												class="btn btn-danger glyphicon glyphicon-remove"
+												action="#{userAccountController.cancelContact(cont)}"
+												rendered="#{cont.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+											<h:commandLink data-toggle="tooltip" data-placement="right"
+												title="Save Changes"
+												class="btn btn-primary glyphicon glyphicon-floppy-disk"
+												action="#{userAccountController.saveContactAction(cont)}"
+												rendered="#{cont.editable}" render="userConatactPanel">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
 
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Phone']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.contact.phone}"
-											class="form-control" id="phone" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.phone.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="phone"></h:message>
-								</div>
+											<h:commandLink style="color:white" data-toggle="tooltip"
+												data-placement="right" title="Other contact"
+												class="btn btn-info glyphicon glyphicon-new-window"
+												action="#{userAccountController.otherUserContact(cont)}"
+												rendered="#{not cont.editable}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
 
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black"></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:commandButton class="btn btn-info btn-xlg btn-block"
-											action="#{userAccountController.saveUserNewContact}"
-											value="#{msg['label.subimit.message.submit']}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
-									</div>
-									<span class="text-danger" id="err"></span>
-								</div>
+
+										</div>
+									</p:column>
+
+								</p:dataTable>
 								<!-- Back FilterContact Page -->
-								<br /> <a href="ListOfUsers.xhtml"
+								<br />
+								<a href="ListOfUsers.xhtml"
 									style="font-size: 14px !important; width: 25%; margin-left: 5%;"
 									class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
 										style="background-color: red; color: white" class="badge"></span></b>
 								</a>
 								<!-- End Back -->
-							</fieldset>
+							</p:outputPanel>
+							<!-- End Contact Table -->
 
-						</p:outputPanel>
-						<!-- Contact Available Table -->
-						<p:outputPanel id="toTable2" autoUpdate="true"
-							rendered="#{userAccountController.renderRepContactAvailTable}">
-							<p:dataTable value="#{userAccountController.contactDtoDetails}"
-								stclass="display" cellspacing="0"
-								style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
-								sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
-								<f:facet name="header">
-									<h4
-										style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-										#{msg['message.header.completeContact.filter']}</h4>
-								</f:facet>
-								<p:column headerText="No" style="width:5%;">
+							<!-- Other Contact Form -->
+							<p:outputPanel
+								rendered="#{userAccountController.renderOtherContForm}"
+								autoUpdate="true">
+								<fieldset>
 
-									<h:outputText value="#{row+1}" />
-								</p:column>
-								<p:column headerText="Username">
+									<legend> #{msg['message.header.contactDetails.info']}</legend>
 
-									<h:outputText value="#{cont.user.viewId}" />
-								</p:column>
-								<p:column headerText="Email">
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.username']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText
+												value="#{userAccountController.contactDto.user.viewId}"
+												readonly="true" class="form-control" />
 
-									<h:inputText value="#{cont.email}" size="15"
-										rendered="#{cont.editable}" id="email" required="true"
-										validatorMessage="#{msg['error.enter.invalid.email']}"
-										converterMessage="#{msg['error.enter.invalid.email']}"
-										requiredMessage="#{msg['error.enter.required.email']}">
-										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
-									<h:message errorClass="errorMsg1" for="email"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-
-									<h:outputText value="#{cont.email}"
-										rendered="#{not cont.editable}" />
-								</p:column>
-								<p:column headerText="Phone">
-
-									<h:inputText value="#{cont.phone}" size="15" id="phone"
-										rendered="#{cont.editable}" required="true"
-										converterMessage="#{msg['error.enter.invalid.phone']}"
-										requiredMessage="#{msg['requiered.phone.message']}"
-										validatorMessage="#{msg['error.enter.invalid.phone']}">
-										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-										<f:validateLength maximum="25" />
-									</h:inputText>
-									<h:message errorClass="errorMsg1" for="phone"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-									<h:outputText value="#{cont.phone}"
-										rendered="#{not cont.editable}" />
-								</p:column>
-								<p:column headerText="Contact Details">
-
-									<h:inputText value="#{cont.contactDetails}" size="15"
-										id="contDetails" rendered="#{cont.editable}" required="true"
-										converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-										validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-										requiredMessage="#{msg['requiered.contactDetails.message']}">
-										<f:validateRegex
-											pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
-									<h:message errorClass="errorMsg1" for="contDetails"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-									<h:outputText value="#{cont.contactDetails}"
-										rendered="#{not cont.editable}" />
-								</p:column>
-
-
-								<p:column headerText="Action">
-									<div class="btn-group" role="group" aria-label="Basic example">
-										<h:commandLink style="color:white" data-toggle="tooltip"
-											data-placement="left" title="Edit"
-											class="btn btn-success 	glyphicon glyphicon-edit"
-											action="#{userAccountController.editContactAction(cont)}"
-											rendered="#{not cont.editable}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-										<h:commandLink style="margin-left:2px;color:white"
-											data-toggle="tooltip" data-placement="right" title="Cancel"
-											class="btn btn-danger glyphicon glyphicon-remove"
-											action="#{userAccountController.cancelContact(cont)}"
-											rendered="#{cont.editable}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-										<h:commandLink data-toggle="tooltip" data-placement="right"
-											title="Save Changes"
-											class="btn btn-primary glyphicon glyphicon-floppy-disk"
-											action="#{userAccountController.saveContactAction(cont)}"
-											rendered="#{cont.editable}" render="userConatactPanel">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-
-										<h:commandLink style="color:white" data-toggle="tooltip"
-											data-placement="right" title="Other contact"
-											class="btn btn-info glyphicon glyphicon-new-window"
-											action="#{userAccountController.otherUserContact(cont)}"
-											rendered="#{not cont.editable}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-
-
+										</div>
 									</div>
-								</p:column>
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['massages.cmn.common.first.fname']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText
+												value="#{userAccountController.contactDto.user.fname}"
+												readonly="true" class="form-control" />
 
-							</p:dataTable>
-							<!-- Back FilterContact Page -->
-								<br /> <a href="ListOfUsers.xhtml"
-									style="font-size: 14px !important; width: 25%; margin-left: 5%;"
-									class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
-										style="background-color: red; color: white" class="badge"></span></b>
-								</a>
-								<!-- End Back -->
-						</p:outputPanel>
-						<!-- End Contact Table -->
-
-						<!-- Other Contact Form -->
-						<p:outputPanel rendered="#{userAccountController.renderOtherContForm}" autoUpdate="true">
-							<fieldset>
-						
-								<legend> #{msg['message.header.contactDetails.info']}</legend>
-
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.username']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText
-											value="#{userAccountController.contactDto.user.viewId}"
-											readonly="true" class="form-control" />
-
+										</div>
 									</div>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['massages.cmn.common.first.fname']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText
-											value="#{userAccountController.contactDto.user.fname}"
-											readonly="true" class="form-control" />
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['massages.cmn.common.last.lname']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText
+												value="#{userAccountController.contactDto.user.lname}"
+												readonly="true" class="form-control" />
 
+										</div>
 									</div>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['massages.cmn.common.last.lname']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText
-											value="#{userAccountController.contactDto.user.lname}"
-											readonly="true" class="form-control" />
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.contactDetails']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText
+												value="#{userAccountController.contact.contactDetails}"
+												class="form-control" id="contDetails3" required="true"
+												converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
+												validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
+												requiredMessage="#{msg['requiered.contactDetails.message']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+												<f:validateLength maximum="100" />
+											</h:inputText>
 
-									</div>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.contactDetails']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText
-											value="#{userAccountController.contact.contactDetails}"
-											class="form-control" id="contDetails3" required="true"
-											converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-											validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-											requiredMessage="#{msg['requiered.contactDetails.message']}">
-											<f:validateRegex
-												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
+										</div>
+										<div class="col-md-2">
+											<span class="tooltips-input-main"><a
+												class="tooltips-input"> <h:panelGroup
+														id="tooltips-contactDetails2" layout="block">
+														<img
+															src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+															style="width: 8%" alt="question" />
+													</h:panelGroup> <p:tooltip id="toolTipContent2"
+														for="tooltips-contactDetails2" position="bottom">
+														<span> #{msg['help.coantDetails.message']} </span>
+													</p:tooltip>
+											</a></span>
 
+										</div>
+										<h:message for="contDetails3" styleClass="help-block"></h:message>
 									</div>
-									<div class="col-md-2">
-										<span class="tooltips-input-main"><a
-											class="tooltips-input"> <h:panelGroup
-													id="tooltips-contactDetails2" layout="block">
-													<img
-														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-														style="width: 8%" alt="question" />
-												</h:panelGroup> <p:tooltip id="toolTipContent2"
-													for="tooltips-contactDetails2" position="bottom">
-													<span> #{msg['help.coantDetails.message']} </span>
-												</p:tooltip>
-										</a></span>
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.Email']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.useremail}"
+												class="form-control" id="email2" required="true"
+												validatorMessage="#{msg['error.enter.invalid.email']}"
+												converterMessage="#{msg['error.enter.invalid.email']}"
+												requiredMessage="#{msg['error.enter.required.email']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.email']}" />
+												<f:validateLength maximum="100" />
+											</h:inputText>
+										</div>
+										<h:message errorClass="errorMsg1" for="email2"></h:message>
+									</div>
 
+									<div class="form-group row"
+										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">#{msg['label.message.Phone']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-5 col-sm-5 col-xs-5">
+											<h:inputText value="#{userAccountController.contact.phone}"
+												class="form-control" id="phone2" required="true"
+												converterMessage="#{msg['error.enter.invalid.phone']}"
+												requiredMessage="#{msg['requiered.phone.message']}"
+												validatorMessage="#{msg['error.enter.invalid.phone']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.phone']}" />
+												<f:validateLength maximum="25" />
+											</h:inputText>
+										</div>
+										<h:message errorClass="errorMsg1" for="phone2"></h:message>
 									</div>
-									<h:message for="contDetails3" styleClass="help-block"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Email']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.useremail}"
-											class="form-control" id="email2" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="email2"></h:message>
-								</div>
-
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Phone']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-5 col-sm-5 col-xs-5">
-										<h:inputText value="#{userAccountController.contact.phone}"
-											class="form-control" id="phone2" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.phone.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="phone2"></h:message>
-								</div>
 
 
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black"></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:commandButton class="btn btn-info btn-xlg btn-block"
-											action="#{userAccountController.saveContact}"
-											value="#{msg['label.subimit.message.submit']}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black"></label>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+											<h:commandButton class="btn btn-info btn-xlg btn-block"
+												action="#{userAccountController.saveContact}"
+												value="#{msg['label.subimit.message.submit']}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandButton>
+										</div>
+										<span class="text-danger" id="err"></span>
 									</div>
-									<span class="text-danger" id="err"></span>
-								</div>
-								<!-- Back FilterContact Page -->
-								<br /> <a href="ListOfUsers.xhtml"
-									style="font-size: 14px !important; width: 25%; margin-left: 5%;"
-									class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
-										style="background-color: red; color: white" class="badge"></span></b>
-								</a>
-								<!-- End Back -->
-							</fieldset>
-						</p:outputPanel>
-						<!-- End OtherContactForm -->
+									<!-- Back FilterContact Page -->
+									<br /> <a href="ListOfUsers.xhtml"
+										style="font-size: 14px !important; width: 25%; margin-left: 5%;"
+										class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
+											style="background-color: red; color: white" class="badge"></span></b>
+									</a>
+									<!-- End Back -->
+								</fieldset>
+							</p:outputPanel>
+							<!-- End OtherContactForm -->
 						</fieldset>
 					</div>
 				</div>

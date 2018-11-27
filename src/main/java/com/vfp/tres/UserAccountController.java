@@ -280,8 +280,10 @@ public class UserAccountController implements Serializable, DbConstant {
 					renderBoard = false;
 					return (catDetails);
 				} else {
-				/*	userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status" },
-							new Object[] { ACTIVE }, "UserCategory", " userCatid desc");*/
+					/*
+					 * userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] {
+					 * "status" }, new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
+					 */
 					renderBoard = true;
 					catDetails = new ArrayList<UserCategory>();
 					for (Object[] data : catImpl.reportList(
@@ -615,15 +617,18 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 
 	}
+
 	public String renderAction(UserDto user) {
 		user.setNotify(true);
 		return null;
 	}
+
 	public String cancelChange(UserDto user) {
 		user.setNotify(false);
-		this.useremail=null;
+		this.useremail = null;
 		return null;
 	}
+
 	public String editAction(UserDto user) {
 
 		user.setEditable(true);
@@ -744,6 +749,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		return null;
 
 	}
+
 	public String boardUpdateStatus(UserDto user) {
 		LOGGER.info("update  saveAction method");
 		try {
@@ -768,7 +774,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			Contact ct = new Contact();
 
 			if (null != useremail) {
-				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail }, "from Contact");
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+						"from Contact");
 				if (null != ct) {
 					usersImpl.UpdateUsers(us);
 					/* displayUsersByBoard(); */
@@ -781,19 +788,20 @@ public class UserAccountController implements Serializable, DbConstant {
 					if (valid) {
 						JSFMessagers.resetMessages();
 						setValid(true);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+						JSFMessagers
+								.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
 						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
-						this.useremail=null;
+						this.useremail = null;
 						// return to current page
 					} else {
 						JSFMessagers.resetMessages();
 						setValid(false);
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
 						LOGGER.info(CLASSNAME + "::Fail to send Email!!");
-						this.useremail=null;
+						this.useremail = null;
 					}
 				} else {
-					this.useremail=null;
+					this.useremail = null;
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
@@ -842,33 +850,36 @@ public class UserAccountController implements Serializable, DbConstant {
 			Contact ct = new Contact();
 
 			if (null != useremail) {
-				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail }, "from Contact");
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+						"from Contact");
 				if (null != ct) {
 					usersImpl.UpdateUsers(us);
 					listUsersByDateBetween();
 					JSFMessagers.resetMessages();
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
-					/*usersImpl.UpdateUsers(us);
-					listUsersByDateBetween();*/
+					/*
+					 * usersImpl.UpdateUsers(us); listUsersByDateBetween();
+					 */
 					LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + useremail);
 					boolean valid = notifyRepresentativeChange(useremail);
 					if (valid) {
 						JSFMessagers.resetMessages();
 						setValid(true);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+						JSFMessagers
+								.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
 						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
-						this.useremail=null;
+						this.useremail = null;
 						// return to current page
 					} else {
 						JSFMessagers.resetMessages();
 						setValid(false);
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
 						LOGGER.info(CLASSNAME + "::Fail to send Email!!");
-						this.useremail=null;
+						this.useremail = null;
 					}
 				} else {
-					this.useremail=null;
+					this.useremail = null;
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
@@ -880,7 +891,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
-			}			
+			}
 			return null;
 		} catch (Exception e) {
 			setValid(false);
@@ -890,6 +901,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		}
 		return null;
 	}
+
 	public Boolean notifyRepresentativeChange(String email) throws Exception {
 		boolean valid = false;
 		try {
@@ -952,33 +964,36 @@ public class UserAccountController implements Serializable, DbConstant {
 			Contact ct = new Contact();
 
 			if (null != useremail) {
-				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail }, "from Contact");
+				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
+						"from Contact");
 				if (null != ct) {
 					usersImpl.UpdateUsers(us);
 					repDtosDetails = displayRepresentativeByDateBetween();
 					JSFMessagers.resetMessages();
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
-					/*usersImpl.UpdateUsers(us);
-					listUsersByDateBetween();*/
+					/*
+					 * usersImpl.UpdateUsers(us); listUsersByDateBetween();
+					 */
 					LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + useremail);
 					boolean valid = notifyRepresentativeChange(useremail);
 					if (valid) {
 						JSFMessagers.resetMessages();
 						setValid(true);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+						JSFMessagers
+								.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
 						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
-						this.useremail=null;
-					
+						this.useremail = null;
+
 					} else {
 						JSFMessagers.resetMessages();
 						setValid(false);
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
 						LOGGER.info(CLASSNAME + "::Fail to send Email!!");
-						this.useremail=null;
+						this.useremail = null;
 					}
 				} else {
-					this.useremail=null;
+					this.useremail = null;
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
@@ -990,7 +1005,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("error.selected.invalid.email"));
-			}			
+			}
 			return "";
 			/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
 
@@ -1179,7 +1194,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
 
-		}catch (Exception e) {
+		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
@@ -1194,7 +1209,8 @@ public class UserAccountController implements Serializable, DbConstant {
 				for (Object[] data : usersImpl.reportList(
 						"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.board,b.boardName from Users us ,Board b where us.board=b.boardId and b.boardName='"
 								+ boardName + "'")) {
-					LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
+					LOGGER.info(
+							"users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
 					UserDto userDtos = new UserDto();
 					userDtos.setEditable(false);
 					userDtos.setNotify(false);

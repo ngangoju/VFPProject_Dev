@@ -30,16 +30,15 @@ import tres.domain.Users;
 import tres.vfp.dto.MenuGroupDto;
 import tres.vfp.dto.UserDto;
 
-
 @SuppressWarnings("unused")
 @ManagedBean
 @ViewScoped
-public class GroupOfMenuController implements Serializable, DbConstant{
+public class GroupOfMenuController implements Serializable, DbConstant {
 
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "GroupOfMenuController :: ";
 	private static final long serialVersionUID = 1L;
-	
+
 	/* to manage validation messages */
 	private boolean isValid;
 	/* end manage validation messages */
@@ -54,7 +53,6 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 	private MenuGroupDto menuGroupDto;
 	private int categoryId;
 	private int menuGroupId;
-	
 
 	private String defaultMenuUrl;
 	private MenuAssignment menuAssignment;
@@ -62,32 +60,31 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 	private int menuAssignId;
 	private int listOfMenuId;
 
-	
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-	
+
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
 	private List<UserCategory> userCategoryDetails = new ArrayList<UserCategory>();
-	
+
 	private List<MenuAssignment> menuAssignmentDetails = new ArrayList<MenuAssignment>();
 	private List<ListOfMenu> listOfMenuDetails = new ArrayList<ListOfMenu>();
-	
+
 	private List<MenuGroupDto> menuGroupDtoDetails = new ArrayList<MenuGroupDto>();
-	
+
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserCategoryImpl userCategoryImpl = new UserCategoryImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
-	
+
 	ListOfMenuImpl listOfMenuImpl = new ListOfMenuImpl();
 	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
-	
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
 		userSessions = (Users) session.getAttribute("userSession");
-		
-		menuGroupSession=(MenuGroup)session.getAttribute("menuGroupSession");
-		
+
+		menuGroupSession = (MenuGroup) session.getAttribute("menuGroupSession");
+
 		if (menuGroup == null) {
 			menuGroup = new MenuGroup();
 		}
@@ -101,11 +98,11 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		if (menuGroupDto == null) {
 			menuGroupDto = new MenuGroupDto();
 		}
-		
+
 		try {
 			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
-			//MenuGroup menu = new MenuGroup();
-			//menu = new MenuGroup();
+			// MenuGroup menu = new MenuGroup();
+			// menu = new MenuGroup();
 //			MenuGroup menu = menuGroupImpl.getMenuGroupById(menuGroupSession.getMenuGroupId(), "menuGroupId");
 //			
 //			MenuGroupDto menuGroupDto = new MenuGroupDto();
@@ -116,9 +113,9 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 //			menuGroupDtoDetails.add(menuGroupDto);
 //			// below list concern list of all users by changing their status
 			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);
-			
+
 			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
-			
+
 			for (MenuGroup menuGroups : menuGroupDetails) {
 				MenuGroupDto menuGroupDtos = new MenuGroupDto();
 				menuGroupDtos.setMenuGroupId(menuGroups.getMenuGroupId());
@@ -149,14 +146,15 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		try {
-			
-			//userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-				//	new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+
+			// userCategoryDetails = userCategoryImpl.getGenericListWithHQLParameter(new
+			// String[] { "genericStatus" },
+			// new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
 			userCategoryDetails = userCategoryImpl.getListUsercategory();
 			listOfMenuDetails = listOfMenuImpl.getListListOfMenus();
-			
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -165,36 +163,36 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		}
 
 	}
-	
+
 	public String saveMenuGroupInfo() throws IOException {
 		String url = getContextPath();
-		System.out.print("+++++++++++++++++:" + url + userCategoryImpl.getUserCategoryById(categoryId, "userCatid").getUsercategoryName());
+		System.out.print("+++++++++++++++++:" + url
+				+ userCategoryImpl.getUserCategoryById(categoryId, "userCatid").getUsercategoryName());
 		try {
-			
-			MenuGroup menuG=new MenuGroup();
-			
-			menuG=
-			menuGroupImpl.getModelWithMyHQL(new String[] { "groupMenuCode" },
-						new Object[] {menuGroup.getGroupMenuCode() }, "from MenuGroup ");
-			
-					menuGroup.setCreatedBy(userSessions.getViewId());
-					menuGroup.setCrtdDtTime(timestamp);
-					menuGroup.setCreationDate(timestamp);
-					menuGroup.setGenericStatus(ACTIVE);
-					menuGroup.setUpdatedBy(userSessions.getViewId());
-					menuGroup.setCrtdDtTime(timestamp);
-					menuGroup.setUpDtTime(timestamp);
-				
-					menuGroup.setUserCategory(userCategoryImpl.getUserCategoryById(categoryId, "userCatid"));
-					
-					menuGroupImpl.saveMenuGroupt(menuGroup);
 
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::MenuGroup is saved");
-					clearUserFuileds();
-					return "";
+			MenuGroup menuG = new MenuGroup();
+
+			menuG = menuGroupImpl.getModelWithMyHQL(new String[] { "groupMenuCode" },
+					new Object[] { menuGroup.getGroupMenuCode() }, "from MenuGroup ");
+
+			menuGroup.setCreatedBy(userSessions.getViewId());
+			menuGroup.setCrtdDtTime(timestamp);
+			menuGroup.setCreationDate(timestamp);
+			menuGroup.setGenericStatus(ACTIVE);
+			menuGroup.setUpdatedBy(userSessions.getViewId());
+			menuGroup.setCrtdDtTime(timestamp);
+			menuGroup.setUpDtTime(timestamp);
+
+			menuGroup.setUserCategory(userCategoryImpl.getUserCategoryById(categoryId, "userCatid"));
+
+			menuGroupImpl.saveMenuGroupt(menuGroup);
+
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+			LOGGER.info(CLASSNAME + ":::MenuGroup is saved");
+			clearUserFuileds();
+			return "";
 
 		} catch (Exception ex) {
 			LOGGER.info(CLASSNAME + ":::MenuGroup is fail with HibernateException  error");
@@ -211,23 +209,23 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		String url = getContextPath();
 		System.out.print("+++++++++++++++++:" + url + "/");
 		try {
-			
-					menuAssignment.setCreatedBy(userSessions.getViewId());
-					menuAssignment.setCrtdDtTime(timestamp);
-					menuAssignment.setGenericStatus(ACTIVE);
-					menuAssignment.setUpdatedBy(userSessions.getViewId());
-					menuAssignment.setCrtdDtTime(timestamp);
-					menuAssignment.setUpDtTime(timestamp);
-					menuAssignment.setListOfMenu(listOfMenuImpl.getListOfMenuById( listOfMenuId, "menuId"));
-					menuAssignment.setUserCategory(userCategoryImpl.getUserCategoryById(categoryId, "userCatid"));
-					menuAssignmentImpl.saveMenuAssignment(menuAssignment);
 
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
-					LOGGER.info(CLASSNAME + ":::MenuAssignment is saved");
-					clearUserFuileds();
-					return "";
+			menuAssignment.setCreatedBy(userSessions.getViewId());
+			menuAssignment.setCrtdDtTime(timestamp);
+			menuAssignment.setGenericStatus(ACTIVE);
+			menuAssignment.setUpdatedBy(userSessions.getViewId());
+			menuAssignment.setCrtdDtTime(timestamp);
+			menuAssignment.setUpDtTime(timestamp);
+			menuAssignment.setListOfMenu(listOfMenuImpl.getListOfMenuById(listOfMenuId, "menuId"));
+			menuAssignment.setUserCategory(userCategoryImpl.getUserCategoryById(categoryId, "userCatid"));
+			menuAssignmentImpl.saveMenuAssignment(menuAssignment);
+
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.user"));
+			LOGGER.info(CLASSNAME + ":::MenuAssignment is saved");
+			clearUserFuileds();
+			return "";
 
 		} catch (HibernateException ex) {
 			LOGGER.info(CLASSNAME + ":::MenuAssignment is fail with HibernateException  error");
@@ -239,7 +237,7 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		}
 		return "";
 	}
-	
+
 	public String cancel(MenuGroupDto menu) {
 		menu.setEditable(false);
 		// usersImpl.UpdateUsers(user);
@@ -253,7 +251,7 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
-	
+
 	public String saveAction(MenuGroupDto menu) {
 		LOGGER.info("update  saveAction method");
 		/* System.out.println("**************update  saveAction method"); */
@@ -266,7 +264,8 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 			menus = menuGroupImpl.getMenuGroupById(menu.getMenuGroupId(), "menuGroupId");
 
 			LOGGER.info("here update sart for " + menus + " menuGroupId " + menus.getMenuGroupId());
-			System.out.println("++++++++++++++++++++++++++here update sart for " + menus + " menuGroupId " + menus.getMenuGroupId());
+			System.out.println("++++++++++++++++++++++++++here update sart for " + menus + " menuGroupId "
+					+ menus.getMenuGroupId());
 			menu.setEditable(false);
 			menus.setMenuGroupName(menu.getMenuGroupName());
 			menus.setDefaulGrouptMenu(menu.getDefaultGroupMenu());
@@ -283,7 +282,7 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		}
 
 	}
-	
+
 	public String newAction(MenuGroupDto menu) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -303,7 +302,7 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		return "/menu/ViewMenuGroup.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String updateStatus(MenuGroupDto menu) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
@@ -327,23 +326,25 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 		return "/menu/ViewMenuGroup.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String addNewMenuGroup() {
 
 		return "/menu/menuGroupForm.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public void clearUserFuileds() {
 
 		menuGroup = new MenuGroup();
 		menuGroupDetails = null;
 	}
+
 	public void clearUserFuiledss() {
 
 		menuAssignment = new MenuAssignment();
 		menuAssignmentDetails = null;
 	}
+
 	public String getContextPath() {
 
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
@@ -351,6 +352,7 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 
 		return request.getContextPath();
 	}
+
 	public boolean isValid() {
 		return isValid;
 	}
@@ -586,8 +588,5 @@ public class GroupOfMenuController implements Serializable, DbConstant{
 	public void setMenuGroupDto(MenuGroupDto menuGroupDto) {
 		this.menuGroupDto = menuGroupDto;
 	}
-	
-	
-	
 
 }
