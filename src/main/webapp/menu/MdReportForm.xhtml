@@ -11,26 +11,279 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<div class="panel panel-info">
-				<!-- Default panel contents -->
-				<div class="panel-heading">
-					<center>
-						<span class="glyphicon glyphicon-user"></span>#{msg['message.header.report4.info']}
-					</center>
-				</div>
-				<h:form>
-					<div class="col-md-4 col-sm-4 col-xs-4">
-						<h:commandButton class="btn btn-success btn-md btn-block"
-							action="#{chartView.go}"
-							value="#{msg['label.submit.message.printPdf']}">
-						</h:commandButton>
+			<h:form>
+				<div class="panel panel-info">
+					<!-- Default panel contents -->
+					<form>
+
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:commandButton class="btn btn-success btn-md btn-block"
+									action="#{chartView.go}"
+									value="#{msg['label.submit.message.printPdf']}" />
+							</div>
+						</form>
+					<div class="panel-heading">
+						<center>
+							<span class="glyphicon glyphicon-user"></span>#{msg['message.header.report4.info']}
+						</center>
+						
 					</div>
-				</h:form>
+					<div class="panel-body"
+						style="border: 0px solid blue; margin-top: 4px; height: 650px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+						<h:form>
+							<h:panelGroup layout="block"
+								rendered="#{not mdReportActivity.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li class="alert alert-danger"
+											style="list-style: none; background-color: #FF2400; color: white">
+											<center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center>
+										</li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
 
-			</div>
+							<h:panelGroup layout="block"
+								rendered="#{mdReportActivity.valid and  not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li
+											style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+											class="alert alert-success"><h:outputText
+												value="#{facesMessage.summary}" escape="false" /></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<fieldset>
+
+								<center>
+									<legend> MANAGER DIRECTOR REPORT MENU </legend>
+								</center>
+
+								<div class="form-group row">
+									<div class="col-md-10 col-sm-10 col-xs-10">
+
+										<div class="panel panel-primary ">
+											<div class="panel-heading">SHOOSE THE FORMAT OF THE
+												REPORT YOU WANT.</div>
+											<h:panelGroup id="countryPanel" layout="block"
+												rendered="true">
+												<div class="form-group row">
+													<label for="todate"
+														class="col-md-2 col-sm-2 col-xs-2 control-label"
+														style="color: black">#{msg['form.report.format']}<span
+														style="color: red">*</span></label>
+													<div class="col-md-6 col-sm-6 col-xs-6">
+														<h:selectOneMenu id="countryId" styleClass="form-control"
+															value="#{mdReportActivity.myChoice}">
+															<p:ajax listener="#{mdReportActivity.updateTable()}"
+																update="forpdf,firstpanel,secondpanel,forexcel,chartpanel,forchart" />
+															<f:ajax onevent="showProgress" />
+
+															<f:selectItem itemLabel="Select the format you want"
+																noSelectionOption="true" />
+															<f:selectItem itemLabel="PDF Format" itemValue="PDF" />
+															<f:selectItem itemLabel="EXCEL Format" itemValue="Excel" />
+															<f:selectItem itemLabel="View CHART" itemValue="Chart" />
+														</h:selectOneMenu>
+													</div>
+													<h:message for="countryId" styleClass="help-block"></h:message>
+												</div>
+											</h:panelGroup>
+
+											<h:panelGroup id="firstpanel" layout="block">
+												<p:outputPanel id="toUpdatss" autoUpdate="true"
+													rendered="#{mdReportActivity.rendered}">
+													<h:panelGroup id="forpdf" layout="block">
+														<div class="form-group row">
+
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
+															<div class="panel-body">
+
+																<div class="form-group row">
+																	<label for="todate"
+																		class="col-md-2 col-sm-2 col-xs-2 control-label"
+																		style="color: black">#{msg['form.task.parentBoard']}</label>
+																	<div class="col-md-6 col-sm-6 col-xs-6">
+																		<h:selectOneMenu id="cate" styleClass="form-control"
+																			required="true"
+																			value="#{mdReportActivity.selectedBoard}"
+																			requiredMessage="#{msg['parent.task.required']}">
+																			<f:selectItem
+																				itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																				itemValue="#{null}" escapeItem="true" />
+																			<f:selectItems
+																				value="#{mdReportActivity.boardDetails}"
+																				var="option" itemValue="#{option.boardId}"
+																				itemLabel="#{option.boardName}"
+																				itemLabelEscaped="true" />
+
+																		</h:selectOneMenu>
+																	</div>
+																</div>
+																<label for="todate"
+																	class="col-md-2 col-sm-2 col-xs-2 control-label"
+																	style="color: black"></label>
+																<div class="col-md-4 col-sm-4 col-xs-4">
+																	<h:commandButton
+																		class="btn btn-success btn-md btn-block"
+																		action="#{mdReportActivity.createPdf}"
+																		value="#{msg['label.submit.message.printPdf']}" />
+																</div>
+															</div>
+														</div>
+													</h:panelGroup>
+												</p:outputPanel>
+											</h:panelGroup>
+
+											<h:panelGroup id="secondpanel" layout="block">
+												<p:outputPanel id="toUpdat" autoUpdate="true"
+													rendered="#{mdReportActivity.renderedx}">
+													<h:panelGroup id="forexcel" layout="block">
+														<div class="form-group row">
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
+															<div class="panel-body">
+																<div class="form-group row">
+																	<label for="todate"
+																		class="col-md-2 col-sm-2 col-xs-2 control-label"
+																		style="color: black">#{msg['form.task.parentBoard']}</label>
+																	<div class="col-md-6 col-sm-6 col-xs-6">
+																		<h:selectOneMenu id="cates" styleClass="form-control"
+																			required="true"
+																			value="#{mdReportActivity.selectedBoard}"
+																			requiredMessage="#{msg['parent.task.required']}">
+																			<f:selectItem
+																				itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																				itemValue="#{null}" escapeItem="true" />
+																			<f:selectItems
+																				value="#{mdReportActivity.boardDetails}"
+																				var="option" itemValue="#{option.boardId}"
+																				itemLabel="#{option.boardName}"
+																				itemLabelEscaped="true" />
+																		</h:selectOneMenu>
+																	</div>
+																</div>
+																<label for="todate"
+																	class="col-md-2 col-sm-2 col-xs-2 control-label"
+																	style="color: black"></label>
+																<div class="col-md-4 col-sm-4 col-xs-4">
+																	<h:commandButton
+																		class="btn btn-success btn-md btn-block"
+																		action="#{mdReportActivity.printXLS}"
+																		value="#{msg['label.submit.message.printExel']}" />
+																</div>
+															</div>
+														</div>
+													</h:panelGroup>
+												</p:outputPanel>
+											</h:panelGroup>
+
+											<h:panelGroup id="chartpanel" layout="block">
+												<p:outputPanel id="toUpdates" autoUpdate="true"
+													rendered="#{mdReportActivity.renderedchart}">
+													<h:panelGroup id="forchart" layout="block">
+														<div class="form-group row">
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
+															<div class="panel-body">
+																<div>
+																	<center>
+																		<div
+																			style="border-bottom: 2px solid blue; width: 500px">Chat
+																			for Activities in terms of Tasks</div>
+																	</center>
+																	<h:panelGrid columns="3" columnClasses="left,right"
+																		style="width:100%">
+																		<p:chart type="bar"
+																			model="#{mdReportActivity.animatedModel2}"
+																			style="width:500px;height:300px" />
+																		<!-- 
+																		<p:chart type="pie" model="#{mdReportActivity.pieModel2}"
+												                         style="width:350px;height:300px" />  -->
+																	</h:panelGrid>
+																</div>
+															</div>
+														</div>
+													</h:panelGroup>
+												</p:outputPanel>
+											</h:panelGroup>
+
+										</div>
+										<!-- <h:panelGroup id="seventhpanel" layout="block">
+											<p:outputPanel id="toUpdetcltable" autoUpdate="false">
+
+												<h:panelGroup id="forcleareTable" layout="block">
+													<div class="form-group row">
+
+														<div class="col-md-6 col-sm-6 col-xs-6"></div>
+														<div class="panel-body">
+															<p:dataTable id="tableId" var="a"
+																value="#{staffReport.clearanceDtoDetails}"
+																scrollable="true" scrollHeight="200"
+																sortOrder="descending">
+																<f:facet name="header">Clearance for created and done activities By RASHID</f:facet>
+																<p:column width="50"> #{a.Strategicplan}<f:facet
+																		name="header">Strategic plan</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.taskName}<f:facet
+																		name="header">Task</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.numberOfActivities}<f:facet
+																		name="header">Created activities</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.numberOfFinishedActivities}<f:facet
+																		name="header">Done activities</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.rate}%<f:facet
+																		name="header">Rate</f:facet>
+																</p:column>
+
+															</p:dataTable>
+
+														</div>
+													</div>
+												</h:panelGroup>
+											</p:outputPanel>
+										</h:panelGroup> -->
+									</div>
+
+								</div>
 
 
+							</fieldset>
+
+						</h:form>
+					</div>
+				</div>
+			</h:form>
 		</ui:define>
 	</ui:composition>
 </h:body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
