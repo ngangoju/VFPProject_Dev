@@ -266,8 +266,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 	}
 
 	public void showCatTable() {
-
-		if (categoryDtoDetails.size() != 0)
+		/*if (categoryDtoDetails.size() != 0)*/
 			rendered = true;
 	}
 

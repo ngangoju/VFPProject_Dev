@@ -47,6 +47,7 @@ public class TaskController implements Serializable, DbConstant {
 	private StrategicPlan plan;
 	private List<StrategicPlan> planDetails = new ArrayList<StrategicPlan>();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
+	private List<TaskAssignment> taskAssignDetail = new ArrayList<TaskAssignment>();
 	private List<Task> taskDetails = new ArrayList<Task>();
 	private List<Task> taskDetail = new ArrayList<Task>();
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
@@ -158,16 +159,28 @@ public class TaskController implements Serializable, DbConstant {
 
 	public void saveAssign() {
 		try {
+//			if(assignment.getGenericStatus().equals(ACTIVE) && assignment.getUser().equals(usersImpl.gettUserById(userId, "userId"))) {
+//				taskAssignImpl.saveTaskAssignment(assignment);
+//				JSFMessagers.resetMessages();
+//				setValid(false);
+//				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.complete"));
+//				LOGGER.info(CLASSNAME + ":::Task Assignment is not okay");
+//			}else if(assignment.getGenericStatus().equals(DESACTIVE) && assignment.getUser().equals(usersImpl.gettUserById(userId, "userId"))) {
 			assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			LOGGER.info(assignment.getCreatedBy());
 			assignment.setCrtdDtTime(timestamp);
+//			taskAssignDetail = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "user", "genericStatus" },
+//					new Object[] { usersImpl.gettUserById(userId, "userId"),ACTIVE }, "TaskAssignment",
+//					"taskAssignmentId asc");
+//			for(TaskAssignment assign : taskAssignDetail) {
+//				assign.setGenericStatus(DESACTIVE);
+//				taskAssignImpl.UpdateTask(assign);
+//			}
 			assignment.setGenericStatus(ACTIVE);
 			assignment.setUpDtTime(timestamp);
 			assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			assignment.setTask(taskImpl.getTaskById(taskID, "taskId"));
-			LOGGER.info(assignment.getTask().getTaskName());
 			assignment.setUser(usersImpl.gettUserById(userId, "userId"));
-			LOGGER.info(assignment.getUser().getLname());
 			taskAssignImpl.saveTaskAssignment(assignment);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -176,7 +189,7 @@ public class TaskController implements Serializable, DbConstant {
 			clearTaskFuileds();
 			// showAssignments();
 			// return"/menu/Task.xhtml?faces-redirect=true";
-
+//			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
@@ -506,6 +519,22 @@ public class TaskController implements Serializable, DbConstant {
 
 	public void setRenderTaskForm(boolean renderTaskForm) {
 		this.renderTaskForm = renderTaskForm;
+	}
+
+	public List<TaskAssignment> getTaskAssignDetail() {
+		return taskAssignDetail;
+	}
+
+	public void setTaskAssignDetail(List<TaskAssignment> taskAssignDetail) {
+		this.taskAssignDetail = taskAssignDetail;
+	}
+
+	public String getBtn() {
+		return btn;
+	}
+
+	public void setBtn(String btn) {
+		this.btn = btn;
 	}
 
 }
