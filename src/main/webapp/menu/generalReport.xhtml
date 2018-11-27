@@ -11,6 +11,14 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
+		<form>
+
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:commandButton class="btn btn-success btn-md btn-block"
+									action="#{chartView.go}"
+									value="#{msg['label.submit.message.printPdf']}" />
+							</div>
+						</form>
 			<h:form>
 				<div class="panel panel-info">
 					<!-- Default panel contents -->
@@ -20,7 +28,7 @@
 						</center>
 					</div>
 					<div class="panel-body"
-						style="border: 0px solid blue; margin-top: 4px; height: 550px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+						style="border: 0px solid blue; margin-top: 4px; height: 650px; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 						<h:form>
 							<h:panelGroup layout="block"
 								rendered="#{not staffReportActivity.valid and not facesContext.validationFailed}">
@@ -60,7 +68,7 @@
 									<div class="col-md-10 col-sm-10 col-xs-10">
 
 										<div class="panel panel-primary ">
-											<div class="panel-heading">SHOOSE THE FORMAT OF THE
+											<div class="panel-heading">CHOOSE THE FORMAT OF THE
 												REPORT YOU WANT.</div>
 											<h:panelGroup id="countryPanel" layout="block"
 												rendered="true">
@@ -86,7 +94,7 @@
 													<h:message for="countryId" styleClass="help-block"></h:message>
 												</div>
 											</h:panelGroup>
-											
+
 											<h:panelGroup id="firstpanel" layout="block">
 												<p:outputPanel id="toUpdate" autoUpdate="true"
 													rendered="#{staffReportActivity.rendered}">
@@ -97,13 +105,14 @@
 																style="color: black">#{msg['form.report.report']}<span
 																style="color: red"></span></label>
 															<div class="col-md-6 col-sm-6 col-xs-6">
-																
+
 																<h:selectOneMenu id="countryI" styleClass="form-control"
 																	value="#{staffReportActivity.pdfchoice}">
-																	<p:ajax listener="#{staffReportActivity.updateReportType()}"
-																update="thirdpanel,forpdfs,fourthpanel,forpdftas" />
-															<f:ajax onevent="showProgress" />
-																
+																	<p:ajax
+																		listener="#{staffReportActivity.updateReportType()}"
+																		update="thirdpanel,forpdfs,fourthpanel,forpdftas" />
+																	<f:ajax onevent="showProgress" />
+
 																	<f:selectItem itemLabel="Select the type you want"
 																		noSelectionOption="true" />
 																	<f:selectItem itemLabel="REPORT BY STAFF NAME"
@@ -117,8 +126,8 @@
 													</h:panelGroup>
 												</p:outputPanel>
 											</h:panelGroup>
-											
-											
+
+
 											<h:panelGroup id="secondpanel" layout="block">
 												<p:outputPanel id="toUpdat" autoUpdate="true"
 													rendered="#{staffReportActivity.renderedx}">
@@ -131,9 +140,10 @@
 															<div class="col-md-6 col-sm-6 col-xs-6">
 																<h:selectOneMenu id="country" styleClass="form-control"
 																	value="#{staffReportActivity.excelchoice}">
-																	<p:ajax listener="#{staffReportActivity.updateReportExcelType()}"
-																update="fifthpanel,forxls,sixthpanel,forxlsx" />
-															<f:ajax onevent="showProgress" />
+																	<p:ajax
+																		listener="#{staffReportActivity.updateReportExcelType()}"
+																		update="fifthpanel,forxls,sixthpanel,forxlsx" />
+																	<f:ajax onevent="showProgress" />
 																	<f:selectItem itemLabel="Select the type you want"
 																		noSelectionOption="true" />
 																	<f:selectItem itemLabel="REPORT BY STAFF NAME"
@@ -147,184 +157,218 @@
 													</h:panelGroup>
 												</p:outputPanel>
 											</h:panelGroup>
-											
+
 											<h:panelGroup id="thirdpanel" layout="block">
 												<p:outputPanel id="toUpdatss" autoUpdate="true"
 													rendered="#{staffReportActivity.renderedspdf}">
 													<h:panelGroup id="forpdfs" layout="block">
 														<div class="form-group row">
-															
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																
-															</div>
+
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
 															<div class="panel-body">
 
-												<div class="form-group row">
-													<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black">#{msg['form.report.SPV']}</label>
-													<div class="col-md-6 col-sm-6 col-xs-6">
-														<h:selectOneMenu id="cate" styleClass="form-control"
-															required="true" value="#{staffReportActivity.myTask}"
-															requiredMessage="#{msg['parent.task.required']}">
-															<f:selectItem
-																itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-																itemValue="#{null}" escapeItem="true" />
-															<f:selectItems value="#{staffReportActivity.taskDetail}"
-																var="option" itemValue="#{option.taskId}"
-																itemLabel="#{option.taskName}" itemLabelEscaped="true" />
-															
-														</h:selectOneMenu>
-													</div>
+																<div class="form-group row">
+																	<label for="todate"
+																		class="col-md-2 col-sm-2 col-xs-2 control-label"
+																		style="color: black">#{msg['form.report.SPV']}</label>
+																	<div class="col-md-6 col-sm-6 col-xs-6">
+																		<h:selectOneMenu id="cate" styleClass="form-control"
+																			required="true" value="#{staffReportActivity.myTask}"
+																			requiredMessage="#{msg['parent.task.required']}">
+																			<f:selectItem
+																				itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																				itemValue="#{null}" escapeItem="true" />
+																			<f:selectItems
+																				value="#{staffReportActivity.taskDetail}"
+																				var="option" itemValue="#{option.taskId}"
+																				itemLabel="#{option.taskName}"
+																				itemLabelEscaped="true" />
 
-												</div>
-												<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black"></label>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{staffReportActivity.createPdf}"
-														value="#{msg['label.submit.message.printPdf']}" />										
-											</div>
-										</div>
+																		</h:selectOneMenu>
+																	</div>
+
+																</div>
+																<label for="todate"
+																	class="col-md-2 col-sm-2 col-xs-2 control-label"
+																	style="color: black"></label>
+																<div class="col-md-4 col-sm-4 col-xs-4">
+																	<h:commandButton
+																		class="btn btn-success btn-md btn-block"
+																		action="#{staffReportActivity.createPdf}"
+																		value="#{msg['label.submit.message.printPdf']}" />
+																</div>
+															</div>
 														</div>
 													</h:panelGroup>
 												</p:outputPanel>
 											</h:panelGroup>
-											
+
 											<h:panelGroup id="fourthpanel" layout="block">
 												<p:outputPanel id="toUpdatta" autoUpdate="true"
 													rendered="#{staffReportActivity.renderedtpdf}">
 													<h:panelGroup id="forpdftas" layout="block">
 														<div class="form-group row">
-															
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																
-															</div>
+
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
 															<div class="panel-body">
 
-												<div class="form-group row">
-													<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black">#{msg['form.task.taskToReporstaff']}</label>
-													<div class="col-md-6 col-sm-6 col-xs-6">
-														<h:selectOneMenu id="cat" styleClass="form-control"
-															required="true" value="#{staffReportActivity.myName}"
-															requiredMessage="#{msg['parent.task.required']}">
-															<f:selectItem
-																itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-																itemValue="#{null}" escapeItem="true" />
-															<f:selectItems value="#{staffReportActivity.usersDetails}"
-																var="option" itemValue="#{option.userId}"
-																itemLabel="#{option.fname}" itemLabelEscaped="true" />
-															
-														</h:selectOneMenu>
-													</div>
-												</div>
-												<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black"></label>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{staffReportActivity.createPdf}"
-														value="#{msg['label.submit.message.printPdf']}" />										
-											</div>
-										</div>
+																<div class="form-group row">
+																	<label for="todate"
+																		class="col-md-2 col-sm-2 col-xs-2 control-label"
+																		style="color: black">#{msg['form.task.taskToReporstaff']}</label>
+																	<div class="col-md-6 col-sm-6 col-xs-6">
+																		<h:selectOneMenu id="cat" styleClass="form-control"
+																			required="true" value="#{staffReportActivity.myName}"
+																			requiredMessage="#{msg['parent.task.required']}">
+																			<f:selectItem
+																				itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																				itemValue="#{null}" escapeItem="true" />
+																			<f:selectItems
+																				value="#{staffReportActivity.usersDetails}"
+																				var="option" itemValue="#{option.userId}"
+																				itemLabel="#{option.fname}" itemLabelEscaped="true" />
+
+																		</h:selectOneMenu>
+																	</div>
+																</div>
+																<label for="todate"
+																	class="col-md-2 col-sm-2 col-xs-2 control-label"
+																	style="color: black"></label>
+																<div class="col-md-4 col-sm-4 col-xs-4">
+																	<h:commandButton
+																		class="btn btn-success btn-md btn-block"
+																		action="#{staffReportActivity.createPdfforStaff}"
+																		value="#{msg['label.submit.message.printPdf']}" />
+																</div>
+															</div>
 														</div>
 													</h:panelGroup>
 												</p:outputPanel>
 											</h:panelGroup>
-											
+
 											<h:panelGroup id="fifthpanel" layout="block">
 												<p:outputPanel id="toUpdats" autoUpdate="true"
 													rendered="#{staffReportActivity.renderedsxl}">
 													<h:panelGroup id="forxls" layout="block">
 														<div class="form-group row">
-															
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																
-															</div>
+
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
 															<div class="panel-body">
 
-												<div class="form-group row">
-													<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black">#{msg['form.report.SPV']}</label>
-													<div class="col-md-6 col-sm-6 col-xs-6">
-														<h:selectOneMenu id="cates" styleClass="form-control"
-															required="true" value="#{staffReportActivity.myTask}"
-															requiredMessage="#{msg['parent.task.required']}">
-															<f:selectItem
-																itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-																itemValue="#{null}" escapeItem="true" />
-															<f:selectItems value="#{staffReportActivity.taskDetail}"
-																var="option" itemValue="#{option.taskId}"
-																itemLabel="#{option.taskName}" itemLabelEscaped="true" />
-															
-														</h:selectOneMenu>
-													</div>
+																<div class="form-group row">
+																	<label for="todate"
+																		class="col-md-2 col-sm-2 col-xs-2 control-label"
+																		style="color: black">#{msg['form.report.SPV']}</label>
+																	<div class="col-md-6 col-sm-6 col-xs-6">
+																		<h:selectOneMenu id="cates" styleClass="form-control"
+																			required="true" value="#{staffReportActivity.myTask}"
+																			requiredMessage="#{msg['parent.task.required']}">
+																			<f:selectItem
+																				itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																				itemValue="#{null}" escapeItem="true" />
+																			<f:selectItems
+																				value="#{staffReportActivity.taskDetail}"
+																				var="option" itemValue="#{option.taskId}"
+																				itemLabel="#{option.taskName}"
+																				itemLabelEscaped="true" />
 
-												</div>
-												<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black"></label>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{staffReportActivity.printXLS}"
-														value="#{msg['label.submit.message.printExel']}" />										
-											</div>
-										</div>
+																		</h:selectOneMenu>
+																	</div>
+
+																</div>
+																<label for="todate"
+																	class="col-md-2 col-sm-2 col-xs-2 control-label"
+																	style="color: black"></label>
+																<div class="col-md-4 col-sm-4 col-xs-4">
+																	<h:commandButton
+																		class="btn btn-success btn-md btn-block"
+																		action="#{staffReportActivity.printXLS}"
+																		value="#{msg['label.submit.message.printExel']}" />
+																</div>
+															</div>
 														</div>
 													</h:panelGroup>
 												</p:outputPanel>
 											</h:panelGroup>
-											
+
 											<h:panelGroup id="sixthpanel" layout="block">
 												<p:outputPanel id="toUpdets" autoUpdate="true"
 													rendered="#{staffReportActivity.renderedtxl}">
 													<h:panelGroup id="forxlsx" layout="block">
 														<div class="form-group row">
-															
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																
-															</div>
+
+															<div class="col-md-6 col-sm-6 col-xs-6"></div>
 															<div class="panel-body">
 
-												<div class="form-group row">
-													<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black">#{msg['form.task.taskToReporstaff']}</label>
-													<div class="col-md-6 col-sm-6 col-xs-6">
-														<h:selectOneMenu id="catess" styleClass="form-control"
-															required="true" value="#{staffReportActivity.myName}"
-															requiredMessage="#{msg['parent.task.required']}">
-															<f:selectItem
-																itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-																itemValue="#{null}" escapeItem="true" />
-															<f:selectItems value="#{staffReportActivity.usersDetails}"
-																var="option" itemValue="#{option.userId}"
-																itemLabel="#{option.fname}" itemLabelEscaped="true" />
-															
-														</h:selectOneMenu>
-													</div>
+																<div class="form-group row">
+																	<label for="todate"
+																		class="col-md-2 col-sm-2 col-xs-2 control-label"
+																		style="color: black">#{msg['form.task.taskToReporstaff']}</label>
+																	<div class="col-md-6 col-sm-6 col-xs-6">
+																		<h:selectOneMenu id="catess" styleClass="form-control"
+																			required="true" value="#{staffReportActivity.myName}"
+																			requiredMessage="#{msg['parent.task.required']}">
+																			<f:selectItem
+																				itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+																				itemValue="#{null}" escapeItem="true" />
+																			<f:selectItems
+																				value="#{staffReportActivity.usersDetails}"
+																				var="option" itemValue="#{option.userId}"
+																				itemLabel="#{option.fname}" itemLabelEscaped="true" />
 
-												</div>
-												<label for="todate"
-														class="col-md-2 col-sm-2 col-xs-2 control-label"
-														style="color: black"></label>
-												<div class="col-md-4 col-sm-4 col-xs-4">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{staffReportActivity.printXLSForStaff}"
-														value="#{msg['label.submit.message.printExel']}" />										
-											</div>
-										</div>
+																		</h:selectOneMenu>
+																	</div>
+
+																</div>
+																<label for="todate"
+																	class="col-md-2 col-sm-2 col-xs-2 control-label"
+																	style="color: black"></label>
+																<div class="col-md-4 col-sm-4 col-xs-4">
+																	<h:commandButton
+																		class="btn btn-success btn-md btn-block"
+																		action="#{staffReportActivity.printXLSForStaff}"
+																		value="#{msg['label.submit.message.printExel']}" />
+																</div>
+															</div>
 														</div>
 													</h:panelGroup>
 												</p:outputPanel>
 											</h:panelGroup>
-							
-							
 										</div>
+										<h:panelGroup id="seventhpanel" layout="block">
+											<p:outputPanel id="toUpdetcltable" autoUpdate="false">
+												
+												<h:panelGroup id="forcleareTable" layout="block">
+													<div class="form-group row">
+
+														<div class="col-md-6 col-sm-6 col-xs-6"></div>
+														<div class="panel-body">
+															<p:dataTable id="tableId" var="a"
+																value="#{staffReport.Clearancedetailss()}"
+																scrollable="true" scrollHeight="200">
+																<f:facet name="header">Clearance for created and done activities</f:facet>
+																<p:column width="50"> #{a.strategicPlan}<f:facet
+																		name="header">Strategic plan</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.task}<f:facet
+																		name="header">Task</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.created}<f:facet
+																		name="header">Created</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.done}<f:facet
+																		name="header">Done</f:facet>
+																</p:column>
+																<p:column width="50"> #{a.formatedRate}%<f:facet
+																		name="header">Rate</f:facet>
+																</p:column>
+															</p:dataTable>
+
+														</div>
+													</div>
+												</h:panelGroup>
+											</p:outputPanel>
+										</h:panelGroup>
 
 									</div>
 
