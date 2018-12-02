@@ -17,6 +17,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
@@ -43,11 +44,16 @@ public class UploadUtility implements Serializable, DbConstant {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
 	public Documents fileUploadUtil(FileUploadEvent event, String validationCode) throws Exception {
-		LOGGER.info("FILE ::::" + event.getFile().getFileName());
+		LOGGER.info("FILE 22::::" + event.getFile().getFileName());
+		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
+	            .getExternalContext().getContext();
+	String realPath = ctx.getRealPath("/");
+	LOGGER.info("Filse Reals Path::::" + realPath);
 		Documents documents = new Documents();
 		String systemFileName = UUID.randomUUID().toString() + "."
 				+ FilenameUtils.getName(event.getFile().getFileName());
-		final Path destination = Paths.get(FILELOCATION + systemFileName);
+	
+		final Path destination = Paths.get(realPath+FILELOCATION + systemFileName);
 		LOGGER.info("Path::" + destination);
 		InputStream bytes = null;
 		try {
@@ -59,7 +65,7 @@ public class UploadUtility implements Serializable, DbConstant {
 			documents.setOriginalFileName(event.getFile().getFileName());
 			documents.setSysFilename(systemFileName);
 			documents.setValidDocCode(validationCode);
-			documents.setDocumentLoc(FILELOCATION);
+			documents.setDocumentLoc(realPath+FILELOCATION);
 			documents = documentsImpl.saveIntable(documents);
 		} catch (IOException e) {
 
@@ -70,10 +76,18 @@ public class UploadUtility implements Serializable, DbConstant {
 	}
 	public Documents fileUploadUtilUsers(FileUploadEvent event, String validationCode) throws Exception {
 		LOGGER.info("FILE ::::" + event.getFile().getFileName());
+		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
+	            .getExternalContext().getContext();
+	String realPath = ctx.getRealPath("/");
+		LOGGER.info("FILE tt::::" + realPath);
+	
 		Documents documents = new Documents();
 		String systemFileName = UUID.randomUUID().toString() + "."
 				+ FilenameUtils.getName(event.getFile().getFileName());
-		final Path destination = Paths.get(FILELOCATION + systemFileName);
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		
+		final Path destination = Paths.get(realPath+FILELOCATION + systemFileName);
 		LOGGER.info("Path::" + destination);
 		InputStream bytes = null;
 		HttpSession session = SessionUtils.getSession();
@@ -88,7 +102,7 @@ public class UploadUtility implements Serializable, DbConstant {
 			documents.setOriginalFileName(event.getFile().getFileName());
 			documents.setSysFilename(systemFileName);
 			documents.setValidDocCode(validationCode);
-			documents.setDocumentLoc(FILELOCATION);
+			documents.setDocumentLoc(realPath+FILELOCATION);
 			documents = documentsImpl.saveIntable(documents);
 			///Updating user image in db start here
 			Users us = new Users();

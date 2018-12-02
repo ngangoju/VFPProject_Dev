@@ -15,6 +15,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
@@ -81,9 +82,12 @@ public class FileUploadController implements Serializable, DbConstant {
 		int userid = (Integer) session.getAttribute("userProfile");
 		LOGGER.info("USER PROFILE ID::::::::::::::::::::::::::" + userid);
 		boolean valid = validateImage();
+		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
+	            .getExternalContext().getContext();
+	String realPath = ctx.getRealPath("/");
 		if (valid) {
 			Part uploadedFile = getFile();
-			final Path destination = Paths.get(Root_Path + "\\" + UUID.randomUUID().toString() + "."
+			final Path destination = Paths.get(realPath+FILELOCATION + "\\" + UUID.randomUUID().toString() + "."
 					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
 			LOGGER.info("Uploaded File name::------------>>>>>>"
 					+ FilenameUtils.getName(getSubmittedFileName(uploadedFile)));
