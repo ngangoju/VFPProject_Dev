@@ -41,35 +41,7 @@
 							<span class="glyphicon glyphicon-form">#{msg['message.header.institution.reqManagement']}</span>
 						</center>
 					</div>
-					<div class="panel-body">
-
-						<h:panelGroup layout="block"
-							rendered="#{not institutionController.valid and not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
-										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center>
-									</li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
-
-						<h:panelGroup layout="block"
-							rendered="#{institutionController.valid and  not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li style="list-style: none;" class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
-
-
+					<div class="panel-body"> 
 						<!-- Div for dashbord start-->
 						<h:panelGroup layout="block" id="container">
 							<p:outputPanel
@@ -178,8 +150,7 @@
 										<div class="card">
 
 											<div class="card-body">
-												<p:outputPanel
-													rendered="#{not institutionController.selctDiv}"
+												<p:outputPanel rendered="#{not instReqController.selctDiv}"
 													id="selct11" autoUpdate="true">
 													<div class="card-header">
 														<h4 class="card-title" style="margin-left: 2%">INSTITUTION
@@ -202,23 +173,63 @@
 																<div></div>
 															</h:column>
 															<h:column>
-																<p:calendar
-																	class="col-md-2 col-sm-2 col-xs-2 control-label"
-																	value="#{institutionController.from}"
-																	pattern="yyyy-MM-dd" required="true"
-																	requiredMessage="Date required" />
+
+																<h:inputText style="padding-left:2%" locale="#{facesContext.viewRoot.locale}"
+																	autocomplete="off" id="from" binding="#{from}"
+																	class="form-control input-sm" escape="true"
+																	value="#{instReqController.from}" maxlength="35"
+																	converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+																	<f:convertDateTime type="date" dateType="short"
+																		pattern="dd/MM/yyyy" />
+																	<f:validateLength maximum="35" />
+																</h:inputText>
+																<script>
+									                               $(function() {
+									                              	$('input[id*="from"]')
+										                    		.datepicker(
+											             			{
+												         			changeMonth : true,
+												        			changeYear : true,
+												        			maxDate : 0,
+													        		//minDate: 0,
+												         			dateFormat : "dd/mm/yy",
+													        		yearRange : "-100:+0",
+													        		buttonImage : "/resources/image/calendar1.png"
+													            	});
+									                               });  
+					                                			</script>
 															</h:column>
 															<h:column>
-																<p:calendar class="col-md-4 col-sm-3 col-xs-4"
-																	value="#{institutionController.to}"
-																	pattern="yyyy-MM-dd" required="true"
-																	requiredMessage="Date required" />
+																<h:inputText locale="#{facesContext.viewRoot.locale}"
+																	autocomplete="off" id="to" binding="#{to}"
+																	class="form-control input-sm" escape="true"
+																	value="#{instReqController.to}" maxlength="35"
+																	converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+																	<f:convertDateTime type="date" dateType="short"
+																		pattern="dd/MM/yyyy" />
+																	<f:validateLength maximum="35" />
+																</h:inputText>
+																<script>
+									                               $(function() {
+									                              	$('input[id*="to"]')
+										                    		.datepicker(
+											             			{
+												         			changeMonth : true,
+												        			changeYear : true,
+												        			maxDate : 0,
+													        		//minDate: 0,
+												         			dateFormat : "dd/mm/yy",
+													        		yearRange : "-100:+0",
+													        		buttonImage : "/resources/image/calendar1.png"
+													            	});
+									                               });  
+					                                			</script>
 															</h:column>
 															<h:column>
 																<h:commandButton
 																	class="col-md-4 btn btn-info btn-sm btn-block"
 																	value="Submit"
-																	action="#{institutionController.displayRequest()}">
+																	action="#{instReqController.displayRequests()}">
 																	<f:ajax render="table" execute="@form"
 																		onevent="showProgress" />
 																</h:commandButton>
@@ -231,7 +242,7 @@
 									</div>
 								</div>
 								<div class="card-footer" style="padding-top: 10px">
-									<p:outputPanel rendered="#{institutionController.selctDiv}"
+									<p:outputPanel rendered="#{instReqController.selctDiv}"
 										id="selct12" autoUpdate="true">
 										<div class="col-md-12 col-sm-2 col-xs-2 card-title">
 											<h:panelGrid columns="2" class="col-md-12 col-sm-2 col-xs-2">
@@ -252,9 +263,8 @@
 										<br />
 										<br />
 										<br />
-										<p:dataTable value="#{institutionController.pendinGrequests}"
-											var="ls" rowIndexVar="index" class="table" paginator="true"
-											rows="4"
+										<p:dataTable value="#{instReqController.requests}" var="ls"
+											rowIndexVar="index" class="table" paginator="true" rows="4"
 											paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 											rowsPerPageTemplate="4,6,8,10,12" id="table">
 											<p:column style="width:30px">
@@ -267,8 +277,8 @@
 												<f:facet name="header">
 													<h:outputText value="Name" />
 												</f:facet>
-												<h:outputText value="#{ls.institution.institutionName}"
-													size="10" />
+												<h:outputText
+													value="#{ls.institutionName}" size="10" />
 											</p:column>
 											<p:column style="border: none;">
 												<f:facet name="header">
@@ -300,14 +310,14 @@
 													<h:outputText value="Representative" />
 												</f:facet>
 												<h:outputText
-													value="#{ls.institution.institutionRepresenative.fname} #{ls.institution.institutionRepresenative.lname}" />
+													value="#{ls.institutionRepresenative.fname} #{ls.institutionRepresenative.lname}" />
 											</p:column>
 
 
 											<p:column headerText="Action">
 												<h:commandLink style="color:white"
 													class="btn btn-success 	glyphicon glyphicon-ok" value=""
-													action="#{institutionController.institutonConfirmation(ls)}"
+													action="#{instReqController.confirmRequest(ls)}"
 													ajax="false">
 													<f:ajax render="@form" execute="@form"
 														onevent="showProgress" />
@@ -319,11 +329,7 @@
 													<f:ajax render="@form" execute="@form"
 														onevent="showProgress" />
 												</h:commandLink>
-											</p:column>
-
-
-
-
+											</p:column> 
 										</p:dataTable>
 									</p:outputPanel>
 								</div>
@@ -601,7 +607,7 @@
 										</p:column>
 										<p:column headerText="#{msg['institutionForm.name']}">
 
-											<h:inputText id="name" value="#{ls.institutionName}"
+											<h:inputText id="name" value="#{ls.request.institutionName}"
 												size="10" rendered="#{ls.editable}" required="true"
 												requiredMessage="#{msg['institutionForm.requiered.name.message']}"
 												validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
@@ -609,7 +615,7 @@
 													pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
 												<f:validateLength maximum="25" />
 											</h:inputText>
-											<h:outputText value="#{ls.institutionName}"
+											<h:outputText value="#{ls.request.institutionName}"
 												rendered="#{not ls.editable}" />
 											<h:message errorClass="errorMsg1" for="name"></h:message>
 										</p:column>
@@ -617,7 +623,7 @@
 
 										<p:column headerText="#{msg['institutionForm.branchof']}">
 											<h:outputText
-												value="#{ls.institution.institution.getInstitutionName()}" />
+												value="#{ls.branch.request.getInstitutionName()}" />
 
 										</p:column>
 

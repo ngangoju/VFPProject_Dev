@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,11 +28,25 @@ public class InstitutionRegistrationRequest extends CommonDomain implements Seri
 	@Column(name = "instRegReqstId")
 	private int instRegReqstId;
 
+	@Column(name = "institutionName")
+	private String institutionName;
+
+	@Column(name = "institutionAddress")
+	private String institutionAddress;
+
 	@Column(name = "instRegReqstStatus")
 	private String instRegReqstStatus;
 
 	@Column(name = "instRegReqstType")
 	private String instRegReqstType;
+
+	@ManyToOne
+	@JoinColumn(name = "village")
+	private Village village;
+
+	@ManyToOne
+	@JoinColumn(name = "country")
+	private Country country;
 
 	@Column(name = "instRegReqstDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -40,6 +55,10 @@ public class InstitutionRegistrationRequest extends CommonDomain implements Seri
 	@ManyToOne
 	@JoinColumn(name = "institution")
 	private Institution institution;
+
+	@OneToOne
+	@JoinColumn
+	private Users institutionRepresenative;
 
 	public int getInstRegReqstId() {
 		return instRegReqstId;
@@ -79,6 +98,46 @@ public class InstitutionRegistrationRequest extends CommonDomain implements Seri
 
 	public void setInstRegReqstDate(Date instRegReqstDate) {
 		this.instRegReqstDate = instRegReqstDate;
+	}
+
+	public String getInstitutionName() {
+		return institutionName;
+	}
+
+	public void setInstitutionName(String institutionName) {
+		this.institutionName = institutionName;
+	}
+
+	public String getInstitutionAddress() {
+		return institutionAddress;
+	}
+
+	public void setInstitutionAddress(String institutionAddress) {
+		this.institutionAddress = institutionAddress;
+	}
+
+	public Users getInstitutionRepresenative() {
+		return institutionRepresenative;
+	}
+
+	public void setInstitutionRepresenative(Users institutionRepresenative) {
+		this.institutionRepresenative = institutionRepresenative;
+	}
+
+	public Village getVillage() {
+		return village;
+	}
+
+	public void setVillage(Village village) {
+		this.village = village;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 }

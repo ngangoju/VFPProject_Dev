@@ -183,8 +183,10 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			countries = countryImpl.getListWithHQL("select f from Country f");
 			provinces = provImpl.getListWithHQL("select f from Province f");
-			validInstitution = requestImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-			new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest","instRegReqstDate desc");
+			validInstitution = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "InstitutionRegistrationRequest",
+					"instRegReqstDate desc");
 
 		} catch (Exception e) {
 			setValid(false);
@@ -197,7 +199,12 @@ public class InstitutionController implements Serializable, DbConstant {
 		try
 
 		{
-               
+
+			// requests = requestImpl.getGenericListWithHQLParameter(
+			// new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+			// new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() },
+			// "InstitutionRegistrationRequest",
+			// "instRegReqstDate asc");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -211,19 +218,6 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 
 			// LOGGER.info(processFileUpload());
-			institution.setCreatedBy(usersSession.getViewId());
-			institution.setCrtdDtTime(timestamp);
-			institution.setGenericStatus(ACTIVE);
-			institution.setUpDtTime(timestamp);
-			institution.setInstitutionRepresenative(usersSession);
-			institution.setUpdatedBy(usersSession.getViewId());
-			institution.setInstitution(institutionImpl.getInstitutionById(institutionID, "institutionId"));
-			institution.setCountry(countryImpl.getCountryById(cntryId, "taskId"));
-			institution.setVillage(villageImpl.getVillageById(vid, "villageId"));
-			institution.setUpdatedBy(usersSession.getViewId());
-			institution.setInstitutionRegDate(timestamp);
-			institution.setInstitutionLogo(null);
-			institutionImpl.saveInstitution(institution);
 			request.setCreatedBy(usersSession.getViewId());
 			request.setCrtdDtTime(timestamp);
 			request.setGenericStatus(ACTIVE);
@@ -309,8 +303,11 @@ public class InstitutionController implements Serializable, DbConstant {
 		try {
 			reqst.setInstRegReqstStatus(ACCEPTED);
 			requestImpl.UpdateInstitRegReqsts(reqst);
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
+			saveInstitutionRequest(reqst);
+			SendSupportEmail sendMail = new SendSupportEmail();
+			sendMail.sendMailForInstitution(reqst.getInstitutionRepresenative().getFname(),
+					reqst.getInstitutionRepresenative().getFname(), getContactEmail(reqst), "Confirmation",
+					"Your Institution registration has been approved.");
 			displayRequest();
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -323,6 +320,39 @@ public class InstitutionController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public String saveInstitutionRequest(InstitutionRegistrationRequest reqst) {
+		try {
+
+			// LOGGER.info(processFileUpload());
+			institution.setCreatedBy(usersSession.getViewId());
+			institution.setCrtdDtTime(timestamp);
+			institution.setGenericStatus(ACTIVE);
+			institution.setUpDtTime(timestamp);
+			institution.setUpdatedBy(usersSession.getViewId());
+			institution.setInstitutionRegDate(timestamp);
+			institution.setInstLogo(null); 
+			institutionImpl.saveInstitution(reqst.getInstitution());
+			institution.setRequest(reqst);
+			saveContact(institution);
+			JSFMessagers.resetMessages();
+			setValid(true);
+			nextpage = true;
+			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
+			LOGGER.info(CLASSNAME + ":::Institution request not sent");
+			clearInstitutionFuileds();
+			return "";
+		} catch (HibernateException e) {
+			LOGGER.info(CLASSNAME + ":::Institution request not sent with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.savingFail.message"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+
 	}
 
 	public void institutonRejected(InstitutionRegistrationRequest reqst) {
@@ -357,13 +387,13 @@ public class InstitutionController implements Serializable, DbConstant {
 		insti = institutionImpl.getInstitutionById(dto.getInstitutionId(), "institutionId");
 		LOGGER.info("here update sart for " + dto + " Institution id " + dto.getInstitutionId());
 		dto.setEditable(false);
-		insti.setInstitutionName(dto.getInstitutionName());
-		insti.setCountry(dto.getCountry());
+		// insti.setInstitutionName(dto.getInstitutionName());
+		// insti.setCountry(dto.getCountry());
 		insti.setUpdatedBy(usersSession.getViewId());
 		insti.setUpDtTime(getTimestamp());
-		insti.setVillage(dto.getVillage());
-		insti.setInstitutionAddress(dto.getInstitutionAddress());
-		insti.setInstitutionName(dto.getInstitutionName());
+		// insti.setVillage(dto.getVillage());
+		// insti.setInstitutionAddress(dto.getInstitutionAddress());
+		// insti.setInstitutionName(dto.getInstitutionName());
 		institutionImpl.UpdateInstitution(insti);
 		return null;
 	}
@@ -442,14 +472,6 @@ public class InstitutionController implements Serializable, DbConstant {
 				InstitutionDto institutionDto = new InstitutionDto();
 				institutionDto.setEditable(false);
 				institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
-				institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
-				institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
-				institutionDto.setInstitution(inst.getInstitution());
-				institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
-				institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
-				institutionDto.setCountry(inst.getInstitution().getCountry());
-				institutionDto.setVillage(inst.getInstitution().getVillage());
-				institutionDto.setInstitutionLogo(inst.getInstitution().getInstitutionLogo());
 				dtos.add(institutionDto);
 			}
 			return dtos;
@@ -470,6 +492,7 @@ public class InstitutionController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings("static-access")
 	public void displayRequest() {
 		if (to.after(from)) {
 			if ((Formating.daysBetween(from, to) <= 30)) {
@@ -477,14 +500,20 @@ public class InstitutionController implements Serializable, DbConstant {
 					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 					Formating fmt = new Formating();
 					for (Object[] data : requestImpl.reportList(
-							"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							"select i.instRegReqstId,i.instRegReqstDate,i.institutionAddress,i.institutionName,i.country,i.institutionRepresenative,i.village from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(from)
 									+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
+
+						LOGGER.info(from + " TEST :::");
 						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 
 						request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
 						request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
-						request.setInstitution(((Institution) data[2]));
+						request.setInstitutionAddress(data[2] + "");
+						request.setInstitutionName(data[3] + "");
+						request.setCountry((Country) data[4]);
+						request.setVillage((Village) data[6]);
+						request.setInstitutionRepresenative((Users) data[5]);
 						pendinGrequests.add(request);
 					}
 					if (pendinGrequests != null) {
@@ -518,14 +547,19 @@ public class InstitutionController implements Serializable, DbConstant {
 					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
 					Formating fmt = new Formating();
 					for (Object[] data : requestImpl.reportList(
-							"select i.instRegReqstId,i.instRegReqstDate,i.institution from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
+							"select i.instRegReqstId,i.instRegReqstDate,i.institutionAddress,i.institutionName,i.country,i.institutionRepresenative,i.village from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(from)
 									+ "'  and i.instRegReqstStatus='rejected' and i.genericStatus='desactive'")) {
-						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 
+						LOGGER.info(from + " TEST :::");
+						InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 						request.setInstRegReqstId(Integer.parseInt(data[0] + ""));
 						request.setInstRegReqstDate(fmt.getMysqlDateFormt(data[1] + ""));
-						request.setInstitution(((Institution) data[2]));
+						request.setInstitutionAddress(data[2] + "");
+						request.setInstitutionName(data[3] + "");
+						request.setCountry((Country) data[4]);
+						request.setVillage((Village) data[6]);
+						request.setInstitutionRepresenative((Users) data[5]);
 						pendinGrequests.add(request);
 					}
 					if (pendinGrequests != null) {
@@ -553,23 +587,24 @@ public class InstitutionController implements Serializable, DbConstant {
 		renderDivdashboard = true;
 		renderallinstit = true;
 		selctDiv = false;
-
 	}
 
 	public void displayAllInstitutions() {
 		if (to.after(from)) {
 			if ((Formating.daysBetween(from, to) <= 30)) {
 				try {
-					pendinGrequests = new ArrayList<InstitutionRegistrationRequest>();
+					institutionDto = new InstitutionDto();
 					Formating fmt = new Formating();
 					for (Object[] data : requestImpl.reportList(
-							"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
-									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-									+ "'  and i.instRegReqstStatus='acepted' and i.genericStatus='active'")) {
-						pendinGrequests.add(requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""),
-								"instRegReqstId"));
+							"SELECT i.institutionId,institutionType,request,branch FROM tresscore.institution where institutionRegDate between '"
+									+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(from)
+									+ " and i.genericStatus='active'")) {
+						institutionDto.setInstitutionId(Integer.parseInt(data[0] + ""));
+						institutionDto.setRequest((InstitutionRegistrationRequest) data[2]);
+						institutionDto.setInstitutionType(data[1] + "");
+						institutionDto.setBranch((Institution) data[3]);
+						institutionDtos.add(institutionDto);
 					}
-					institutionDtos = display(pendinGrequests);
 					if (institutionDtos != null) {
 						selctDiv = true;
 					}
@@ -726,8 +761,8 @@ public class InstitutionController implements Serializable, DbConstant {
 
 		try {
 			Contact cnt = new Contact();
-			cnt = contactImpl.getModelWithMyHQL(new String[] { "institution" },
-					new Object[] { instReg.getInstitution() }, "from Contact");
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "user" },
+					new Object[] { instReg.getInstitutionRepresenative() }, "from Contact");
 			return cnt.getEmail();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -753,8 +788,9 @@ public class InstitutionController implements Serializable, DbConstant {
 
 		try {
 			Contact cnt = new Contact();
-			cnt = contactImpl.getModelWithMyHQL(new String[] { "institution" },
-					new Object[] { instReg.getInstitution() }, "from Contact");
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "user" },
+					new Object[] { instReg.getInstitutionRepresenative() }, "from Contact");
+			LOGGER.info("Here we Areeeeeeeeeeeeeeeeeeeeeee" + cnt);
 			return cnt.getPhone();
 		} catch (Exception e) {
 			e.printStackTrace();

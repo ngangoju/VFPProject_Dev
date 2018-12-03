@@ -69,4 +69,10 @@ public class Country {
 		this.countryName_rw = countryName_rw;
 	}
 
+	@Override
+	public String toString() {
+		return countryName_en;
+	}
+	
+
 }

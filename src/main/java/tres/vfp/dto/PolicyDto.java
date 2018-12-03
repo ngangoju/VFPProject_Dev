@@ -1,40 +1,39 @@
-package tres.domain;
+package tres.vfp.dto;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "InstitutionEscaletePolicy")
-public class InstitutionEscaletePolicy extends CommonDomain {
+import tres.domain.Institution;
+
+public class PolicyDto implements Serializable{
 	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue
-	@Column(name = "policyId")
+	
 	private int policyId;
-
-	@Column(name = "reschduleTime")
+ 
 	private int reschduleTime;
-
-	@Column(name = "Status")
+ 
 	private String Status;
-
-	@OneToOne
-	@JoinColumn(name = "institution")
+ 
 	private Institution institution;
-
-	@Column(name = "LongMarks")
+ 
 	private double LongMarks;
-
-	@Column(name = "mediumgMarks")
+ 
 	private double mediumgMarks;
-
-	@Column(name = "shortMarks")
+ 
 	private double shortMarks;
+	
+	private boolean editable;
+
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
 
 	public int getPolicyId() {
 		return policyId;
@@ -92,5 +91,4 @@ public class InstitutionEscaletePolicy extends CommonDomain {
 		this.shortMarks = shortMarks;
 	}
 	
-
 }

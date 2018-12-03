@@ -28,54 +28,23 @@ public class Institution extends CommonDomain implements Serializable {
 	@Column(name = "institutionId")
 	private int institutionId;
 
-	@Column(name = "institutionName")
-	private String institutionName;
-
-	@Column(name = "institutionAddress")
-	private String institutionAddress;
-
 	@Column(name = "institutionRegDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date institutionRegDate;
 
-	@OneToOne
-	@JoinColumn(name = "institutionLogo")
-	private UploadingFiles institutionLogo;
-
-	public String getInstitutionAddress() {
-		return institutionAddress;
-	}
-
-	public void setInstitutionAddress(String institutionAddress) {
-		this.institutionAddress = institutionAddress;
-	}
+	@ManyToOne
+	@JoinColumn(name = "branch")
+	private Institution branch;
 
 	@Column(name = "institutionType")
 	private String institutionType;
-
-	@ManyToOne
-	@JoinColumn(name = "village")
-	private Village village;
-
-	@ManyToOne
-	@JoinColumn(name = "country")
-	private Country country;
+	
+	@Column(name="instLogo")
+	private String instLogo;
 
 	@OneToOne
-	@JoinColumn
-	private Users institutionRepresenative;
-
-	@ManyToOne
-	@JoinColumn(name = "institution")
-	private Institution institution;
-
-	public Users getInstitutionRepresenative() {
-		return institutionRepresenative;
-	}
-
-	public void setInstitutionRepresenative(Users institutionRepresenative) {
-		this.institutionRepresenative = institutionRepresenative;
-	}
+	@JoinColumn(name = "request")
+	private InstitutionRegistrationRequest request;
 
 	public int getInstitutionId() {
 		return institutionId;
@@ -83,14 +52,6 @@ public class Institution extends CommonDomain implements Serializable {
 
 	public void setInstitutionId(int institutionId) {
 		this.institutionId = institutionId;
-	}
-
-	public String getInstitutionName() {
-		return institutionName;
-	}
-
-	public void setInstitutionName(String institutionName) {
-		this.institutionName = institutionName;
 	}
 
 	public String getInstitutionType() {
@@ -101,14 +62,6 @@ public class Institution extends CommonDomain implements Serializable {
 		this.institutionType = institutionType;
 	}
 
-	public Village getVillage() {
-		return village;
-	}
-
-	public void setVillage(Village village) {
-		this.village = village;
-	}
-
 	public Date getInstitutionRegDate() {
 		return institutionRegDate;
 	}
@@ -117,33 +70,29 @@ public class Institution extends CommonDomain implements Serializable {
 		this.institutionRegDate = institutionRegDate;
 	}
 
-	public Country getCountry() {
-		return country;
+	public Institution getBranch() {
+		return branch;
 	}
 
-	public void setCountry(Country country) {
-		this.country = country;
+	public void setBranch(Institution branch) {
+		this.branch = branch;
 	}
 
-	public Institution getInstitution() {
-		return institution;
+	public InstitutionRegistrationRequest getRequest() {
+		return request;
 	}
 
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
+	public void setRequest(InstitutionRegistrationRequest request) {
+		this.request = request;
 	}
 
-	public UploadingFiles getInstitutionLogo() {
-		return institutionLogo;
+	public String getInstLogo() {
+		return instLogo;
 	}
 
-	public void setInstitutionLogo(UploadingFiles institutionLogo) {
-		this.institutionLogo = institutionLogo;
+	public void setInstLogo(String instLogo) {
+		this.instLogo = instLogo;
 	}
-
-	@Override
-	public String toString() {
-		return institutionName;
-	}
+	
 
 }

@@ -3,8 +3,11 @@ package tres.vfp.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+
 import tres.domain.Country;
 import tres.domain.Institution;
+import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.UploadingFiles;
 import tres.domain.Users;
 import tres.domain.Village;
@@ -15,23 +18,17 @@ public class InstitutionDto implements Serializable {
 
 	private int institutionId;
 
-	private String institutionName;
-
-	private String institutionAddress;
-
 	private Date institutionRegDate;
 
-	private Institution institution;
+	private String institutionType;
+	
+	private String instLogo;
 
-	private Country country;
+	private Institution branch;
 
-	private Village village;
-
-	private Users user;
+	private InstitutionRegistrationRequest request;
 
 	private boolean editable;
-
-	private UploadingFiles institutionLogo;
 
 	public boolean isEditable() {
 		return editable;
@@ -49,22 +46,6 @@ public class InstitutionDto implements Serializable {
 		this.institutionId = institutionId;
 	}
 
-	public String getInstitutionName() {
-		return institutionName;
-	}
-
-	public void setInstitutionName(String institutionName) {
-		this.institutionName = institutionName;
-	}
-
-	public String getInstitutionAddress() {
-		return institutionAddress;
-	}
-
-	public void setInstitutionAddress(String institutionAddress) {
-		this.institutionAddress = institutionAddress;
-	}
-
 	public Date getInstitutionRegDate() {
 		return institutionRegDate;
 	}
@@ -73,49 +54,37 @@ public class InstitutionDto implements Serializable {
 		this.institutionRegDate = institutionRegDate;
 	}
 
-	public Institution getInstitution() {
-		return institution;
+	public Institution getBranch() {
+		return branch;
 	}
 
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
+	public void setBranch(Institution branch) {
+		this.branch = branch;
 	}
 
-	public Users getUser() {
-		return user;
+	public InstitutionRegistrationRequest getRequest() {
+		return request;
 	}
 
-	public void setUser(Users user) {
-		this.user = user;
+	public void setRequest(InstitutionRegistrationRequest request) {
+		this.request = request;
 	}
 
-	public Country getCountry() {
-		return country;
+	public String getInstitutionType() {
+		return institutionType;
 	}
 
-	public void setCountry(Country country) {
-		this.country = country;
+	public void setInstitutionType(String institutionType) {
+		this.institutionType = institutionType;
 	}
 
-	public Village getVillage() {
-		return village;
+	public String getInstLogo() {
+		return instLogo;
 	}
 
-	public void setVillage(Village village) {
-		this.village = village;
+	public void setInstLogo(String instLogo) {
+		this.instLogo = instLogo;
 	}
-
-	@Override
-	public String toString() {
-		return "InstitutionDto [institutionName=" + institutionName + "]";
-	}
-
-	public UploadingFiles getInstitutionLogo() {
-		return institutionLogo;
-	}
-
-	public void setInstitutionLogo(UploadingFiles institutionLogo) {
-		this.institutionLogo = institutionLogo;
-	}
+	
 
 }
