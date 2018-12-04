@@ -64,7 +64,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private String CLASSNAME = "LoadUserInformationsController :: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid, chngDiv, skip, nextpage, frstDiv, cmpltDiv, bnchDiv, div1, div2, div3, div3_1,
+	private boolean isValid, chngDiv, skip, nextpage, frstDiv, cmpltDiv, bnchDiv, div1,div4, div2, div3, div3_1, hasContact,
 			profileEditable;
 	private int cntryId, vid, pid, cid, did, sid;
 	/* end manage validation messages */
@@ -82,6 +82,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private String rootpath = Root_Path;
 	private Country country;
 	private String instName, instaddress;
+	private int rid;
 
 	private Documents documents;
 	private InstitutionDto dto = new InstitutionDto();
@@ -197,6 +198,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					} else {
 						nextpage = true;
 					}
+				} else {
+					hasContact = true;
 				}
 				countries = countryImpl.getListWithHQL("select f from Country f");
 				provinces = provImpl.getListWithHQL("select f from Province f");
@@ -229,6 +232,22 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	}
 
 	/* method for render province panel ends */
+
+	/* branch div method starts */
+	public void SaveBranchContact() { 
+		try {
+		Institution institutn=new Institution();
+		institutn=institutionImpl.getInstitutionById(rid, "institutionId");
+			saveContact(institutn);
+		} catch (Exception e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	/* branch div method ends */
 
 	/* provinces and cells methods starts */
 
@@ -323,14 +342,25 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	/* method for saving contact starts */
 	public String saveContact() throws Exception {
 		try {
-			contact = new InstitutionContact();
 			institution = institutionImpl.getModelWithMyHQL(new String[] { "request" },
 					new Object[] { requestImpl.getModelWithMyHQL(
 							new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
 							new Object[] { usersSession, "HeadQuoter", ACTIVE },
 							"from InstitutionRegistrationRequest") },
 					"from Institution");
+			saveContact(institution);
+			return "";
+		} catch (HibernateException e) {
+			return "";
+		}
 
+	}
+
+	/* saving contact ends */
+	/* Contact method starts */
+	public void saveContact(Institution institution) {
+		try {
+			contact = new InstitutionContact();
 			contact.setCreatedBy(usersSession.getViewId());
 			contact.setPhone(tel);
 			contact.setPobox(pobx);
@@ -348,7 +378,6 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
 			LOGGER.info(CLASSNAME + ":::Contact Details is saved");
 			backToprofile();
-			return "";
 		} catch (HibernateException e) {
 			div2 = true;
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
@@ -357,12 +386,10 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error" + e.getMessage()));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
-			return "";
 		}
-
 	}
-	/* saving contact ends */
 
+	/* Contact method ends */
 	/* saving branch starts */
 	public String saveBranchRequest() {
 		try {
@@ -985,6 +1012,15 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		frstDiv = true;
 		div1 = true;
 	}
+	
+	
+
+	public void institutionDiv() {
+		chngDiv = true;
+		frstDiv = true;
+		div1 = true;
+		cmpltDiv = true;
+	}
 
 	/* method for displaying default div */
 	public void defaultDiv() {
@@ -997,6 +1033,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			frstDiv = false;
 			bnchDiv = false;
 			div1 = false;
+			div2 = false;
 			return "";
 		} catch (Exception e) {
 			return "";
@@ -1019,6 +1056,16 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		try {
 			frstDiv = true;
 			div2 = true;
+			return "";
+		} catch (Exception e) {
+			return "";
+		}
+	}
+	
+	public String saveInstitutionBranchContact() {
+		try {
+			frstDiv = true;
+			div4 = true;
 			return "";
 		} catch (Exception e) {
 			return "";
@@ -1330,5 +1377,30 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void setPobx(String pobx) {
 		this.pobx = pobx;
 	}
+
+	public boolean isHasContact() {
+		return hasContact;
+	}
+
+	public void setHasContact(boolean hasContact) {
+		this.hasContact = hasContact;
+	}
+
+	public boolean isDiv4() {
+		return div4;
+	}
+
+	public void setDiv4(boolean div4) {
+		this.div4 = div4;
+	}
+
+	public int getRid() {
+		return rid;
+	}
+
+	public void setRid(int rid) {
+		this.rid = rid;
+	}
+	
 
 }
