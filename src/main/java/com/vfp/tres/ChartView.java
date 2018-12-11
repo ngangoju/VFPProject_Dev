@@ -47,18 +47,23 @@ public class ChartView implements Serializable, DbConstant{
 	UserCategoryImpl userCategoryimpl=new UserCategoryImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
 	Task tc= new Task();
+	
 	public JFreeChart generateBarChart() {
+		
 		LOGGER.info("mwenedata richard");
 		DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Object[] data:  activityImpl.reportList("select count(*),a.status,tas.taskName from Task tas,Activity a  where  a.task =tas.taskId group by a.description order by tas.taskName")){ 
-			dataSet.setValue((Number) data[0], data[1]+"",data[2]+""); }
-		JFreeChart chart = ChartFactory.createBarChart("Activities allocation by RICHARD","Task", "Number of acitvities", dataSet, PlotOrientation.VERTICAL, true, true, false );
-		chart.setBorderVisible(false);
+		dataSet.setValue((Number) data[0], data[1]+"",data[2]+""); }
+		
+		JFreeChart chart = ChartFactory.createBarChart3D("Activities allocation by RICHARD",
+				"Task", "Number of acitvities", dataSet, PlotOrientation.VERTICAL, true, true, false );
+		chart.setBorderVisible(true);
 		 return chart;
 	}       
-    public void go() {
-		LOGGER.info("richard");
-		writeChartToPDF(generateBarChart(), 600, 600);
+    public void go(){
+    	
+		LOGGER.info("richard:::::::::::::::::::::::::::::::::::::::::::::::::::mwene");
+		writeChartToPDF(generateBarChart(), 400, 300);
 	}
     
     public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputStream baos, String fileName) {
@@ -98,7 +103,7 @@ public class ChartView implements Serializable, DbConstant{
 			PdfTemplate template = contentByte.createTemplate(width, height);
 			Graphics2D graphics2d = template.createGraphics(width, height,
 					new DefaultFontMapper());
-			Rectangle2D rectangle2d = new Rectangle2D.Double(0, 0, width,height);
+			Rectangle2D rectangle2d = new Rectangle2D.Double(-50, -50, width,height);
 
 			chart.draw(graphics2d, rectangle2d);
 			

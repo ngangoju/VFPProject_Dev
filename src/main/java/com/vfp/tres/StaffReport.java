@@ -133,9 +133,7 @@ public class StaffReport implements Serializable, DbConstant {
 
 		try {
 			
-			/*boardDetails= boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "Board", "boardId asc");*/
-		
-			ClearanceDtoDetails=myClearance();
+			//ClearanceDtoDetails=myClearance();
 		} catch (Exception e) {
 		}
 	}
@@ -452,23 +450,20 @@ public void updateTable() throws Exception {
 		renderedchart=true;
 	}
 
-}public void anotherClearance() {
-	
 }
-
 
 public List<ClearanceDto> myClearance() {
 	try {		
 		ClearanceDtoDetails = new ArrayList<ClearanceDto>();
-		for (Object[] data : institutionReportViewImpl.reportList(
-				"SELECT p.details,t.taskName, sum(case  when  i.institutionName in ('BRD','kamana')  then 1 else 0 end),"
-				+ "sum(case when (i.institutionName in ('BRD','kamana') and a.status='done' ) then 1 else 0 end),(sum(case when (i.institutionName in ('BRD','kamana') and a.status='done' ) then 1 else 0 end) /sum(case  when i.institutionName in ('BRD','kamana')\r\n" + 
-				"then 1 else 0 end))*100 as rate from Institution i,StrategicPlan p,Task t,Board b,Users u,Activity a where t.taskId=a.task and u.userId=a.user \r\n" + 
-				"and a.user=u.userId and b.boardId=u.board and t.strategicplan=p.planId and b.institution=i.institutionId\r\n" + 
-				"group by p.details,t.taskName"
-					)) {
-			
-			LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "+ data[1] + "");
+		
+		
+				
+                 ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask, sum(case  when  institutionName in ('BRD','kamana')  then 1 else 0 end),\r\n" + 
+						"sum(case when (institutionName in ('BRD','kamana') and status='Completed' ) then 1 else 0 end),\r\n" + 
+						"(sum(case when (institutionName in ('BRD','kamana') and status='Completed' ) then 1 else 0 end) /sum(case  when institutionName in ('BRD','kamana')\r\n" + 
+						"then 1 else 0 end))*100 from InstitutionReportView group by stategicplan,mytask"
+		)) {
 			
 			ClearanceDto userDtos = new ClearanceDto();
 			
@@ -476,16 +471,17 @@ public List<ClearanceDto> myClearance() {
 			userDtos.setTaskName(data[1] + "");
 			userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
 			userDtos.setNumberOfFinishedActivities(Integer.parseInt(data[3] + ""));
+			if(data[4]==null) {
 			userDtos.setRate(Double.parseDouble(data[4]+""));
-			
+			}
 			ClearanceDtoDetails.add(userDtos);
-		}
 			
+		}	
 		return(ClearanceDtoDetails);
 		
 		
 	} catch (Exception e) {
-		// TODO: handle exception
+		e.printStackTrace();
 	}
 	
 	
@@ -506,7 +502,7 @@ public List<Clearance>Clearancedetailss() throws Exception{
 
 		}else {
 		
-			JSFMessagers.addErrorMessage("Your institution does not have any Strategic plan");
+			//JSFMessagers.addErrorMessage("Your institution does not have any Strategic plan");
 		}
 		
 	} catch (Exception e) {

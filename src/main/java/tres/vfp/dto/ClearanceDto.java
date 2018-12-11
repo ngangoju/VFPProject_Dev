@@ -5,18 +5,18 @@ import java.io.Serializable;
 public class ClearanceDto implements Serializable {	
 	private static final long serialVersionUID = 1L;
 	
-	
-	private String Strategicplan;
+	private String strategicplan;
 	private String taskName;
 	private int numberOfActivities;
 	private int numberOfFinishedActivities;
 	private double rate;
 	private boolean editable;
+	
 	public String getStrategicplan() {
-		return Strategicplan;
+		return strategicplan;
 	}
 	public void setStrategicplan(String strategicplan) {
-		Strategicplan = strategicplan;
+		this.strategicplan = strategicplan;
 	}
 	public String getTaskName() {
 		return taskName;
