@@ -13,7 +13,7 @@ public class GenerateNotificationTemplete {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
 	public String sendEmailNotification(String receiverEmail, String receiverNames, String subJect,
-			String notificationMassage) {
+			String notificationMassage)  throws AddressException,MessagingException {
 		String head = "";
 		String footer = "";
 		String content = "";
@@ -35,20 +35,12 @@ public class GenerateNotificationTemplete {
 
 		String fullMail = "";
 		fullMail = head + content + footer;
-		try {
+		
 			sendMail.sendEmail(receiverEmail, subJect, fullMail);
-			LOGGER.info("Email notification sent successfull to::" + receiverEmail);
-		} catch (AddressException e) {
-			LOGGER.info("This content" + notificationMassage + " was not send to MY BE wrong address check email ::"
-					+ receiverEmail + " on " + timestamp);
-			LOGGER.info("sendEmailNotification :: Notifaction Exception check email  ::" + e.getMessage());
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			LOGGER.info(
-					"This content" + notificationMassage + " was not send to ::" + receiverEmail + " on " + timestamp);
-			LOGGER.info("sendEmailNotification :: Notifaction  MessagingException  ::" + e.getMessage());
-			e.printStackTrace();
-		}
+		
+			
+		
+		
 
 		return "";
 	}

@@ -38,15 +38,16 @@ import tres.common.SessionUtils;
 import tres.dao.impl.InstitutionImpl;
 import tres.domain.Institution;
 import tres.domain.Users;
+
 @ManagedBean
 @ViewScoped
 public class InstitutionReportController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 	private String CLASSNAME = "InstitutionReportController ";
 	private static final long serialVersionUID = 1L;
-	InstitutionController institutionController=new InstitutionController();
+	InstitutionController institutionController = new InstitutionController();
 	private InstitutionImpl institutionImpl = new InstitutionImpl();
-	private Institution institution=new Institution();
+	private Institution institution = new Institution();
 	private List<Institution> institutions = new ArrayList<Institution>();
 	private Users usersSession;
 	private Users users;
@@ -64,20 +65,17 @@ public class InstitutionReportController implements Serializable, DbConstant {
 		if (institution == null) {
 			institution = new Institution();
 		}
-	
+
 		try {
-			
-			institutions = institutionImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
-			new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "Institution","institutionId desc");
-			
-			
-			
+
+			institutions = institutionImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus", "createdBy" },
+					new Object[] { ACTIVE, ACCEPTED, usersSession.getViewId() }, "Institution", "institutionId desc");
 
 		} catch (Exception e) {
 		}
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	public void createPdfforInstitution() throws IOException, DocumentException {
 
@@ -95,8 +93,8 @@ public class InstitutionReportController implements Serializable, DbConstant {
 		}
 
 		try {
-			institutions=institutionImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Institution","institutionId asc");
+			institutions = institutionImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "Institution", "institutionId asc");
 			if (institutions.size() > 0) {
 				document.add(new Paragraph("\n"));
 				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
@@ -130,10 +128,10 @@ public class InstitutionReportController implements Serializable, DbConstant {
 				pc5.setBackgroundColor(BaseColor.ORANGE);
 				table.addCell(pc5);
 				table.setHeaderRows(2);
-				
+
 				HttpSession session = SessionUtils.getSession();
 				usersSession = (Users) session.getAttribute("userSession");
-				
+
 				if (users == null) {
 					users = new Users();
 				}
@@ -141,35 +139,36 @@ public class InstitutionReportController implements Serializable, DbConstant {
 				if (institution == null) {
 					institution = new Institution();
 				}
-				
-			for(Institution ins:institutions) {
-				table.addCell(ins.getInstitutionName());
-				table.addCell(ins.getInstitutionAddress());
-				table.addCell(ins.getInstitutionRegDate()+"");
-				table.addCell(ins.getCountry().getCountryName_en());
-				table.addCell(ins.getInstitutionType());		
+
+				for (Institution ins : institutions) {
+					table.addCell(ins.getRequest().getInstitutionName());
+					table.addCell(ins.getRequest().getInstitutionAddress());
+					table.addCell(ins.getInstitutionRegDate() + "");
+					table.addCell(ins.getRequest().getCountry().getCountryName_en());
+					table.addCell(ins.getInstitutionType());
+				}
+				document.add(table);
+
+				document.close();
+
+				writePDFToResponse(context.getExternalContext(), baos, "Institution_report");
+
+				context.responseComplete();
+
+			} else {
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			}
-			document.add(table);
-
-			document.close();
-
-			writePDFToResponse(context.getExternalContext(), baos, "Institution_report");
-
-			context.responseComplete();
-
-		} else {
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-		}	
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
-			
+
 		}
-		
+
 	}
+
 	public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputStream baos, String fileName) {
 		try {
 			externalContext.responseReset();
@@ -206,7 +205,6 @@ public class InstitutionReportController implements Serializable, DbConstant {
 					(document.right() - document.left()) / 2 + document.leftMargin(), document.bottom() - 10, 0);
 		}
 	}
-	
 
 	public void updateTable() throws Exception {
 		if (myChoice.equalsIgnoreCase(pdfFormat)) {
@@ -215,114 +213,101 @@ public class InstitutionReportController implements Serializable, DbConstant {
 			renderedspdf = false;
 		}
 	}
+
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
+
 	public void setCLASSNAME(String cLASSNAME) {
 		CLASSNAME = cLASSNAME;
 	}
+
 	public InstitutionController getInstitutionController() {
 		return institutionController;
 	}
+
 	public void setInstitutionController(InstitutionController institutionController) {
 		this.institutionController = institutionController;
 	}
+
 	public static Logger getLogger() {
 		return LOGGER;
 	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
 
 	public InstitutionImpl getInstitutionImpl() {
 		return institutionImpl;
 	}
 
-
 	public void setInstitutionImpl(InstitutionImpl institutionImpl) {
 		this.institutionImpl = institutionImpl;
 	}
-
 
 	public Institution getInstitution() {
 		return institution;
 	}
 
-
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
-
 
 	public List<Institution> getInstitutions() {
 		return institutions;
 	}
 
-
 	public void setInstitutions(List<Institution> institutions) {
 		this.institutions = institutions;
 	}
-
 
 	public Users getUsersSession() {
 		return usersSession;
 	}
 
-
 	public void setUsersSession(Users usersSession) {
 		this.usersSession = usersSession;
 	}
-
 
 	public Users getUsers() {
 		return users;
 	}
 
-
 	public void setUsers(Users users) {
 		this.users = users;
 	}
-
 
 	public JSFBoundleProvider getProvider() {
 		return provider;
 	}
 
-
 	public void setProvider(JSFBoundleProvider provider) {
 		this.provider = provider;
 	}
-
 
 	public boolean isValid() {
 		return isValid;
 	}
 
-
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
 	}
-
 
 	public String getMyChoice() {
 		return myChoice;
 	}
 
-
 	public void setMyChoice(String myChoice) {
 		this.myChoice = myChoice;
 	}
-
 
 	public boolean isRenderedspdf() {
 		return renderedspdf;
 	}
 
-
 	public void setRenderedspdf(boolean renderedspdf) {
 		this.renderedspdf = renderedspdf;
 	}
-
 
 }

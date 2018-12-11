@@ -161,14 +161,7 @@ public class InstitutionPolicyController implements Serializable, DbConstant {
 				InstitutionDto institutionDto = new InstitutionDto();
 				institutionDto.setEditable(false);
 				institutionDto.setInstitutionRegDate(inst.getInstitution().getInstitutionRegDate());
-				institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId());
-				institutionDto.setInstitutionName(inst.getInstitution().getInstitutionName());
-				institutionDto.setInstitution(inst.getInstitution());
-				institutionDto.setInstitutionAddress(inst.getInstitution().getInstitutionAddress());
-				institutionDto.setUser(inst.getInstitution().getInstitutionRepresenative());
-				institutionDto.setCountry(inst.getInstitution().getCountry());
-				institutionDto.setVillage(inst.getInstitution().getVillage());
-				institutionDto.setInstitutionLogo(inst.getInstitution().getInstitutionLogo());
+				institutionDto.setInstitutionId(inst.getInstitution().getInstitutionId()); 
 				dtos.add(institutionDto);
 			}
 			return dtos;

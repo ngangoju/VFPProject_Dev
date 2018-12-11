@@ -552,6 +552,7 @@ public class UserContactController implements Serializable, DbConstant {
 				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), useremail);
 				// ::: end sending email action:::::::::::://
 				if (verifyemail) {
+					LOGGER.info("returing values controller"+verifyemail);
 					contact.setEmail(useremail);
 					contact.setUpdatedBy(usersSession.getViewId());
 					// :::saving contact action:::::::::::://
@@ -565,7 +566,7 @@ public class UserContactController implements Serializable, DbConstant {
 				} else {
 					JSFMessagers.resetMessages();
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
 
 				}
 			} else {

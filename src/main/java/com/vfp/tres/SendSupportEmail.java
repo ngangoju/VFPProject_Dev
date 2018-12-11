@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -70,13 +72,25 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 				+ "      <td> <a href='http://localhost:8080/vfpProject_v1/default.xhtml'>click here to acces the service</a>  </td></tr>"
 				+ "  </tbody>\n" + "</table>\n";
 		/* End send content in table sample */
-		gen.sendEmailNotification("ngangoju@gmail.com", "Support Team ", need, msg);
+		try {
+			gen.sendEmailNotification("ngangoju@gmail.com", "Support Team ", need, msg);
+		} catch (AddressException e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+			e.printStackTrace();
+		}
 		LOGGER.info("::: notidficatio sent   ");
 	}
 
 	public boolean sendMailTestVersion(String fname, String lname, String email) {
 
-		boolean valid;
+		boolean valid=false;
 		if ((null != fname) && (null != lname) && (null != email)) {
 			String msg = "<p>Please take look on the bellow request.</p>" + "<table width=\"50%\" border=\"5px\">\n"
 					+ "  <tbody>\n" + "	<tr>" + "      <td class=\"labelbold\">Custome Names</td>\n" + "      <td>\n"
@@ -87,13 +101,36 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 					+ "<tr>" + "      <td class=\"labelbold\">Application URL</td>\n" + "      <td> <a href=" + LINK
 					+ "vfpProject_v1/default.xhtml>click here to acces the service</a>  </td></tr>" + "  </tbody>\n"
 					+ "</table>\n";
-			valid = true;
+			
 			/* End send content in table sample */
-			gen.sendEmailNotification(email, fname + " " + lname + "", "Support Team", msg);
+			try {
+				
+				gen.sendEmailNotification(email, fname + " " + lname + "", "Support Team", msg);
+				valid = true;
+			} catch (AddressException e) {
+				LOGGER.info("returing false1");
+				valid = false;
+				setValid(false);
+				e.printStackTrace();
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
+				e.printStackTrace();
+				LOGGER.info("returing false2");
+				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::"
+						+ email + " on " + timestamp);
+			} catch (MessagingException e) {
+			LOGGER.info(
+						"This content" + msg + " was not send to ::" + email + " on " + timestamp);
+				valid = false;
+				setValid(false);
+				e.printStackTrace();
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+				e.printStackTrace();
+			}
 			LOGGER.info("::: notidficatio sent   ");
 		} else {
 			valid = false;
 		}
+		LOGGER.info("returing values"+valid);
 		return (valid);
 	}
 
@@ -111,9 +148,22 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 				+ "      <td> <a href='http://localhost:8080/vfpProject_v1/default.xhtml'>click here to acces the service</a>  </td></tr>"
 				+ "  </tbody>\n" + "</table>\n";
 		/* End send content in table sample */
-		gen.sendEmailNotification(email, "Institution Registration Confirmation ", need, msg);
+		try {
+			gen.sendEmailNotification(email, "Institution Registration Confirmation ", need, msg);
+		} catch (AddressException e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+			e.printStackTrace();
+		}
 		LOGGER.info("::: notidficatio sent   ");
 	}
+
 	public boolean isValid() {
 		return isValid;
 	}

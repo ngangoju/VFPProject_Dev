@@ -105,7 +105,7 @@ public class InstReqController implements Serializable, DbConstant {
 			for (Object[] data : requestImpl.reportList(
 					"select i.instRegReqstId,i.instRegReqstDate from InstitutionRegistrationRequest i where i.instRegReqstDate between '"
 							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
-							+ "'  and i.instRegReqstStatus='pending' and i.genericStatus='active'")) {
+							+ "' and i.genericStatus='active'")) {
 				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
 				request=requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId");
 				requests.add(request);
@@ -135,6 +135,8 @@ public class InstReqController implements Serializable, DbConstant {
 			sendMail.sendMailForInstitution(request.getInstitutionRepresenative().getFname(),
 					request.getInstitutionRepresenative().getLname(),getContactEmail(request), "Confirmation",
 					"Your Institution registration has been Confirmed.");
+			setValid(true); 
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.institution.confrmation"));
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();

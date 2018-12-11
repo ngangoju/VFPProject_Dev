@@ -184,7 +184,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 						new Object[] { usersSession, "HeadQuoter", ACTIVE }, "from InstitutionRegistrationRequest");
 				if ((request != null) && (request.getInstRegReqstStatus().equals(ACCEPTED))) {
 					institution = institutionImpl.getModelWithMyHQL(new String[] { "request", "institutionType" },
-							new Object[] { request, "HeadOffice" }, "from Institution");
+							new Object[] { request, "HeadQuoter" }, "from Institution");
 					if (institution != null) {
 						chngDiv = true;
 						logoPic = logoImpl.getModelWithMyHQL(new String[] { "institution" },

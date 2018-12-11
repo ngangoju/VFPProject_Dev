@@ -41,7 +41,7 @@
 							<span class="glyphicon glyphicon-form">#{msg['message.header.institution.reqManagement']}</span>
 						</center>
 					</div>
-					<div class="panel-body"> 
+					<div class="panel-body">
 						<!-- Div for dashbord start-->
 						<h:panelGroup layout="block" id="container">
 							<p:outputPanel
@@ -174,7 +174,8 @@
 															</h:column>
 															<h:column>
 
-																<h:inputText style="padding-left:2%" locale="#{facesContext.viewRoot.locale}"
+																<h:inputText style="padding-left:2%"
+																	locale="#{facesContext.viewRoot.locale}"
 																	autocomplete="off" id="from" binding="#{from}"
 																	class="form-control input-sm" escape="true"
 																	value="#{instReqController.from}" maxlength="35"
@@ -277,8 +278,7 @@
 												<f:facet name="header">
 													<h:outputText value="Name" />
 												</f:facet>
-												<h:outputText
-													value="#{ls.institutionName}" size="10" />
+												<h:outputText value="#{ls.institutionName}" size="10" />
 											</p:column>
 											<p:column style="border: none;">
 												<f:facet name="header">
@@ -313,7 +313,13 @@
 													value="#{ls.institutionRepresenative.fname} #{ls.institutionRepresenative.lname}" />
 											</p:column>
 
-
+											<p:column>
+												<f:facet name="header">
+													<h:outputText value="Status" />
+												</f:facet>
+												<h:outputText
+													value="#{ls.instRegReqstStatus}" />
+											</p:column>
 											<p:column headerText="Action">
 												<h:commandLink style="color:white"
 													class="btn btn-success 	glyphicon glyphicon-ok" value=""
@@ -329,7 +335,7 @@
 													<f:ajax render="@form" execute="@form"
 														onevent="showProgress" />
 												</h:commandLink>
-											</p:column> 
+											</p:column>
 										</p:dataTable>
 									</p:outputPanel>
 								</div>
