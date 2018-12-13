@@ -790,7 +790,7 @@ public class InstitutionController implements Serializable, DbConstant {
 			Contact cnt = new Contact();
 			cnt = contactImpl.getModelWithMyHQL(new String[] { "user" },
 					new Object[] { instReg.getInstitutionRepresenative() }, "from Contact");
-			LOGGER.info("Here we Areeeeeeeeeeeeeeeeeeeeeee" + cnt);
+			LOGGER.info("Here we Are" + cnt);
 			return cnt.getPhone();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -64,8 +64,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private String CLASSNAME = "LoadUserInformationsController :: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid, chngDiv, skip, nextpage, frstDiv, cmpltDiv, bnchDiv, div1,div4, div2, div3, div3_1, hasContact,
-			profileEditable;
+	private boolean isValid, chngDiv, skip, nextpage, frstDiv, cmpltDiv, bnchDiv, div1, div4, div2, div3, div3_1,
+			hasContact, profileEditable;
 	private int cntryId, vid, pid, cid, did, sid;
 	/* end manage validation messages */
 	private Users usersSession;
@@ -191,6 +191,9 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 								new Object[] { institution }, "from InstitutionLogo");
 						contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
 								new Object[] { institution }, "from InstitutionContact");
+						if (contact == null) {
+							hasContact = true;
+						}
 						instDtos = display(institution);
 
 						dto = dtoObject(institution);
@@ -198,8 +201,6 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					} else {
 						nextpage = true;
 					}
-				} else {
-					hasContact = true;
 				}
 				countries = countryImpl.getListWithHQL("select f from Country f");
 				provinces = provImpl.getListWithHQL("select f from Province f");
@@ -234,10 +235,10 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	/* method for render province panel ends */
 
 	/* branch div method starts */
-	public void SaveBranchContact() { 
+	public void SaveBranchContact() {
 		try {
-		Institution institutn=new Institution();
-		institutn=institutionImpl.getInstitutionById(rid, "institutionId");
+			Institution institutn = new Institution();
+			institutn = institutionImpl.getInstitutionById(rid, "institutionId");
 			saveContact(institutn);
 		} catch (Exception e) {
 			setValid(false);
@@ -312,13 +313,18 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void UploadLogo(FileUploadEvent event) {
 		UploadUtility ut = new UploadUtility();
 		String validationCode = "INSTITUTIONLOGO";
+		InstitutionLogo logoPic = new InstitutionLogo();
 		try {
 
 			institution = institutionImpl.getModelWithMyHQL(new String[] { "request" },
-					new Object[] { request = requestImpl.getModelWithMyHQL(new String[] { "institutionRepresenative" },
-							new Object[] { usersSession }, "from InstitutionRegistrationRequest") },
+					new Object[] { request = requestImpl.getModelWithMyHQL(
+							new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
+							new Object[] { usersSession, "HeadQuoter", ACTIVE },
+							"from InstitutionRegistrationRequest") },
 					"from Institution");
-			documents = ut.fileUploadUtil(event, validationCode);
+			documents = ut.fileUploadUtil(event, validationCode); 
+			institution.setInstLogo(documents.getOriginalFileName());
+			institutionImpl.UpdateInstitution(institution);
 			logoPic.setDocuments(documents);
 			logoPic.setInstitution(institution);
 			logoPic.setInstitutionRegDate(timestamp);
@@ -1012,8 +1018,6 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		frstDiv = true;
 		div1 = true;
 	}
-	
-	
 
 	public void institutionDiv() {
 		chngDiv = true;
@@ -1061,7 +1065,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			return "";
 		}
 	}
-	
+
 	public String saveInstitutionBranchContact() {
 		try {
 			frstDiv = true;
@@ -1401,6 +1405,5 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void setRid(int rid) {
 		this.rid = rid;
 	}
-	
 
 }

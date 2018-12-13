@@ -182,6 +182,14 @@
 																			<f:ajax render="@form" execute="@form"
 																				onevent="showProgress" />
 																		</h:commandLink> <h:commandLink style="color:white"
+																			class="btn btn-info 	glyphicon glyphicon-pencil"
+																			value="Pic"
+																			action="#{loadInstitutionProfile.editAction()}"
+																			ajax="false"
+																			rendered="#{not loadInstitutionProfile.dto.editable}">
+																			<f:ajax render="@form" execute="@form"
+																				onevent="showProgress" />
+																		</h:commandLink> <h:commandLink style="color:white"
 																			class="btn btn-danger 	glyphicon glyphicon-remove"
 																			value=""
 																			action="#{loadInstitutionProfile.cancelPolicy()}"
@@ -828,7 +836,8 @@
 											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
 										<f:selectItems value="#{loadInstitutionProfile.instDtos}"
 											var="option" itemValue="#{option.institutionId}"
-											itemLabel="#{option.request.institutionName}" itemLabelEscaped="true" />
+											itemLabel="#{option.request.institutionName}"
+											itemLabelEscaped="true" />
 									</h:selectOneMenu>
 								</div>
 								<div class="form-group row"
@@ -1169,6 +1178,60 @@
 								</div>
 							</p:outputPanel>
 						</div>
+					</p:outputPanel>
+					<p:outputPanel >
+						<table class="table table-hover">
+							<tbody>
+								<tr>
+									<td><h:commandLink style="color:white;margin-left:5px;"
+											class="btn btn-primary 	glyphicon glyphicon-upload"
+											action="#{strategicPlanController.uploadnewDoc()}"
+											value="Upload new document">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink></td>
+
+									<td><p:outputPanel
+											rendered="#{strategicPlanController.renderUpload}"
+											autoUpdate="true">
+											<h:commandLink style="color:white;margin-left:5px;"
+												class="btn btn-primary 	glyphicon glyphicon-upload"
+												action="#{strategicPlanController.showUploaded()}"
+												value="Show uploaded files">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+										</p:outputPanel> <p:outputPanel
+											rendered="#{strategicPlanController.renderHideBtn}"
+											autoUpdate="true">
+											<h:commandLink style="color:white;margin-left:5px;"
+												class="btn btn-primary 	glyphicon glyphicon-upload"
+												action="#{strategicPlanController.hideUploaded()}"
+												value="Hide uploaded files">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+										</p:outputPanel></td>
+
+								</tr>
+								<p:outputPanel rendered="#{strategicPlanController.rendered}"
+									autoUpdate="true">
+									<tr class="blue2">
+										<td colspan="2"><h:form>
+												<p:fileUpload
+													fileUploadListener="#{loadInstitutionProfile.UploadLogo}"
+													mode="advanced" dragDropSupport="true" multiple="true"
+													update="messages" sizeLimit="1000000" fileLimit="3"
+													allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
+
+												<p:growl id="messages" showDetail="true" />
+											</h:form></td>
+
+									</tr>
+								</p:outputPanel>
+
+							</tbody>
+						</table>
+
 					</p:outputPanel>
 				</p:outputPanel>
 			</h:form>

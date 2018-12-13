@@ -35,6 +35,9 @@ public class InstitutionEscaletePolicy extends CommonDomain {
 
 	@Column(name = "shortMarks")
 	private double shortMarks;
+	
+	@Column(name = "planPeriod")
+	private int planPeriod;
 
 	public int getPolicyId() {
 		return policyId;
@@ -90,6 +93,14 @@ public class InstitutionEscaletePolicy extends CommonDomain {
 
 	public void setShortMarks(double shortMarks) {
 		this.shortMarks = shortMarks;
+	}
+
+	public int getPlanPeriod() {
+		return planPeriod;
+	}
+
+	public void setPlanPeriod(int planPeriod) {
+		this.planPeriod = planPeriod;
 	}
 	
 

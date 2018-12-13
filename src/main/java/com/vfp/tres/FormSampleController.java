@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -302,7 +304,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public void sendMailTest() {
+	public void sendMailTest() throws AddressException, MessagingException {
 		/* sending content in a table example */
 		String name = "Mukamana";
 		String fname = "Eric";
@@ -319,7 +321,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		LOGGER.info("::: notidficatio sent   ");
 	}
 
-	public void sendUserMailTest(String useremail, String userfname, String userlname) {
+	public void sendUserMailTest(String useremail, String userfname, String userlname) throws AddressException, MessagingException {
 		/* sending content in a table example */
 		String name = "Mukamana";
 		String fname = "Eric";
