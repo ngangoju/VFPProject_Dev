@@ -135,4 +135,5 @@ public interface DbConstant {
 	public static final String LINK = "http://localhost:8080/";
 	public static final String SUPER_VISOR = "Superviser";
 	public static final String RESCHDULER = "reschduler";
+	public static final String PLAN_ACTIVITY="planned";
 }

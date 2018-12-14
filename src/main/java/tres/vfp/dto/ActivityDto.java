@@ -37,7 +37,12 @@ public class ActivityDto implements Serializable {
 	private Date createdDate;
 
 	private boolean editable;
-
+	private boolean action;
+	private boolean commmentAction;
+	private boolean replanAction;
+	private boolean reportAction;
+	private boolean doneAction;
+	private boolean planAction;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -142,4 +147,51 @@ public class ActivityDto implements Serializable {
 		this.endDate = endDate;
 	}
 
+	public boolean isAction() {
+		return action;
+	}
+
+	public void setAction(boolean action) {
+		this.action = action;
+	}
+
+	public boolean isCommmentAction() {
+		return commmentAction;
+	}
+
+	public void setCommmentAction(boolean commmentAction) {
+		this.commmentAction = commmentAction;
+	}
+
+	public boolean isReplanAction() {
+		return replanAction;
+	}
+
+	public void setReplanAction(boolean replanAction) {
+		this.replanAction = replanAction;
+	}
+
+	public boolean isReportAction() {
+		return reportAction;
+	}
+
+	public void setReportAction(boolean reportAction) {
+		this.reportAction = reportAction;
+	}
+
+	public boolean isDoneAction() {
+		return doneAction;
+	}
+
+	public void setDoneAction(boolean doneAction) {
+		this.doneAction = doneAction;
+	}
+
+	public boolean isPlanAction() {
+		return planAction;
+	}
+
+	public void setPlanAction(boolean planAction) {
+		this.planAction = planAction;
+	}
 }
