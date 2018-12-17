@@ -113,23 +113,6 @@
 <!-- 					</h:commandLink> -->
 						
 							<h:panelGroup id="categoryPanel" layout="block">
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['select.status.activity.form']}</label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
-										<h:selectOneMenu id="categoryId" styleClass="form-control"
-											required="false" value="#{activityController.selectedStatus}"
-											requiredMessage="#{msg['listofmenu.status.required']}">
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" />
-											<f:selectItems value="#{activityController.status}" itemLabelEscaped="true" />
-											<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
-										</h:selectOneMenu>
-									</div>
-									<h:message for="categoryId" styleClass="help-block"></h:message>
-								</div>
 							</h:panelGroup>
 
 						</div>
@@ -147,7 +130,9 @@
 					<p:dataTable id="example1" class="display" cellspacing="0"
 						value="#{activityController.activityDetail}" var="info">
 						<f:facet name="header" >
-						#{msg['planned.activity.table.header']} #{info.user.fname} #{info.user.lname}
+						<label style="margin-left: 30%; font-size: 16px; font-family: Open Sans sans-serif !important;">#{msg['planned.activity.table.header']}:<p:outputLabel
+											value="#{info.user.fname} #{info.user.lname}" /></label>
+						
 						</f:facet>
 
 						<p:column headerText="#{msg['form.activity.description']}"
@@ -200,6 +185,27 @@
 
 						</div>
 						</p:column>
+								<f:facet name="footer">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-5 control-label"
+										style="color: black">#{msg['select.status.activity.form']}</label>
+									<div class="col-md-3 col-sm-3 col-xs-4">
+										<h:selectOneMenu id="categoryId" styleClass="form-control"
+											required="false" value="#{activityController.selectedStatus}"
+											requiredMessage="#{msg['listofmenu.status.required']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems value="#{activityController.status}" itemLabelEscaped="true" />
+												<f:ajax render="@form"  event="change" execute="@this"
+											listener="#{activityController.changeSelectStatus()}" onevent="showProgress" />
+										</h:selectOneMenu>
+									</div>
+									<h:message for="categoryId" styleClass="help-block"></h:message>
+								</div>
+								</f:facet>
 
 					</p:dataTable>
 				</p:outputPanel>

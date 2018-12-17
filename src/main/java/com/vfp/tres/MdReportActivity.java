@@ -63,7 +63,7 @@ import tres.domain.Task;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.ClearanceDto;
-import tres.vfp.dto.MdrepDto;
+//import tres.vfp.dto.MdrepDto;
 import tres.vfp.dto.TaskDto;
 
 @ManagedBean
@@ -98,7 +98,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private Activity activity;
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
-	private List<MdrepDto> activityMddtodetails = new ArrayList<MdrepDto>();
+	//private List<MdrepDto> activityMddtodetails = new ArrayList<MdrepDto>();
 	private List<Board> boardDetails = new ArrayList<Board>();
 	private List<ClearanceDto> ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 	private ClearanceDto clearanceDto;
@@ -436,15 +436,17 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderEditedTableByBoard = false;
 			renderedx = false;
 			renderedclear=false;
-		} else if (myChoice.equalsIgnoreCase(clear)){
-			
-			rendered = false;
-			renderedx = false;
-			renderedchart = false;
-			renderTableByBoard=false;
-			renderEditedTableByBoard = false;
-			renderedclear=true;
-		} else {
+		} 
+//		else if (myChoice.equalsIgnoreCase(clear)){
+//			
+//			rendered = false;
+//			renderedx = false;
+//			renderedchart = false;
+//			renderTableByBoard=false;
+//			renderEditedTableByBoard = false;
+//			renderedclear=true;
+//		} 
+		else {
 			rendered = false;
 			renderedx = true;
 			renderTableByBoard=true;
@@ -491,48 +493,48 @@ public class MdReportActivity implements Serializable, DbConstant {
 		return null;
 	}
 	
-	public List<MdrepDto> repfoboard() {
-		try {
-		
-			if (selectedBoard!=0) {
-				
-				activityMddtodetails = new ArrayList<MdrepDto>();
-				for (Object[] data : taskImpl.reportList(
-						"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
-						+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+ selectedBoard + "'")) {
-				
-				LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana");
-				
-				MdrepDto userDtos = new MdrepDto();
-				
-				userDtos.setBoarName(data[3] + "");
-				userDtos.setTaskName(data[0] + "");
-				userDtos.setGenericStatus(data[2] + "");
-				userDtos.setEndDate(sdf.format(data[1]));
-				
-				activityMddtodetails.add(userDtos);
-			}
-			return (activityMddtodetails);
-			
-			} else {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidchoice"));
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public List<MdrepDto> getActivityMddtodetails() {
-		return activityMddtodetails;
-	}
-
-	public void setActivityMddtodetails(List<MdrepDto> activityMddtodetails) {
-		this.activityMddtodetails = activityMddtodetails;
-	}
+//	public List<MdrepDto> repfoboard() {
+//		try {
+//		
+//			if (selectedBoard!=0) {
+//				
+//				activityMddtodetails = new ArrayList<MdrepDto>();
+//				for (Object[] data : taskImpl.reportList(
+//						"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
+//						+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+ selectedBoard + "'")) {
+//				
+//				LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana");
+//				
+//				MdrepDto userDtos = new MdrepDto();
+//				
+//				userDtos.setBoarName(data[3] + "");
+//				userDtos.setTaskName(data[0] + "");
+//				userDtos.setGenericStatus(data[2] + "");
+//				userDtos.setEndDate(sdf.format(data[1]));
+//				
+//				activityMddtodetails.add(userDtos);
+//			}
+//			return (activityMddtodetails);
+//			
+//			} else {
+//				setValid(false);
+//				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidchoice"));
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//	}
+//
+//	public List<MdrepDto> getActivityMddtodetails() {
+//		return activityMddtodetails;
+//	}
+//
+//	public void setActivityMddtodetails(List<MdrepDto> activityMddtodetails) {
+//		this.activityMddtodetails = activityMddtodetails;
+//	}
 
 	public String getCLASSNAME() {
 		return CLASSNAME;

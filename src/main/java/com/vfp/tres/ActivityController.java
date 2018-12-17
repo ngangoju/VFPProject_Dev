@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,11 +20,13 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityCommentImpl;
 import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
 import tres.domain.Board;
+import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.Users;
@@ -43,6 +47,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private Activity activity;
 	private Task task;
 	TaskAssignment taskAssign;
+	private InstitutionEscaletePolicy iep;
 	private List<Activity> activityDetail = new ArrayList<Activity>();
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<Activity> completedActDetails = new ArrayList<Activity>();
@@ -66,7 +71,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean rendercomment;
 	private boolean comment;
 	private boolean renderCommentTable;
-	private String[] status = { NOTSTARTED, APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
+	private String[] status = { APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
 	private String selectedStatus;
@@ -77,6 +82,7 @@ public class ActivityController implements Serializable, DbConstant {
 	UserImpl usersImpl = new UserImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
 	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
+	InstitutionEscaletPolicyImpl iepImpl = new InstitutionEscaletPolicyImpl();
 
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -302,10 +308,17 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void activityApproval(Activity act) {
 		try {
+			iep=iepImpl.getModelWithMyHQL(new String[] { "genericStatus" , "institution" }, new Object[] {ACTIVE, usersSession.getBoard().getInstitution()}, " from InstitutionEscaletePolicy");
 			act.setStatus(APPROVED);
 			// if(act.getGenericStatus().equals(DESACTIVE))
 			act.setGenericStatus(ACTIVE);
 			activityImpl.UpdateActivity(act);
+			Calendar cal1 = new GregorianCalendar();
+			cal1.setTime(new Date());
+			cal1.add(Calendar.DATE, iep.getPlanPeriod());
+		    java.util.Date dDate = cal1.getTime();
+			act.setDueDate(dDate);
+			act.setStartDate(timestamp);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
@@ -372,9 +385,9 @@ public class ActivityController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public void showTasks(Users user) {
 		try {
-		
+		users=user;
 			activityDetail = activityImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "status","user" }, new Object[] { ACTIVE, PLAN_ACTIVITY ,user},
+					new String[] { "genericStatus", "status","user" }, new Object[] { ACTIVE, PLAN_ACTIVITY ,users},
 					"Activity", "ACTIVITY_ID asc");
 			LOGGER.info(user.getFname() + " " + user.getLname() + " has planned activities");
 			this.rendered = false;
@@ -421,6 +434,25 @@ public class ActivityController implements Serializable, DbConstant {
 		LOGGER.info("Ajax is working with listener::::::" + name);
 	}
 
+	@SuppressWarnings("unchecked")
+	public void changeSelectStatus() {
+		try {
+		
+		if(selectedStatus!= null) {
+			activityDetail = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "status","user" }, new Object[] { ACTIVE, selectedStatus ,users},
+					"Activity", "ACTIVITY_ID asc");
+		}	
+		else {
+			LOGGER.info("Status is selected: "+selectedStatus);
+		}
+		} catch (Exception e) {
+			LOGGER.info(e.getMessage());
+		}
+		
+		
+	}
+	
 	public String saveAction(ActivityDto activity) {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
