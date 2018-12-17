@@ -250,7 +250,6 @@ public class FormSampleController implements Serializable, DbConstant {
 				ActivityController actControl= new ActivityController();
 				actDto=actControl.saveActivityFiles();
 				int actId=actDto.getActivityId();
-				
 				LOGGER.info("ACTIVITY INFO :::::::::::::::"+actDto.getActivityId());
 				activity=actImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
 						new Object[] { actId}, "from Activity");
