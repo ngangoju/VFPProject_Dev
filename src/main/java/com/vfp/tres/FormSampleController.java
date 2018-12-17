@@ -18,26 +18,30 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.primefaces.event.FileUploadEvent;
-
 import tres.common.DbConstant;
 import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.common.UploadUtility;
+import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
+import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UploadingFilesImpl;
 import tres.dao.impl.UploadingStrategicPlanImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Activity;
 import tres.domain.Documents;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
 import tres.domain.StrategicPlan;
+import tres.domain.UploadingActivity;
 import tres.domain.UploadingFiles;
 import tres.domain.UploadingStrategicPlan;
 import tres.domain.Users;
+import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.StrategicPlanDto;
 
 @ManagedBean
@@ -71,7 +75,11 @@ public class FormSampleController implements Serializable, DbConstant {
 	private Users usersSession;
 	private UploadingStrategicPlanImpl uploadingStrImpl = new UploadingStrategicPlanImpl();
 	private List<UploadingStrategicPlan> planList = new ArrayList<UploadingStrategicPlan>();
-
+	private ActivityDto actDto= new ActivityDto();
+	private UploadingActivity uploadingAct;
+	private UploadingActivityImpl uploadActImpl= new UploadingActivityImpl();
+	private Activity activity;
+	private ActivityImpl actImpl= new ActivityImpl();
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -95,6 +103,16 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		if (planDto == null) {
 			planDto = new StrategicPlanDto();
+		}
+		
+		if(actDto==null) {
+			actDto=new ActivityDto();
+		}
+		if(uploadingAct==null) {
+			uploadingAct= new UploadingActivity();
+		}
+		if(activity==null) {
+			activity= new Activity();
 		}
 		try {
 			// menuGroupDetails=menuGroupImpl.getGenericListWithHQLParameter(new String[]
@@ -222,6 +240,52 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 
 	}
+	
+	//Activity Files Upload 
+	public String activityFilesUpload(FileUploadEvent event) {
+
+		try {
+			if (null != usersSession) {
+				
+				ActivityController actControl= new ActivityController();
+				actDto=actControl.saveActivityFiles();
+				int actId=actDto.getActivityId();
+				
+				LOGGER.info("ACTIVITY INFO :::::::::::::::"+actDto.getActivityId());
+				activity=actImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
+						new Object[] { actId}, "from Activity");
+				if(null!=activity) {
+					UploadUtility ut = new UploadUtility();
+					String validationCode = "ActivityFiles";
+					documents = ut.fileUploadUtil(event, validationCode);
+					
+						uploadingAct.setActivity(activity);
+						uploadingAct.setDocuments(documents);
+						uploadingAct.setCreatedBy(usersSession.getViewId());
+						uploadingAct.setGenericStatus(ACTIVE);
+						uploadingAct.setCrtdDtTime(timestamp);
+						uploadActImpl.saveUploadedActivity(uploadingAct);
+						LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addInfoMessage(getProvider().getValue("com.server.side.activityfile.success"));
+						/*addErrorMessage(getProvider().getValue("upload.message.success"));*/
+				}
+					return null;
+				}else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+				}		
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + "testing profile upload methode ");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.activityfile.error"));
+			e.printStackTrace();
+		}
+		return "";
+	}
 
 	public void downloadFile() {
 		UploadUtility ut = new UploadUtility();
@@ -303,6 +367,29 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		return null;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<UploadingActivity> activityFilesDetails(){
+
+		try {
+
+			ActivityController actControl= new ActivityController();
+			actDto=actControl.saveActivityFiles();
+			int actId=actDto.getActivityId();
+			
+			LOGGER.info("ACTIVITY INFO :::::::::::::::"+actDto.getActivityId());
+			activity=actImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
+					new Object[] { actId}, "from Activity");
+			return uploadActImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","activity" },
+					new Object[] { ACTIVE,activity }, "UploadingActivity","crtdDtTime desc");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	public void sendMailTest() throws AddressException, MessagingException {
 		/* sending content in a table example */
@@ -509,6 +596,46 @@ public class FormSampleController implements Serializable, DbConstant {
 
 	public void setUsersSession(Users usersSession) {
 		this.usersSession = usersSession;
+	}
+
+	public ActivityDto getActDto() {
+		return actDto;
+	}
+
+	public void setActDto(ActivityDto actDto) {
+		this.actDto = actDto;
+	}
+
+	public UploadingActivity getUploadingAct() {
+		return uploadingAct;
+	}
+
+	public void setUploadingAct(UploadingActivity uploadingAct) {
+		this.uploadingAct = uploadingAct;
+	}
+
+	public UploadingActivityImpl getUploadActImpl() {
+		return uploadActImpl;
+	}
+
+	public void setUploadActImpl(UploadingActivityImpl uploadActImpl) {
+		this.uploadActImpl = uploadActImpl;
+	}
+
+	public Activity getActivity() {
+		return activity;
+	}
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
+
+	public ActivityImpl getActImpl() {
+		return actImpl;
+	}
+
+	public void setActImpl(ActivityImpl actImpl) {
+		this.actImpl = actImpl;
 	}
 
 }

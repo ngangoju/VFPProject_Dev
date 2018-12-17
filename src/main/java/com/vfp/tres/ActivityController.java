@@ -20,17 +20,22 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityCommentImpl;
 import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.CommentImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.TaskAssignmentImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
+import tres.domain.Comment;
+import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Board;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -47,6 +52,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private Activity activity;
 	private Task task;
 	TaskAssignment taskAssign;
+	private Comment comments = new Comment();
 	private InstitutionEscaletePolicy iep;
 	private List<Activity> activityDetail = new ArrayList<Activity>();
 	private List<Activity> activityDetails = new ArrayList<Activity>();
@@ -57,8 +63,11 @@ public class ActivityController implements Serializable, DbConstant {
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> approvedActDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
+	private List<ActivityComment> commentDetail = new ArrayList<ActivityComment>();
 	private ActivityComment actComment = new ActivityComment();
 	private ActivityCommentImpl actcommentImpl = new ActivityCommentImpl();
+	private CommentImpl commentImpl = new CommentImpl();
+	private ActivityDto actDto= new ActivityDto();
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
@@ -71,6 +80,8 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean rendercomment;
 	private boolean comment;
 	private boolean renderCommentTable;
+	private String commentDescription;
+	private boolean renderUpload;
 	private String[] status = { APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
@@ -107,6 +118,12 @@ public class ActivityController implements Serializable, DbConstant {
 
 		if (null != actComment) {
 			actComment = new ActivityComment();
+		}
+		if (comments == null) {
+			comments = new Comment();
+		}
+		if(actDto==null) {
+			actDto= new ActivityDto();
 		}
 		try {
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
@@ -490,10 +507,26 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	public String uploadAction(ActivityDto activity) {
+		HttpSession sessionuser = SessionUtils.getSession();
 
-		return null;
+		if (null != activity) {
+			// Session creation to get user info from dataTable row
+			sessionuser.setAttribute("activityFiles", activity);
+			LOGGER.info("Info Founded are activity:>>>>>>>>>>>>>>>>>>>>>>>:" +activity.getDescription()+ "ID:"
+					+ activity.getActivityId());
+		}
+		return "/menu/ActivityFilesUpload.xhtml?faces-redirect=true";
 	}
-
+	public ActivityDto saveActivityFiles() {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		actDto = (ActivityDto) session.getAttribute("activityFiles");
+		return (actDto);
+	}
+	public void showUploadPanel() {
+		
+		this.renderUpload=true;
+	}
 	@SuppressWarnings("unchecked")
 	public String planAction(ActivityDto activity) {
 		try {
@@ -577,33 +610,96 @@ public class ActivityController implements Serializable, DbConstant {
 
 	}
 
-	public String replyComment() {
-
+	public String replyComment(ActivityComment coment) {
+		HttpSession sessionuser = SessionUtils.getSession();
+		if (null != coment) {
+			sessionuser.setAttribute("commentinfo", coment);
+			this.rendercomment = true;
+			this.rendered = false;
+		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String saveComment() {
+		try {
+			Activity activ = new Activity();
+			ActivityComment coments = new ActivityComment();
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			coments = (ActivityComment) session.getAttribute("commentinfo");
+			if (null != coments) {
+				activ = activityImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
+						new Object[] { coments.getActivity().getActivityId() }, "from Activity");
+			}
+
+			if (null != activ&&null!=commentDescription) {
+				comments.setCreatedBy(usersSession.getViewId());
+				comments.setCrtdDtTime(timestamp);
+				comments.setDescription(commentDescription);
+				comments.setGenericStatus(ACTIVE);
+				commentImpl.saveComment(comments);
+				actComment.setActivity(coments.getActivity());
+				actComment.setComment(comments);
+				actComment.setCreatedBy(usersSession.getViewId());
+				actComment.setGenericStatus(ACTIVE);
+				actComment.setUpdatedBy(usersSession.getViewId());
+				actComment.setCrtdDtTime(timestamp);
+				actComment.setUpDtTime(timestamp);
+				actcommentImpl.saveActivityComment(actComment);
+				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, activity }, "ActivityComment",
+						"commentActId asc");
+				clearComment();
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.comment.form.saved"));
+			}else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.comment.nullform.fail"));
+			}
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.comment.form.fail"));
+		}
 		return null;
 	}
 
-	public String commentAction(ActivityDto activity) {
+	public void cancelComment() {
+		this.rendercomment=false;
+	}
+	public void clearComment() {
+		comments = new Comment();
+		actComment = new ActivityComment();
+		this.commentDescription = null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String commentAction(ActivityDto activ) {
 		try {
-			if (null != activity) {
+			Activity act = new Activity();
+			if (null != activ) {
 
 				Activity act = new Activity();
 				act = activityImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
-						new Object[] { activity.getActivityId() }, "from Activity");
-				actComment = actcommentImpl.getModelWithMyHQL(new String[] { "activity" }, new Object[] { act },
-						"from ActivityComment");
+						new Object[] { activ.getActivityId() }, "from Activity");
+				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "ActivityComment",
+						"commentActId asc");
 			}
-
-			if (null == actComment) {
+			if (commentDetail.size() < 0) {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.commentError.form.activity"));
 			} else {
 				this.renderCompleted = false;
 				this.renderCommentTable = true;
+				activity = act;
+				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "ActivityComment",
+						"commentActId asc");
 			}
 
 		} catch (Exception e) {
@@ -934,6 +1030,22 @@ public class ActivityController implements Serializable, DbConstant {
 		this.actcommentImpl = actcommentImpl;
 	}
 
+	public List<ActivityComment> getCommentDetail() {
+		return commentDetail;
+	}
+
+	public void setCommentDetail(List<ActivityComment> commentDetail) {
+		this.commentDetail = commentDetail;
+	}
+	
+	public TaskAssignmentImpl getTaskAssignImpl() {
+		return taskAssignImpl;
+	}
+
+	public void setTaskAssignImpl(TaskAssignmentImpl taskAssignImpl) {
+		this.taskAssignImpl = taskAssignImpl;
+	}
+
 	public List<Users> getUsersDetail() {
 		return usersDetail;
 	}
@@ -950,4 +1062,43 @@ public class ActivityController implements Serializable, DbConstant {
 		this.selectedStatus = selectedStatus;
 	}
 
+	public String getCommentDescription() {
+		return commentDescription;
+	}
+
+	public void setCommentDescription(String commentDescription) {
+		this.commentDescription = commentDescription;
+	}
+
+	public Comment getComments() {
+		return comments;
+	}
+
+	public void setComments(Comment comments) {
+		this.comments = comments;
+	}
+
+	public CommentImpl getCommentImpl() {
+		return commentImpl;
+	}
+
+	public void setCommentImpl(CommentImpl commentImpl) {
+		this.commentImpl = commentImpl;
+	}
+
+	public ActivityDto getActDto() {
+		return actDto;
+	}
+
+	public void setActDto(ActivityDto actDto) {
+		this.actDto = actDto;
+	}
+
+	public boolean isRenderUpload() {
+		return renderUpload;
+	}
+
+	public void setRenderUpload(boolean renderUpload) {
+		this.renderUpload = renderUpload;
+	}
 }
