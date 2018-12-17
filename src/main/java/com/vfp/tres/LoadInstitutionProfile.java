@@ -73,7 +73,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private Institution institution;
 	private InstitutionContact contact;
 	private InstitutionLogo logoPic;
-	private String useremail, tel, pobx, nmbrTime, shrtActivityMark, mdumActivityMark, lngActivityMark;
+	private String useremail, tel, pobx, nmbrTime, shrtActivityMark, mdumActivityMark, lngActivityMark, plp,variation;
 	private Village village;
 	private Province province;
 	private District district;
@@ -322,7 +322,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 							new Object[] { usersSession, "HeadQuoter", ACTIVE },
 							"from InstitutionRegistrationRequest") },
 					"from Institution");
-			documents = ut.fileUploadUtil(event, validationCode); 
+			documents = ut.fileUploadUtil(event, validationCode);
 			institution.setInstLogo(documents.getOriginalFileName());
 			institutionImpl.UpdateInstitution(institution);
 			logoPic.setDocuments(documents);
@@ -578,7 +578,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			if (policy != null) {
 				policy.setGenericStatus(DESACTIVE);
 				policy.setUpdatedBy(usersSession.getViewId());
-				policy.setUpDtTime(timestamp);
+				policy.setUpDtTime(timestamp); 
 				policyImpl.UpdateInstEscalPolicy(policy);
 				savePolicy();
 			} else {
@@ -601,6 +601,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			policy.setShortMarks(Double.parseDouble(shrtActivityMark));
 			policy.setMediumgMarks(Double.parseDouble(mdumActivityMark));
 			policy.setLongMarks(Double.parseDouble(lngActivityMark));
+			policy.setPlanPeriod(Integer.parseInt(plp));
+			policy.setVariation(Integer.parseInt(variation));
 			policyImpl.saveInstEscalPolicy(policy);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -609,9 +611,9 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			div3_1 = false;
 		} catch (Exception e) {
 			div3 = true;
+			setValid(false);
 			LOGGER.info(CLASSNAME + ":::Policy Details is fail with HibernateException  error");
 			JSFMessagers.resetMessages();
-			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error" + e.getMessage()));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
@@ -1405,5 +1407,22 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void setRid(int rid) {
 		this.rid = rid;
 	}
+
+	public String getPlp() {
+		return plp;
+	}
+
+	public void setPlp(String plp) {
+		this.plp = plp;
+	}
+
+	public String getVariation() {
+		return variation;
+	}
+
+	public void setVariation(String variation) {
+		this.variation = variation;
+	}
+	
 
 }

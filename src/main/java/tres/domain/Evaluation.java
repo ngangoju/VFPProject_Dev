@@ -29,25 +29,14 @@ public class Evaluation extends CommonDomain implements Serializable {
 	private String decision;
 
 	@Column(name = "EvaluationDate")
-	private Date EvaluationDate;
-
-	@Column(name = "EvaluationOverAllMarks")
-	private int EvaluationOverAllMarks;
+	private Date EvaluationDate; 
 
 	@Column(name = "EvaluationMarks")
 	private int EvaluationMarks;
 
 	@ManyToOne
 	@JoinColumn(name = "activity")
-	private Activity activity;
-
-	public int getEvaluationOverAllMarks() {
-		return EvaluationOverAllMarks;
-	}
-
-	public void setEvaluationOverAllMarks(int evaluationOverAllMarks) {
-		EvaluationOverAllMarks = evaluationOverAllMarks;
-	}
+	private Activity activity; 
 
 	public int getEvaluationMarks() {
 		return EvaluationMarks;

@@ -1,7 +1,9 @@
 package com.vfp.tres;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,9 +19,11 @@ import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
+import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Evaluation;
+import tres.domain.Institution;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Users;
 
@@ -38,11 +42,14 @@ public class EvaluationController implements Serializable, DbConstant {
 	private Users users;
 	private InstitutionEscaletePolicy policy;
 	private Users usersSession;
+	private Institution institution;
 
 	private List<Activity> activities = new ArrayList<Activity>();
+	private List<Evaluation> evaluations = new ArrayList<Evaluation>();
 
 	EvaluationImpl evaluationImpl = new EvaluationImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
+	InstitutionImpl instImpl = new InstitutionImpl();
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -62,6 +69,9 @@ public class EvaluationController implements Serializable, DbConstant {
 		if (policy == null) {
 			policy = new InstitutionEscaletePolicy();
 		}
+		if (institution == null) {
+			institution = new Institution();
+		}
 		try {
 
 		} catch (Exception e) {
@@ -76,45 +86,73 @@ public class EvaluationController implements Serializable, DbConstant {
 	/* Evaluation method for checking if time rang is valid starts */
 
 	public boolean isOnTime(Activity activity) {
-		boolean valid = false;
 		try {
-			if (activity.getDueDate().after(timestamp)) {
-				valid = true;
+			LOGGER.info("Is on time due date is::::"+activity.getDueDate());
+			if (timestamp.after(activity.getDueDate())) {
+				LOGGER.info("Founded::::");
+				return true;
 			}
-			return valid;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
+		return isValid;
 	}
 
 	/* Evaluation Method For making */
 
 	public double activityMarksByWeight(Activity activity) {
-		double mark = 0.0;
 		try {
+			double mark = 0;
+			institution = activity.getUser().getBoard().getInstitution();
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
+					"from InstitutionEscaletePolicy");
+			Date dt = addDay(activity.getDueDate());
 			if (activity.getWeight().equals(SHORT)) {
-				mark = 2;
+				if (activity.getDueDate().before(new Date())) {
+					mark = policy.getShortMarks();
+				} else if ((!activity.getDueDate().before(new Date())) && (timestamp.before(addDay(activity.getDueDate())))) {
+					mark = policy.getShortMarks() / 2;
+				} else if ((!activity.getDueDate().before(new Date())) && (!timestamp.before(addDay(activity.getDueDate())))) {
+					mark = 0;
+					LOGGER.info("We are giving Date Conditions::::" + activity.getDueDate());
+				} else {
+					LOGGER.info("Lost Date Conditions::::" + activity.getDueDate());
+				}
+
 			} else if (activity.getWeight().equals(MEDIUM)) {
-				mark = 3;
+				if (activity.getDueDate().before(new Date())) {
+					mark = policy.getMediumgMarks();
+				} else if (!activity.getDueDate().before(new Date())&& (timestamp.before(addDay(activity.getDueDate())))) {
+					mark = policy.getMediumgMarks() / 2;
+				} else {
+					mark = 0;
+				}
 			} else if (activity.getWeight().equals(LONG)) {
-				mark = 5;
+				if (activity.getDueDate().before(new Date())) {
+					mark = policy.getLongMarks();
+				} else if ((!activity.getDueDate().before(new Date())) && (timestamp.before(addDay(activity.getDueDate())))) {
+					mark = policy.getLongMarks() / 2;
+				} else {
+					mark = 0;
+				}
 			}
 			return mark;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return 0.0;
 		}
 	}
 
 	/* Evaluation Method For Completed task */
 
-	public boolean isCompleted(Activity activity) {
-		boolean isDone = false;
+	public boolean isCompleted(Activity activity) { 
 		try {
 			if (activity.getStatus().equals(COMPLETED)) {
-				isDone = true;
-				LOGGER.info("ACTIVITY IS COMPLETED:::" + activity.getDescription());
+				return true; 
+			} else {
+				return false;
 			}
-			return isDone;
 		} catch (Exception e) {
 			LOGGER.info("DB ERROR:::");
 			setValid(false);
@@ -130,19 +168,27 @@ public class EvaluationController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public String evalutionDecition(Activity activity) {
 		String decision = "";
+		int cnt = 0;
+		institution = activity.getUser().getBoard().getInstitution();
 		try {
-			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" },
-					new Object[] { activity.getUser().getBoard().getInstitution() },
-					"from InstitutionRegistrationRequest");
-			activities = activityImpl.getGenericListWithHQLParameter(new String[] { "activity" },
-					new Object[] { activity }, "Evaluation", "dueDate desc");
-			/* Condition for Decision making */
-			if (activities.size() <= policy.getReschduleTime()) {
-				decision = RESCHDULER;
-			} else if (activities.size() > policy.getReschduleTime()) {
-				decision = ESCALET;
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
+					"from InstitutionEscaletePolicy");
+			for (Object[] data : evaluationImpl
+					.reportList("select count(*),i.EavaluationId from Evaluation i where i.activity="
+							+ activity.getActivityId() + " and decision='" + RESCHDULER + "'")) {
+				cnt = Integer.parseInt(data[0] + "");
 			}
-			LOGGER.info("EXEUTE WITH SUCCESS:::");
+			/* Condition for Decision making */
+			if (cnt == 0) {
+				decision = "Conglatulation";
+			} else {
+				if (cnt <= policy.getReschduleTime()) {
+					decision = RESCHDULER;
+				} else if (cnt > policy.getReschduleTime()) {
+					decision = ESCALET;
+				}
+			}
+			LOGGER.info("EXEUTE WITH SUCCESS:::" + decision);
 			return decision;
 
 		} catch (Exception e) {
@@ -169,6 +215,8 @@ public class EvaluationController implements Serializable, DbConstant {
 			evaluation.setGenericStatus(ACTIVE);
 			evaluation.setUpdatedBy(usersSession.getViewId());
 			evaluation.setUpDtTime(timestamp);
+			evaluationImpl.saveEvaluation(evaluation);
+			LOGGER.info("Evaluation information saved:::::");
 			return "";
 		} catch (Exception e) {
 			LOGGER.info("DB ERROR:::");
@@ -185,14 +233,14 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	public void evaluationMethod(Activity activity) {
 		try {
-			if (isOnTime(activity) && isCompleted(activity)) {
+			if (isCompleted(activity)) {
 				savingEvaluationData(activity, activityMarksByWeight(activity), evalutionDecition(activity));
 				JSFMessagers.resetMessages();
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("evaluationController.confirm.message"));
 				LOGGER.info(CLASSNAME + ":::Institution request not updated");
 			} else {
-				savingEvaluationData(activity, 0.0, evalutionDecition(activity));
+				savingEvaluationData(activity,  activityMarksByWeight(activity), evalutionDecition(activity));
 				JSFMessagers.resetMessages();
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("evaluationController.confirm.message"));
@@ -204,6 +252,25 @@ public class EvaluationController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
+		}
+	}
+	// evaluating due date
+
+	public Date addDay(Date dueDate) {
+		institution = activity.getUser().getBoard().getInstitution();
+		try {
+			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
+					"from InstitutionEscaletePolicy");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dueDate);
+			cal.add(Calendar.DAY_OF_MONTH, policy.getVariation());
+			String dt = smf.format(cal.getTime());
+			LOGGER.info("Due date is ::" + cal.getTime());
+			return smf.parse(dt);
+		} catch (Exception e) {
+			LOGGER.info("Due date Failed");
+			return null;
 		}
 	}
 

@@ -1157,20 +1157,66 @@
 										</div>
 										<h:message errorClass="errorMsg1" for="lngmark"></h:message>
 									</div>
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">Plan Period<span
+											style="color: red">*</span>
+										</label>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+
+
+											<h:selectOneMenu class="form-control input-sm" id="plp"
+												value="#{loadInstitutionProfile.plp}" required="true"
+												requiredMessage="#{msg['institutionForm.requiered.planP.message']}">
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.week.PLACEHOLDER']}"
+													itemValue="7" itemLabelEscaped="true" />
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.trimestre.PLACEHOLDER']}"
+													itemValue="90" itemLabelEscaped="true" />
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.semestre.PLACEHOLDER']}"
+													itemValue="180" itemLabelEscaped="true" />
+											</h:selectOneMenu>
+										</div>
+										<h:message errorClass="errorMsg1" for="plp"></h:message>
+									</div>
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">Variation<span
+											style="color: red">*</span>
+										</label>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+
+											<h:inputText class="form-control input-sm" id="vr"
+												required="true"
+												requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+												value="#{loadInstitutionProfile.variation}"
+												validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+												<f:validateRegex
+													pattern="#{regex['regex.validation.message.DIGITS']}" />
+											</h:inputText>
+										</div>
+										<h:message errorClass="errorMsg1" for="vr"></h:message>
+									</div>
 									<hr></hr>
 									<div class="form-group row">
-										<div class="col-sm-9 col-sm-9 col-xs-9">
-											<h:outputText value=""
-												style="text-align: left;margin-left:1%; font-weight: bold" />
-										</div>
+
 										<div class="col-sm-2 col-sm-2 col-xs-2 ">
 											<h:commandButton class="btn btn-info btn-sm btn-block"
-												value="Submit" style="float:right"
+												value="Submit" style="float:right;margin-left:1%"
 												action="#{loadInstitutionProfile.savePolicy()}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandButton>
 
+										</div>
+										<div class="col-sm-9 col-sm-9 col-xs-9">
+											<h:outputText value=""
+												style="text-align: left;; font-weight: bold" />
 										</div>
 
 										<span class="text-danger" id="customeordererror"></span>
@@ -1179,7 +1225,7 @@
 							</p:outputPanel>
 						</div>
 					</p:outputPanel>
-					<p:outputPanel >
+					<p:outputPanel>
 						<table class="table table-hover">
 							<tbody>
 								<tr>
