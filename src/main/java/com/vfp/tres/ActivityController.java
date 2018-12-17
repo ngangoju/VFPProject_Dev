@@ -682,7 +682,6 @@ public class ActivityController implements Serializable, DbConstant {
 			Activity act = new Activity();
 			if (null != activ) {
 
-				Activity act = new Activity();
 				act = activityImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
 						new Object[] { activ.getActivityId() }, "from Activity");
 				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
@@ -709,6 +708,7 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 		return null;
 	}
+
 
 	public String backBtn() {
 		return "/menu/Activity.xhtml?faces-redirect=true";
