@@ -82,6 +82,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean renderCommentTable;
 	private String commentDescription;
 	private boolean renderUpload;
+	private boolean renderTask;
 	private String[] status = { APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
@@ -186,7 +187,7 @@ public class ActivityController implements Serializable, DbConstant {
 
 			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
 					new Object[] { ACTIVE, userassigned }, "TaskAssignment", "upDtTime desc");
-			// this.renderTable = true;
+			 this.renderTask = true;
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -269,7 +270,7 @@ public class ActivityController implements Serializable, DbConstant {
 			 * activityDto.setGenericstatus(activity.getGenericStatus());
 			 * activityDtoDetails.add(activityDto); }
 			 */
-			this.renderTable = false;
+			this.renderTask = false;
 			this.renderCompleted = true;
 			this.backBtn = true;
 
@@ -723,7 +724,7 @@ public class ActivityController implements Serializable, DbConstant {
 					+ "taskname:::" + info.getTask().getTaskName() + "Task desc::" + info.getTask().getDescription()
 					+ "USERINFO::" + info.getUser().getUserId());
 			taskAssign = showAssignedTask();
-			this.renderTable = false;
+			this.renderTask = false;
 			this.renderTaskForm = true;
 			this.rendered = false;
 			this.backBtn = true;
@@ -1101,4 +1102,13 @@ public class ActivityController implements Serializable, DbConstant {
 	public void setRenderUpload(boolean renderUpload) {
 		this.renderUpload = renderUpload;
 	}
+
+	public boolean isRenderTask() {
+		return renderTask;
+	}
+
+	public void setRenderTask(boolean renderTask) {
+		this.renderTask = renderTask;
+	}
+	
 }
