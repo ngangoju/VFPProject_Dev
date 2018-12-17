@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
+
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
@@ -17,16 +19,14 @@ import tres.common.SessionUtils;
 import tres.dao.impl.ActivityCommentImpl;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.TaskAssignmentImpl;
-import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
-import tres.domain.InstitutionRegistrationRequest;
+import tres.domain.Board;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
-import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -47,12 +47,13 @@ public class ActivityController implements Serializable, DbConstant {
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<Activity> completedActDetails = new ArrayList<Activity>();
 	private List<Activity> approvedActDetails = new ArrayList<Activity>();
+	private List<Users> usersDetail = new ArrayList<Users>();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> approvedActDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
-	private ActivityComment actComment= new ActivityComment();
-	private ActivityCommentImpl actcommentImpl= new ActivityCommentImpl();
+	private ActivityComment actComment = new ActivityComment();
+	private ActivityCommentImpl actcommentImpl = new ActivityCommentImpl();
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
@@ -65,9 +66,10 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean rendercomment;
 	private boolean comment;
 	private boolean renderCommentTable;
-	private String[] status = { NOTSTARTED, APPROVED, REJECT, INPROGRESS, COMPLETED };
+	private String[] status = { NOTSTARTED, APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
+	private String selectedStatus;
 
 	/* class injection */
 
@@ -96,21 +98,41 @@ public class ActivityController implements Serializable, DbConstant {
 		if (null != usersSession) {
 			userassigned = usersImpl.gettUserById(usersSession.getUserId(), "userId");
 		}
-		
-		if(null!=actComment) {	
-			actComment= new ActivityComment();
+
+		if (null != actComment) {
+			actComment = new ActivityComment();
 		}
 		try {
-			/*users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
-					" from Users");*/
-			activityDetail = activityImpl.getListWithHQL(SELECT_ACTIVITY);
+			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
+					" from Users");
+			for (Object[] data : usersImpl.reportList(
+					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co where co.user=us.userId and co.status='Not Started'")) {
+				Users user = new Users();
+				user.setUserId((Integer) data[0]);
+				user.setFname(data[1] + "");
+				user.setLname(data[2] + "");
+				user.setBoard((Board) data[3]);
+				usersDetail.add(user);
+//				Activity act = new Activity();
+//				act.setDescription(data[4] + "");
+//				act.setStatus(data[5] + "");
+//				act.setWeight(data[6] + "");
+//				act.setStartDate((Date) data[7]);
+//				act.setDueDate((Date) data[8]);
+//				act.setCrtdDtTime( (Timestamp) data[9]);
+//				act.setTask((Task) data[10]);
+//				activityDetail.add(act);
+			}
+//			activityDetail = activityImpl.getGenericListWithHQLParameter(
+//			new String[] { "genericStatus", "user", "status" }, 
+//			new Object[] { ACTIVE, users, PLANNED },
+//			"Activity", "activityId asc");
 
-			/*
-			 * activityDetails = activityImpl.getGenericListWithHQLParameter( new String[] {
-			 * "genericStatus", "createdBy", "status" }, new Object[] { ACTIVE,
-			 * usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED },
-			 * "Activity", "activityId asc");
-			 */
+			activityDetails = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "status" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED },
+					"Activity", "activityId asc");
+
 			approvedActDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
 					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), APPROVED },
@@ -123,24 +145,25 @@ public class ActivityController implements Serializable, DbConstant {
 			listSize = activityDetails.size();
 			approvedSize = approvedActDetails.size();
 			completedSize = completedActDetails.size();
-			/*
-			 * for (Activity activity : activityDetails) { ActivityDto activityDto = new
-			 * ActivityDto(); activityDto.setActivityId(activity.getActivityId());
-			 * activityDto.setEditable(false);
-			 * activityDto.setDescription(activity.getDescription());
-			 * activityDto.setStatus(activity.getStatus());
-			 * activityDto.setWeight(activity.getWeight());
-			 * activityDto.setCreatedDate(activity.getCrtdDtTime());
-			 * activityDto.setStartDate(activity.getStartDate());
-			 * activityDto.setDueDate(activity.getDueDate());
-			 * activityDto.setTask(activity.getTask());
-			 * activityDto.setGenericstatus(activity.getGenericStatus());
-			 * activityDtoDetails.add(activityDto); }
-			 */
+
+			for (Activity activity : activityDetails) {
+				ActivityDto activityDto = new ActivityDto();
+				activityDto.setActivityId(activity.getActivityId());
+				activityDto.setEditable(false);
+				activityDto.setDescription(activity.getDescription());
+				activityDto.setStatus(activity.getStatus());
+				activityDto.setWeight(activity.getWeight());
+				activityDto.setCreatedDate(activity.getCrtdDtTime());
+				activityDto.setStartDate(activity.getStartDate());
+				activityDto.setDueDate(activity.getDueDate());
+				activityDto.setTask(activity.getTask());
+				activityDto.setGenericstatus(activity.getGenericStatus());
+				activityDtoDetails.add(activityDto);
+			}
 
 			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
 					new Object[] { ACTIVE, userassigned }, "TaskAssignment", "upDtTime desc");
-			this.renderTable = true;
+			// this.renderTable = true;
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -167,32 +190,32 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDto.setGenericstatus(activity.getGenericStatus());
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
-			}else {
-				activityDto.setAction(true);	
+			} else {
+				activityDto.setAction(true);
 			}
 			if (activityDto.getStatus().equals(NOTSTARTED)) {
 				activityDto.setPlanAction(false);
-			}else {
-				activityDto.setPlanAction(true);	
+			} else {
+				activityDto.setPlanAction(true);
 			}
 			if (activityDto.getStatus().equals(APPROVED)) {
 				activityDto.setReportAction(false);
 				activityDto.setCommmentAction(false);
-			}else {
+			} else {
 				activityDto.setReportAction(true);
-				activityDto.setCommmentAction(true);	
+				activityDto.setCommmentAction(true);
 			}
-			
+
 			if (activityDto.getStatus().equals(REJECT)) {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
-			}else {
+			} else {
 				activityDto.setReplanAction(true);
 				activityDto.setCommmentAction(true);
 			}
-			if (activityDto.getStatus().equals(DONE)) {	
+			if (activityDto.getStatus().equals(DONE)) {
 				activityDto.setDoneAction(false);
-			}else {
+			} else {
 				activityDto.setDoneAction(true);
 			}
 
@@ -343,11 +366,24 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 	}
 
-	public void showTasks() {
-		rendered = false;
-		renderTaskForm = false;
-		renderTable = true;
-		renderCompleted = false;
+	/**
+	 * @param user
+	 */
+	@SuppressWarnings("unchecked")
+	public void showTasks(Users user) {
+		try {
+		
+			activityDetail = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "status","user" }, new Object[] { ACTIVE, PLAN_ACTIVITY ,user},
+					"Activity", "ACTIVITY_ID asc");
+			LOGGER.info(user.getFname() + " " + user.getLname() + " has planned activities");
+			this.rendered = false;
+			this.renderTaskForm = false;
+			this.renderTable = true;
+			this.renderCompleted = false;
+		} catch (Exception e) {
+			LOGGER.info(e.getMessage());
+		}
 	}
 
 	public void showAssignments() {
@@ -400,7 +436,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setCommmentAction(false);
 			activity.setReplanAction(false);
 			activity.setReportAction(false);
-			activity.setDoneAction(false);	
+			activity.setDoneAction(false);
 			act.setDescription(activity.getDescription());
 			act.setStatus(activity.getStatus());
 			act.setWeight(activity.getWeight());
@@ -422,7 +458,7 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	public String uploadAction(ActivityDto activity) {
-		
+
 		return null;
 	}
 
@@ -520,24 +556,24 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public String commentAction(ActivityDto activity) {
 		try {
-			if(null!=activity) {
-				
-				Activity act= new Activity();
-				act=activityImpl.getModelWithMyHQL(new String[] {"ACTIVITY_ID"}, new Object[] { activity.getActivityId()},
-						"from Activity");
-				actComment=actcommentImpl.getModelWithMyHQL(new String[] {"activity"}, new Object[] { act},
-				"from ActivityComment");
+			if (null != activity) {
+
+				Activity act = new Activity();
+				act = activityImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
+						new Object[] { activity.getActivityId() }, "from Activity");
+				actComment = actcommentImpl.getModelWithMyHQL(new String[] { "activity" }, new Object[] { act },
+						"from ActivityComment");
 			}
-			
-			if(null==actComment) {
-			JSFMessagers.resetMessages();
-			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.commentError.form.activity"));
-			}else {
-				this.renderCompleted=false;
-				this.renderCommentTable=true;
+
+			if (null == actComment) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.commentError.form.activity"));
+			} else {
+				this.renderCompleted = false;
+				this.renderCommentTable = true;
 			}
-			
+
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -864,6 +900,22 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setActcommentImpl(ActivityCommentImpl actcommentImpl) {
 		this.actcommentImpl = actcommentImpl;
+	}
+
+	public List<Users> getUsersDetail() {
+		return usersDetail;
+	}
+
+	public void setUsersDetail(List<Users> usersDetail) {
+		this.usersDetail = usersDetail;
+	}
+
+	public String getSelectedStatus() {
+		return selectedStatus;
+	}
+
+	public void setSelectedStatus(String selectedStatus) {
+		this.selectedStatus = selectedStatus;
 	}
 
 }

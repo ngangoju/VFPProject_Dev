@@ -38,50 +38,154 @@
 				</ul>
 			</h:panelGroup>
 
-			<legend>#{msg['form.activity.table']}</legend>
-
 			<h:form>
+			<h:panelGroup id="tables" autoUpdate="true"
+					rendered="#{activityController.rendered}">
+			<h1>#{msg['planned.activity.staff']}</h1>
 
 				<p:dataTable id="example" class="display" cellspacing="0"
-					value="#{activityController.activityDetail}" var="act">
+					value="#{activityController.usersDetail}" var="act">
 
 
-					<p:column headerText="#{msg['form.activity.description']}"
-						sortBy="#{act.description}">
+					<p:column headerText="#{msg['massages.cmn.common.first.fname']}"
+						sortBy="#{act.fname}">
 
-						<h:outputText value="#{act.description}" />
+						<h:outputText value="#{act.fname}" />
 					</p:column>
 
 
-					<p:column headerText="#{msg['form.activity.status']}"
-						sortBy="#{act.status}">
+					<p:column headerText="#{msg['massages.cmn.common.last.lname']}"
+						sortBy="#{act.lname}">
 
-						<h:outputText value="#{act.status}" />
-
-					</p:column>
-
-					<p:column headerText="#{msg['form.activity.weight']}"
-						sortBy="#{act.weight}">
-
-						<h:outputText value="#{act.weight}" />
+						<h:outputText value="#{act.lname}" />
 
 					</p:column>
 
-					<p:column headerText="#{msg['form.groupmenu.creationdate']}"
-						sortBy="#{act.crtdDtTime}">
+					<p:column headerText="#{msg['form.board.board']}"
+						sortBy="#{act.board}">
 
-						<h:outputText value="#{act.crtdDtTime}" />
-
-					</p:column>
-
-					<p:column headerText="#{msg['form.strategicPlan.users']}"
-						sortBy="#{act.createdBy}">
-
-						<h:outputText value="#{act.createdBy}" />
+						<h:outputText value="#{act.board.boardName}" />
 
 					</p:column>
+
+<!-- 					<p:column headerText="#{msg['form.groupmenu.creationdate']}" -->
+<!-- 						sortBy="#{act.crtdDtTime}"> -->
+
+<!-- 						<h:outputText value="#{act.crtdDtTime}" /> -->
+
+<!-- 					</p:column> -->
+
+<!-- 					<p:column headerText="#{msg['task.form']}" -->
+<!-- 						sortBy="#{act.task}"> -->
+<!-- 						<a href="#"> -->
+<!-- 						<h:outputText value="#{act.task}" /></a> -->
+
+<!-- 					</p:column> -->
+
+<!-- 					<p:column headerText="#{msg['form.strategicPlan.users']}" -->
+<!-- 						sortBy="#{act.createdBy}"> -->
+
+<!-- 						<h:outputText value="#{act.createdBy}" /> -->
+
+<!-- 					</p:column> -->
 
 					<p:column headerText="Action">
+
+							<h:commandButton style="margin-left:2px;color:white"
+								class="btn btn-secondary btn-primary 	glyphicon glyphicon-info-sign"
+									action="#{activityController.showTasks(act)}"
+								value="#{msg['details.activity.message']}"></h:commandButton>
+
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGroup>
+
+				<p:outputPanel id="table1" autoUpdate="true"
+					rendered="#{activityController.renderTable}">
+					<h1>#{msg['form.activity.table']}</h1>
+					<div class="nav">
+						<div class="div-action pull pull-left"
+							style="padding-bottom: 20px;">
+<!-- 							<h:commandLink class="btn btn-primary" -->
+<!-- 								action="#{activityController.newActivity()}"> -->
+<!-- 								<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']} -->
+<!-- 					</h:commandLink> -->
+						
+							<h:panelGroup id="categoryPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['select.status.activity.form']}</label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:selectOneMenu id="categoryId" styleClass="form-control"
+											required="false" value="#{activityController.selectedStatus}"
+											requiredMessage="#{msg['listofmenu.status.required']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems value="#{activityController.status}" itemLabelEscaped="true" />
+											<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
+										</h:selectOneMenu>
+									</div>
+									<h:message for="categoryId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+						</div>
+						<div class="div-action pull pull-right"
+							style="padding-bottom: 20px;">
+							<h:commandLink
+								class="btn btn-primary glyphicon glyphicon-chevron-left"
+								actionListener="#{activityController.back()}"
+								action="#{activityController.back()}"
+								value="#{msg['UserRegForm.BackButton']}">
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandLink>
+						</div>
+					</div>
+					<p:dataTable id="example1" class="display" cellspacing="0"
+						value="#{activityController.activityDetail}" var="info">
+						<f:facet name="header" >
+						#{msg['planned.activity.table.header']} #{info.user.fname} #{info.user.lname}
+						</f:facet>
+
+						<p:column headerText="#{msg['form.activity.description']}"
+							sortBy="#{info.description}">
+
+							<h:outputText value="#{info.description}"/>
+						</p:column>
+
+
+						<p:column headerText="#{msg['form.activity.status']}"
+							sortBy="#{info.status}">
+
+							<h:outputText value="#{info.status}" />
+
+						</p:column>
+
+						<p:column headerText="#{msg['form.activity.weight']}"
+							sortBy="#{info.weight}">
+
+							<h:outputText value="#{info.weight}"/>
+
+						</p:column>
+
+						<p:column headerText="#{msg['form.groupmenu.creationdate']}"
+							sortBy="#{info.crtdDtTime}">
+
+							<h:outputText value="#{info.crtdDtTime}" />
+
+						</p:column>
+
+						<p:column headerText="#{msg['task.form']}"
+							sortBy="#{info.task.taskName}">
+							<h:outputText value="#{info.task.taskName}" />
+
+						</p:column>
+
+						<p:column headerText="Action">
+
 						<div class="btn-group" role="group" aria-label="Basic example">
 
 							<h:commandLink style="color:white"
@@ -95,11 +199,10 @@
 								data-toggle="modal" data-target="#exampleModal" />
 
 						</div>
-					</p:column>
+						</p:column>
 
-				</p:dataTable>
-
-
+					</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</ui:define>
 	</ui:composition>

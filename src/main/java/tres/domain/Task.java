@@ -131,4 +131,9 @@ public class Task extends CommonDomain implements Serializable {
 		this.board = board;
 	}
 
+	@Override
+	public String toString() {
+		return taskName;
+	}
+
 }

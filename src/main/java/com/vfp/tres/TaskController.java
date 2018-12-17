@@ -90,8 +90,8 @@ public class TaskController implements Serializable, DbConstant {
 		}
 
 		try {
-			userDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "userCategory" },
-					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid") }, "Users", "userId asc");
+			userDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "userCategory", "board" },
+					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() }, "Users", "userId asc");
 			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
 					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "TaskAssignment",
 					"taskAssignmentId asc");
