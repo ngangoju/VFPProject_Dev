@@ -130,7 +130,7 @@ public class ActivityController implements Serializable, DbConstant {
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
 					" from Users");
 			for (Object[] data : usersImpl.reportList(
-					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co where co.user=us.userId and co.status='planned' and us.board='"+usersSession.getBoard()+"'")) {
+					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co where co.user=us.userId and co.status='planned' and us.board='"+usersSession.getBoard().getBoardId()+"'")) {
 				Users user = new Users();
 				user.setUserId((Integer) data[0]);
 				user.setFname(data[1] + "");
