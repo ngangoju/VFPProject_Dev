@@ -35,6 +35,9 @@ public class Task extends CommonDomain implements Serializable {
 	@Column(name = "description")
 	private String description;
 
+	@Column(name = "taskStatus")
+	private String taskStatus;
+
 	@Column(name = "startDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
@@ -134,6 +137,14 @@ public class Task extends CommonDomain implements Serializable {
 	@Override
 	public String toString() {
 		return taskName;
+	}
+
+	public String getTaskStatus() {
+		return taskStatus;
+	}
+
+	public void setTaskStatus(String taskStatus) {
+		this.taskStatus = taskStatus;
 	}
 
 }

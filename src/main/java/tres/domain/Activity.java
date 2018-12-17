@@ -39,6 +39,9 @@ public class Activity extends CommonDomain implements Serializable {
 	@Column(name = "weight")
 	private String weight;
 
+	@Column(name = "type")
+	private String type;
+	
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -142,6 +145,15 @@ public class Activity extends CommonDomain implements Serializable {
 	public void setUser(Users user) {
 		this.user = user;
 	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getFormatedDate1(){
 	       SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
 	       return sdf.format(startDate);
