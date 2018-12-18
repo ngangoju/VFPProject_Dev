@@ -77,7 +77,7 @@
 						<!--  LIST OF TASK ASSIGNED START HERE -->
 						<p:outputPanel rendered="#{activityController.renderTaskForm}"
 							autoUpdate="true">
-							<fieldset style="width: 70%; margin-left: 5%;">
+							<fieldset style="width: 90%; margin-left: 3%;">
 								<legend>
 									<label
 										style="font-family: Open Sans sans-serif !important; font-size: 15px !important;">#{msg['form.activity.title']}</label>
@@ -150,6 +150,43 @@
 										</div>
 										<div class="col-md-1 col-sm-1 col-xs-1"></div>
 										<h:message for="descrId" styleClass="help-block"></h:message>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup id="typePane" layout="block">
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-4 col-sm-4 col-xs-4 control-label"
+											style="color: black">#{msg['form.activity.type']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-6 col-sm-6 col-xs-7" style="">
+											<h:selectOneMenu id="typeId" styleClass="form-control"
+												required="true"
+												value="#{activityController.activity.type}"
+												requiredMessage="#{msg['type.required.message']}">
+												<f:selectItem
+													itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" />
+												<f:selectItems value="#{activityController.type}"
+													var="option" itemValue="#{option}" itemLabelEscaped="true" />
+												
+											</h:selectOneMenu>
+										</div>
+										<div class="col-md-2">
+													<span class="tooltips-input-main"><a
+														class="tooltips-input"> <h:panelGroup
+																id="tooltips-contactDetails" layout="block">
+																<img
+																	src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+																	style="width: 18%" alt="question" />
+															</h:panelGroup> <p:tooltip id="toolTipContent"
+																for="tooltips-contactDetails" position="bottom">
+																<span> #{msg['help.activitytype.message']} </span>
+															</p:tooltip>
+													</a></span>
+														<div class="col-md-1 col-sm-1 col-xs-1"></div>
+										<h:message for="typeId" styleClass="help-block"></h:message>
+												</div>
+											
 									</div>
 								</h:panelGroup>
 								<h:panelGroup id="categoryPane" layout="block">
@@ -326,6 +363,29 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">
+										<label>Type</label>
+									</f:facet>
+									<br />
+									<h:selectOneMenu id="type1" styleClass="form-control"
+										required="true" rendered="#{act.editable}"
+										value="#{act.type}"
+										requiredMessage="#{msg['weight.required.message']}">
+										<f:selectItem
+											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+											itemValue="#{null}" itemLabelEscaped="false" />
+										<f:selectItems value="#{activityController.type}"
+											var="option" itemValue="#{option}" itemLabelEscaped="true" />
+										<f:ajax event="change" execute="@this"
+											listener="#{activityController.changeSelectBox('Junior')}"
+											render="ReasonPanel" />
+									</h:selectOneMenu>
+									<h:message for="type1" styleClass="help-block"></h:message>
+
+									<h:outputText value="#{act.type}"
+										rendered="#{not act.editable}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
 										<label>Status</label>
 									</f:facet>
 									<br />
@@ -352,42 +412,41 @@
 										<h:commandLink style="color:white" data-toggle="tooltip"
 											data-placement="left"
 											title="#{msg['UserCategoryView.editButton']}"
-											class="btn btn-success 	glyphicon glyphicon-edit"
+											class="btn btn-sm btn-success 	glyphicon glyphicon-edit"
 											action="#{activityController.editAction(act)}"
-											rendered="#{not act.editable}" />
+											rendered="#{not act.changeAction}"/>
+											<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['UserCategoryView.editButton']}"
+											class="btn btn-sm btn-success 	glyphicon glyphicon-edit"
+											action="#{activityController.editChangeAction(act)}"
+											rendered="#{not act.editAction}"/>
 										<h:commandLink style="color:white" data-toggle="tooltip"
 											data-placement="left"
 											title="#{msg['UserCategoryView.planButton']}"
-											class="btn btn-warning 	glyphicon glyphicon-check"
+											class="btn btn-sm btn-warning 	glyphicon glyphicon-check"
 											action="#{activityController.planAction(act)}"
 											rendered="#{ not act.planAction}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
-										<h:commandLink style="color:white" data-toggle="tooltip"
-											data-placement="left"
-											title="#{msg['UserCategoryView.reportButton']}"
-											class="btn btn-info glyphicon glyphicon-send"
-											action="#{activityController.reportAction(act)}"
-											rendered="#{ not act.reportAction}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
+										
 										<h:commandLink style="color:white" data-toggle="tooltip"
 											data-placement="left"
 											title="#{msg['UserCategoryView.commentButton']}"
-											class="btn btn-primary glyphicon glyphicon-info-sign"
+											class="btn btn-sm btn-primary glyphicon glyphicon-info-sign"
 											action="#{activityController.commentAction(act)}"
 											rendered="#{ not act.commmentAction}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
-										<h:commandLink style="margin-left:2px;color:white"
+										<h:commandLink style="color:white"
 											data-toggle="tooltip" data-placement="left"
 											title="#{msg['UserCategoryView.cancelButton']}"
-											class="btn btn-danger 	glyphicon glyphicon-remove"
+											class="btn btn-sm btn-danger glyphicon glyphicon-remove"
 											action="#{activityController.cancel(act)}"
 											rendered="#{act.editable}" />
 
 										<h:commandLink
-											class="btn btn-primary glyphicon glyphicon-floppy-disk"
+											class="btn btn-sm btn-primary glyphicon glyphicon-floppy-disk"
 											style="color:white;" data-toggle="tooltip"
 											data-placement="right"
 											title="#{msg['UserCategoryView.savechangeButton']}"
@@ -399,7 +458,7 @@
 										<h:commandLink style="color:white" data-toggle="tooltip"
 											data-placement="left"
 											title="#{msg['UserCategoryView.rePlanButton']}"
-											class="btn btn-warning 	glyphicon glyphicon-check"
+											class="btn btn-sm btn-warning glyphicon glyphicon-check"
 											action="#{activityController.planAction(act)}"
 											rendered="#{ not act.replanAction}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
@@ -407,9 +466,17 @@
 										<h:commandLink style="color:white" data-toggle="tooltip"
 											data-placement="left"
 											title="#{msg['UserCategoryView.attachFileButton']}"
-											class="btn btn-success 	glyphicon glyphicon-upload"
+											class="btn btn-sm btn-info glyphicon glyphicon-upload"
 											action="#{activityController.uploadAction(act)}"
 											rendered="#{ not act.doneAction}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+										<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['UserCategoryView.reportButton']}"
+											class="btn btn-sm btn-danger glyphicon glyphicon-send"
+											action="#{activityController.reportAction(act)}"
+											rendered="#{ not act.reportAction}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
 									</div>

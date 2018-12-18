@@ -1,18 +1,28 @@
 package com.vfp.tres;
-
+import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.FilenameUtils;
+
+import com.itextpdf.text.pdf.PdfDocument.Destination;
 
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
@@ -21,18 +31,22 @@ import tres.common.SessionUtils;
 import tres.dao.impl.ActivityCommentImpl;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.CommentImpl;
+import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
+import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
 import tres.domain.Comment;
+import tres.domain.Documents;
 import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Board;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
+import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.UserDto;
@@ -68,6 +82,9 @@ public class ActivityController implements Serializable, DbConstant {
 	private ActivityCommentImpl actcommentImpl = new ActivityCommentImpl();
 	private CommentImpl commentImpl = new CommentImpl();
 	private ActivityDto actDto = new ActivityDto();
+  	private Documents document;
+	private DocumentsImpl docsImpl= new DocumentsImpl();
+	private UploadingActivityImpl uplActImpl= new UploadingActivityImpl();
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
@@ -91,7 +108,7 @@ public class ActivityController implements Serializable, DbConstant {
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
 	private String selectedStatus;
-
+	private String[] type = { NORMAL, MILESTONE };
 	/* class injection */
 
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -129,6 +146,9 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 		if (actDto == null) {
 			actDto = new ActivityDto();
+		}
+		if(document==null) {
+			document= new Documents();
 		}
 		try {
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
@@ -216,6 +236,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDto.setStartDate(activity.getStartDate());
 			activityDto.setDueDate(activity.getDueDate());
 			activityDto.setTask(activity.getTask());
+			activityDto.setType(activity.getType());
 			activityDto.setGenericstatus(activity.getGenericStatus());
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
@@ -224,28 +245,34 @@ public class ActivityController implements Serializable, DbConstant {
 			}
 			if (activityDto.getStatus().equals(NOTSTARTED)) {
 				activityDto.setPlanAction(false);
+			activityDto.setChangeAction(false);
 			} else {
 				activityDto.setPlanAction(true);
+				activityDto.setChangeAction(true);
 			}
 			if (activityDto.getStatus().equals(APPROVED)) {
 				activityDto.setReportAction(false);
 				activityDto.setCommmentAction(false);
+				activityDto.setDoneAction(false);
 			} else {
 				activityDto.setReportAction(true);
 				activityDto.setCommmentAction(true);
+				activityDto.setDoneAction(true);
 			}
 
 			if (activityDto.getStatus().equals(REJECT)) {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
+				activityDto.setEditAction(false);
 			} else {
 				activityDto.setReplanAction(true);
 				activityDto.setCommmentAction(true);
+				activityDto.setEditAction(true);
 			}
 			if (activityDto.getStatus().equals(DONE)) {
-				activityDto.setDoneAction(false);
+				activityDto.setAction(false);
 			} else {
-				activityDto.setDoneAction(true);
+				activityDto.setAction(true);
 			}
 
 			ActivityDtoList.add(activityDto);
@@ -516,21 +543,28 @@ public class ActivityController implements Serializable, DbConstant {
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
 
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
-			activity.setEditable(false);
-			activity.setAction(false);
-			activity.setPlanAction(false);
-			activity.setCommmentAction(false);
-			activity.setReplanAction(false);
-			activity.setReportAction(false);
-			activity.setDoneAction(false);
+			
 			act.setDescription(activity.getDescription());
 			act.setStatus(activity.getStatus());
+			act.setType(activity.getType());
 			act.setWeight(activity.getWeight());
 			activityImpl.UpdateActivity(act);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			if(activity.getStatus().equals(NOTSTARTED)) {
+				activity.setEditable(false);
+				activity.setAction(false);
+				activity.setPlanAction(false);
+				activity.setChangeAction(false);	
+			}else {
+				activity.setEditable(false);
+				activity.setAction(false);
+				activity.setReplanAction(false);
+				activity.setCommmentAction(false);
+				activity.setEditAction(false);
+			}	
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -638,13 +672,18 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	public String cancel(ActivityDto activity) {
-		activity.setEditable(false);
-		activity.setAction(false);
-		activity.setPlanAction(false);
-		activity.setCommmentAction(false);
-		activity.setReplanAction(false);
-		activity.setReportAction(false);
-		activity.setDoneAction(false);
+		if(activity.getStatus().equals(NOTSTARTED)) {
+			activity.setEditable(false);
+			activity.setAction(false);
+			activity.setPlanAction(false);
+			activity.setChangeAction(false);	
+		}else {
+			activity.setEditable(false);
+			activity.setAction(false);
+			activity.setReplanAction(false);
+			activity.setCommmentAction(false);
+			activity.setEditAction(false);
+		}	
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -786,7 +825,60 @@ public class ActivityController implements Serializable, DbConstant {
 		activity.setReplanAction(true);
 		activity.setReportAction(true);
 		activity.setDoneAction(true);
+		activity.setChangeAction(true);
 		// usersImpl.UpdateUsers(user);
+		return null;
+	}
+	public String editChangeAction(ActivityDto activity) {
+
+		activity.setEditable(true);
+		activity.setAction(true);
+		activity.setPlanAction(true);
+		activity.setCommmentAction(true);
+		activity.setReplanAction(true);
+		activity.setReportAction(true);
+		activity.setDoneAction(true);
+		activity.setEditAction(true);
+		// usersImpl.UpdateUsers(user);
+		return null;
+	}
+public String deleteFile(UploadingActivity info) {
+		try {
+			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
+		            .getExternalContext().getContext();
+		String realPath = ctx.getRealPath("/");
+		LOGGER.info("Filse Reals Path::::" + realPath);
+			Documents documents = new Documents();
+			documents=docsImpl.getModelWithMyHQL(new String[] {"DocId" }, new Object[] { info.getDocuments().getDocId()}, " from Documents");
+			
+			if(null!=documents) {
+				final Path destination = Paths.get(realPath+FILELOCATION + documents.getSysFilename());
+				LOGGER.info("Path::" + destination);
+				File file = new File(destination.toString());
+				uplActImpl.deleteIntable(info);
+				docsImpl.deleteIntable(documents);
+				LOGGER.info("Delete in db operation done!!!:");
+				if(file.delete()){
+	    			System.out.println(file.getName() + " is deleted!");
+	    			JSFMessagers.resetMessages();
+	    			setValid(true);
+	    			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.success.files.delete"));
+	    		}else{
+	    			System.out.println("Delete operation is failed.");
+	    			JSFMessagers.resetMessages();
+	    			setValid(false);
+	    			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.error.files.delete"));
+	    		}
+	 
+			}
+			
+			
+			
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+		}
 		return null;
 	}
 
@@ -1196,6 +1288,38 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setRenderTask(boolean renderTask) {
 		this.renderTask = renderTask;
+	}
+
+	public String[] getType() {
+		return type;
+	}
+
+	public void setType(String[] type) {
+		this.type = type;
+	}
+
+	public Documents getDocument() {
+		return document;
+	}
+
+	public void setDocument(Documents document) {
+		this.document = document;
+	}
+
+	public DocumentsImpl getDocsImpl() {
+		return docsImpl;
+	}
+
+	public void setDocsImpl(DocumentsImpl docsImpl) {
+		this.docsImpl = docsImpl;
+	}
+
+	public UploadingActivityImpl getUplActImpl() {
+		return uplActImpl;
+	}
+
+	public void setUplActImpl(UploadingActivityImpl uplActImpl) {
+		this.uplActImpl = uplActImpl;
 	}
 
 }

@@ -35,6 +35,7 @@ public class ActivityDto implements Serializable {
 	private String genericstatus;
 
 	private Date createdDate;
+	private String type;
 
 	private boolean editable;
 	private boolean action;
@@ -43,6 +44,8 @@ public class ActivityDto implements Serializable {
 	private boolean reportAction;
 	private boolean doneAction;
 	private boolean planAction;
+	private boolean changeAction;
+	private boolean editAction;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -194,4 +197,29 @@ public class ActivityDto implements Serializable {
 	public void setPlanAction(boolean planAction) {
 		this.planAction = planAction;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public boolean isChangeAction() {
+		return changeAction;
+	}
+
+	public void setChangeAction(boolean changeAction) {
+		this.changeAction = changeAction;
+	}
+
+	public boolean isEditAction() {
+		return editAction;
+	}
+
+	public void setEditAction(boolean editAction) {
+		this.editAction = editAction;
+	}
+	
 }

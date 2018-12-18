@@ -68,7 +68,7 @@
 
 					<h:form>
 						<h:panelGroup layout="block"
-							rendered="#{not formSampleController.valid and not facesContext.validationFailed}">
+							rendered="#{not activityController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -83,7 +83,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup layout="block"
-							rendered="#{formSampleController.valid and  not facesContext.validationFailed}">
+							rendered="#{activityController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -112,8 +112,7 @@
 												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 												<label for="todate"
 													class="col-md-2 col-sm-2 col-xs-2 control-label"
-													style="color: black">Upload
-										activity files</label>
+													style="color: black">Upload activity files</label>
 												<div class="col-md-4">
 													<span class="tooltips-input-main"><a
 														class="tooltips-input"> <h:panelGroup
@@ -201,7 +200,7 @@
 											<h:commandLink
 												class="btn btn-danger glyphicon glyphicon-trash"
 												style="margin-left:5px;color:white" data-toggle="tooltip"
-												data-placement="right" title="#{msg['UserCategoryView.deletefile']}" >
+												data-placement="right" title="#{msg['UserCategoryView.deletefile']}" action="#{activityController.deleteFile(fileDetails)}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 											</h:commandLink></h:form>
 										</div>
