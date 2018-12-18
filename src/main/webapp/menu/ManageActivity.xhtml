@@ -101,7 +101,7 @@
 				</p:dataTable>
 			</h:panelGroup>
 
-				<p:outputPanel id="table1" autoUpdate="true"
+				<p:outputPanel id="table6" autoUpdate="true"
 					rendered="#{activityController.renderTable}">
 					<h1>#{msg['form.activity.table']}</h1>
 					<div class="nav">
@@ -112,9 +112,7 @@
 <!-- 								<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']} -->
 <!-- 					</h:commandLink> -->
 						
-							<h:panelGroup id="categoryPanel" layout="block">
-							</h:panelGroup>
-
+							
 						</div>
 						<div class="div-action pull pull-right"
 							style="padding-bottom: 20px;">
@@ -127,12 +125,28 @@
 							</h:commandLink>
 						</div>
 					</div>
-					<p:dataTable id="example1" class="display" cellspacing="0"
+					<p:dataTable id="example6" class="display" cellspacing="0"
 						value="#{activityController.activityDetail}" var="info">
 						<f:facet name="header" >
-						<label style="margin-left: 30%; font-size: 16px; font-family: Open Sans sans-serif !important;">#{msg['planned.activity.table.header']}:<p:outputLabel
-											value="#{info.user.fname} #{info.user.lname}" /></label>
 						
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-5 control-label"
+										style="color: black">#{msg['select.status.activity.form']}</label>
+									<div class="col-md-3 col-sm-3 col-xs-4">
+										<h:selectOneMenu id="categoryId6" styleClass="form-control"
+											required="false" value="#{activityController.selectedStatus}"
+											requiredMessage="#{msg['listofmenu.status.required']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems value="#{activityController.status}" itemLabelEscaped="true" />
+												<f:ajax render="@form"  event="change" execute="@this"
+											listener="#{activityController.changeSelectStatus()}" onevent="showProgress"  />
+										</h:selectOneMenu>
+									</div>
+									<h:message for="categoryId6" styleClass="help-block"></h:message>
+								</div>
 						</f:facet>
 
 						<p:column headerText="#{msg['form.activity.description']}"
@@ -172,41 +186,48 @@
 						<p:column headerText="Action">
 
 						<div class="btn-group" role="group" aria-label="Basic example">
-
-							<h:commandLink style="color:white"
-								class="btn btn-secondary btn-success 	glyphicon glyphicon-ok"
-								action="#{activityController.activityApproval(act)}" />
-							<h:commandLink style="margin-left:2px;color:white"
+						
+							<h:panelGroup id="approv" layout="block"	rendered="#{activityController.approveRender}">
+								<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['activity.approveButton']}"
+								class="btn btn-secondary btn-success  glyphicon glyphicon-ok"
+								action="#{activityController.activityApproval(info)}" >
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+							</h:panelGroup>
+							
+							<h:panelGroup id="rejec" layout="block"	rendered="#{activityController.rejectRender}">
+								<h:commandLink style="margin-left:2px;color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['activity.rejectButton']}"
 								class="btn btn-secondary btn-danger 	glyphicon glyphicon-remove"
-								action="#{activityController.activityRejection(act)}" />
-							<h:commandLink style="margin-left:2px;color:white"
-								class="btn btn-secondary btn-info 	glyphicon glyphicon-envelope"
-								data-toggle="modal" data-target="#exampleModal" />
+								action="#{activityController.activityRejection(info)}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+							</h:panelGroup>
+							
+							<h:panelGroup id="commentt" layout="block"	rendered="#{ activityController.commentRender}">
+									<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['UserCategoryView.commentButton']}"
+											class="btn btn-primary glyphicon glyphicon-envelope"
+											action="#{activityController.commentAction(info)}"										>
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+								</h:panelGroup>								
+							<h:panelGroup id="complet" layout="block"	rendered="#{ activityController.completeRender}">
+										<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['activity.confirmButton']}"
+											class="btn btn-warning 	glyphicon glyphicon-check"
+											action="#{activityController.completeAction(info)}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+									</h:panelGroup>
 
 						</div>
 						</p:column>
-								<f:facet name="footer">
-
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-4 col-sm-4 col-xs-5 control-label"
-										style="color: black">#{msg['select.status.activity.form']}</label>
-									<div class="col-md-3 col-sm-3 col-xs-4">
-										<h:selectOneMenu id="categoryId" styleClass="form-control"
-											required="false" value="#{activityController.selectedStatus}"
-											requiredMessage="#{msg['listofmenu.status.required']}">
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" />
-											<f:selectItems value="#{activityController.status}" itemLabelEscaped="true" />
-												<f:ajax render="@form"  event="change" execute="@this"
-											listener="#{activityController.changeSelectStatus()}" onevent="showProgress" />
-										</h:selectOneMenu>
-									</div>
-									<h:message for="categoryId" styleClass="help-block"></h:message>
-								</div>
-								</f:facet>
-
 					</p:dataTable>
 				</p:outputPanel>
 			</h:form>
