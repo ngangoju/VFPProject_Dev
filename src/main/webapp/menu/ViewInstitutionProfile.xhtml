@@ -90,14 +90,20 @@
 														<div class="w3-card w3-round w3-white">
 															<div>
 																<span class="w3-left"> <h:graphicImage
-																		class="w3-circle image"
-																		style="width:70%; height:7%;padding-top:5%;padding-left:6%"
+																		class="image"
+																		style="width:70%; height:20%;padding-top:5%;padding-left:6%"
 																		alt="userImage"
 																		value="/images/dynamic/?file=#{loadInstitutionProfile.institution.instLogo}" />
 																</span>
 															</div>
 														</div>
-
+														<h:form>
+															<h:commandLink value="Edit logo" style="font-size:8pt;margin-left:9%"
+																action="#{loadInstitutionProfile.addLogview()}" >
+																<f:ajax render="@form" execute="@form"
+																	onevent="showProgress" />
+															</h:commandLink>
+														</h:form>
 													</div>
 													<div class="   col-md-9 col-sm-9 col-xs-9">
 														<div class=" col-md-12 col-sm-12 col-xs-12">
@@ -105,11 +111,12 @@
 
 																<h:inputText id="name1"
 																	value="#{loadInstitutionProfile.dto.request.institutionName}"
-																	size="10"
+																	size="20"
 																	rendered="#{loadInstitutionProfile.dto.editable}"
 																	required="true"
 																	requiredMessage="#{msg['institutionForm.requiered.name.message']}"
-																	validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
+																	validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}"
+																	style="width:40%;margin-top:2%">
 																	<f:validateRegex
 																		pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
 																	<f:validateLength maximum="25" />
@@ -139,27 +146,25 @@
 																			rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText></span>
 																</p>
 																<p>
-																	<i class="w3-right"></i><span
+																	<i class="w3-right"></i> <span
 																		class="glyphicon glyphicon-asterisk"><h:outputText
 																			value="Country:" /> <h:outputText
 																			rendered="#{not loadInstitutionProfile.dto.editable}"
 																			value="#{loadInstitutionProfile.institution.request.country}"></h:outputText>
-																		<h:panelGroup
+																		<h:selectOneMenu class="input-sm" id="country1"
+																			value="#{institutionController.cntryId}"
+																			required="true"
+																			requiredMessage="#{msg['institutionForm.requiered.country.message']}"
 																			rendered="#{loadInstitutionProfile.dto.editable}">
-																			<h:selectOneMenu class="form-control input-sm"
-																				id="country1"
-																				value="#{institutionController.cntryId}"
-																				required="true"
-																				requiredMessage="#{msg['institutionForm.requiered.country.message']}">
-																				<f:selectItems
-																					value="#{institutionController.countries}"
-																					var="option" itemValue="#{option.taskId}"
-																					itemLabel="#{option.countryName_en}"
-																					itemLabelEscaped="true" />
-																			</h:selectOneMenu>
-																		</h:panelGroup> <h:message errorClass="errorMsg1" for="country1"></h:message>
+																			<f:selectItems
+																				value="#{institutionController.countries}"
+																				var="option" itemValue="#{option.taskId}"
+																				itemLabel="#{option.countryName_en}"
+																				itemLabelEscaped="true" />
+																		</h:selectOneMenu> <h:message errorClass="errorMsg1" for="country1"></h:message>
 																	</span>
 																</p>
+
 																<p>
 																	<i class="w3-right"></i><span
 																		class="glyphicon glyphicon-asterisk"><h:outputText
@@ -176,14 +181,6 @@
 																			style="color:white"
 																			class="btn btn-info 	glyphicon glyphicon-pencil"
 																			value=""
-																			action="#{loadInstitutionProfile.editAction()}"
-																			ajax="false"
-																			rendered="#{not loadInstitutionProfile.dto.editable}">
-																			<f:ajax render="@form" execute="@form"
-																				onevent="showProgress" />
-																		</h:commandLink> <h:commandLink style="color:white"
-																			class="btn btn-info 	glyphicon glyphicon-pencil"
-																			value="Pic"
 																			action="#{loadInstitutionProfile.editAction()}"
 																			ajax="false"
 																			rendered="#{not loadInstitutionProfile.dto.editable}">
@@ -208,6 +205,7 @@
 																		</h:commandLink>
 																	</span>
 																</p>
+
 															</div>
 
 														</div>
@@ -221,7 +219,7 @@
 															<div class="row w3-white">
 
 																<div class="col-md-12 col-sm-12 col-xs-12">
-																	<div class="col-md-12 col-sm-11 col-xs-12">
+																	<!-- <div class="col-md-12 col-sm-11 col-xs-12">
 																		<div class="col-md-6 col-sm-6 col-xs-6">
 																			<div class="heading">
 																				<div class="header">
@@ -229,45 +227,40 @@
 																				</div>
 																			</div>
 
-																		</div>
-																		<div class="col-md-6 col-sm-6 col-xs-6"
-																			style="text-align: right; padding-top: 2%">
-																			<h:commandLink style="color:white"
-																				class="btn btn-success 	glyphicon glyphicon-plus"
-																				value="Branch request"
-																				action="#{loadInstitutionProfile.addbranchDiv()}"
-																				ajax="false">
-																				<f:ajax render="@form" execute="@form"
-																					onevent="showProgress" />
-																			</h:commandLink>
-																			<h:commandLink style="color:white"
-																				class="btn btn-info 	glyphicon glyphicon-plus"
-																				value="Branch contact"
-																				action="#{loadInstitutionProfile.addbranchDiv()}"
-																				ajax="false">
-																				<f:ajax render="@form" execute="@form"
-																					onevent="showProgress" />
-																			</h:commandLink>
-																		</div>
+																		</div>-->
+																	<div class="col-md-6 col-sm-6 col-xs-6"
+																		style="text-align: left; padding-top: 2%">
+																		<h:commandLink style="color:white"
+																			class="btn btn-success 	glyphicon glyphicon-plus"
+																			value="Branch request"
+																			action="#{loadInstitutionProfile.addbranchDiv()}"
+																			ajax="false">
+																			<f:ajax render="@form" execute="@form"
+																				onevent="showProgress" />
+																		</h:commandLink>
 																	</div>
-																	<div class="col-md-5 col-sm-5 col-xs-5"></div>
+
 																	<div class="col-md-12 col-sm-12 col-xs-12">
-																		<p:dataTable
+																		<h:dataTable id="taskAssignTable" binding="#{table}"
+																			style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:100% !important; -webkit-box-shadow: none; box-shadow: none !important; margin-top:1%;"
 																			value="#{loadInstitutionProfile.instDtos}" var="ls"
-																			rowIndexVar="index" class="table" paginator="true"
-																			rows="4"
-																			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-																			rowsPerPageTemplate="4,6,8,10,12" id="rejectedTable">
-																			<p:column style="width:30px">
+																			class="table table-striped table-hover table-bordered tableUpdated">
+																			<f:facet name="header">
+																				<label style="margin-left: 2%; font-size: 18px">BRANCH</label>
+																			</f:facet>
+
+																			<h:column>
 																				<f:facet name="header">
-																					<h:outputText value="#" />
+																					<label>#</label>
 																				</f:facet>
-																				<h:outputText value="#{index + 1}" />
-																			</p:column>
-																			<p:column style="border: none;">
+																				<br />
+																				<h:outputText value="#{table.rowIndex + 1}" />
+																			</h:column>
+																			<h:column>
 																				<f:facet name="header">
-																					<h:outputText value="Name" />
+																					<label>Branch name</label>
 																				</f:facet>
+																				<br />
 																				<h:inputText id="name"
 																					value="#{ls.request.institutionName}" size="10"
 																					rendered="#{ls.editable}" required="true"
@@ -280,14 +273,15 @@
 																				<h:outputText value="#{ls.request.institutionName}"
 																					rendered="#{not ls.editable}" />
 																				<h:message errorClass="errorMsg1" for="name"></h:message>
-																			</p:column>
-																			<p:column style="border: none;">
+																			</h:column>
+																			<h:column>
 																				<f:facet name="header">
-																					<h:outputText value="Country" />
+																					<label>Country</label>
 																				</f:facet>
+																				<br />
 																				<h:panelGroup rendered="#{ls.editable}">
 																					<h:selectOneMenu class="form-control input-sm"
-																						id="country"
+																						id="nameCnt"
 																						value="#{institutionController.cntryId}"
 																						required="true"
 																						requiredMessage="#{msg['institutionForm.requiered.country.message']}">
@@ -301,11 +295,12 @@
 																				<h:outputText value="#{ls.request.country}"
 																					rendered="#{not ls.editable}" />
 																				<h:message errorClass="errorMsg1" for="nameCnt"></h:message>
-																			</p:column>
-																			<p:column style="border: none;">
+																			</h:column>
+																			<h:column>
 																				<f:facet name="header">
-																					<h:outputText value="Location" />
+																					<label>Address</label>
 																				</f:facet>
+																				<br />
 																				<h:outputText
 																					value="#{ls.request.institutionAddress}" size="10"
 																					rendered="#{not ls.editable}" />
@@ -321,60 +316,57 @@
 																						pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
 																					<f:validateLength maximum="25" />
 																				</h:inputText>
-																			</p:column>
-																			<p:column style="border: none;">
+																			</h:column>
+																			<h:column>
 																				<f:facet name="header">
-																					<h:outputText value="Created On" />
+																					<label>Created On</label>
 																				</f:facet>
+																				<br />
 																				<h:outputText style="border: none"
 																					value="#{ls.institutionRegDate}">
 																					<f:convertDateTime pattern="dd MMM hh:mm" />
 																				</h:outputText>
-																			</p:column>
-																			<p:column style="border: none;">
+																			</h:column>
+																			<h:column>
 																				<f:facet name="header">
-																					<h:outputText value="Email" />
+																					<label>Action</label>
 																				</f:facet>
+																				<div class="btn-group btn btn-sm" role="group"
+																					aria-label="Basic example"
+																					style="margin-top: 5%; margin-left: 10%">
+																					<h:commandLink style="color:white"
+																						class="btn btn-success 	glyphicon glyphicon-edit"
+																						value=""
+																						action="#{institutionController.editAction(ls)}"
+																						rendered="#{not ls.editable}">
+																						<f:ajax render="@form" execute="@form"
+																							onevent="showProgress" />
+																					</h:commandLink>
+																					<h:commandLink style="margin-left:2px;color:white"
+																						class="btn btn-danger 	glyphicon glyphicon-remove"
+																						value=""
+																						action="#{loadInstitutionProfile.cancel(ls)}"
+																						rendered="#{ls.editable}" ajax="false">
+																						<f:ajax render="@form" execute="@form"
+																							onevent="showProgress" />
+																					</h:commandLink>
+																					<h:commandLink value=""
+																						class="btn btn-success glyphicon glyphicon-saved	"
+																						action="#{loadInstitutionProfile.saveAction(ls)}"
+																						rendered="#{ls.editable}" ajax="false">
+																						<f:ajax render="@form" execute="@form"
+																							onevent="showProgress" />
+																					</h:commandLink>
 
-																			</p:column>
-																			<p:column style="border: none;">
-																				<f:facet name="header">
-																					<h:outputText value="Phone" />
-																				</f:facet>
-																				<!-- 																		<h:outputText style="border: none" -->
-																				<!-- 																			value="jj"> -->
-																				<!-- 																		</h:outputText> -->
-																			</p:column>
 
-																			<p:column headerText="Action">
-																				<h:commandLink style="color:white"
-																					class="btn btn-success 	glyphicon glyphicon-edit"
-																					value=""
-																					action="#{institutionController.editAction(ls)}"
-																					rendered="#{not ls.editable}">
-																					<f:ajax render="@form" execute="@form"
-																						onevent="showProgress" />
-																				</h:commandLink>
-																				<h:commandLink style="margin-left:2px;color:white"
-																					class="btn btn-danger 	glyphicon glyphicon-remove"
-																					value=""
-																					action="#{loadInstitutionProfile.cancel(ls)}"
-																					rendered="#{ls.editable}" ajax="false">
-																					<f:ajax render="@form" execute="@form"
-																						onevent="showProgress" />
-																				</h:commandLink>
-																				<h:commandLink value=""
-																					class="btn btn-success glyphicon glyphicon-saved	"
-																					action="#{loadInstitutionProfile.saveAction(ls)}"
-																					rendered="#{ls.editable}" ajax="false">
-																					<f:ajax render="@form" execute="@form"
-																						onevent="showProgress" />
-																				</h:commandLink>
-																			</p:column>
-																		</p:dataTable>
+																				</div>
+																			</h:column>
+																		</h:dataTable>
 																	</div>
 																</div>
+
 																<div class="col-md-12 col-sm-12 col-xs-12">
+																	<hr></hr>
 																	<div class="border">
 																		<p>
 																			<i class="w3-right"></i><span><p:commandLink
@@ -682,7 +674,7 @@
 								<hr></hr>
 								<div class="form-group row">
 
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
+									<div class="col-sm-8 col-sm-8 col-xs-8 ">
 										<!-- Saving new headquater starts -->
 										<p:outputPanel rendered="#{loadInstitutionProfile.cmpltDiv}">
 											<h:commandButton class="btn btn-info btn-sm btn-block"
@@ -696,12 +688,22 @@
 										<!-- Saving new branch starts -->
 										<p:outputPanel
 											rendered="#{not loadInstitutionProfile.cmpltDiv}">
-											<h:commandButton class="btn btn-info btn-sm btn-block"
-												value="Submit Branch" style="float:left;margin-left:1%;"
-												action="#{loadInstitutionProfile.saveBranchRequest()}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandButton>
+											<div class="col-sm-2 col-sm-2 col-xs-2 ">
+												<h:commandButton class="btn btn-info btn-sm btn-block"
+													value="Submit"
+													action="#{loadInstitutionProfile.saveBranchRequest()}">
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandButton>
+											</div>
+											<div class="col-sm-2 col-sm-2 col-xs-2 ">
+												<h:commandButton class="btn btn-info btn-sm btn-block"
+													value="Back"
+													action="#{loadInstitutionProfile.backToprofile()}">
+													<f:ajax render="profle" onevent="showProgress" />
+												</h:commandButton>
+
+											</div>
 										</p:outputPanel>
 										<!-- Saving new branch ends -->
 
@@ -906,13 +908,14 @@
 
 									</div>
 									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Back" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.backToprofile()}">
-											<f:ajax render="profle" execute="profle"
-												onevent="showProgress" />
-										</h:commandButton>
-
+										<h:form>
+											<h:commandButton class="btn btn-info btn-sm btn-block"
+												value="Back" style="float:left;margin-left:1%"
+												action="#{loadInstitutionProfile.bacKnstitutionBranchContact()}">
+												<f:ajax onevent="showProgress" render="profle"
+													execute="profle" />
+											</h:commandButton>
+										</h:form>
 									</div>
 									<div class="col-sm-2 col-sm-2 col-xs-2 ">
 										<h:commandButton class="btn btn-info btn-sm btn-block"
@@ -1225,59 +1228,15 @@
 							</p:outputPanel>
 						</div>
 					</p:outputPanel>
-					<p:outputPanel>
-						<table class="table table-hover">
-							<tbody>
-								<tr>
-									<td><h:commandLink style="color:white;margin-left:5px;"
-											class="btn btn-primary 	glyphicon glyphicon-upload"
-											action="#{strategicPlanController.uploadnewDoc()}"
-											value="Upload new document">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink></td>
-
-									<td><p:outputPanel
-											rendered="#{strategicPlanController.renderUpload}"
-											autoUpdate="true">
-											<h:commandLink style="color:white;margin-left:5px;"
-												class="btn btn-primary 	glyphicon glyphicon-upload"
-												action="#{strategicPlanController.showUploaded()}"
-												value="Show uploaded files">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-										</p:outputPanel> <p:outputPanel
-											rendered="#{strategicPlanController.renderHideBtn}"
-											autoUpdate="true">
-											<h:commandLink style="color:white;margin-left:5px;"
-												class="btn btn-primary 	glyphicon glyphicon-upload"
-												action="#{strategicPlanController.hideUploaded()}"
-												value="Hide uploaded files">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandLink>
-										</p:outputPanel></td>
-
-								</tr>
-								<p:outputPanel rendered="#{strategicPlanController.rendered}"
-									autoUpdate="true">
-									<tr class="blue2">
-										<td colspan="2"><h:form>
-												<p:fileUpload
-													fileUploadListener="#{loadInstitutionProfile.UploadLogo}"
-													mode="advanced" dragDropSupport="true" multiple="true"
-													update="messages" sizeLimit="1000000" fileLimit="3"
-													allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
-
-												<p:growl id="messages" showDetail="true" />
-											</h:form></td>
-
-									</tr>
-								</p:outputPanel>
-
-							</tbody>
-						</table>
-
+					<p:outputPanel rendered="#{loadInstitutionProfile.profileEditable}">
+						<h:form>
+							<p:fileUpload
+								fileUploadListener="#{loadInstitutionProfile.UploadLogo}"
+								mode="advanced" dragDropSupport="true" multiple="true"
+								update="messages" sizeLimit="1000000" fileLimit="3"
+								allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
+							<p:growl id="messages" showDetail="true" />
+						</h:form>
 					</p:outputPanel>
 				</p:outputPanel>
 			</h:form>

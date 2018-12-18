@@ -73,7 +73,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private Institution institution;
 	private InstitutionContact contact;
 	private InstitutionLogo logoPic;
-	private String useremail, tel, pobx, nmbrTime, shrtActivityMark, mdumActivityMark, lngActivityMark, plp,variation;
+	private String useremail, tel, pobx, nmbrTime, shrtActivityMark, mdumActivityMark, lngActivityMark, plp, variation;
 	private Village village;
 	private Province province;
 	private District district;
@@ -186,11 +186,13 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					institution = institutionImpl.getModelWithMyHQL(new String[] { "request", "institutionType" },
 							new Object[] { request, "HeadQuoter" }, "from Institution");
 					if (institution != null) {
-						chngDiv = true;
-						logoPic = logoImpl.getModelWithMyHQL(new String[] { "institution" },
-								new Object[] { institution }, "from InstitutionLogo");
-						contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
-								new Object[] { institution }, "from InstitutionContact");
+						chngDiv = true; 
+						try {
+							contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
+									new Object[] { institution }, "from InstitutionContact");
+						} catch (Exception e) {
+
+						}
 						if (contact == null) {
 							hasContact = true;
 						}
@@ -323,13 +325,15 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 							"from InstitutionRegistrationRequest") },
 					"from Institution");
 			documents = ut.fileUploadUtil(event, validationCode);
-			institution.setInstLogo(documents.getOriginalFileName());
+			institution.setInstLogo(documents.getSysFilename());
 			institutionImpl.UpdateInstitution(institution);
 			logoPic.setDocuments(documents);
 			logoPic.setInstitution(institution);
 			logoPic.setInstitutionRegDate(timestamp);
 			logoPic.setGenericStatus(ACTIVE);
-			logoImpl.saveInstitutionLogo(logoPic);
+			logoImpl.saveInstitutionLogo(logoPic); 
+			profileEditable = false;
+			frstDiv = false;
 			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -463,7 +467,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request not sent");
-			div1 = false;
+			// div1 = false;
 			chngDiv = false;
 			nextpage = true;
 			return "";
@@ -578,7 +582,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			if (policy != null) {
 				policy.setGenericStatus(DESACTIVE);
 				policy.setUpdatedBy(usersSession.getViewId());
-				policy.setUpDtTime(timestamp); 
+				policy.setUpDtTime(timestamp);
 				policyImpl.UpdateInstEscalPolicy(policy);
 				savePolicy();
 			} else {
@@ -716,296 +720,11 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		return null;
 	}
 
-	public void setValid(boolean isValid) {
-		this.isValid = isValid;
-	}
-
-	public String getCLASSNAME() {
-		return CLASSNAME;
-	}
-
-	public void setCLASSNAME(String cLASSNAME) {
-		CLASSNAME = cLASSNAME;
-	}
-
-	public Users getUsersSession() {
-		return usersSession;
-	}
-
-	public void setUsersSession(Users usersSession) {
-		this.usersSession = usersSession;
-	}
-
-	public InstitutionRegistrationRequest getRequest() {
-		return request;
-	}
-
-	public void setRequest(InstitutionRegistrationRequest request) {
-		this.request = request;
-	}
-
-	public Institution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
-	}
-
-	public InstitutionContact getContact() {
-		return contact;
-	}
-
-	public void setContact(InstitutionContact contact) {
-		this.contact = contact;
-	}
-
-	public InstitutionContactImpl getInstContactImpl() {
-		return instContactImpl;
-	}
-
-	public void setInstContactImpl(InstitutionContactImpl instContactImpl) {
-		this.instContactImpl = instContactImpl;
-	}
-
-	public List<InstitutionRegistrationRequest> getValidInstitution() {
-		return validInstitution;
-	}
-
-	public void setValidInstitution(List<InstitutionRegistrationRequest> validInstitution) {
-		this.validInstitution = validInstitution;
-	}
-
-	public List<Institution> getInstitutions() {
-		return institutions;
-	}
-
-	public void setInstitutions(List<Institution> institutions) {
-		this.institutions = institutions;
-	}
-
-	public JSFBoundleProvider getProvider() {
-		return provider;
-	}
-
-	public void setProvider(JSFBoundleProvider provider) {
-		this.provider = provider;
-	}
-
-	public UserImpl getUsersImpl() {
-		return usersImpl;
-	}
-
-	public void setUsersImpl(UserImpl usersImpl) {
-		this.usersImpl = usersImpl;
-	}
-
-	public InstitutionImpl getInstitutionImpl() {
-		return institutionImpl;
-	}
-
-	public void setInstitutionImpl(InstitutionImpl institutionImpl) {
-		this.institutionImpl = institutionImpl;
-	}
-
-	public InstitutionRegRequestImpl getRequestImpl() {
-		return requestImpl;
-	}
-
-	public void setRequestImpl(InstitutionRegRequestImpl requestImpl) {
-		this.requestImpl = requestImpl;
-	}
-
-	public ContactImpl getContactImpl() {
-		return contactImpl;
-	}
-
-	public void setContactImpl(ContactImpl contactImpl) {
-		this.contactImpl = contactImpl;
-	}
-
-	public static Logger getLogger() {
-		return LOGGER;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public boolean isChngDiv() {
-		return chngDiv;
-	}
-
-	public void setChngDiv(boolean chngDiv) {
-		this.chngDiv = chngDiv;
-	}
-
-	public InstitutionLogo getLogoPic() {
-		return logoPic;
-	}
-
-	public void setLogoPic(InstitutionLogo logoPic) {
-		this.logoPic = logoPic;
-	}
-
-	public Documents getDocuments() {
-		return documents;
-	}
-
-	public void setDocuments(Documents documents) {
-		this.documents = documents;
-	}
-
-	public DocumentsImpl getDocumentsImpl() {
-		return documentsImpl;
-	}
-
-	public void setDocumentsImpl(DocumentsImpl documentsImpl) {
-		this.documentsImpl = documentsImpl;
-	}
-
-	public InstitutionLogoImpl getLogoImpl() {
-		return logoImpl;
-	}
-
-	public void setLogoImpl(InstitutionLogoImpl logoImpl) {
-		this.logoImpl = logoImpl;
-	}
-
-	public Timestamp getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getUseremail() {
-		return useremail;
-	}
-
-	public void setUseremail(String useremail) {
-		this.useremail = useremail;
-	}
-
-	public Village getVillage() {
-		return village;
-	}
-
-	public void setVillage(Village village) {
-		this.village = village;
-	}
-
-	public Province getProvince() {
-		return province;
-	}
-
-	public void setProvince(Province province) {
-		this.province = province;
-	}
-
-	public District getDistrict() {
-		return district;
-	}
-
-	public void setDistrict(District district) {
-		this.district = district;
-	}
-
-	public Sector getSector() {
-		return sector;
-	}
-
-	public void setSector(Sector sector) {
-		this.sector = sector;
-	}
-
-	public Cell getCell() {
-		return cell;
-	}
-
-	public void setCell(Cell cell) {
-		this.cell = cell;
-	}
-
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
-
-	public ProvinceImpl getProvImpl() {
-		return provImpl;
-	}
-
-	public void setProvImpl(ProvinceImpl provImpl) {
-		this.provImpl = provImpl;
-	}
-
-	public DistrictImpl getDistrictImpl() {
-		return districtImpl;
-	}
-
-	public void setDistrictImpl(DistrictImpl districtImpl) {
-		this.districtImpl = districtImpl;
-	}
-
-	public SectorImpl getSectorImpl() {
-		return sectorImpl;
-	}
-
-	public void setSectorImpl(SectorImpl sectorImpl) {
-		this.sectorImpl = sectorImpl;
-	}
-
-	public CellImpl getCellImpl() {
-		return cellImpl;
-	}
-
-	public void setCellImpl(CellImpl cellImpl) {
-		this.cellImpl = cellImpl;
-	}
-
-	public VillageImpl getVillageImpl() {
-		return villageImpl;
-	}
-
-	public void setVillageImpl(VillageImpl villageImpl) {
-		this.villageImpl = villageImpl;
-	}
-
-	public CountryImpl getCountryImpl() {
-		return countryImpl;
-	}
-
-	public void setCountryImpl(CountryImpl countryImpl) {
-		this.countryImpl = countryImpl;
-	}
-
-	public int getCntryId() {
-		return cntryId;
-	}
-
-	public void setCntryId(int cntryId) {
-		this.cntryId = cntryId;
-	}
-
-	public int getVid() {
-		return vid;
-	}
-
-	public void setVid(int vid) {
-		this.vid = vid;
-	}
-
-	public boolean isSkip() {
-		return skip;
-	}
-
-	public void setSkip(boolean skip) {
-		this.skip = skip;
+	// adding logo view
+
+	public void addLogview() {
+		frstDiv = true;
+		profileEditable = true;
 	}
 
 	public void save() {
@@ -1036,10 +755,11 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	/* Saving institution details */
 	public String backToprofile() {
 		try {
+			div1 = false;
 			frstDiv = false;
 			bnchDiv = false;
-			div1 = false;
 			div2 = false;
+			LOGGER.info("Here Weare:::::" + frstDiv);
 			return "";
 		} catch (Exception e) {
 			return "";
@@ -1072,6 +792,16 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		try {
 			frstDiv = true;
 			div4 = true;
+			return "";
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	public String bacKnstitutionBranchContact() {
+		try {
+			div4 = false;
+			frstDiv = false;
 			return "";
 		} catch (Exception e) {
 			return "";
@@ -1423,6 +1153,297 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void setVariation(String variation) {
 		this.variation = variation;
 	}
-	
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+
+	public String getCLASSNAME() {
+		return CLASSNAME;
+	}
+
+	public void setCLASSNAME(String cLASSNAME) {
+		CLASSNAME = cLASSNAME;
+	}
+
+	public Users getUsersSession() {
+		return usersSession;
+	}
+
+	public void setUsersSession(Users usersSession) {
+		this.usersSession = usersSession;
+	}
+
+	public InstitutionRegistrationRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(InstitutionRegistrationRequest request) {
+		this.request = request;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public InstitutionContact getContact() {
+		return contact;
+	}
+
+	public void setContact(InstitutionContact contact) {
+		this.contact = contact;
+	}
+
+	public InstitutionContactImpl getInstContactImpl() {
+		return instContactImpl;
+	}
+
+	public void setInstContactImpl(InstitutionContactImpl instContactImpl) {
+		this.instContactImpl = instContactImpl;
+	}
+
+	public List<InstitutionRegistrationRequest> getValidInstitution() {
+		return validInstitution;
+	}
+
+	public void setValidInstitution(List<InstitutionRegistrationRequest> validInstitution) {
+		this.validInstitution = validInstitution;
+	}
+
+	public List<Institution> getInstitutions() {
+		return institutions;
+	}
+
+	public void setInstitutions(List<Institution> institutions) {
+		this.institutions = institutions;
+	}
+
+	public JSFBoundleProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(JSFBoundleProvider provider) {
+		this.provider = provider;
+	}
+
+	public UserImpl getUsersImpl() {
+		return usersImpl;
+	}
+
+	public void setUsersImpl(UserImpl usersImpl) {
+		this.usersImpl = usersImpl;
+	}
+
+	public InstitutionImpl getInstitutionImpl() {
+		return institutionImpl;
+	}
+
+	public void setInstitutionImpl(InstitutionImpl institutionImpl) {
+		this.institutionImpl = institutionImpl;
+	}
+
+	public InstitutionRegRequestImpl getRequestImpl() {
+		return requestImpl;
+	}
+
+	public void setRequestImpl(InstitutionRegRequestImpl requestImpl) {
+		this.requestImpl = requestImpl;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public static Logger getLogger() {
+		return LOGGER;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public boolean isChngDiv() {
+		return chngDiv;
+	}
+
+	public void setChngDiv(boolean chngDiv) {
+		this.chngDiv = chngDiv;
+	}
+
+	public InstitutionLogo getLogoPic() {
+		return logoPic;
+	}
+
+	public void setLogoPic(InstitutionLogo logoPic) {
+		this.logoPic = logoPic;
+	}
+
+	public Documents getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(Documents documents) {
+		this.documents = documents;
+	}
+
+	public DocumentsImpl getDocumentsImpl() {
+		return documentsImpl;
+	}
+
+	public void setDocumentsImpl(DocumentsImpl documentsImpl) {
+		this.documentsImpl = documentsImpl;
+	}
+
+	public InstitutionLogoImpl getLogoImpl() {
+		return logoImpl;
+	}
+
+	public void setLogoImpl(InstitutionLogoImpl logoImpl) {
+		this.logoImpl = logoImpl;
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String getUseremail() {
+		return useremail;
+	}
+
+	public void setUseremail(String useremail) {
+		this.useremail = useremail;
+	}
+
+	public Village getVillage() {
+		return village;
+	}
+
+	public void setVillage(Village village) {
+		this.village = village;
+	}
+
+	public Province getProvince() {
+		return province;
+	}
+
+	public void setProvince(Province province) {
+		this.province = province;
+	}
+
+	public District getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(District district) {
+		this.district = district;
+	}
+
+	public Sector getSector() {
+		return sector;
+	}
+
+	public void setSector(Sector sector) {
+		this.sector = sector;
+	}
+
+	public Cell getCell() {
+		return cell;
+	}
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public ProvinceImpl getProvImpl() {
+		return provImpl;
+	}
+
+	public void setProvImpl(ProvinceImpl provImpl) {
+		this.provImpl = provImpl;
+	}
+
+	public DistrictImpl getDistrictImpl() {
+		return districtImpl;
+	}
+
+	public void setDistrictImpl(DistrictImpl districtImpl) {
+		this.districtImpl = districtImpl;
+	}
+
+	public SectorImpl getSectorImpl() {
+		return sectorImpl;
+	}
+
+	public void setSectorImpl(SectorImpl sectorImpl) {
+		this.sectorImpl = sectorImpl;
+	}
+
+	public CellImpl getCellImpl() {
+		return cellImpl;
+	}
+
+	public void setCellImpl(CellImpl cellImpl) {
+		this.cellImpl = cellImpl;
+	}
+
+	public VillageImpl getVillageImpl() {
+		return villageImpl;
+	}
+
+	public void setVillageImpl(VillageImpl villageImpl) {
+		this.villageImpl = villageImpl;
+	}
+
+	public CountryImpl getCountryImpl() {
+		return countryImpl;
+	}
+
+	public void setCountryImpl(CountryImpl countryImpl) {
+		this.countryImpl = countryImpl;
+	}
+
+	public int getCntryId() {
+		return cntryId;
+	}
+
+	public void setCntryId(int cntryId) {
+		this.cntryId = cntryId;
+	}
+
+	public int getVid() {
+		return vid;
+	}
+
+	public void setVid(int vid) {
+		this.vid = vid;
+	}
+
+	public boolean isSkip() {
+		return skip;
+	}
+
+	public void setSkip(boolean skip) {
+		this.skip = skip;
+	}
 
 }

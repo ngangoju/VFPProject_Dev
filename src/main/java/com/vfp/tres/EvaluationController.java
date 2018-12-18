@@ -87,10 +87,10 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	public boolean isOnTime(Activity activity) {
 		try {
-			LOGGER.info("Is on time due date is::::"+activity.getDueDate());
+			LOGGER.info("Is on time due date is::::");
 			if (timestamp.after(activity.getDueDate())) {
 				LOGGER.info("Founded::::");
-				return true;
+				return false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -109,11 +109,11 @@ public class EvaluationController implements Serializable, DbConstant {
 					"from InstitutionEscaletePolicy");
 			Date dt = addDay(activity.getDueDate());
 			if (activity.getWeight().equals(SHORT)) {
-				if (activity.getDueDate().before(new Date())) {
+				if (isOnTime(activity)) {
 					mark = policy.getShortMarks();
-				} else if ((!activity.getDueDate().before(new Date())) && (timestamp.before(addDay(activity.getDueDate())))) {
+				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
 					mark = policy.getShortMarks() / 2;
-				} else if ((!activity.getDueDate().before(new Date())) && (!timestamp.before(addDay(activity.getDueDate())))) {
+				} else if ((!isOnTime(activity)) && (!timestamp.before(addDay(activity.getDueDate())))) {
 					mark = 0;
 					LOGGER.info("We are giving Date Conditions::::" + activity.getDueDate());
 				} else {
@@ -121,17 +121,17 @@ public class EvaluationController implements Serializable, DbConstant {
 				}
 
 			} else if (activity.getWeight().equals(MEDIUM)) {
-				if (activity.getDueDate().before(new Date())) {
+				if (isOnTime(activity)) {
 					mark = policy.getMediumgMarks();
-				} else if (!activity.getDueDate().before(new Date())&& (timestamp.before(addDay(activity.getDueDate())))) {
+				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
 					mark = policy.getMediumgMarks() / 2;
 				} else {
 					mark = 0;
 				}
 			} else if (activity.getWeight().equals(LONG)) {
-				if (activity.getDueDate().before(new Date())) {
+				if (isOnTime(activity)) {
 					mark = policy.getLongMarks();
-				} else if ((!activity.getDueDate().before(new Date())) && (timestamp.before(addDay(activity.getDueDate())))) {
+				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
 					mark = policy.getLongMarks() / 2;
 				} else {
 					mark = 0;
