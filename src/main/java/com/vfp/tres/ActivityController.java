@@ -363,8 +363,10 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void completeAction(Activity act) {
 		try {
+			EvaluationController ec = new EvaluationController();
 			act.setStatus(COMPLETED);
 			act.setGenericStatus(DESACTIVE);
+			ec.evaluationMethod(act);
 			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
@@ -423,6 +425,10 @@ public class ActivityController implements Serializable, DbConstant {
 			this.renderTaskForm = false;
 			this.renderTable = true;
 			this.renderCompleted = false;
+			this.approveRender = true;
+			this.rejectRender = true;
+			this.completeRender = false;
+			this.commentRender = true;
 		} catch (Exception e) {
 			LOGGER.info(e.getMessage());
 		}
@@ -471,7 +477,7 @@ public class ActivityController implements Serializable, DbConstant {
 					this.approveRender = false;
 					this.rejectRender = false;
 					this.completeRender = false;
-					this.commentRender = false;
+					this.commentRender = true;
 				} else if (selectedStatus.equals(PLAN_ACTIVITY)) {
 					this.approveRender = true;
 					this.rejectRender = true;
