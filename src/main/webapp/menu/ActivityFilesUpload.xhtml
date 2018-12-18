@@ -94,7 +94,11 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						<fieldset style="width: 100%;">
+						
+							</h:form>
+								<p:outputPanel rendered="#{activityController.rendered}" autoUpdate="true">
+								
+								<fieldset style="width: 100%;">
 							
 								<legend>
 
@@ -102,11 +106,31 @@
 										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">Activity
 										files upload</label>
 								</legend>
+								<h:panelGroup id="fromDatePanel" layout="block">
 
-							<p:outputPanel rendered="#{activityController.renderUpload}">
-								<div class="form-group">
-									<label for="img" class="cols-sm-2 control-label">Upload
+											<div class="form-group row"
+												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+												<label for="todate"
+													class="col-md-2 col-sm-2 col-xs-2 control-label"
+													style="color: black">Upload
 										activity files</label>
+												<div class="col-md-4">
+													<span class="tooltips-input-main"><a
+														class="tooltips-input"> <h:panelGroup
+																id="tooltips-contactDetails" layout="block">
+																<img
+																	src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+																	style="width: 8%" alt="question" />
+															</h:panelGroup> <p:tooltip id="toolTipContent"
+																for="tooltips-contactDetails" position="bottom">
+																<span> #{msg['help.activityfiles.message']} </span>
+															</p:tooltip>
+													</a></span>
+
+												</div>
+												<h:message for="from_dob_date_id" styleClass="help-block"></h:message>
+											</div>
+										</h:panelGroup>
 									<div class="cols-sm-10">
 
 										<h:form>
@@ -115,17 +139,13 @@
 												uploadLabel="Upload files" cancelLabel="Cancel"
 												fileUploadListener="#{formSampleController.activityFilesUpload}"
 												mode="advanced" dragDropSupport="true" multiple="true"
-												update="messages" sizeLimit="1000000" fileLimit="3"
+												update="messages" sizeLimit="2000000" fileLimit="3"
 												allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
 											<p:growl id="messages" life="300000" />
 										</h:form>
 
 									</div>
-								</div>
-
-								<!-- END Files upload-->
-							</p:outputPanel>
-								<p:outputPanel rendered="#{activityController.rendered}" autoUpdate="true">
+								
 								<h:dataTable id="activityTable" binding="#{table}"
 									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:85% !important;
        						 -webkit-box-shadow: none;
@@ -135,13 +155,7 @@
 									var="fileDetails"
 									class="table table-striped table-hover table-bordered tableUpdated ">
 									<f:facet name="header">
-									
-											<h:commandLink action="#{activityController.showUploadPanel()}"
-												class="btn btn-danger glyphicon glyphicon-upload"
-												style="margin-left:5px;color:white" data-toggle="tooltip"
-												data-placement="right" title="#{msg['UserCategoryView.attachFileButton']}" >
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-											</h:commandLink><label
+										<label
 										style="margin-left: 25%; font-size: 17px; font-family: Open Sans sans-serif !important">List of uploaded files for activity</label>
 									</f:facet>
 
@@ -170,7 +184,7 @@
 											<label>Download files</label>
 										</f:facet>
 										<h:form>
-											<h:commandLink 
+											<h:commandLink  target="_blank"
 												value="#{fileDetails.documents.originalFileName}"
 												action="#{formSampleController.downloadFile}">
 												<f:param name="docId" value="#{fileDetails.documents.docId}" />
@@ -183,13 +197,13 @@
 										</f:facet>
 										<div class="btn-group btn btn-sm" role="group"
 											aria-label="Basic example" style="margin-top: 5%;">
-
+											<h:form>
 											<h:commandLink
 												class="btn btn-danger glyphicon glyphicon-trash"
 												style="margin-left:5px;color:white" data-toggle="tooltip"
 												data-placement="right" title="#{msg['UserCategoryView.deletefile']}" >
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-											</h:commandLink>
+											</h:commandLink></h:form>
 										</div>
 									</h:column>
 									<f:facet name="footer">
@@ -201,11 +215,12 @@
 											#{msg['UserCatForm.BackBoardButtom']} </a>
 									</f:facet>
 								</h:dataTable>
+								</fieldset>
 							</p:outputPanel>
 
-						</fieldset>
+						
 
-					</h:form>
+					
 
 				</div>
 			</div>
