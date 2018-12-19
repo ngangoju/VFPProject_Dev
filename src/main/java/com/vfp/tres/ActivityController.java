@@ -416,7 +416,7 @@ public class ActivityController implements Serializable, DbConstant {
 		try {
 			if (act != null) {
 				LOGGER.info("IGIKORWA CYITWA: " + act.getDescription());
-				act.setStatus(REJECTED);
+				act.setStatus(REJECT);
 				act.setGenericStatus(ACTIVE);
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
