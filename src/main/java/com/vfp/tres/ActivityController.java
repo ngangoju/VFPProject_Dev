@@ -240,15 +240,19 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDto.setGenericstatus(activity.getGenericStatus());
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
+				activityDto.setShowPlanedIcon(true);
 			} else {
 				activityDto.setAction(true);
+				activityDto.setShowPlanedIcon(false);
 			}
 			if (activityDto.getStatus().equals(NOTSTARTED)) {
 				activityDto.setPlanAction(false);
-			activityDto.setChangeAction(false);
+				activityDto.setChangeAction(false);
+				activityDto.setShowNotStartedIcon(true);
 			} else {
 				activityDto.setPlanAction(true);
 				activityDto.setChangeAction(true);
+				activityDto.setShowNotStartedIcon(false);
 			}
 			if (activityDto.getStatus().equals(APPROVED)) {
 				activityDto.setReportAction(false);
@@ -264,10 +268,12 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
 				activityDto.setEditAction(false);
+				activityDto.setShowAction(true);
 			} else {
 				activityDto.setReplanAction(true);
 				activityDto.setCommmentAction(true);
 				activityDto.setEditAction(true);
+				activityDto.setShowAction(false);
 			}
 			if (activityDto.getStatus().equals(DONE)||activityDto.getStatus().equals(COMPLETED)) {
 				activityDto.setAction(false);
@@ -612,7 +618,7 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(NOTSTARTED)) {
+			if (activity.getStatus().equals(NOTSTARTED)||activity.getStatus().equals(REJECT)) {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(PLAN_ACTIVITY);

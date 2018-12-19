@@ -46,6 +46,9 @@ public class ActivityDto implements Serializable {
 	private boolean planAction;
 	private boolean changeAction;
 	private boolean editAction;
+	private boolean showAction;
+	private boolean showPlanedIcon;
+	private boolean showNotStartedIcon;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -220,6 +223,30 @@ public class ActivityDto implements Serializable {
 
 	public void setEditAction(boolean editAction) {
 		this.editAction = editAction;
+	}
+
+	public boolean isShowAction() {
+		return showAction;
+	}
+
+	public void setShowAction(boolean showAction) {
+		this.showAction = showAction;
+	}
+
+	public boolean isShowPlanedIcon() {
+		return showPlanedIcon;
+	}
+
+	public void setShowPlanedIcon(boolean showPlanedIcon) {
+		this.showPlanedIcon = showPlanedIcon;
+	}
+
+	public boolean isShowNotStartedIcon() {
+		return showNotStartedIcon;
+	}
+
+	public void setShowNotStartedIcon(boolean showNotStartedIcon) {
+		this.showNotStartedIcon = showNotStartedIcon;
 	}
 	
 }
