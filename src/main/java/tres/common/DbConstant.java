@@ -79,6 +79,7 @@ public interface DbConstant {
 	public static final String PdfforTask = "Pdffortask";
 	public static final String exelforTask = "ExcelforTask";
 	public static final String taskchart = "Chart";
+	public static final String clear="Clearance";
 
 	public static final String DARKBLUE2 = "dark-blue2";
 	public static final String GREEN2 = "green2";

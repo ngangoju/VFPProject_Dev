@@ -13,13 +13,12 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.ChartFactory; 
+import org.jfree.chart.JFreeChart; 
+import org.jfree.chart.plot.PlotOrientation; 
 import org.jfree.data.category.DefaultCategoryDataset;
+
 import com.itextpdf.text.Document;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.DefaultFontMapper;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfTemplate;
