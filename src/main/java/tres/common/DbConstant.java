@@ -137,5 +137,5 @@ public interface DbConstant {
 	public static final String RESCHDULER = "reschduler";
 	public static final String PLAN_ACTIVITY="planned";
 	public static final String NORMAL="Normal";
-	public static final String MILESTONE="Milestone";
+	public static final String MILESTONE="Vfp";
 }

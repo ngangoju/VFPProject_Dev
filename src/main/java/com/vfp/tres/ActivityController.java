@@ -78,6 +78,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private List<ActivityDto> approvedActDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
 	private List<ActivityComment> commentDetail = new ArrayList<ActivityComment>();
+	private List<UploadingActivity> uploadingActivityDetails = new ArrayList<UploadingActivity>();
 	private ActivityComment actComment = new ActivityComment();
 	private ActivityCommentImpl actcommentImpl = new ActivityCommentImpl();
 	private CommentImpl commentImpl = new CommentImpl();
@@ -653,20 +654,43 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(APPROVED)) {
+			if (activity.getStatus().equals(APPROVED)&&activity.getType().equals(MILESTONE)) {
+				uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","activity" },
+						new Object[] { ACTIVE,act }, "UploadingActivity","crtdDtTime desc");
+				if(uploadingActivityDetails.size()>0) {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(DONE);
+				activityImpl.UpdateActivity(act);
+				activityDetails = activityImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "task", "user" },
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+				activityDtoDetails = showActivity(activityDetails);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+				}else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
+					LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
+				}
+			}else if(activity.getStatus().equals(APPROVED)) {
+				act.setUpdatedBy(usersSession.getViewId());
+				act.setUpDtTime(timestamp);
+				act.setStatus(DONE);
+				activityImpl.UpdateActivity(act);
+				activityDetails = activityImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "task", "user" },
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+				activityDtoDetails = showActivity(activityDetails);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 			}
-			activityImpl.UpdateActivity(act);
-			activityDetails = activityImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "task", "user" },
-					new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
-			activityDtoDetails = showActivity(activityDetails);
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -1327,6 +1351,14 @@ public String deleteFile(UploadingActivity info) {
 
 	public void setUplActImpl(UploadingActivityImpl uplActImpl) {
 		this.uplActImpl = uplActImpl;
+	}
+
+	public List<UploadingActivity> getUploadingActivityDetails() {
+		return uploadingActivityDetails;
+	}
+
+	public void setUploadingActivityDetails(List<UploadingActivity> uploadingActivityDetails) {
+		this.uploadingActivityDetails = uploadingActivityDetails;
 	}
 
 }
