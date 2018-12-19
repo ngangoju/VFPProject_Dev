@@ -299,7 +299,7 @@
 						<p:outputPanel rendered="#{activityController.renderCompleted}"
 							autoUpdate="true">
 							<h:dataTable id="activityTable" binding="#{tabl}"
-								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:85% !important;
+								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 17px 25px 0 !important;"
@@ -395,10 +395,21 @@
 
 								<h:column>
 									<f:facet name="header">
-										<label>creationDate</label>
+										<label>Creationdate</label>
 									</f:facet>
 									<br />
 									<h:outputText value="#{act.createdDate}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Duedate</label>
+									</f:facet>
+									<br />
+									
+									<h:outputText value="#{act.dueDate}" rendered="#{not act.editable}" >
 										<f:convertDateTime pattern="dd/MM/yyyy" />
 									</h:outputText>
 

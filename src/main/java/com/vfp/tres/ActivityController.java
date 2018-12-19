@@ -269,11 +269,12 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setCommmentAction(true);
 				activityDto.setEditAction(true);
 			}
-			if (activityDto.getStatus().equals(DONE)) {
+			if (activityDto.getStatus().equals(DONE)||activityDto.getStatus().equals(COMPLETED)) {
 				activityDto.setAction(false);
 			} else {
 				activityDto.setAction(true);
 			}
+			
 
 			ActivityDtoList.add(activityDto);
 		}
@@ -364,13 +365,13 @@ public class ActivityController implements Serializable, DbConstant {
 			act.setStatus(APPROVED);
 			// if(act.getGenericStatus().equals(DESACTIVE))
 			act.setGenericStatus(ACTIVE);
-			activityImpl.UpdateActivity(act);
 			Calendar cal1 = new GregorianCalendar();
 			cal1.setTime(new Date());
 			cal1.add(Calendar.DATE, 7);
 			java.util.Date dDate = cal1.getTime();
 			act.setDueDate(dDate);
 			act.setStartDate(timestamp);
+			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
@@ -392,7 +393,7 @@ public class ActivityController implements Serializable, DbConstant {
 		try {
 			EvaluationController ec = new EvaluationController();
 			act.setStatus(COMPLETED);
-			act.setGenericStatus(DESACTIVE);
+			act.setGenericStatus(ACTIVE);
 			ec.evaluationMethod(act);
 			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
