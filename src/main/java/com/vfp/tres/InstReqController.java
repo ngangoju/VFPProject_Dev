@@ -52,7 +52,7 @@ public class InstReqController implements Serializable, DbConstant {
 	/* to manage validation messages */
 	private boolean isValid, selctDiv;
 	/* end manage validation messages */
-	private Users usersSession;;
+	private Users usersSession;
 	private InstitutionRegistrationRequest request;
 	private Institution institution;
 	private Contact contact;
@@ -87,7 +87,8 @@ public class InstReqController implements Serializable, DbConstant {
 			contact = new Contact();
 		}
 		try {
-
+			requests = requestImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "InstitutionRegistrationRequest", "instRegReqstDate desc");
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -107,7 +108,7 @@ public class InstReqController implements Serializable, DbConstant {
 							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
 							+ "' and i.genericStatus='active'")) {
 				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
-				request=requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId");
+				request = requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId");
 				requests.add(request);
 			}
 			LOGGER.info("Date FROM::::" + fmt.getMysqlFormatV2(from));
@@ -133,9 +134,9 @@ public class InstReqController implements Serializable, DbConstant {
 			InstitutionSave(request);
 			SendSupportEmail sendMail = new SendSupportEmail();
 			sendMail.sendMailForInstitution(request.getInstitutionRepresenative().getFname(),
-					request.getInstitutionRepresenative().getLname(),getContactEmail(request), "Confirmation",
+					request.getInstitutionRepresenative().getLname(), getContactEmail(request), "Confirmation",
 					"Your Institution registration has been Confirmed.");
-			setValid(true); 
+			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.institution.confrmation"));
 		} catch (Exception e) {
 			setValid(false);
@@ -145,8 +146,8 @@ public class InstReqController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
-	
-	//returning email
+
+	// returning email
 	public String getContactEmail(InstitutionRegistrationRequest instReg) {
 
 		try {

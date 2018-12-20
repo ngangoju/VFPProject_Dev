@@ -186,7 +186,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					institution = institutionImpl.getModelWithMyHQL(new String[] { "request", "institutionType" },
 							new Object[] { request, "HeadQuoter" }, "from Institution");
 					if (institution != null) {
-						chngDiv = true; 
+						chngDiv = true;
+						frstDiv = false;
 						try {
 							contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
 									new Object[] { institution }, "from InstitutionContact");
@@ -331,7 +332,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			logoPic.setInstitution(institution);
 			logoPic.setInstitutionRegDate(timestamp);
 			logoPic.setGenericStatus(ACTIVE);
-			logoImpl.saveInstitutionLogo(logoPic); 
+			logoImpl.saveInstitutionLogo(logoPic);
 			profileEditable = false;
 			frstDiv = false;
 			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
@@ -817,6 +818,12 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		} catch (Exception e) {
 			return "";
 		}
+	}
+
+	/* back to first page */
+	public void backFromLogo() {
+		profileEditable = false; 
+		frstDiv = false;
 	}
 
 	public List<InstitutionDto> getInstDtos() {

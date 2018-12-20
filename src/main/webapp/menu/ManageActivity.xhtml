@@ -39,67 +39,67 @@
 			</h:panelGroup>
 
 			<h:form>
-			<h:panelGroup id="tables" autoUpdate="true"
+				<h:panelGroup id="tables" autoUpdate="true"
 					rendered="#{activityController.rendered}">
-			<h1>#{msg['planned.activity.staff']}</h1>
+					<h1>#{msg['planned.activity.staff']}</h1>
 
-				<p:dataTable id="example" class="display" cellspacing="0"
-					value="#{activityController.usersDetail}" var="act">
-
-
-					<p:column headerText="#{msg['massages.cmn.common.first.fname']}"
-						sortBy="#{act.fname}">
-
-						<h:outputText value="#{act.fname}" />
-					</p:column>
+					<p:dataTable id="example" class="display" cellspacing="0"
+						value="#{activityController.usersDetail}" var="act">
 
 
-					<p:column headerText="#{msg['massages.cmn.common.last.lname']}"
-						sortBy="#{act.lname}">
+						<p:column headerText="#{msg['massages.cmn.common.first.fname']}"
+							sortBy="#{act.fname}">
 
-						<h:outputText value="#{act.lname}" />
+							<h:outputText value="#{act.fname}" />
+						</p:column>
 
-					</p:column>
 
-					<p:column headerText="#{msg['form.board.board']}"
-						sortBy="#{act.board}">
+						<p:column headerText="#{msg['massages.cmn.common.last.lname']}"
+							sortBy="#{act.lname}">
 
-						<h:outputText value="#{act.board.boardName}" />
+							<h:outputText value="#{act.lname}" />
 
-					</p:column>
+						</p:column>
 
-<!-- 					<p:column headerText="#{msg['form.groupmenu.creationdate']}" -->
-<!-- 						sortBy="#{act.crtdDtTime}"> -->
+						<p:column headerText="#{msg['form.board.board']}"
+							sortBy="#{act.board}">
 
-<!-- 						<h:outputText value="#{act.crtdDtTime}" /> -->
+							<h:outputText value="#{act.board.boardName}" />
 
-<!-- 					</p:column> -->
+						</p:column>
 
-<!-- 					<p:column headerText="#{msg['task.form']}" -->
-<!-- 						sortBy="#{act.task}"> -->
-<!-- 						<a href="#"> -->
-<!-- 						<h:outputText value="#{act.task}" /></a> -->
+						<!-- 					<p:column headerText="#{msg['form.groupmenu.creationdate']}" -->
+						<!-- 						sortBy="#{act.crtdDtTime}"> -->
 
-<!-- 					</p:column> -->
+						<!-- 						<h:outputText value="#{act.crtdDtTime}" /> -->
 
-<!-- 					<p:column headerText="#{msg['form.strategicPlan.users']}" -->
-<!-- 						sortBy="#{act.createdBy}"> -->
+						<!-- 					</p:column> -->
 
-<!-- 						<h:outputText value="#{act.createdBy}" /> -->
+						<!-- 					<p:column headerText="#{msg['task.form']}" -->
+						<!-- 						sortBy="#{act.task}"> -->
+						<!-- 						<a href="#"> -->
+						<!-- 						<h:outputText value="#{act.task}" /></a> -->
 
-<!-- 					</p:column> -->
+						<!-- 					</p:column> -->
 
-					<p:column headerText="Action">
+						<!-- 					<p:column headerText="#{msg['form.strategicPlan.users']}" -->
+						<!-- 						sortBy="#{act.createdBy}"> -->
+
+						<!-- 						<h:outputText value="#{act.createdBy}" /> -->
+
+						<!-- 					</p:column> -->
+
+						<p:column headerText="Action">
 
 							<h:commandButton style="margin-left:2px;color:white"
 								class="btn btn-secondary btn-primary 	glyphicon glyphicon-info-sign"
-									action="#{activityController.showTasks(act)}"
+								action="#{activityController.showTasks(act)}"
 								value="#{msg['details.activity.message']}"></h:commandButton>
 
-					</p:column>
+						</p:column>
 
-				</p:dataTable>
-			</h:panelGroup>
+					</p:dataTable>
+				</h:panelGroup>
 
 				<p:outputPanel id="table6" autoUpdate="true"
 					rendered="#{activityController.renderTable}">
@@ -107,12 +107,12 @@
 					<div class="nav">
 						<div class="div-action pull pull-left"
 							style="padding-bottom: 20px;">
-<!-- 							<h:commandLink class="btn btn-primary" -->
-<!-- 								action="#{activityController.newActivity()}"> -->
-<!-- 								<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']} -->
-<!-- 					</h:commandLink> -->
-						
-							
+							<!-- 							<h:commandLink class="btn btn-primary" -->
+							<!-- 								action="#{activityController.newActivity()}"> -->
+							<!-- 								<i class="glyphicon glyphicon-plus-sign"></i>#{ msg['form.activity.new']} -->
+							<!-- 					</h:commandLink> -->
+
+
 						</div>
 						<div class="div-action pull pull-right"
 							style="padding-bottom: 20px;">
@@ -127,32 +127,34 @@
 					</div>
 					<p:dataTable id="example6" class="display" cellspacing="0"
 						value="#{activityController.activityDetail}" var="info">
-						<f:facet name="header" >
-						
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-4 col-sm-4 col-xs-5 control-label"
-										style="color: black">#{msg['select.status.activity.form']}</label>
-									<div class="col-md-3 col-sm-3 col-xs-4">
-										<h:selectOneMenu id="categoryId6" styleClass="form-control"
-											required="false" value="#{activityController.selectedStatus}"
-											requiredMessage="#{msg['listofmenu.status.required']}">
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" />
-											<f:selectItems value="#{activityController.status}" itemLabelEscaped="true" />
-												<f:ajax render="@form"  event="change" execute="@this"
-											listener="#{activityController.changeSelectStatus()}" onevent="showProgress"  />
-										</h:selectOneMenu>
-									</div>
-									<h:message for="categoryId6" styleClass="help-block"></h:message>
+						<f:facet name="header">
+
+							<div class="form-group row">
+								<label for="todate"
+									class="col-md-4 col-sm-4 col-xs-5 control-label"
+									style="color: black">#{msg['select.status.activity.form']}</label>
+								<div class="col-md-3 col-sm-3 col-xs-4">
+									<h:selectOneMenu id="categoryId6" styleClass="form-control"
+										required="false" value="#{activityController.selectedStatus}"
+										requiredMessage="#{msg['listofmenu.status.required']}">
+										<f:selectItem
+											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+											itemValue="#{null}" escapeItem="true" />
+										<f:selectItems value="#{activityController.status}"
+											itemLabelEscaped="true" />
+										<f:ajax render="@form" event="change" execute="@this"
+											listener="#{activityController.changeSelectStatus()}"
+											onevent="showProgress" />
+									</h:selectOneMenu>
 								</div>
+								<h:message for="categoryId6" styleClass="help-block"></h:message>
+							</div>
 						</f:facet>
 
 						<p:column headerText="#{msg['form.activity.description']}"
 							sortBy="#{info.description}">
 
-							<h:outputText value="#{info.description}"/>
+							<h:outputText value="#{info.description}" />
 						</p:column>
 
 
@@ -166,7 +168,7 @@
 						<p:column headerText="#{msg['form.activity.weight']}"
 							sortBy="#{info.weight}">
 
-							<h:outputText value="#{info.weight}"/>
+							<h:outputText value="#{info.weight}" />
 
 						</p:column>
 
@@ -185,48 +187,50 @@
 
 						<p:column headerText="Action">
 
-						<div class="btn-group" role="group" aria-label="Basic example">
-						
-							<h:panelGroup id="approv" layout="block"	rendered="#{activityController.approveRender}">
-								<h:commandLink style="color:white" data-toggle="tooltip"
-											data-placement="left"
-											title="#{msg['activity.approveButton']}"
-								class="btn btn-secondary btn-success  glyphicon glyphicon-ok"
-								action="#{activityController.activityApproval(info)}" >
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-							</h:panelGroup>
-							
-							<h:panelGroup id="rejec" layout="block"	rendered="#{activityController.rejectRender}">
-								<h:commandLink style="margin-left:2px;color:white" data-toggle="tooltip"
-											data-placement="left"
-											title="#{msg['activity.rejectButton']}"
-								class="btn btn-secondary btn-danger 	glyphicon glyphicon-remove"
-								action="#{activityController.activityRejection(info)}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-							</h:panelGroup>
-							
-							<h:panelGroup id="commentt" layout="block"	rendered="#{ activityController.commentRender}">
-									<h:commandLink style="color:white" data-toggle="tooltip"
-											data-placement="left"
-											title="#{msg['UserCategoryView.commentButton']}"
-											class="btn btn-primary glyphicon glyphicon-envelope"
-											action="#{activityController.commentAction(info)}"										>
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-								</h:panelGroup>								
-							<h:panelGroup id="complet" layout="block"	rendered="#{ activityController.completeRender}">
-										<h:commandLink style="color:white" data-toggle="tooltip"
-											data-placement="left"
-											title="#{msg['activity.confirmButton']}"
-											class="btn btn-warning 	glyphicon glyphicon-check"
-											action="#{activityController.completeAction(info)}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-									</h:panelGroup>
+							<div class="btn-group" role="group" aria-label="Basic example">
 
-						</div>
+								<h:panelGroup id="approv" layout="block"
+									rendered="#{activityController.approveRender}">
+									<h:commandLink style="color:white" data-toggle="tooltip"
+										data-placement="left" title="#{msg['activity.approveButton']}"
+										class="btn btn-secondary btn-success  glyphicon glyphicon-ok"
+										action="#{activityController.activityApproval(info)}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</h:panelGroup>
+
+								<h:panelGroup id="rejec" layout="block"
+									rendered="#{activityController.rejectRender}">
+									<h:commandLink style="margin-left:2px;color:white"
+										data-toggle="tooltip" data-placement="left"
+										title="#{msg['activity.rejectButton']}"
+										class="btn btn-secondary btn-danger 	glyphicon glyphicon-remove"
+										action="#{activityController.activityRejection(info)}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</h:panelGroup>
+
+								<h:panelGroup id="commentt" layout="block"
+									rendered="#{ activityController.commentRender}">
+									<h:commandLink style="color:white" data-toggle="tooltip"
+										data-placement="left"
+										title="#{msg['UserCategoryView.commentButton']}"
+										class="btn btn-primary glyphicon glyphicon-envelope"
+										action="#{activityController.commentAction(info)}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</h:panelGroup>
+								<h:panelGroup id="complet" layout="block"
+									rendered="#{ activityController.completeRender}">
+									<h:commandLink style="color:white" data-toggle="tooltip"
+										data-placement="left" title="#{msg['activity.confirmButton']}"
+										class="btn btn-warning 	glyphicon glyphicon-check"
+										action="#{activityController.completeAction(info)}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</h:panelGroup>
+
+							</div>
 						</p:column>
 					</p:dataTable>
 				</p:outputPanel>
