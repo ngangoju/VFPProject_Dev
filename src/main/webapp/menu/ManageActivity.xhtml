@@ -293,8 +293,8 @@
 						<p:column headerText="Action">
 
 							<div class="btn-group" role="group" aria-label="Basic example">
-							
-<!-- 								APPROVE BUTTON 		-->
+
+								<!-- 								APPROVE BUTTON 		-->
 
 								<h:commandLink style="color:white" data-toggle="tooltip"
 									data-placement="left" title="#{msg['activity.approveButton']}"
@@ -303,10 +303,10 @@
 									rendered="#{activityController.approveRender}">
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
-								
-<!-- 								END OF APPROVE BUTTON 		-->
 
-<!-- 								REJECT BUTTON 		-->
+								<!-- 								END OF APPROVE BUTTON 		-->
+
+								<!-- 								REJECT BUTTON 		-->
 
 								<h:commandLink style="margin-left:2px;color:white"
 									data-toggle="tooltip" data-placement="left"
@@ -316,10 +316,10 @@
 									rendered="#{activityController.rejectRender}">
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
-								
-<!-- 								END OF REJECT BUTTON 		-->
 
-<!-- 								COMMENT BUTTON		 -->
+								<!-- 								END OF REJECT BUTTON 		-->
+
+								<!-- 								COMMENT BUTTON		 -->
 
 								<h:commandLink style="color:white" data-toggle="tooltip"
 									data-placement="left"
@@ -329,10 +329,10 @@
 									rendered="#{ activityController.commentRender}">
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
-								
-<!-- 								END OF COMMENT BUTTON		 -->
-								
-<!-- 								CONFIRM COMPLETION BUTTON		 -->
+
+								<!-- 								END OF COMMENT BUTTON		 -->
+
+								<!-- 								CONFIRM COMPLETION BUTTON		 -->
 
 								<h:commandLink style="color:white" data-toggle="tooltip"
 									data-placement="left" title="#{msg['activity.confirmButton']}"
@@ -341,9 +341,9 @@
 									rendered="#{ activityController.completeRender}">
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
-								
-<!-- 								END OF CONFIRM COMPLETION BUTTON		 -->
-								
+
+								<!-- 								END OF CONFIRM COMPLETION BUTTON		 -->
+
 							</div>
 						</p:column>
 					</p:dataTable>

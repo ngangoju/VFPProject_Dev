@@ -1,4 +1,5 @@
 package com.vfp.tres;
+
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -83,9 +84,9 @@ public class ActivityController implements Serializable, DbConstant {
 	private ActivityCommentImpl actcommentImpl = new ActivityCommentImpl();
 	private CommentImpl commentImpl = new CommentImpl();
 	private ActivityDto actDto = new ActivityDto();
-  	private Documents document;
-	private DocumentsImpl docsImpl= new DocumentsImpl();
-	private UploadingActivityImpl uplActImpl= new UploadingActivityImpl();
+	private Documents document;
+	private DocumentsImpl docsImpl = new DocumentsImpl();
+	private UploadingActivityImpl uplActImpl = new UploadingActivityImpl();
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
@@ -148,8 +149,8 @@ public class ActivityController implements Serializable, DbConstant {
 		if (actDto == null) {
 			actDto = new ActivityDto();
 		}
-		if(document==null) {
-			document= new Documents();
+		if (document == null) {
+			document = new Documents();
 		}
 		try {
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
@@ -276,12 +277,11 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setEditAction(true);
 				activityDto.setShowAction(false);
 			}
-			if (activityDto.getStatus().equals(DONE)||activityDto.getStatus().equals(COMPLETED)) {
+			if (activityDto.getStatus().equals(DONE) || activityDto.getStatus().equals(COMPLETED)) {
 				activityDto.setAction(false);
 			} else {
 				activityDto.setAction(true);
 			}
-			
 
 			ActivityDtoList.add(activityDto);
 		}
@@ -551,7 +551,7 @@ public class ActivityController implements Serializable, DbConstant {
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
 
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
-			
+
 			act.setDescription(activity.getDescription());
 			act.setStatus(activity.getStatus());
 			act.setType(activity.getType());
@@ -561,18 +561,18 @@ public class ActivityController implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-			if(activity.getStatus().equals(NOTSTARTED)) {
+			if (activity.getStatus().equals(NOTSTARTED)) {
 				activity.setEditable(false);
 				activity.setAction(false);
 				activity.setPlanAction(false);
-				activity.setChangeAction(false);	
-			}else {
+				activity.setChangeAction(false);
+			} else {
 				activity.setEditable(false);
 				activity.setAction(false);
 				activity.setReplanAction(false);
 				activity.setCommmentAction(false);
 				activity.setEditAction(false);
-			}	
+			}
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -619,7 +619,7 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(NOTSTARTED)||activity.getStatus().equals(REJECT)) {
+			if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(PLAN_ACTIVITY);
@@ -654,29 +654,30 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(APPROVED)&&activity.getType().equals(MILESTONE)) {
-				uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","activity" },
-						new Object[] { ACTIVE,act }, "UploadingActivity","crtdDtTime desc");
-				if(uploadingActivityDetails.size()>0) {
-				act.setUpdatedBy(usersSession.getViewId());
-				act.setUpDtTime(timestamp);
-				act.setStatus(DONE);
-				activityImpl.UpdateActivity(act);
-				activityDetails = activityImpl.getGenericListWithHQLParameter(
-						new String[] { "genericStatus", "task", "user" },
-						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
-				activityDtoDetails = showActivity(activityDetails);
-				JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-				}else {
+			if (activity.getStatus().equals(APPROVED) && activity.getType().equals(MILESTONE)) {
+				uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "UploadingActivity",
+						"crtdDtTime desc");
+				if (uploadingActivityDetails.size() > 0) {
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(DONE);
+					activityImpl.UpdateActivity(act);
+					activityDetails = activityImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "task", "user" },
+							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+					activityDtoDetails = showActivity(activityDetails);
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+				} else {
 					JSFMessagers.resetMessages();
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
 					LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
 				}
-			}else if(activity.getStatus().equals(APPROVED)) {
+			} else if (activity.getStatus().equals(APPROVED)) {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(DONE);
@@ -690,7 +691,7 @@ public class ActivityController implements Serializable, DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 			}
-			
+
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -703,18 +704,18 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	public String cancel(ActivityDto activity) {
-		if(activity.getStatus().equals(NOTSTARTED)) {
+		if (activity.getStatus().equals(NOTSTARTED)) {
 			activity.setEditable(false);
 			activity.setAction(false);
 			activity.setPlanAction(false);
-			activity.setChangeAction(false);	
-		}else {
+			activity.setChangeAction(false);
+		} else {
 			activity.setEditable(false);
 			activity.setAction(false);
 			activity.setReplanAction(false);
 			activity.setCommmentAction(false);
 			activity.setEditAction(false);
-		}	
+		}
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -860,6 +861,7 @@ public class ActivityController implements Serializable, DbConstant {
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
+
 	public String editChangeAction(ActivityDto activity) {
 
 		activity.setEditable(true);
@@ -873,38 +875,37 @@ public class ActivityController implements Serializable, DbConstant {
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
-public String deleteFile(UploadingActivity info) {
+
+	public String deleteFile(UploadingActivity info) {
 		try {
-			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
-		            .getExternalContext().getContext();
-		String realPath = ctx.getRealPath("/");
-		LOGGER.info("Filse Reals Path::::" + realPath);
+			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			String realPath = ctx.getRealPath("/");
+			LOGGER.info("Filse Reals Path::::" + realPath);
 			Documents documents = new Documents();
-			documents=docsImpl.getModelWithMyHQL(new String[] {"DocId" }, new Object[] { info.getDocuments().getDocId()}, " from Documents");
-			
-			if(null!=documents) {
-				final Path destination = Paths.get(realPath+FILELOCATION + documents.getSysFilename());
+			documents = docsImpl.getModelWithMyHQL(new String[] { "DocId" },
+					new Object[] { info.getDocuments().getDocId() }, " from Documents");
+
+			if (null != documents) {
+				final Path destination = Paths.get(realPath + FILELOCATION + documents.getSysFilename());
 				LOGGER.info("Path::" + destination);
 				File file = new File(destination.toString());
 				uplActImpl.deleteIntable(info);
 				docsImpl.deleteIntable(documents);
 				LOGGER.info("Delete in db operation done!!!:");
-				if(file.delete()){
-	    			System.out.println(file.getName() + " is deleted!");
-	    			JSFMessagers.resetMessages();
-	    			setValid(true);
-	    			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.success.files.delete"));
-	    		}else{
-	    			System.out.println("Delete operation is failed.");
-	    			JSFMessagers.resetMessages();
-	    			setValid(false);
-	    			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.error.files.delete"));
-	    		}
-	 
+				if (file.delete()) {
+					System.out.println(file.getName() + " is deleted!");
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.success.files.delete"));
+				} else {
+					System.out.println("Delete operation is failed.");
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.error.files.delete"));
+				}
+
 			}
-			
-			
-			
+
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
