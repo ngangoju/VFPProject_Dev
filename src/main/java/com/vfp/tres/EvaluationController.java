@@ -17,15 +17,22 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.ContactImpl;
 import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
+import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
+import tres.domain.Board;
+import tres.domain.Contact;
 import tres.domain.Evaluation;
 import tres.domain.Institution;
 import tres.domain.InstitutionEscaletePolicy;
+import tres.domain.InstitutionRegistrationRequest;
+import tres.domain.UploadingActivity;
 import tres.domain.Users;
+import tres.vfp.dto.InstitutionDto;
 
 @ManagedBean
 @SessionScoped
@@ -34,7 +41,7 @@ public class EvaluationController implements Serializable, DbConstant {
 	private String CLASSNAME = "EvaluationController :: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid;
+	private boolean isValid, viewStaffActiv, viewSpecfcStaff, dwnBtn, apDltBtn, viewAttached;
 	/* end manage validation messages */
 
 	private Evaluation evaluation;
@@ -43,9 +50,12 @@ public class EvaluationController implements Serializable, DbConstant {
 	private InstitutionEscaletePolicy policy;
 	private Users usersSession;
 	private Institution institution;
+	private UploadingActivity uploadingActivity;
 
 	private List<Activity> activities = new ArrayList<Activity>();
 	private List<Evaluation> evaluations = new ArrayList<Evaluation>();
+	private List<Users> staffs = new ArrayList<Users>();
+	private List<UploadingActivity> docmts = new ArrayList<UploadingActivity>();
 
 	EvaluationImpl evaluationImpl = new EvaluationImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
@@ -54,6 +64,8 @@ public class EvaluationController implements Serializable, DbConstant {
 	UserImpl usersImpl = new UserImpl();
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	InstitutionEscaletPolicyImpl policyImpl = new InstitutionEscaletPolicyImpl();
+	ContactImpl contactImpl = new ContactImpl();
+	UploadingActivityImpl upimpl = new UploadingActivityImpl();
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -74,6 +86,7 @@ public class EvaluationController implements Serializable, DbConstant {
 		}
 		try {
 
+			staffs = getUserDetails(usersSession);// staff with complete activities
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -83,36 +96,109 @@ public class EvaluationController implements Serializable, DbConstant {
 		}
 	}
 
+	public List<Users> getUserDetails(Users user1) {
+		try {
+			staffs = new ArrayList<Users>();
+			for (Object[] object : usersImpl.reportList(
+					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co where co.user=us.userId and us.board="
+							+ user1.getBoard().getBoardId() + " and co.status='" + DONE + "'")) {
+				Users user = new Users();
+				user.setUserId((Integer) object[0]);
+				user.setFname(object[1] + "");
+				user.setLname(object[2] + "");
+				user.setBoard((Board) object[3]);
+				staffs.add(user);
+			}
+			return staffs;
+		} catch (Exception e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	// backtohome
+	public void backHome() {
+		viewSpecfcStaff = false;
+		viewStaffActiv = false;
+	}
+
+	// contact
+
+	public String getContactPhone(Users usr) {
+
+		try {
+			Contact cnt = new Contact();
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[] { usr }, "from Contact");
+			LOGGER.info("Here we Are" + cnt);
+			return cnt.getPhone();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	// downloading
+
+	// email
+	public String getContactEmail(Users usr) {
+
+		try {
+			Contact cnt = new Contact();
+			cnt = contactImpl.getModelWithMyHQL(new String[] { "user" }, new Object[] { usr }, "from Contact");
+			return cnt.getEmail();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	// list of complete ativities by staff
+	@SuppressWarnings("unchecked")
+	public void staffCompl(Users user) {
+		try {
+			viewStaffActiv = true;
+			viewSpecfcStaff = true;
+			activities = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
+					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
+		} catch (Exception e) {
+		}
+	}
+
 	/* Evaluation method for checking if time rang is valid starts */
 
 	public boolean isOnTime(Activity activity) {
 		try {
 			LOGGER.info("Is on time due date is::::");
-			if (timestamp.after(activity.getDueDate())) {
+			if (activity.getDueDate().before(timestamp)) {
 				LOGGER.info("Founded::::");
+				return true;
+			} else {
 				return false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		return isValid;
 	}
 
 	/* Evaluation Method For making */
 
-	public double activityMarksByWeight(Activity activity) {
+	public int activityMarksByWeight(Activity activity) {
 		try {
-			double mark = 0;
+			LOGGER.info("Method founds::");
+			int mark = 0;
 			institution = activity.getUser().getBoard().getInstitution();
 			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
 					"from InstitutionEscaletePolicy");
 			Date dt = addDay(activity.getDueDate());
 			if (activity.getWeight().equals(SHORT)) {
 				if (isOnTime(activity)) {
-					mark = policy.getShortMarks();
+					mark = (int) policy.getShortMarks();
 				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
-					mark = policy.getShortMarks() / 2;
+					mark = (int) policy.getShortMarks() / 2;
 				} else if ((!isOnTime(activity)) && (!timestamp.before(addDay(activity.getDueDate())))) {
 					mark = 0;
 					LOGGER.info("We are giving Date Conditions::::" + activity.getDueDate());
@@ -122,34 +208,37 @@ public class EvaluationController implements Serializable, DbConstant {
 
 			} else if (activity.getWeight().equals(MEDIUM)) {
 				if (isOnTime(activity)) {
-					mark = policy.getMediumgMarks();
+					mark = (int) policy.getMediumgMarks();
 				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
-					mark = policy.getMediumgMarks() / 2;
+					mark = (int) policy.getMediumgMarks() / 2;
 				} else {
 					mark = 0;
 				}
 			} else if (activity.getWeight().equals(LONG)) {
 				if (isOnTime(activity)) {
-					mark = policy.getLongMarks();
+					mark = (int) policy.getLongMarks();
 				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
-					mark = policy.getLongMarks() / 2;
+					mark = (int) policy.getLongMarks() / 2;
 				} else {
 					mark = 0;
 				}
 			}
+			LOGGER.info("ACTIVITY MARK IS:::" + mark);
 			return mark;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 0.0;
+			LOGGER.info(e.getMessage());
+			LOGGER.info("Method Not founds::");
+			return 0;
 		}
 	}
 
 	/* Evaluation Method For Completed task */
 
-	public boolean isCompleted(Activity activity) { 
+	public boolean isCompleted(Activity activity) {
 		try {
 			if (activity.getStatus().equals(COMPLETED)) {
-				return true; 
+				return true;
 			} else {
 				return false;
 			}
@@ -204,14 +293,14 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	/* Saving Evaluation */
 
-	public String savingEvaluationData(Activity activity, double mrks, String decsn) {
+	public String savingEvaluationData(Activity activity, int mrks, String decsn) {
 		try {
 			evaluation.setActivity(activity);
 			evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			evaluation.setCrtdDtTime(timestamp);
 			evaluation.setDecision(decsn);
 			evaluation.setEvaluationDate(timestamp);
-			evaluation.setEvaluationMarks((int) mrks);
+			evaluation.setEvaluationMarks(mrks);
 			evaluation.setGenericStatus(ACTIVE);
 			evaluation.setUpdatedBy(usersSession.getViewId());
 			evaluation.setUpDtTime(timestamp);
@@ -234,13 +323,15 @@ public class EvaluationController implements Serializable, DbConstant {
 	public void evaluationMethod(Activity activity) {
 		try {
 			if (isCompleted(activity)) {
-				savingEvaluationData(activity, activityMarksByWeight(activity), evalutionDecition(activity));
+				int mrk = activityMarksByWeight(activity);
+				LOGGER.info("MARKS::::" + mrk);
+				savingEvaluationData(activity, mrk, evalutionDecition(activity));
 				JSFMessagers.resetMessages();
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("evaluationController.confirm.message"));
-				LOGGER.info(CLASSNAME + ":::Institution request not updated");
+				LOGGER.info(CLASSNAME + ":::");
 			} else {
-				savingEvaluationData(activity,  activityMarksByWeight(activity), evalutionDecition(activity));
+				savingEvaluationData(activity, 0, FAILED);
 				JSFMessagers.resetMessages();
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("evaluationController.confirm.message"));
@@ -271,6 +362,98 @@ public class EvaluationController implements Serializable, DbConstant {
 		} catch (Exception e) {
 			LOGGER.info("Due date Failed");
 			return null;
+		}
+	}
+
+	// returning files forms
+
+	@SuppressWarnings("unchecked")
+	public void showFiles(Activity activity) {
+		try {
+			try {
+				viewSpecfcStaff = false;
+				viewAttached = true;
+				docmts = upimpl.getGenericListWithHQLParameter(new String[] { "activity" }, new Object[] { activity },
+						"UploadingActivity", "activity desc");
+			} catch (Exception e) {
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// backToPrevousPage
+	public void backPrsPage() {
+		viewAttached = false;
+		viewSpecfcStaff = true;
+	}
+
+	/* Activity completion starts */
+	public void completeAction(Activity act) {
+		try {
+			act.setStatus(COMPLETED);
+			act.setGenericStatus(ACTIVE);
+			activityImpl.UpdateActivity(act);
+			evaluationMethod(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			staffCompl(act.getUser());
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("completed.form.message"));
+			LOGGER.info(CLASSNAME + ":::Activity is completed");
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + ":::Activity Status is failling with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/* activity completion ends */
+	/* activity rejection starts */
+	public void rejectAction(Activity act) {
+		try {
+			LOGGER.info("IGIKORWA CYITWA: " + act.getDescription());
+			act.setStatus(NOTDONE);
+			act.setGenericStatus(ACTIVE);
+			activityImpl.UpdateActivity(act);
+			evaluationMethod(act);
+			// sendEmail(contact.getEmail(), "request rejected",
+			// "Your request have been rejected due to certain condition. try again later");
+			JSFMessagers.resetMessages();
+			setValid(true);
+			staffCompl(act.getUser());
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.reject.form"));
+			LOGGER.info(CLASSNAME + ":::Activity Status is updated");
+			LOGGER.info(CLASSNAME + ":::Activity is completed");
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + ":::Activity Status is failling with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/* activity rejection ends */
+	public int getMarks(Activity act) {
+		try {
+			institution = act.getUser().getBoard().getInstitution();
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
+					"from InstitutionEscaletePolicy");
+			if (act.getWeight().equals(LONG))
+				return (int) policy.getLongMarks();
+			else if ((act.getWeight().equals(MEDIUM)))
+				return (int) policy.getMediumgMarks();
+			else {
+				return (int) policy.getShortMarks();
+			}
+		} catch (Exception e) {
+			return 0;
 		}
 	}
 
@@ -393,6 +576,110 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	public void setPolicyImpl(InstitutionEscaletPolicyImpl policyImpl) {
 		this.policyImpl = policyImpl;
+	}
+
+	public boolean isViewStaffActiv() {
+		return viewStaffActiv;
+	}
+
+	public void setViewStaffActiv(boolean viewStaffActiv) {
+		this.viewStaffActiv = viewStaffActiv;
+	}
+
+	public boolean isViewSpecfcStaff() {
+		return viewSpecfcStaff;
+	}
+
+	public void setViewSpecfcStaff(boolean viewSpecfcStaff) {
+		viewSpecfcStaff = viewSpecfcStaff;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public List<Evaluation> getEvaluations() {
+		return evaluations;
+	}
+
+	public void setEvaluations(List<Evaluation> evaluations) {
+		this.evaluations = evaluations;
+	}
+
+	public InstitutionImpl getInstImpl() {
+		return instImpl;
+	}
+
+	public void setInstImpl(InstitutionImpl instImpl) {
+		this.instImpl = instImpl;
+	}
+
+	public List<Users> getStaffs() {
+		return staffs;
+	}
+
+	public void setStaffs(List<Users> staffs) {
+		this.staffs = staffs;
+	}
+
+	public boolean isDwnBtn() {
+		return dwnBtn;
+	}
+
+	public void setDwnBtn(boolean dwnBtn) {
+		this.dwnBtn = dwnBtn;
+	}
+
+	public boolean isApDltBtn() {
+		return apDltBtn;
+	}
+
+	public void setApDltBtn(boolean apDltBtn) {
+		this.apDltBtn = apDltBtn;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public boolean isViewAttached() {
+		return viewAttached;
+	}
+
+	public void setViewAttached(boolean viewAttached) {
+		this.viewAttached = viewAttached;
+	}
+
+	public UploadingActivity getUploadingActivity() {
+		return uploadingActivity;
+	}
+
+	public void setUploadingActivity(UploadingActivity uploadingActivity) {
+		this.uploadingActivity = uploadingActivity;
+	}
+
+	public UploadingActivityImpl getUpimpl() {
+		return upimpl;
+	}
+
+	public void setUpimpl(UploadingActivityImpl upimpl) {
+		this.upimpl = upimpl;
+	}
+
+	public List<UploadingActivity> getDocmts() {
+		return docmts;
+	}
+
+	public void setDocmts(List<UploadingActivity> docmts) {
+		this.docmts = docmts;
 	}
 
 	/* Getter and setters ends */
