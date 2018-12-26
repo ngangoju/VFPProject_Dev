@@ -1,5 +1,6 @@
 package com.vfp.tres;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,6 +22,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.StyleConstants.FontConstants;
+//import com.itextpdf.layout.element.Text;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -42,6 +45,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
@@ -116,12 +120,12 @@ public class MdReportActivity implements Serializable, DbConstant {
 	ActivityImpl activityImpl = new ActivityImpl();
 	TaskImpl taskImpl = new TaskImpl();
 	BoardImpl boardImpl = new BoardImpl();
-	//Board t = boardImpl.getBoardById(selectedBoard, "boardId");
+	
 	Task tc = new Task();
 	InstitutionReportView institutionReportView = new InstitutionReportView();
 	InstitutionReportViewImpl institutionReportViewImpl = new InstitutionReportViewImpl();
 	private List<InstitutionReportView> institutionreportdetails = new ArrayList<InstitutionReportView>();
-    SimpleDateFormat sdf =new SimpleDateFormat("dd-MM-yyyy");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy ");
 	Clearance clearance = new Clearance();
 	ClearanceImpl clearanceImpl = new ClearanceImpl();
 	private List<Clearance> Clearancedetails = new ArrayList<Clearance>();
@@ -132,7 +136,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
-		
+
 		createAnimatedModels();
 		createPieModels();
 		HttpSession session = SessionUtils.getSession();
@@ -155,7 +159,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 		} catch (Exception e) {
 		}
 	}
-
+   
 	private void createPieModels() {
 		// createPieModel1();
 		createPieModel2();
@@ -245,11 +249,44 @@ public class MdReportActivity implements Serializable, DbConstant {
 					(document.right() - document.left()) / 2 + document.leftMargin(), document.bottom() - 10, 0);
 		}
 	}
-//Codes for creating the table and its contents
+
+	// creating pdf header Image and text aside
+
+	public static PdfPCell createTextCell(String text) throws DocumentException, IOException {
+		PdfPCell cell = new PdfPCell();
+		Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.ITALIC, BaseColor.ORANGE);
+		Paragraph p = new Paragraph(text, font18);
+		
+		p.setAlignment(Element.ALIGN_CENTER);
+		cell.addElement(p);
+		cell.setFixedHeight(60);
+		cell.setVerticalAlignment(Element.ALIGN_RIGHT);
+		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+	}
+
+	public static PdfPCell createImageCell(String path) throws DocumentException, IOException {
+
+		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String realPath = ctx.getRealPath("/");
+		LOGGER.info("Filse Reals Path::::" + realPath);
+		final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+		LOGGER.info("Path::" + destination);
+		Image img = Image.getInstance("" + destination);
+		img.scaleAbsolute(50f, 50f);
+		PdfPCell cell = new PdfPCell(img, true);
+		cell.setFixedHeight(60);
+		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+	}
+	// Codes for creating the table and its contents
 
 	public void createPdf() throws IOException, DocumentException {
+		Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLDITALIC, BaseColor.BLUE);
+		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+		Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD,BaseColor.BLACK);
 		Date date = new Date();
-		SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  hh:mm:ss");
 		String xdate = dt.format(date);
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();
@@ -263,74 +300,83 @@ public class MdReportActivity implements Serializable, DbConstant {
 		if (!document.isOpen()) {
 			document.open();
 		}
-		//LOGO IMAGE FOR TRESS
+		//document.add(new Paragraph("\n"));
 		
+		Board t = boardImpl.getBoardById(selectedBoard, "boardId");
+		String boardname=t.getBoardName();
 		
-		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	    String realPath = ctx.getRealPath("/");
-	    LOGGER.info("Filse Reals Path::::" + realPath);
-		final Path destination = Paths.get(realPath+FILELOCATION + "logo.jpeg");
-		LOGGER.info("Path::" + destination);
-		
-		
-		/*Image img = Image.getInstance(
-				"\\VfpProject_Dev\\src\\main\\webapp\\resources\\image\\logo.jpeg");
-		img.scaleAbsolute(150f, 100f);*/
-		
-		Paragraph header = new Paragraph();
-		header.add(destination+"");
-		header.setAlignment(Image.ALIGN_LEFT);
-
-
-		document.add(new Paragraph("\n"));
-		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-		PdfPTable table = new PdfPTable(5);
-
-		Paragraph header1 = new Paragraph("MANAGER DIRECTOR REPORT MADE ON" + xdate + " REPORT");
-		// header.setAlignment(Element.ALIGN_RIGHT);
+		Paragraph header1 = new Paragraph("REPORT OF TASKS ASSIGNED ON  "+ " " +boardname+ "  " +"BOARD", font2);
 		header1.setAlignment(Element.ALIGN_CENTER);
-		// header.add(header1);
+		Paragraph welcome = new Paragraph();
+		
+		
+		// LOGO IMAGE FOR TRESS
+
+		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String realPath = ctx.getRealPath("/");
+		LOGGER.info("Filse Reals Path::::" + realPath);
+		final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+		LOGGER.info("Path::" + destination);
+		Image img = Image.getInstance("" + destination);
+		img.scaleAbsolute(50f, 50f);
+		welcome.add(img);
+		PdfPTable tableh = new PdfPTable(2);
+		tableh.setWidthPercentage(100);
+		tableh.setWidths(new int[] { 1, 4 });
+		tableh.addCell(createImageCell(img + ""));
+		tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
+		document.add(tableh);
 		document.add(header1);
-		document.add(new Paragraph("                                          "));
+		document.add(new Paragraph("..........................................................................................................................................................."));
 
-		// String myBoardName=t.getBoardName();
+		document.add(new Paragraph("                                                                                                  Generated on "+ xdate));
 
-		PdfPCell pc = new PdfPCell(new Paragraph("BOARD REPORT FOR " + " "));
-		pc.setColspan(5);
-		pc.setBackgroundColor(BaseColor.CYAN);
-		pc.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(pc);
-
+		document.add(new Paragraph("............................................................................................................................................................"));
+		
+		document.add(new Paragraph("                                              "));
+		
+		PdfPTable table = new PdfPTable(5);
+		table.setTotalWidth(PageSize.A4.getWidth());
+	
+		table.setLockedWidth(true);
+		
 		PdfPCell pc1 = new PdfPCell(new Paragraph("TASK NAME", font0));
-		// pc1.setRowspan(3);
-		pc1.setBackgroundColor(BaseColor.ORANGE);
+		pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc1);
 
 		PdfPCell pc2 = new PdfPCell(new Paragraph("EXECUTION PERIOD", font0));
-		pc2.setBackgroundColor(BaseColor.ORANGE);
+		pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc2);
 
 		PdfPCell pc3 = new PdfPCell(new Paragraph("STATUS", font0));
-		pc3.setBackgroundColor(BaseColor.ORANGE);
+		pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc3);
 
 		PdfPCell pc4 = new PdfPCell(new Paragraph("DEPARTMENT", font0));
-		pc4.setBackgroundColor(BaseColor.ORANGE);
+		pc4.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc4);
+		
 		PdfPCell pc5 = new PdfPCell(new Paragraph(" MARKS", font0));
-		pc5.setBackgroundColor(BaseColor.ORANGE);
+		pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc5);
 		table.setHeaderRows(1);
 		try {
-
 			for (Object[] data : taskImpl.reportList(
-					"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b  where t.board=b.boardId and t.board='"
-							+ selectedBoard + "'")) {
-
-				table.addCell(data[0] + "");
-				table.addCell(data[1] + "");
-				table.addCell(data[2] + "");
-				table.addCell(data[3] + "");
+					"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b  where t.board=b.boardId and t.board='"+ selectedBoard + "'")) {
+				PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + ""));
+				pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pcel1);
+				
+				PdfPCell pcel2 = new PdfPCell(new Paragraph(data[1] + ""));
+				pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pcel2);
+				PdfPCell pcel3 = new PdfPCell(new Paragraph(data[2] + ""));
+				pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pcel3);
+				PdfPCell pcel4 = new PdfPCell(new Paragraph(data[3] + ""));
+				pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pcel4);
+				
 				table.addCell("");
 			}
 			document.add(table);
@@ -345,8 +391,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 
 		}
 	}
-	
-	
 
 	public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputStream baos, String fileName) {
 		try {
@@ -387,14 +431,15 @@ public class MdReportActivity implements Serializable, DbConstant {
 			cellStyle.setVerticalAlignment(CellStyle.ALIGN_CENTER);
 			heading.getCell(i).setCellStyle(cellStyle);
 		}
-		
+
 		// From database
-		
+
 		try {
 			int i = 1;
-			for (Object[] data : taskImpl.reportList(
-					"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
-					+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+ selectedBoard + "'")) {
+			for (Object[] data : taskImpl
+					.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
+							+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"
+							+ selectedBoard + "'")) {
 
 				Row row = sheet.createRow(i);
 
@@ -443,59 +488,65 @@ public class MdReportActivity implements Serializable, DbConstant {
 			rendered = true;
 			renderedx = false;
 			renderedchart = false;
-			renderTableByBoard=false;
+			renderTableByBoard = false;
 			renderEditedTableByBoard = true;
-			renderedclear=false;
+			renderedclear = false;
 		} else if (myChoice.equalsIgnoreCase(taskchart)) {
 			renderedchart = true;
 			rendered = false;
-			renderTableByBoard=false;
+			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
 			renderedx = false;
-			renderedclear=false;
-		} else if (myChoice.equalsIgnoreCase(clear)){
-			
+			renderedclear = false;
+		} else if (myChoice.equalsIgnoreCase(clear)) {
+
 			rendered = false;
 			renderedx = false;
 			renderedchart = false;
-			renderTableByBoard=false;
+			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
-			renderedclear=true;
+			renderedclear = true;
 		} else {
 			rendered = false;
 			renderedx = true;
-			renderTableByBoard=true;
+			renderTableByBoard = true;
 			renderEditedTableByBoard = false;
 			renderedchart = false;
-			renderedclear=false;
+			renderedclear = false;
 		}
 	}
+
 	public List<ClearanceDto> myClearance() {
 		try {
 			LOGGER.info("mwenedata::::::::::::::::::::::::::::::::::::::::::::::junior");
-			if (selectedBoard!=0) {
+			if (selectedBoard != 0) {
 				renderEditedTableByBoard = true;
-			ClearanceDtoDetails = new ArrayList<ClearanceDto>();
-			for (Object[] data : institutionReportViewImpl.reportList(
-					"SELECT stategicplan,mytask, sum(case  when  boardName in ('"+ selectedBoard + "')  then 1 else 0 end),\r\n"
-							+ "sum(case when (boardName in ('"+ selectedBoard + "') and status='done' ) then 1 else 0 end),\r\n"
-							+ "(sum(case when (boardName in ('"+ selectedBoard +"') and status='done' ) then 1 else 0 end) /sum(case  when boardName in ('"+ selectedBoard +"')\r\n"
-							+ "then 1 else 0 end))*100 from InstitutionReportView group by stategicplan,mytask")) {
-				
-				LOGGER.info("tes1 1::::::::::::::::"+data[0]+" ::::::::::::'"+ selectedBoard +"'::::::::::::"+ data[1]+"::::::::"+ data[2]+"::::::"+ data[3]+":::::::::::::"+ data[4]+":::::::::::::james and Rashid");
+				ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+				for (Object[] data : institutionReportViewImpl
+						.reportList("SELECT stategicplan,mytask, sum(case  when  boardName in ('" + selectedBoard
+								+ "')  then 1 else 0 end),\r\n" + "sum(case when (boardName in ('" + selectedBoard
+								+ "') and status='done' ) then 1 else 0 end),\r\n" + "(sum(case when (boardName in ('"
+								+ selectedBoard
+								+ "') and status='done' ) then 1 else 0 end) /sum(case  when boardName in ('"
+								+ selectedBoard + "')\r\n"
+								+ "then 1 else 0 end))*100 from InstitutionReportView group by stategicplan,mytask")) {
 
-				ClearanceDto userDtos = new ClearanceDto();
-				userDtos.setStrategicplan(data[0] + "");
-				userDtos.setTaskName(data[1] + "");
-				userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
-				userDtos.setNumberOfFinishedActivities(Integer.parseInt(data[3] + ""));
-				userDtos.setRate(Double.parseDouble(data[4] + ""));
+					LOGGER.info("tes1 1::::::::::::::::" + data[0] + " ::::::::::::'" + selectedBoard + "'::::::::::::"
+							+ data[1] + "::::::::" + data[2] + "::::::" + data[3] + ":::::::::::::" + data[4]
+							+ ":::::::::::::james and Rashid");
 
-				ClearanceDtoDetails.add(userDtos);
-			}
-  
-			return (ClearanceDtoDetails);
-			
+					ClearanceDto userDtos = new ClearanceDto();
+					userDtos.setStrategicplan(data[0] + "");
+					userDtos.setTaskName(data[1] + "");
+					userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
+					userDtos.setNumberOfFinishedActivities(Integer.parseInt(data[3] + ""));
+					userDtos.setRate(Double.parseDouble(data[4] + ""));
+
+					ClearanceDtoDetails.add(userDtos);
+				}
+
+				return (ClearanceDtoDetails);
+
 			} else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidchoice"));
@@ -507,30 +558,31 @@ public class MdReportActivity implements Serializable, DbConstant {
 
 		return null;
 	}
-	
+
 	public List<MdrepDto> repfoboard() {
 		try {
-		
-			if (selectedBoard!=0) {
-				
+
+			if (selectedBoard != 0) {
+
 				activityMddtodetails = new ArrayList<MdrepDto>();
 				for (Object[] data : taskImpl.reportList(
 						"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
-						+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"+ selectedBoard + "'")) {
-				
-				LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana");
-				
-				MdrepDto userDtos = new MdrepDto();
-				
-				userDtos.setBoarName(data[3] + "");
-				userDtos.setTaskName(data[0] + "");
-				userDtos.setGenericStatus(data[2] + "");
-				userDtos.setEndDate(sdf.format(data[1]));
-				
-				activityMddtodetails.add(userDtos);
-			}
-			return (activityMddtodetails);
-			
+								+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"
+								+ selectedBoard + "'")) {
+
+					LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana");
+
+					MdrepDto userDtos = new MdrepDto();
+
+					userDtos.setBoarName(data[3] + "");
+					userDtos.setTaskName(data[0] + "");
+					userDtos.setGenericStatus(data[2] + "");
+					userDtos.setEndDate(sdf.format(data[1]));
+
+					activityMddtodetails.add(userDtos);
+				}
+				return (activityMddtodetails);
+
 			} else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidchoice"));
@@ -687,7 +739,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 		this.board = board;
 	}
 
-	
 	public boolean isRenderEditedTableByBoard() {
 		return renderEditedTableByBoard;
 	}
@@ -696,7 +747,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 		this.renderEditedTableByBoard = renderEditedTableByBoard;
 	}
 
-	
 	public int getSelectedBoard() {
 		return selectedBoard;
 	}
@@ -737,13 +787,11 @@ public class MdReportActivity implements Serializable, DbConstant {
 		this.myChoice = myChoice;
 	}
 
-	/*public Board getT() {
-		return t;
-	}
-
-	public void setT(Board t) {
-		this.t = t;
-	}*/
+	/*
+	 * public Board getT() { return t; }
+	 * 
+	 * public void setT(Board t) { this.t = t; }
+	 */
 
 	public boolean isRendered() {
 		return rendered;
