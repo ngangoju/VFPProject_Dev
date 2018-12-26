@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -38,6 +41,8 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
@@ -110,7 +115,11 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	UserImpl usersImpl = new UserImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
+	SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  hh:mm:ss");
+	Date date =new Date();
+	String xdate = dt.format(date);
+	Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.BOLD);
+	Font ffont3 = new Font(Font.FontFamily.UNDEFINED, 12, Font.BOLDITALIC,BaseColor.BLUE);
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -234,23 +243,52 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			PdfContentByte cb = writer.getDirectContent();
 			Date date = new Date();
 			SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
-			String xdate = dt.format(date);
-			Phrase header = new Phrase("Printed On: " + xdate, ffont1);
-			Phrase footer = new Phrase("@Copyright ITEME...!\n", ffont2);
-			ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, header,
-					(document.right() - document.left()) / 2 + document.leftMargin(), document.top() + 10, 0);
+		    String xdate = dt.format(date);
+			//Phrase header = new Phrase("Printed On: " + xdate, ffont1);
+			Phrase footer = new Phrase("                         @Copyright ITEME...!\n", ffont2);
+			//ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, header,
+					//(document.right() - document.left()) / 2 + document.leftMargin(), document.top() + 10, 0);
 			ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, footer,
 					(document.right() - document.left()) / 2 + document.leftMargin(), document.bottom() - 10, 0);
 		}
 	}
 
+	// creating pdf header Image and text aside
+
+		public static PdfPCell createTextCell(String text) throws DocumentException, IOException {
+			PdfPCell cell = new PdfPCell();
+			Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.ITALIC, BaseColor.ORANGE);
+			Paragraph p = new Paragraph(text, font18);
+			
+			p.setAlignment(Element.ALIGN_CENTER);
+			cell.addElement(p);
+			cell.setFixedHeight(60);
+			cell.setVerticalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(Rectangle.NO_BORDER);
+			return cell;
+		}
+
+		public static PdfPCell createImageCell(String path) throws DocumentException, IOException {
+
+			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			String realPath = ctx.getRealPath("/");
+			LOGGER.info("Filse Reals Path::::" + realPath);
+			final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+			LOGGER.info("Path::" + destination);
+			Image img = Image.getInstance("" + destination);
+			img.scaleAbsolute(50f, 50f);
+			PdfPCell cell = new PdfPCell(img, true);
+			cell.setFixedHeight(60);
+			cell.setBorder(Rectangle.NO_BORDER);
+			return cell;
+		}
 	// Codes for creating the table and its contents
 	@SuppressWarnings("unchecked")
 	public void createPdf() throws IOException, DocumentException {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();
-		Rectangle rect = new Rectangle(20, 20, 600, 600);
+		Rectangle rect = new Rectangle(100, 100, 700, 700);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PdfWriter writer = PdfWriter.getInstance(document, baos);
 		MyFooter event = new MyFooter();
@@ -269,38 +307,64 @@ public class StaffReportActivity implements Serializable, DbConstant {
 				setValid(true);
 				document.add(new Paragraph("\n"));
 				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-				PdfPTable table = new PdfPTable(5);
-
+				
 				Task t = taskImpl.getTaskById(myTask, "taskId");
 				String mytaskNane = t.getTaskName();
-				PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + mytaskNane));
-				pc.setColspan(5);
-				pc.setBackgroundColor(BaseColor.CYAN);
-				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(pc);
+				//PdfPCell pc = new PdfPCell(new Paragraph("Report of all activities for:\n" + mytaskNane));
+				Paragraph header1 = new Paragraph("Report of all activities for:\n" + mytaskNane, ffont2);
+				header1.setAlignment(Element.ALIGN_CENTER);
+				Paragraph welcome = new Paragraph();
+				
+				// LOGO IMAGE FOR TRESS
 
-				table.setWidthPercentage(110);
-				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
+				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				String realPath = ctx.getRealPath("/");
+				LOGGER.info("Filse Reals Path::::" + realPath);
+				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+				LOGGER.info("Path::" + destination);
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				welcome.add(img);
+				PdfPTable tableh = new PdfPTable(2);
+				tableh.setWidthPercentage(100);
+				tableh.setWidths(new int[] { 1, 4 });
+				tableh.addCell(createImageCell(img + ""));
+				tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
+				document.add(tableh);
+				document.add(header1);
+				document.add(new Paragraph("..........................................................................................................................................................."));
 
-				pc1.setBackgroundColor(BaseColor.ORANGE);
+				document.add(new Paragraph("                                                                                                  Generated on "+ xdate));
+
+				document.add(new Paragraph("............................................................................................................................................................"));
+				
+				document.add(new Paragraph("                                              "));
+				
+				PdfPTable table = new PdfPTable(5);
+				table.setTotalWidth(PageSize.A4.getWidth());
+				table.setLockedWidth(true);
+				
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", ffont3));
+				pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc1);
 
-				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
-				pc2.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", ffont3));
+				pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc2);
 
-				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
-				pc3.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", ffont3));
+				pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc3);
 
-				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", font0));
-				pc4.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", ffont3));
+				pc4.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc4);
-
-				PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", font0));
-				pc5.setBackgroundColor(BaseColor.ORANGE);
+				
+				PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", ffont3));
+				pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc5);
-				table.setHeaderRows(2);
+				
+				table.setHeaderRows(1);
 				HttpSession session = SessionUtils.getSession();
 				usersSession = (Users) session.getAttribute("userSession");
 
@@ -313,11 +377,27 @@ public class StaffReportActivity implements Serializable, DbConstant {
 				}
 
 				for (Activity activity : activityDetails) {
-					table.addCell(activity.getFormatedDate2() + "");
-					table.addCell(activity.getDescription());
-					table.addCell("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
-					table.addCell(activity.getStatus());
-					table.addCell("" + activity.getCreatedBy());
+					PdfPCell pcel1 = new PdfPCell(new Paragraph(activity.getFormatedDate2() + ""));
+					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel1);
+					
+					PdfPCell pcel2 = new PdfPCell(new Paragraph(activity.getDescription()));
+					pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel2);
+					
+					PdfPCell pcel3 = new PdfPCell(new Paragraph("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2()));
+					pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel3);
+					
+					PdfPCell pcel4 = new PdfPCell(new Paragraph(activity.getStatus()));
+					pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel4);
+					
+					PdfPCell pcel5 = new PdfPCell(new Paragraph("" + activity.getCreatedBy()));
+					pcel5.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel5);
+					
+					
 				}
 				document.add(table);
 
@@ -344,7 +424,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();
-		Rectangle rect = new Rectangle(20, 20, 600, 600);
+		Rectangle rect = new Rectangle(100, 100, 700, 700);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PdfWriter writer = PdfWriter.getInstance(document, baos);
 		MyFooter event = new MyFooter();
@@ -361,46 +441,87 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			if (activityDetailz.size() > 0) {
 				setValid(true);
 				document.add(new Paragraph("\n"));
-				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-				PdfPTable table = new PdfPTable(5);
-
 				Users t = usersImpl.gettUserById(Integer.parseInt(myName + ""), "userId");
 				String myNane = t.getFname() + "" + t.getLname();
-				PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
-				pc.setColspan(5);
-				pc.setBackgroundColor(BaseColor.CYAN);
-				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(pc);
+				//PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
+				Paragraph header1 = new Paragraph("Report of all activities created by:\n" + myNane, ffont2);
+				header1.setAlignment(Element.ALIGN_CENTER);
+				Paragraph welcome = new Paragraph();
+				
+				// LOGO IMAGE FOR TRESS
 
-				table.setWidthPercentage(110);
-				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", font0));
+				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				String realPath = ctx.getRealPath("/");
+				LOGGER.info("Filse Reals Path::::" + realPath);
+				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+				LOGGER.info("Path::" + destination);
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				welcome.add(img);
+				PdfPTable tableh = new PdfPTable(2);
+				tableh.setWidthPercentage(100);
+				tableh.setWidths(new int[] { 1, 4 });
+				tableh.addCell(createImageCell(img + ""));
+				tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
+				document.add(tableh);
+				document.add(header1);
+				document.add(new Paragraph("..........................................................................................................................................................."));
 
-				pc1.setBackgroundColor(BaseColor.ORANGE);
+				document.add(new Paragraph("                                                                                                  Generated on "+ xdate));
+
+				document.add(new Paragraph("............................................................................................................................................................"));
+				
+				document.add(new Paragraph("                                              "));
+				
+				PdfPTable table = new PdfPTable(4);
+				table.setTotalWidth(PageSize.A4.getWidth());
+				table.setLockedWidth(true);
+				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+				
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", ffont3));
+				pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc1);
 
-				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", font0));
-				pc2.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Activity", ffont3));	
+				pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc2);
 
-				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", font0));
-				pc3.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc3 = new PdfPCell(new Paragraph(" week", ffont3));
+				pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc3);
 
-				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", font0));
-				pc4.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc4 = new PdfPCell(new Paragraph(" Status", ffont3));
+				pc4.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc4);
 
-				PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", font0));
-				pc5.setBackgroundColor(BaseColor.ORANGE);
-				table.addCell(pc5);
-				table.setHeaderRows(2);
+				/*PdfPCell pc5 = new PdfPCell(new Paragraph(" Staff", ffont3));
+				pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc5);*/
+				
+				table.setHeaderRows(1);
 
 				for (Activity activity : activityDetailz) {
-					table.addCell(activity.getFormatedDate2() + "");
-					table.addCell(activity.getDescription());
-					table.addCell("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
-					table.addCell(activity.getStatus());
-					table.addCell("" + activity.getCreatedBy());
+					PdfPCell pcel1 = new PdfPCell(new Paragraph(activity.getFormatedDate2() + ""));
+					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel1);
+					
+					PdfPCell pcel2 = new PdfPCell(new Paragraph(activity.getDescription()));
+					pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel2);
+					
+
+					PdfPCell pcel3 = new PdfPCell(new Paragraph("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2()));
+					pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel3);
+					
+					PdfPCell pcel4 = new PdfPCell(new Paragraph(activity.getStatus()));
+					pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel4);
+					
+					/*PdfPCell pcel5 = new PdfPCell(new Paragraph("" + activity.getCreatedBy()));
+					pcel5.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel5);*/
+					
 				}
 				document.add(table);
 
