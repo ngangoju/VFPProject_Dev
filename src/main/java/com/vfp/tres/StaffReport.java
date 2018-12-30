@@ -17,6 +17,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+
+import org.omg.CORBA.DATA_CONVERSION;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
@@ -118,7 +120,9 @@ public class StaffReport implements Serializable, DbConstant {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	
 	//fonts
-	Font ffont0 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD,BaseColor.RED);
+	Font ffont0 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD,BaseColor.GREEN);
+	Font ffont4 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD,BaseColor.RED);
+	Font ffont5 = new Font(Font.FontFamily.UNDEFINED, 10, Font.NORMAL,BaseColor.BLACK);
 	Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.BOLD);
 	Font ffont3 = new Font(Font.FontFamily.UNDEFINED, 12, Font.BOLDITALIC,BaseColor.BLUE);
 	
@@ -188,7 +192,7 @@ public class StaffReport implements Serializable, DbConstant {
         SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy hh-mm-ss");
         String xdate = dt.format(date);*/
        //Phrase header = new Phrase("Printed On: " + xdate, ffont1);
-       Phrase footer = new Phrase("@Copyright ITEME...!\n", ffont2);
+       Phrase footer = new Phrase("                                                @Copyright ITEME...!\n", ffont2);
        /* ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
                 header,
                 (document.right() - document.left()) / 2 + document.leftMargin(),
@@ -238,48 +242,108 @@ public class StaffReport implements Serializable, DbConstant {
 			if (activitydetails.size() > 0) {
 				setValid(true);
 				document.add(new Paragraph("\n"));
-				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-				Font font1 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
-				PdfPTable table = new PdfPTable(5);
-
-				Users t = usersImpl.gettUserById(usersSession.getUserId(), "userId");
-				String myNane = t.getFname()+""+t.getLname();
-				PdfPCell pc = new PdfPCell(new Paragraph("CLEARANCE REPORT",font1));
+				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD,BaseColor.BLUE);
+				Font font1 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD,BaseColor.BLUE);
 				
+				Paragraph header1 = new Paragraph("Clearance report", ffont2);
+				header1.setAlignment(Element.ALIGN_CENTER);
+				Paragraph welcome = new Paragraph();
+				// LOGO IMAGE FOR TRESS
+
+				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				String realPath = ctx.getRealPath("/");
+				LOGGER.info("Filse Reals Path::::" + realPath);
+				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+				LOGGER.info("Path::" + destination);
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				
+				welcome.add(img);
+				PdfPTable tableh = new PdfPTable(2);
+				tableh.setWidthPercentage(100);
+				tableh.setWidths(new int[] { 1, 4 });
+				tableh.addCell(createImageCell(img + ""));
+				tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
+				document.add(tableh);
+				document.add(header1);
+				document.add(new Paragraph("..........................................................................................................................................................."));
+
+				document.add(new Paragraph("                                                                                                                               Generated on "+ xdate,ffont0));
+
+				document.add(new Paragraph("............................................................................................................................................................"));
+				
+				document.add(new Paragraph("                                              "));
+
+				PdfPTable table = new PdfPTable(7);
+				table.setTotalWidth(PageSize.A4.getWidth());
+				table.setLockedWidth(true);
+				
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Strategic plan", font1));
+				pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
+				pc1.setRowspan(2);
+				table.addCell(pc1);
+
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Task", font1));
+				pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
+				pc2.setRowspan(2);
+				table.addCell(pc2);
+				
+				PdfPCell pc = new PdfPCell(new Paragraph("Activities",font1));
 				pc.setColspan(5);
-				pc.setBackgroundColor(BaseColor.CYAN);
 				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc);
 
-				
-				PdfPCell pc1 = new PdfPCell(new Paragraph(" Trategic plan", font0));
-
-				pc1.setBackgroundColor(BaseColor.ORANGE);
-				table.addCell(pc1);
-
-				PdfPCell pc2 = new PdfPCell(new Paragraph(" Task", font0));
-				pc2.setBackgroundColor(BaseColor.ORANGE);
-				table.addCell(pc2);
-
-				PdfPCell pc3 = new PdfPCell(new Paragraph(" All activities", font0));
-				pc3.setBackgroundColor(BaseColor.ORANGE);
-				table.addCell(pc3);
-
-				PdfPCell pc4 = new PdfPCell(new Paragraph(" Closed Activities", font0));
-				pc4.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc4 = new PdfPCell(new Paragraph(" Planned", font1));
+				pc4.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc4);
 
-				PdfPCell pc5 = new PdfPCell(new Paragraph(" Rate in %", font0));
-				pc5.setBackgroundColor(BaseColor.ORANGE);
+				PdfPCell pc3 = new PdfPCell(new Paragraph(" Not started", font1));
+				pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc3);
+				
+				PdfPCell pc6 = new PdfPCell(new Paragraph(" Pending", font1));
+				pc6.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc6);
+
+				PdfPCell pc5 = new PdfPCell(new Paragraph(" Completed", font1));
+				pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc5);
+				PdfPCell pc7 = new PdfPCell(new Paragraph(" Rate", font1));
+				pc7.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pc7);
 				table.setHeaderRows(2);
 				
-				for (Activity activity : activitydetails) {
-					table.addCell(activity.getCrtdDtTime() + "");
-					table.addCell(activity.getDescription());
-					table.addCell(activity.getWeight());
-					table.addCell(activity.getStatus());
-					table.addCell("" + activity.getCreatedBy());
+				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask,\r\n" + 
+						"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n" + 
+						"sum(case when (status='Not Started' ) then 1 else 0 end),\r\n" + 
+						"sum(case when (status='pending' ) then 1 else 0 end),\r\n" + 
+						"sum(case when (status='Completed' ) then 1 else 0 end),\r\n" + 
+						"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n" + 
+						"from InstitutionReportView group by mytask"
+		)) {
+					PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + "",ffont5));
+					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel1);
+					
+					PdfPCell pcel2 = new PdfPCell(new Paragraph(data[1] + "",ffont5));
+					pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel2);
+					PdfPCell pcel3 = new PdfPCell(new Paragraph(data[2] + "",ffont5));
+					pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel3);
+					PdfPCell pcel4 = new PdfPCell(new Paragraph(data[3] + "",ffont5));
+					pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel4);
+					PdfPCell pcel5 = new PdfPCell(new Paragraph(data[4] + "",ffont5));
+					pcel5.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel5);
+					PdfPCell pcel6 = new PdfPCell(new Paragraph(data[5] + "",ffont5));
+					pcel6.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel6);
+					
+					PdfPCell pcel7 = new PdfPCell(new Paragraph(data[6] + "%",ffont5));
+					pcel7.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(pcel7);
 				}
 				document.add(table);
 
@@ -336,8 +400,6 @@ public class StaffReport implements Serializable, DbConstant {
 				setValid(true);
 				document.add(new Paragraph("\n"));
 				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-				
-
 				Users t = usersImpl.gettUserById(usersSession.getUserId(), "userId");
 				String myNane = t.getFname()+""+t.getLname();
 				//PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
@@ -536,10 +598,13 @@ public List<ClearanceDto> myClearance() {
 		
 				
                  ClearanceDtoDetails = new ArrayList<ClearanceDto>();
-				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask, sum(case  when  institutionName in ('BRD','kamana')  then 1 else 0 end),\r\n" + 
-						"sum(case when (institutionName in ('BRD','kamana') and status='Completed' ) then 1 else 0 end),\r\n" + 
-						"(sum(case when (institutionName in ('BRD','kamana') and status='Completed' ) then 1 else 0 end) /sum(case  when institutionName in ('BRD','kamana')\r\n" + 
-						"then 1 else 0 end))*100 from InstitutionReportView group by stategicplan,mytask"
+				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask,\r\n" + 
+						"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n" + 
+						"sum(case when (status='Not Started' ) then 1 else 0 end),\r\n" + 
+						"sum(case when (status='pending' ) then 1 else 0 end),\r\n" + 
+						"sum(case when (status='Completed' ) then 1 else 0 end),\r\n" + 
+						"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n" + 
+						"from InstitutionReportView group by mytask"
 		)) {
 			
 			ClearanceDto userDtos = new ClearanceDto();
@@ -547,10 +612,11 @@ public List<ClearanceDto> myClearance() {
 			userDtos.setStrategicplan(data[0] + "");
 			userDtos.setTaskName(data[1] + "");
 			userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
-			userDtos.setNumberOfFinishedActivities(Integer.parseInt(data[3] + ""));
-			if(data[4]==null) {
-			userDtos.setRate(Double.parseDouble(data[4]+""));
-			}
+			userDtos.setNotStarted(Integer.parseInt(data[3] + ""));
+			userDtos.setPending(Integer.parseInt(data[4] + ""));
+			userDtos.setCompleted(Integer.parseInt(data[5] + ""));
+			userDtos.setRate(Double.parseDouble(data[6]+""));
+			
 			ClearanceDtoDetails.add(userDtos);
 			
 		}	

@@ -383,7 +383,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 
 			document.close();
 
-			writePDFToResponse(context.getExternalContext(), baos, "MD_report");
+			writePDFToResponse(context.getExternalContext(), baos, "MD_report"+xdate);
 
 			context.responseComplete();
 
@@ -539,7 +539,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 					userDtos.setStrategicplan(data[0] + "");
 					userDtos.setTaskName(data[1] + "");
 					userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
-					userDtos.setNumberOfFinishedActivities(Integer.parseInt(data[3] + ""));
+					userDtos.setCompleted(Integer.parseInt(data[3] + ""));
 					userDtos.setRate(Double.parseDouble(data[4] + ""));
 
 					ClearanceDtoDetails.add(userDtos);
@@ -569,7 +569,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 						"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
 								+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"
 								+ selectedBoard + "'")) {
-
 					LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana");
 
 					MdrepDto userDtos = new MdrepDto();
