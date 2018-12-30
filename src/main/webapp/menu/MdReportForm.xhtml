@@ -16,17 +16,8 @@
 				<center>
 					<span class="glyphicon glyphicon-user"></span>#{msg['message.header.report4.info']}
 				</center>
-
 			</div>
 
-			<h:form>
-				<div class="col-md-2 col-sm-2 col-xs-2" style="margin-left: 80px">
-					<h:commandButton class="btn btn-success btn-md btn-block"
-						action="#{barChart3D.mychart}"
-						value="#{msg['label.submit.message.printExel']}">
-						</h:commandButton>
-				</div>
-			</h:form> 
 			<h:form>
 				<!-- 				<div class="panel panel-info"> -->
 				<div class="panel panel-primary ">
@@ -62,18 +53,7 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-						<!-- 							<fieldset> -->
 
-						<!-- 								<center> -->
-						<!-- 									<legend> MANAGER DIRECTOR REPORT MENU </legend> -->
-						<!-- 								</center> -->
-
-						<!-- <div class="form-group row"> -->
-						<!-- 									<div class="col-md-10 col-sm-10 col-xs-10"> -->
-
-						<!-- 										<div class="panel panel-primary "> -->
-						<!-- 											<div class="panel-heading">CHOOSE THE FORMAT OF THE -->
-						<!-- 												REPORT YOU WANT.</div> -->
 						<h:panelGroup id="countryPanel" layout="block" rendered="true">
 							<div class="form-group row">
 								<label for="todate"
@@ -339,7 +319,9 @@
 											<p:dataTable id="tabl" var="a"
 												value="#{staffReport.clearanceDtoDetails}" scrollable="true"
 												scrollHeight="200" sortOrder="descending">
-												<f:facet name="header">Clearance for created and done activities </f:facet>
+												<f:facet name="header">
+												
+												Clearance for planned and completed activities </f:facet>
 												<p:column width="50"> #{a.strategicplan}<f:facet
 														name="header">Strategic plan</f:facet>
 												</p:column>
@@ -347,23 +329,39 @@
 														name="header">Task</f:facet>
 												</p:column>
 												<p:column width="50"> #{a.numberOfActivities}<f:facet
-														name="header">Created activities</f:facet>
+														name="header">Planned</f:facet>
 												</p:column>
-												<p:column width="50"> #{a.numberOfFinishedActivities}<f:facet
-														name="header">Done activities</f:facet>
+												<p:column width="50"> #{a.notStarted}<f:facet
+														name="header">Not started</f:facet>
 												</p:column>
+												<p:column width="50"> #{a.pending}<f:facet
+														name="header">Pending</f:facet>
+												</p:column>
+
+												<p:column width="50"> #{a.completed}<f:facet
+														name="header">Completed</f:facet>
+												</p:column>
+
 												<p:column width="50"> #{a.rate}%<f:facet
 														name="header">Rate</f:facet>
 												</p:column>
 
 											</p:dataTable>
 											<div class="col-md-2 col-sm-2 col-xs-2">
-												<h:commandButton class="btn btn-info btn-sm btn-block"
-													action="#{staffReport.myClearance}" value="Submit">
+												<h:commandButton class="btn btn-success btn-md btn-block"
+													action="#{staffReport.myClearance}" value="View in table">
 													<f:ajax render="@form" execute="@form"
 														onevent="showProgress" />
 												</h:commandButton>
 											</div>
+											<h:form>
+												<div class="col-md-2 col-sm-2 col-xs-2"
+													style="margin-left: 80px">
+													<h:commandButton class="btn btn-success btn-md btn-block"
+														action="#{staffReport.createPDFfoClearance}"
+														value="#{msg['label.submit.message.printPdf']}" />
+												</div>
+											</h:form>
 										</div>
 									</div>
 								</h:panelGroup>
@@ -371,13 +369,7 @@
 						</h:panelGroup>
 					</div>
 
-					<!-- </div> -->
-					<!-- 								</fieldset> -->
 				</div>
-
-
-				<!-- 						</h:form>-->
-				<!--				</div> -->
 			</h:form>
 		</ui:define>
 	</ui:composition>
