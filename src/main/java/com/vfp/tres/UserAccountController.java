@@ -233,6 +233,19 @@ public class UserAccountController implements Serializable, DbConstant {
 			contactSize = usersDetails.size();
 			contactDtoDetails = displayRepresentContact();
 			repavail = contactDtoDetails.size();
+			
+			for (Object[] data : catImpl.reportList(
+					"select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"
+							+ INSTITUTE_REP + "' and cat.usercategoryName<>'" + SUPER_ADMIN + "'")) {
+				UserCategory cat = new UserCategory();
+				cat.setUserCatid(Integer.parseInt(data[0] + ""));
+				cat.setStatus(data[1] + "");
+				cat.setUsercategoryName(data[2] + "");
+				userCatDetails.add(cat);
+			}	
+				catDetails=catImpl.getGenericListWithHQLParameter(new String[] { "status", "usercategoryName" },
+						new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", " userCatid desc");
+			
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -267,25 +280,35 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	// Method to Display usercategory by user logged in
 
-	@SuppressWarnings("unchecked")
-	public List<UserCategory> showCategory() {
-		// HttpSession session = SessionUtils.getSession();
-		// usersSession = (Users) session.getAttribute("userSession");
+	/*@SuppressWarnings("unchecked")
+	public List<UserCategory>showAdminCategory(){
+		List<UserCategory>	categDetail = new ArrayList<UserCategory>();
 		try {
-			if (null != usersSession) {
-				if (usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
-
-					catDetails = catImpl.getGenericListWithHQLParameter(new String[] { "status", "usercategoryName" },
-							new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", " userCatid desc");
-					renderBoard = false;
-					return (catDetails);
-				} else {
-					/*
-					 * userCatDetails = catImpl.getGenericListWithHQLParameter(new String[] {
-					 * "status" }, new Object[] { ACTIVE }, "UserCategory", " userCatid desc");
-					 */
+			if(null!=usersSession && usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
+				categDetail = catImpl.getGenericListWithHQLParameter(new String[] { "status", "usercategoryName" },
+						new Object[] { ACTIVE, INSTITUTE_REP }, "UserCategory", " userCatid desc");
+				renderBoard = false;
+			}else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.SessionError.internal.error"));
+			}
+			
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		return (categDetail);
+	}
+	
+	*/
+	/*@SuppressWarnings("unchecked")
+	public List<UserCategory> showRepCategory() {
+		List<UserCategory>	catDetail = new ArrayList<UserCategory>();
+		try {	
+				if (null != usersSession && usersSession.getUserCategory().getUsercategoryName().equals(INSTITUTE_REP)) {
 					renderBoard = true;
-					catDetails = new ArrayList<UserCategory>();
 					for (Object[] data : catImpl.reportList(
 							"select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"
 									+ INSTITUTE_REP + "' and cat.usercategoryName<>'" + SUPER_ADMIN + "'")) {
@@ -293,27 +316,21 @@ public class UserAccountController implements Serializable, DbConstant {
 						cat.setUserCatid(Integer.parseInt(data[0] + ""));
 						cat.setStatus(data[1] + "");
 						cat.setUsercategoryName(data[2] + "");
-						catDetails.add(cat);
-					}
-					return (catDetails);
-				}
-
-			} else {
-
+						catDetail.add(cat);
+					}		
+			}else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.SessionError.internal.error"));
-			}
-
+			}		
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
+		return (catDetail);
 
-		return null;
-
-	}
+	}*/
 
 	public int showAvailRep() {
 		List<Users> repDetails = new ArrayList<Users>();
@@ -635,7 +652,7 @@ public class UserAccountController implements Serializable, DbConstant {
 		renderForeignCountry = true;
 		renderprofile = true;
 		rendersaveButton = true;
-		showCategory();
+		//showCategory();
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
@@ -1019,16 +1036,43 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void updateTable() throws Exception {
-		if (choice.equals(country_rw)) {
-
+		try {
+		
+		if (choice.equals(country_rw)&&usersSession.getUserCategory().getUsercategoryName().equals(INSTITUTE_REP)) {
 			rendered = true;
-			renderForeignCountry = true;
-			showCategory();
-		} else {
+			renderForeignCountry = true;		
+			renderBoard=true;
+			nextButoon=false;
+			LOGGER.info(" REP LIST SIze:::::::"+userCatDetails.size());
+		} else if(usersSession.getUserCategory().getUsercategoryName().equals(INSTITUTE_REP)) {
 			rendered = false;
 			renderForeignCountry = true;
-			showCategory();
+			nextButoon=false;
+			renderBoard=true;
+			LOGGER.info(" REP LIST SIze:::::::"+userCatDetails.size());
+		}
+		
+		//CATEGORY ON ADMIN PANEL
+		if (choice.equals(country_rw)&&usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
+			rendered = true;
+			renderForeignCountry = true;		
+			renderBoard=false;
+			nextButoon=true;
+			LOGGER.info("ADMIN LIST SIze:::::::"+catDetails.size());
+		} else if(usersSession.getUserCategory().getUsercategoryName().equals(SUPER_ADMIN)) {
+			rendered = false;
+			renderForeignCountry = true;
+			nextButoon=true;
+			renderBoard=false;
+			LOGGER.info(" ADMIN LIST SIze:::::::"+catDetails.size());
+		}	
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

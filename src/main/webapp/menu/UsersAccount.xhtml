@@ -485,6 +485,8 @@
 												<h:message for="confpswd" styleClass="help-block"></h:message>
 											</div>
 										</h:panelGroup>
+										<p:outputPanel rendered="#{userAccountController.renderBoard}"
+											autoUpdate="true">
 										<h:panelGroup id="CategoryPanel" layout="block">
 											<div class="form-group row"
 												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
@@ -502,7 +504,7 @@
 															itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 															itemValue="#{null}" escapeItem="true"
 															itemDisabled="false" />
-														<f:selectItems value="#{userAccountController.catDetails}"
+														<f:selectItems value="#{userAccountController.userCatDetails}"
 															var="option" itemValue="#{option.userCatid}"
 															itemLabel="#{option.usercategoryName}"
 															itemLabelEscaped="true" />
@@ -512,6 +514,39 @@
 												<h:message for="categ" styleClass="help-block"></h:message>
 											</div>
 										</h:panelGroup>
+										</p:outputPanel>
+										<!-- ADMIN CATEGORY -->
+										<p:outputPanel rendered="#{userAccountController.nextButoon}"
+											autoUpdate="true">
+										<h:panelGroup id="CategoryPanel2" layout="block">
+											<div class="form-group row"
+												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+												<label for="todate"
+													class="col-md-2 col-sm-2 col-xs-2 control-label"
+													style="color: black">#{msg['label.message.catname']}<span
+													style="color: red">*</span></label>
+												<div class="col-md-6 col-sm-6 col-xs-6">
+													<h:selectOneMenu id="categ2" styleClass="form-control"
+														style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+														required="true"
+														value="#{userAccountController.categoryId}"
+														requiredMessage="#{msg['requiered.categoryname.message']}">
+														<f:selectItem
+															itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+															itemValue="#{null}" escapeItem="true"
+															itemDisabled="false" />
+														<f:selectItems value="#{userAccountController.catDetails}"
+															var="option" itemValue="#{option.userCatid}"
+															itemLabel="#{option.usercategoryName}"
+															itemLabelEscaped="true" />
+														<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+													</h:selectOneMenu>
+												</div>
+												<h:message for="categ2" styleClass="help-block"></h:message>
+											</div>
+										</h:panelGroup>
+										</p:outputPanel>
+										<!-- END FOREIGN STATE CAT -->
 										<p:outputPanel rendered="#{userAccountController.renderBoard}"
 											autoUpdate="true">
 											<h:panelGroup id="BoardPanel" layout="block">
