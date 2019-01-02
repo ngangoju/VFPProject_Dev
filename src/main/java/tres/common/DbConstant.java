@@ -140,4 +140,5 @@ public interface DbConstant {
 	public static final String NORMAL="Normal";
 	public static final String MILESTONE="Vfp";
 	public static final String NOTDONE="notdone";
+	public static final int endrecord = 5;
 }

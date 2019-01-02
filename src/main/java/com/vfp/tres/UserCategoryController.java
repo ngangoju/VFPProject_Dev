@@ -54,6 +54,7 @@ public class UserCategoryController implements Serializable, DbConstant {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	private String repEmail;
 	private String option;
+	private String range;
 	private Contact cont = new Contact();
 
 	@SuppressWarnings("unchecked")
@@ -70,18 +71,8 @@ public class UserCategoryController implements Serializable, DbConstant {
 		}
 
 		try {
-			categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
-			/*
-			 * categoryDetails=userCatImpl.getListWithHQL(SELECT_USERCATEGORY);
-			 * 
-			 * for (UserCategory userCat : categoryDetails) { UserCategoryDto catDto = new
-			 * UserCategoryDto(); catDto.setEditable(false);
-			 * catDto.setUserCatid(userCat.getUserCatid());
-			 * catDto.setUsercategoryName(userCat.getUsercategoryName()); if
-			 * (userCat.getStatus().equals(ACTIVE)) { catDto.setAction(DESACTIVE); } else {
-			 * catDto.setAction(ACTIVE); } categoryDtoDetails.add(catDto); }
-			 */
+			//categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+			categoryDetails=userCatImpl.getListWithHQL("from UserCategory", 0, endrecord);
 
 			categoryDtoDetails = listCategory(categoryDetails);
 		} catch (Exception e) {
@@ -91,6 +82,18 @@ public class UserCategoryController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+	@SuppressWarnings("unchecked")
+	public void showCategory() throws Exception {
+	if (range.equals("5") || (range.equals("10")) || (range.equals("15"))) {
+			int endRecords = Integer.parseInt(range);
+			categoryDetails=userCatImpl.getListWithHQL("from UserCategory", 0, endRecords);
+			categoryDtoDetails = listCategory(categoryDetails);
+			//this.renderFooter = true;
+		} else {
+			categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
+			categoryDtoDetails = listCategory(categoryDetails);
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -479,4 +482,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 	public void setContactDtoDetails(List<ContactDto> contactDtoDetails) {
 		this.contactDtoDetails = contactDtoDetails;
 	}
+	public String getRange() {
+		return range;
+	}
+	public void setRange(String range) {
+		this.range = range;
+	}
+	
 }
