@@ -213,6 +213,8 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setAddress(user.getAddress());
 			userDto.setUserId(user.getUserId());
 			userDto.setUserCategory(user.getUserCategory());
+			userDto.setLoginStatus(user.getLoginStatus());
+			userDto.setGender(user.getGender());
 			userDtoDetails.add(userDto);
 			repDtosDetails = displayRepresentativeByDateBetween();
 			this.renderRepContactDash = true;
@@ -574,7 +576,12 @@ public class UserAccountController implements Serializable, DbConstant {
 			return (option);
 		}
 	}
-
+	public String getMyFormattedDate() {
+		HttpSession session = SessionUtils.getSession();
+		Users usersSes= new Users();
+		usersSes= (Users) session.getAttribute("userSession");
+		return new SimpleDateFormat("dd-MM-yyyy").format(usersSes.getDateOfBirth());
+	}
 	public void profilePage(UserDto user) {
 		if (redirect.equals(Next_Option)) {
 			if (null != user) {
@@ -582,6 +589,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				HttpSession sessionuser = SessionUtils.getSession();
 				sessionuser.setAttribute("userProfile", userId);
 				nextButoon = true;
+				renderRepContactDash=false;
 			}
 		} else {
 			renderprofile = false;

@@ -1,7 +1,10 @@
 
 package com.vfp.tres;
 
+import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,8 +15,10 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -80,6 +85,8 @@ public class FormSampleController implements Serializable, DbConstant {
 	private UploadingActivityImpl uploadActImpl= new UploadingActivityImpl();
 	private Activity activity;
 	private ActivityImpl actImpl= new ActivityImpl();
+	private List<UploadingFiles>filesUploaded= new ArrayList<UploadingFiles>();
+	private DocumentsImpl docsImpl = new DocumentsImpl();
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -157,15 +164,45 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public void deleteExistImage() throws Exception {
+		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String realPath = ctx.getRealPath("/");
+		LOGGER.info("Filse Reals Path::::" + realPath);
+		if(null != usersSession) {
+			filesUploaded=uploadingFilesImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user"},
+					new Object[] { ACTIVE, usersSession},
+					"UploadingFiles", "uploadId asc");
+			
+			for(UploadingFiles files:filesUploaded) {
+				Documents doc = new Documents();
+				doc = docsImpl.getModelWithMyHQL(new String[] { "DocId" },
+						new Object[] { files.getDocuments().getDocId()}, " from Documents");
+				final Path destination = Paths.get(realPath + FILELOCATION + doc.getSysFilename());
+				LOGGER.info("Path::" + destination);
+				File file = new File(destination.toString());
+				uploadingFilesImpl.deleteIntable(files);
+				docsImpl.deleteIntable(documents);
+				LOGGER.info("Delete in db operation done!!!:");
+				if (file.delete()) {
+					System.out.println(file.getName() + " is deleted!");		
+				} else {
+					System.out.println("Delete operation is failed.");
+					
+				}
+			}
+			
+		}
+	}
 	public String uploadProfile(FileUploadEvent event) {
 
 		try {
 			if (null != usersSession) {
 				UploadUtility ut = new UploadUtility();
 				String validationCode = "PROFILEIMAGE";
+				deleteExistImage();
 				documents = ut.fileUploadUtilUsers(event, validationCode);
-
 				uploadingFiles.setUser(usersSession);
 				uploadingFiles.setCrtdDtTime(timestamp);
 				uploadingFiles.setGenericStatus(ACTIVE);
@@ -635,6 +672,22 @@ public class FormSampleController implements Serializable, DbConstant {
 
 	public void setActImpl(ActivityImpl actImpl) {
 		this.actImpl = actImpl;
+	}
+
+	public List<UploadingFiles> getFilesUploaded() {
+		return filesUploaded;
+	}
+
+	public void setFilesUploaded(List<UploadingFiles> filesUploaded) {
+		this.filesUploaded = filesUploaded;
+	}
+
+	public DocumentsImpl getDocsImpl() {
+		return docsImpl;
+	}
+
+	public void setDocsImpl(DocumentsImpl docsImpl) {
+		this.docsImpl = docsImpl;
 	}
 
 }

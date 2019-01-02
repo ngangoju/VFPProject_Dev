@@ -12,6 +12,44 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
+					<style>
+.ui-growl-item-container {
+	background-color: #337ab7;
+}
+
+.ui-growl-icon-close {
+	cursor: pointer;
+	position: absolute;
+	left: 335px;
+	top: 15px;
+}
+
+.ui-growl-title {
+	font: 13px"Open Sans sans-serif !important;
+	/* text-align: center; */
+}
+
+.ui-growl-message p {
+	font: 12px"Open Sans sans-serif !important;
+	letter-spacing: -1px;
+}
+
+.ui-growl-image-info ~ .ui-growl-message {
+	color: #fff;
+}
+
+.ui-growl-image-error ~ .ui-growl-message {
+	color: black;
+}
+
+.ui-growl-image-warn ~ .ui-growl-message {
+	color: black;
+}
+
+.ui-growl-image-fatal ~ .ui-growl-message {
+	color: black;
+}
+</style>
 
 			<div class="panel panel-default">
 
@@ -56,6 +94,9 @@
 							</div>
 
 						</div>
+						<p:outputPanel id="toTable"
+								rendered="#{userAccountController.renderRepContactDash}"
+								autoUpdate="true">
 						<ui:repeat var="user"
 							value="#{userAccountController.userDtoDetails}">
 							<table class="table table-hover"
@@ -138,6 +179,32 @@
 												rendered="#{not user.editable}" /></td>
 
 									</tr>
+									<tr>
+										<td><br />DateOfBirth:</td>
+										<td><br />
+											<h:outputText value="#{userAccountController.getMyFormattedDate()}"/></td>
+
+									</tr>
+									<tr>
+										<td><br />Position:</td>
+										<td><br />
+											<h:outputText value="#{user.userCategory.usercategoryName}"/></td>
+
+									</tr>
+									<tr>
+										<td><br />Gender:</td>
+										<td>
+											<br />
+											<h:outputText value="#{user.gender}"/></td>
+
+									</tr>
+									<tr>
+										<td><br />LoginStatus:</td>
+										<td>
+										<br />
+											<h:outputText value="#{user.loginStatus}"/></td>
+
+									</tr>
 									<!--Change Password option  -->
 									<p:outputPanel id="yesOrNo"
 										rendered="#{userAccountController.renderForeignCountry}"
@@ -173,28 +240,14 @@
 
 										</tr>
 									</p:outputPanel>
-									<p:outputPanel id="nextButton"
-										rendered="#{userAccountController.nextButoon}"
-										autoUpdate="true">
-										<tr>
-
-											<td colspan="2" bgcolor="#99b1bf"><center>
-													<h:commandButton value="Next" styleClass="btn btn-primary"
-														style="margin-left:20px;"
-														action="#{userAccountController.nextPage()}">
-													</h:commandButton>
-												</center></td>
-										</tr>
-									</p:outputPanel>
+									
 									<!-- End of profile change -->
 									<p:outputPanel id="changepswd"
 										rendered="#{userAccountController.rendered}" autoUpdate="true">
 										<tr>
 											<td><br />Change Password:</td>
 											<td><h:inputSecret size="20" id="pswds"
-													value="#{userAccountController.password}" maxlength="35"
-													required="true"
-													requiredMessage="#{msg['requiered.username.password']}">
+													value="#{userAccountController.password}" maxlength="35">
 													<f:validateRegex
 														pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
 												</h:inputSecret> <br /> <h:message errorClass="errorMsg1" for="pswds"
@@ -205,9 +258,7 @@
 										<tr>
 											<td><br />Confirm Password:</td>
 											<td><h:inputSecret size="20" id="confpswds"
-													value="#{userAccountController.confirmPswd}" maxlength="35"
-													required="true"
-													requiredMessage="#{msg['requiered.username.confirmpassword']}">
+													value="#{userAccountController.confirmPswd}" maxlength="35">
 													<f:validateRegex
 														pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
 												</h:inputSecret> <br /> <h:message errorClass="errorMsg1" for="confpswds"
@@ -233,6 +284,55 @@
 								</h:commandButton>
 							</p:outputPanel>
 						</ui:repeat>
+						</p:outputPanel>
+						<p:outputPanel id="nextButton"
+										rendered="#{userAccountController.nextButoon}"
+										autoUpdate="true">
+										<h:panelGroup id="fromDatePanel" layout="block">
+
+											<div class="form-group row"
+												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+												<label for="todate"
+													class="col-md-2 col-sm-2 col-xs-2 control-label"
+													style="color: black">Change Your Image</label>
+												<div class="col-md-4">
+													<span class="tooltips-input-main"><a
+														class="tooltips-input"> <h:panelGroup
+																id="tooltips-contactDetails" layout="block">
+																<img
+																	src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+																	style="width: 8%" alt="question" />
+															</h:panelGroup> <p:tooltip id="toolTipContent"
+																for="tooltips-contactDetails" position="bottom">
+																<span> #{msg['help.userImage.message']} </span>
+															</p:tooltip>
+													</a></span>
+
+												</div>
+												<h:message for="from_dob_date_id" styleClass="help-block"></h:message>
+											</div>
+										</h:panelGroup>
+									<div class="cols-sm-10">
+
+										<h:form>
+											<p:fileUpload accept="image/*"
+											oncomplete="window.location.reload();"
+											style="width:70%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											uploadLabel="Upload image" cancelLabel="Cancel"
+											fileUploadListener="#{formSampleController.uploadProfile}"
+											mode="advanced" dragDropSupport="true" multiple="true"
+											update="messages" sizeLimit="500000" fileLimit="1"
+											allowTypes="/(\.|\/)(jpe?g|png)$/" />
+										<p:growl id="messages" life="300000" />
+										</h:form>
+											
+										<a
+											href="#{loadUserInformationsController.getContextPath()}/menu/ViewProfile.xhtml"
+											class="btn btn-primary glyphicon glyphicon-chevron-left"
+											style="font-size: 14px !important;">
+											#{msg['UserCatForm.BackBoardButtom']} </a>
+									</div>
+									</p:outputPanel>
 					</h:form>
 				</div>
 			</div>
