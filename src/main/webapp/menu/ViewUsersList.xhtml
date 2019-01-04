@@ -29,9 +29,9 @@
 							<div class="col-md-4 col-sm-6">
 								<div class="circle-tile2">
 
-									<div class="circle-tile-heading2 blue2">
-										<i class="glyphicon glyphicon-user fa-fw fa-3x"></i> <br /> <label>#{userContactController.countUserSize}</label>&nbsp;<label
-											style="font-family: Open Sans sans-serif !important; font-size: 10px !important;">#{msg['message.user.avail']}</label>
+									<div class=" md-4 circle-tile-heading2 blue2">
+										<i class="glyphicon glyphicon-user fa-fw fa-3x"></i> <br /> <label
+											style="font-family: Open Sans sans-serif !important; font-size: 16px !important;">#{userContactController.countUserSize}</label>
 									</div>
 
 									<div class="circle-tile-content2 blue2  ">
@@ -92,8 +92,8 @@
 								<div class="circle-tile2">
 
 									<div class="circle-tile-heading2 green2   ">
-										<i class="glyphicon glyphicon-user fa-fw fa-3x"></i> <br /> <label>#{userContactController.userLoginSize}</label>&nbsp;<label
-											style="font-family: Open Sans sans-serif !important; font-size: 10px !important;">#{msg['message.user.notcont']}</label>
+										<i class="glyphicon glyphicon-user fa-fw fa-3x"></i> <br /> <label
+											style="font-family: Open Sans sans-serif !important; font-size: 16px !important;">#{userContactController.userLoginSize}</label>
 									</div>
 
 									<div class="circle-tile-content2  green2   ">
@@ -241,293 +241,311 @@
 				</p:outputPanel>
 
 				<!-- End contact Mgt dashboard -->
-				<p:outputPanel
-					rendered="#{userContactController.renderEditedTableByBoard}"
-					autoUpdate="true">
-					<hr />
-					<table class="table table-hover"
-						style="font-size: 15px; font-family: Times New Roman; width: 50%; margin-left: 20px;">
 
-						<thead>
-							<tr class="success">
-								<th colspan="2">
-									<center>
-										<label
-											style="font-family: Open Sans sans-serif !important; font-size: 14px !important; text-transform: uppercase;">#{msg['boardDate.option']}</label>
-									</center>
-								</th>
-							</tr>
-						</thead>
-						<tbody class="details">
 
-							<tr class="warning">
-								<td colspan="2"><h:selectOneRadio
-										style="font-family: Open Sans sans-serif !important; font-size: 13px !important;margin-top:18px; margin-left:30%;"
-										value="#{userContactController.selection}">
-										<f:selectItem itemLabel="&nbsp;Registered date"
-											itemValue="dates" />
-										<f:ajax render="@form" execute="@form" onevent="showProgress"
-											listener="#{userContactController.showDatePanel()}" />
-									</h:selectOneRadio></td>
-							</tr>
-						</tbody>
-					</table>
-					<hr />
-				</p:outputPanel>
+
+
 				<!-- Start  of Date Panel -->
 				<p:outputPanel rendered="#{userContactController.renderDatePanel}"
 					autoUpdate="true">
 
-					<div class="panel-body">
-						<!-- Validation msg start here -->
-						<h:panelGroup layout="block"
-							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li class="alert alert-danger"
-										style="list-style: none; background-color: #FF2400; color: white">
-										<center>
-											<h:outputText value="#{facesMessage.summary}" escape="false" />
-										</center>
-									</li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
+					<fieldset>
+						<legend>
+							<label
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">#{msg['message.header.staffDateRegistered.info']}</label>
+						</legend>
 
-						<h:panelGroup layout="block"
-							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
-							<ul>
-								<ui:repeat value="#{facesContext.messageList}"
-									var="facesMessage">
-									<li
-										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-										class="alert alert-success"><h:outputText
-											value="#{facesMessage.summary}" escape="false" /></li>
-								</ui:repeat>
-							</ul>
-						</h:panelGroup>
-						<!-- End of Date validation -->
-						<div style="display: none">
-							<input id="lat" name="lat" type="text" /> <input id="long"
-								name="long" type="text" />
+						<div class="panel-body">
+							<!-- Validation msg start here -->
+							<h:panelGroup layout="block"
+								rendered="#{not userContactController.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li class="alert alert-danger"
+											style="list-style: none; background-color: #FF2400; color: white">
+											<center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center>
+										</li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								rendered="#{userContactController.valid and  not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li
+											style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+											class="alert alert-success"><h:outputText
+												value="#{facesMessage.summary}" escape="false" /></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<!-- End of Date validation -->
+
+							<div style="display: none">
+								<input id="lat" name="lat" type="text" /> <input id="long"
+									name="long" type="text" />
+							</div>
+
+							<div class="form-group row">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">From<span style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-3 col-xs-4">
+									<h:inputText locale="#{facesContext.viewRoot.locale}"
+										autocomplete="off" id="from" binding="#{from}"
+										class="form-control input-sm" escape="true"
+										value="#{userContactController.from}" maxlength="35"
+										converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+										<f:convertDateTime type="date" dateType="short"
+											pattern="dd/MM/yyyy" />
+										<f:validateLength maximum="35" />
+									</h:inputText>
+									<script>
+										$(function() {
+											$('input[id*="from"]')
+													.datepicker(
+															{
+																changeMonth : true,
+																changeYear : true,
+																maxDate : 0,
+																//minDate: 0,
+																dateFormat : "dd/mm/yy",
+																yearRange : "-100:+0",
+																buttonImage : "/resources/image/calendar1.png"
+															});
+										});
+									</script>
+								</div>
+								<div class="col-md-2">
+									<span class="tooltips-input-main"><a
+										class="tooltips-input"> <h:panelGroup
+												id="tooltips-contactDetails2" layout="block">
+												<img
+													src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+													style="width: 15%" alt="question" />
+											</h:panelGroup> <p:tooltip id="toolTipContent2"
+												for="tooltips-contactDetails2" position="bottom">
+												<span> #{msg['help.userFilter.message']} </span>
+											</p:tooltip>
+									</a></span>
+
+								</div>
+								<h:message for="from" styleClass="help-block"></h:message>
+							</div>
+							<div class="form-group row">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">To<span style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-3 col-xs-4">
+									<h:inputText locale="#{facesContext.viewRoot.locale}"
+										autocomplete="off" id="to" binding="#{to}"
+										class="form-control input-sm" escape="true"
+										value="#{userContactController.to}" maxlength="35"
+										converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+										<f:convertDateTime type="date" dateType="short"
+											pattern="dd/MM/yyyy" />
+										<f:validateLength maximum="35" />
+									</h:inputText>
+
+								</div>
+								<h:message for="to" styleClass="help-block"></h:message>
+							</div>
+							<script>
+								$(function() {
+									$('input[id*="to"]')
+											.datepicker(
+													{
+														changeMonth : true,
+														changeYear : true,
+														maxDate : 0,
+														//minDate:$msg,
+														dateFormat : "dd/mm/yy",
+														yearRange : "-100:+0",
+														buttonImage : "/resources/image/calendar1.png"
+													});
+								});
+							</script>
 						</div>
 						<div class="form-group row">
 							<label for="todate"
-								class="col-md-2 col-sm-2 col-xs-2 control-label"
-								style="color: black">From<span style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-3 col-xs-4">
-								<h:inputText locale="#{facesContext.viewRoot.locale}"
-									autocomplete="off" id="from" binding="#{from}"
-									class="form-control input-sm" escape="true"
-									value="#{userContactController.from}" maxlength="35"
-									required="true"
-									converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-									requiredMessage="#{msg['strartdate_institution.message']}">
-									<f:convertDateTime type="date" dateType="short"
-										pattern="dd/MM/yyyy" />
-									<f:validateLength maximum="35" />
-								</h:inputText>
-								<script>
-									$(function() {
-										$('input[id*="from"]')
-												.datepicker(
-														{
-															changeMonth : true,
-															changeYear : true,
-															maxDate : 0,
-															//minDate: 0,
-															dateFormat : "dd/mm/yy",
-															yearRange : "-100:+0",
-															buttonImage : "/resources/image/calendar1.png"
-														});
-									});
-								</script>
-							</div>
-							<div class="col-md-2">
-								<span class="tooltips-input-main"><a
-									class="tooltips-input"> <h:panelGroup
-											id="tooltips-contactDetails2" layout="block">
-											<img
-												src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-												style="width: 15%" alt="question" />
-										</h:panelGroup> <p:tooltip id="toolTipContent2"
-											for="tooltips-contactDetails2" position="bottom">
-											<span> #{msg['help.userFilter.message']} </span>
-										</p:tooltip>
-								</a></span>
+								class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+							<div class="col-sm-4">
+								<h:commandButton class="btn btn-info btn-sm btn-block"
+									action="#{userContactController.displayUsersDetailsByDateBetween()}"
+									value="Submit">
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+
+								</h:commandButton>
 
 							</div>
-							<h:message for="from" styleClass="help-block"></h:message>
+							<span class="text-danger" id="customeordererror"></span>
 						</div>
-						<div class="form-group row">
-							<label for="todate"
-								class="col-md-2 col-sm-2 col-xs-2 control-label"
-								style="color: black">To<span style="color: red">*</span></label>
-							<div class="col-md-4 col-sm-3 col-xs-4">
-								<h:inputText locale="#{facesContext.viewRoot.locale}"
-									autocomplete="off" id="to" binding="#{to}"
-									class="form-control input-sm" escape="true"
-									value="#{userContactController.to}" maxlength="35"
-									required="true"
-									converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-									requiredMessage="#{msg['enddate_institution.message']}">
-									<f:convertDateTime type="date" dateType="short"
-										pattern="dd/MM/yyyy" />
-									<f:validateLength maximum="35" />
-								</h:inputText>
+					</fieldset>
 
-							</div>
-							<h:message for="to" styleClass="help-block"></h:message>
-						</div>
-						<script>
-							$(function() {
-								$('input[id*="to"]')
-										.datepicker(
-												{
-													changeMonth : true,
-													changeYear : true,
-													maxDate : 0,
-													//minDate:$msg,
-													dateFormat : "dd/mm/yy",
-													yearRange : "-100:+0",
-													buttonImage : "/resources/image/calendar1.png"
-												});
-							});
-						</script>
-					</div>
-					<div class="form-group row">
-						<label for="todate"
-							class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
-						<div class="col-sm-4">
-							<h:commandButton class="btn btn-info btn-sm btn-block"
-								action="#{userContactController.displayUsersByDateBetween()}"
-								value="Submit">
-								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-
-							</h:commandButton>
-
-						</div>
-						<span class="text-danger" id="customeordererror"></span>
-					</div>
-					<hr />
 				</p:outputPanel>
 				<!-- End of Date Panel -->
-				<!-- Start of Users Details Panel -->
-				<p:outputPanel id="toTable" autoUpdate="true"
-					rendered="#{userContactController.renderDataTable}">
-					<p:dataTable value="#{userContactController.userDtosDetails}"
-						rowIndexVar="row" sortOrder="ASCENDING" rowKey="#{user.fname}"
-						var="user" rows="10" id="tables" sortBy="#{user.fname}"
-						style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
 
 
+
+				<!-- Staff Details Datatable -->
+
+				<p:outputPanel
+					rendered="#{userContactController.renderEditedTableByBoard}"
+					autoUpdate="true">
+					<h:dataTable id="userTable" binding="#{tabl}"
+						style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+       						 -webkit-box-shadow: none;
+       							 box-shadow: none !important;
+       								 margin: 20px 25px 0 !important;"
+						value="#{userContactController.contactDtosInfo}" var="user"
+						class="table table-striped table-hover table-bordered tableUpdated ">
 						<f:facet name="header">
-							<h4
-								style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-								#{msg['message.header.userdetails.filter']}</h4>
+
+							<label
+								style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+								#{msg['message.header.userList.filter']}</label>
 						</f:facet>
-						<p:column headerText="No" style="width:5%;">
 
-							<h:outputText value="#{row+1}" />
-						</p:column>
-						<p:column headerText="Names">
-							<h:outputText value="#{user.fname} &nbsp; #{user.lname}" />
-						</p:column>
-
-						<p:column headerText="Email">
+						<h:column>
+							<f:facet name="header">
+								<label>No</label>
+							</f:facet>
+							<h:outputText value="#{tabl.rowIndex + 1}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>StaffNames</label>
+							</f:facet>
+							<h:outputText value="#{user.staffNames}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Email</label>
+							</f:facet>
 							<h:outputText value="#{user.email}" />
-
-						</p:column>
-						<p:column headerText="Phone">
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Phone</label>
+							</f:facet>
 							<h:outputText value="#{user.phone}" />
+						</h:column>
 
-						</p:column>
-						<p:column headerText="Institution">
-							<h:outputText value="#{user.institution}" />
+						<h:column>
+							<f:facet name="header">
+								<label>Board</label>
+							</f:facet>
+							<h:outputText value="#{user.boardname}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Position</label>
+							</f:facet>
+							<h:outputText value="#{user.categoryname}" />
+						</h:column>
 
-						</p:column>
-						<p:column headerText="Boardname">
-							<h:outputText value="#{user.board.boardName}" />
-
-						</p:column>
-						<p:column headerText="Category">
-							<h:outputText value="#{user.userCategory.usercategoryName}" />
-						</p:column>
-						<p:column headerText="Genericstatus">
-							<h:outputText value="#{user.genericStatus}" />
-
-						</p:column>
-
-					</p:dataTable>
-					<br />
-					<hr />
-
-					<h:commandLink
-						style="font-size: 12px !important; width: 25%; margin-left: 5%;"
-						class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left "
-						value="#{msg['UserRegForm.GoBackButton']}"
-						action="#{userContactController.showContactDashBoard()}">
-
-					</h:commandLink>
-					<!-- End Back -->
+						<f:facet name="footer">
+							<label>Choose records per page:</label>
+							<h:selectOneMenu value="#{userContactController.range}"
+								style="width:25%;">
+								<f:selectItem itemLabel="5 Records" itemValue="5" />
+								<f:selectItem itemLabel="10 Records" itemValue="10" />
+								<f:selectItem itemLabel="15 Records" itemValue="15" />
+								<f:selectItem itemLabel="Date registered" itemValue="Date" />
+								<f:ajax render="@form" execute="@form" onevent="showProgress"
+									listener="#{userContactController.showUsersContact()}" />
+							</h:selectOneMenu>
+							<h:commandLink
+								style="font-size: 14px !important; margin-left: 25%;"
+								class="btn btn-primary glyphicon glyphicon-chevron-left "
+								value="#{msg['UserRegForm.GoBackButton']}"
+								action="#{userContactController.showContactDashBoard()}">
+							</h:commandLink>
+						</f:facet>
+					</h:dataTable>
 				</p:outputPanel>
-				<!-- End of Users Details Panel -->
+				<!-- End Staff Details Datatable -->
+
+
+
 				<!-- Data Table  for all users without contacts -->
 
 				<p:outputPanel id="table" autoUpdate="true"
 					rendered="#{userContactController.rendered}">
-					<p:dataTable value="#{userContactController.usersDetails}"
-						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-						var="cont" rowIndexVar="row" sortBy="#{cont.viewId}"
-						sortOrder="ASCENDING" rowKey="#{cont.viewId}">
+
+					<h:dataTable id="Table" binding="#{tab}"
+						style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:85% !important;
+       						 -webkit-box-shadow: none;
+       							 box-shadow: none !important;
+       								 margin: 20px 25px 0 !important;"
+						value="#{userContactController.usersDetails}" var="cont"
+						class="table table-striped table-hover table-bordered tableUpdated ">
 						<f:facet name="header">
-							<h4
-								style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-								#{msg['message.header.userNoContact.filter']}</h4>
+
+							<label
+								style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+								#{msg['message.header.userNoContact.filter']}</label>
 						</f:facet>
-						<p:column headerText="No" style="width:5%;">
 
-							<h:outputText value="#{row+1}" />
-						</p:column>
-						<p:column headerText="Firstname">
-
+						<h:column>
+							<f:facet name="header">
+								<label>No</label>
+							</f:facet>
+							<h:outputText value="#{tab.rowIndex + 1}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Firstname</label>
+							</f:facet>
 							<h:outputText value="#{cont.fname}" />
-						</p:column>
-						<p:column headerText="Lastname">
-
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Lastname</label>
+							</f:facet>
 							<h:outputText value="#{cont.lname}" />
-						</p:column>
-						<p:column headerText="Address">
-
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Address</label>
+							</f:facet>
 							<h:outputText value="#{cont.address}" />
-						</p:column>
+						</h:column>
 
-						<p:column headerText="Username">
-
+						<h:column>
+							<f:facet name="header">
+								<label>Username</label>
+							</f:facet>
 							<h:outputText value="#{cont.viewId}" />
-						</p:column>
-						<p:column headerText="Action">
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Action</label>
+							</f:facet>
 							<h:commandLink
-								style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-								class="btn btn-primary btn-sm btn-block glyphicon glyphicon-pencil"
+								style="color:white;font-family: Open Sans sans-serif !important; font-size: 14px !important;margin-left:5%;"
+								class="btn btn-primary glyphicon glyphicon-pencil"
 								value="#{msg['UserContactForm.addButton']}"
 								action="#{userContactController.editUserContact(cont)}">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
 							</h:commandLink>
-						</p:column>
+						</h:column>
 
-					</p:dataTable>
-					<!-- Back main dashboard -->
-					<br />
-					<h:commandLink
-						style="font-size: 12px !important; width: 25%; margin-left: 5%;"
-						class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left "
-						value="#{msg['UserRegForm.GoBackButton']}"
-						action="#{userContactController.showContactDashBoard()}">
+						<f:facet name="footer">
+							<h:commandLink
+								style="font-size: 12px !important;"
+								class="btn btn-primary glyphicon glyphicon-chevron-left "
+								value="#{msg['UserRegForm.GoBackButton']}"
+								action="#{userContactController.showContactDashBoard()}">
 
-					</h:commandLink>
-					<!-- End Back -->
+							</h:commandLink>
+						</f:facet>
+					</h:dataTable>				
 				</p:outputPanel>
 				<!-- End of Data Table -->
 				<!-- Data Table for all users having contacts -->
@@ -536,46 +554,71 @@
 				<!-- End Of Data Table -->
 				<!-- Data Table fo login users -->
 
-				<p:outputPanel id="lognTable" autoUpdate="true"
-					rendered="#{userContactController.renderLoginTable}">
-					<p:dataTable value="#{userContactController.countUsersList}"
-						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-						var="cont" rowIndexVar="row" sortBy="#{cont.viewId}"
-						sortOrder="ASCENDING" rowKey="#{cont.viewId}">
+				<p:outputPanel id="lognTable" autoUpdate="true" rendered="#{userContactController.renderLoginTable}">
+					
+					<h:dataTable id="loginTable" binding="#{tablogin}"
+						style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+       						 -webkit-box-shadow: none;
+       							 box-shadow: none !important;
+       								 margin: 20px 25px 0 !important;"
+						value="#{userContactController.countUsersList}" var="cont"
+						class="table table-striped table-hover table-bordered tableUpdated ">
 						<f:facet name="header">
-							<h4
-								style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-								#{msg['message.header.userlogin.login']}</h4>
+
+							<label
+								style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+								#{msg['message.header.staffLogin.filter']}</label>
 						</f:facet>
-						<p:column headerText="No" style="width:5%;">
 
-							<h:outputText value="#{row+1}" />
-						</p:column>
-						<p:column headerText="Username">
+						<h:column>
+							<f:facet name="header">
+								<label>No</label>
+							</f:facet>
+							<h:outputText value="#{tablogin.rowIndex + 1}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>StaffNames</label>
+							</f:facet>
+							<h:outputText value="#{cont.fname} &nbsp;#{cont.lname}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Status</label>
+							</f:facet>
+							<h:outputText value="#{cont.status}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Board</label>
+							</f:facet>
+							<h:outputText value="#{cont.board.boardName}" />
+						</h:column>
 
-							<h:outputText value="#{cont.viewId}" />
-						</p:column>
-						<p:column headerText="Genericstatus">
-
-							<h:outputText value="#{cont.genericStatus}" />
-						</p:column>
-						<p:column headerText="Loginstatus">
-
+						<h:column>
+							<f:facet name="header">
+								<label>Loginstatus</label>
+							</f:facet>
 							<h:outputText value="#{cont.loginStatus}" />
-						</p:column>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<label>Position</label>
+							</f:facet>
+							<h:outputText value="#{cont.userCategory.usercategoryName}" />
+						</h:column>
 
-					</p:dataTable>
-					<!-- Back main dashboard -->
-					<br />
-					<h:commandLink
-						style="font-size: 12px !important; width: 25%; margin-left: 5%;"
-						class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left "
-						value="#{msg['UserRegForm.GoBackButton']}"
-						action="#{userContactController.showContactDashBoard()}">
-
-					</h:commandLink>
-					<!-- End Back -->
-				</p:outputPanel>
+						<f:facet name="footer">
+							<h:commandLink
+								style="font-size: 14px !important; margin-left:3%;"
+								class="btn btn-primary glyphicon glyphicon-chevron-left "
+								value="#{msg['UserRegForm.GoBackButton']}"
+								action="#{userContactController.showContactDashBoard()}">
+							</h:commandLink>
+						</f:facet>
+					</h:dataTable>
+					</p:outputPanel>
+				
 				<!-- End of Data Table -->
 
 
@@ -650,41 +693,7 @@
 							</div>
 						</div>
 
-						<div class="form-group row"
-							style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-							<label for="todate"
-								class="col-md-2 col-sm-2 col-xs-2 control-label"
-								style="color: black">#{msg['label.message.contactDetails']}<span
-								style="color: red">*</span></label>
-							<div class="col-md-5 col-sm-5 col-xs-5">
-								<h:inputText
-									value="#{userContactController.contact.contactDetails}"
-									class="form-control" id="contDetails" required="true"
-									converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-									validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-									requiredMessage="#{msg['requiered.contactDetails.message']}">
-									<f:validateRegex
-										pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-									<f:validateLength maximum="100" />
-								</h:inputText>
-
-							</div>
-							<div class="col-md-2">
-								<span class="tooltips-input-main"><a
-									class="tooltips-input"> <h:panelGroup
-											id="tooltips-contactDetails" layout="block">
-											<img
-												src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-												style="width: 8%" alt="question" />
-										</h:panelGroup> <p:tooltip id="toolTipContent" for="tooltips-contactDetails"
-											position="bottom">
-											<span> #{msg['help.coantDetails.message']} </span>
-										</p:tooltip>
-								</a></span>
-
-							</div>
-							<h:message for="contDetails" styleClass="help-block"></h:message>
-						</div>
+						
 						<div class="form-group row"
 							style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 							<label for="todate"
@@ -719,6 +728,20 @@
 									<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
 									<f:validateLength maximum="25" />
 								</h:inputText>
+							</div>
+							<div class="col-md-2">
+								<span class="tooltips-input-main"><a
+									class="tooltips-input"> <h:panelGroup
+											id="tooltips-contactDetails" layout="block">
+											<img
+												src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+												style="width: 8%" alt="question" />
+										</h:panelGroup> <p:tooltip id="toolTipContent" for="tooltips-contactDetails"
+											position="bottom">
+											<span> #{msg['help.coantDetails.message']} </span>
+										</p:tooltip>
+								</a></span>
+
 							</div>
 							<h:message errorClass="errorMsg1" for="phone"></h:message>
 						</div>

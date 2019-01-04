@@ -97,42 +97,6 @@
 
 								</div>
 							</div>
-
-							<div class="form-group row"
-								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-2 control-label"
-									style="color: black">#{msg['label.message.contactDetails']}<span
-									style="color: red">*</span></label>
-								<div class="col-md-5 col-sm-5 col-xs-5">
-									<h:inputText
-										value="#{userContactController.contact.contactDetails}"
-										class="form-control" id="contDetails" required="true"
-										converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-										validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-										requiredMessage="#{msg['requiered.contactDetails.message']}">
-										<f:validateRegex
-											pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
-
-								</div>
-								<div class="col-md-2">
-									<span class="tooltips-input-main"><a
-										class="tooltips-input"> <h:panelGroup
-												id="tooltips-contactDetails" layout="block">
-												<img
-													src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-													style="width: 8%" alt="question" />
-											</h:panelGroup> <p:tooltip id="toolTipContent" for="tooltips-contactDetails"
-												position="bottom">
-												<span> #{msg['help.coantDetails.message']} </span>
-											</p:tooltip>
-									</a></span>
-
-								</div>
-								<h:message for="contDetails" styleClass="help-block"></h:message>
-							</div>
 							<div class="form-group row"
 								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 								<label for="todate"
@@ -167,6 +131,20 @@
 										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
 										<f:validateLength maximum="25" />
 									</h:inputText>
+								</div>
+								<div class="col-md-2">
+									<span class="tooltips-input-main"><a
+										class="tooltips-input"> <h:panelGroup
+												id="tooltips-contactDetails" layout="block">
+												<img
+													src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+													style="width: 8%" alt="question" />
+											</h:panelGroup> <p:tooltip id="toolTipContent" for="tooltips-contactDetails"
+												position="bottom">
+												<span> #{msg['help.coantDetails.message']} </span>
+											</p:tooltip>
+									</a></span>
+
 								</div>
 								<h:message errorClass="errorMsg1" for="phone"></h:message>
 							</div>

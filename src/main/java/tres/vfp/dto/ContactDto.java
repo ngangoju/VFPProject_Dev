@@ -18,6 +18,10 @@ public class ContactDto implements Serializable {
 
 	private Users user;
 	private boolean editable;
+	private String boardname;
+	private String categoryname;
+	private String staffNames;
+	private String viewId;
 
 	public boolean isEditable() {
 		return editable;
@@ -65,6 +69,38 @@ public class ContactDto implements Serializable {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getBoardname() {
+		return boardname;
+	}
+
+	public void setBoardname(String boardname) {
+		this.boardname = boardname;
+	}
+
+	public String getCategoryname() {
+		return categoryname;
+	}
+
+	public void setCategoryname(String categoryname) {
+		this.categoryname = categoryname;
+	}
+
+	public String getStaffNames() {
+		return staffNames;
+	}
+
+	public void setStaffNames(String staffNames) {
+		this.staffNames = staffNames;
+	}
+
+	public String getViewId() {
+		return viewId;
+	}
+
+	public void setViewId(String viewId) {
+		this.viewId = viewId;
 	}
 
 }
