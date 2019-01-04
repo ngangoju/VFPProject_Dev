@@ -38,7 +38,7 @@
 					<div class="panel-body">
 
 						<h:panelGroup layout="block"
-							rendered="#{not userAccountController.valid and not facesContext.validationFailed}">
+							rendered="#{not userContactController.valid and not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -53,7 +53,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup layout="block"
-							rendered="#{userAccountController.valid and  not facesContext.validationFailed}">
+							rendered="#{userContactController.valid and  not facesContext.validationFailed}">
 							<ul>
 								<ui:repeat value="#{facesContext.messageList}"
 									var="facesMessage">
@@ -62,155 +62,167 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
+						<p:outputPanel rendered="#{userContactController.renderDatePanel}"
+							autoUpdate="true">
+							<fieldset>
+								<legend
+									style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
+									#{msg['message.header.contactFilter.info']}</legend>
 
-						<fieldset>
-							<legend
-								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
-								#{msg['message.header.contactFilter.info']}</legend>
+								<div class="panel-body">
 
-							<div class="panel-body">
+									<div style="display: none">
+										<input id="lat" name="lat" type="text" /> <input id="long"
+											name="long" type="text" />
+									</div>
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">From<span style="color: red">*</span></label>
+										<div class="col-md-4 col-sm-3 col-xs-4">
+											<h:inputText locale="#{facesContext.viewRoot.locale}"
+												autocomplete="off" id="from" binding="#{from}"
+												class="form-control input-sm" escape="true"
+												value="#{userContactController.from}" maxlength="35"
+												converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+												<f:convertDateTime type="date" dateType="short"
+													pattern="dd/MM/yyyy" />
+												<f:validateLength maximum="35" />
+											</h:inputText>
+											<script>
+												$(function() {
+													$('input[id*="from"]')
+															.datepicker(
+																	{
+																		changeMonth : true,
+																		changeYear : true,
+																		maxDate : 0,
+																		//minDate: 0,
+																		dateFormat : "dd/mm/yy",
+																		yearRange : "-100:+0",
+																		buttonImage : "/resources/image/calendar1.png"
+																	});
+												});
+											</script>
+										</div>
+										<div class="col-md-2">
+											<span class="tooltips-input-main"><a
+												class="tooltips-input"> <h:panelGroup
+														id="tooltips-contactDetails" layout="block">
+														<img
+															src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+															style="width: 15%" alt="question" />
+													</h:panelGroup> <p:tooltip id="toolTipContent"
+														for="tooltips-contactDetails" position="bottom">
+														<span> #{msg['help.contactFilter.message']} </span>
+													</p:tooltip>
+											</a></span>
 
-								<div style="display: none">
-									<input id="lat" name="lat" type="text" /> <input id="long"
-										name="long" type="text" />
+										</div>
+										<h:message for="from" styleClass="help-block"></h:message>
+									</div>
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-2 col-sm-2 col-xs-2 control-label"
+											style="color: black">To<span style="color: red">*</span></label>
+										<div class="col-md-4 col-sm-3 col-xs-4">
+											<h:inputText locale="#{facesContext.viewRoot.locale}"
+												autocomplete="off" id="to" binding="#{to}"
+												class="form-control input-sm" escape="true"
+												value="#{userContactController.to}" maxlength="35"
+												converterMessage="#{msg['validation.message.DATE_FORMAT']}">
+												<f:convertDateTime type="date" dateType="short"
+													pattern="dd/MM/yyyy" />
+												<f:validateLength maximum="35" />
+											</h:inputText>
+
+										</div>
+										<h:message for="to" styleClass="help-block"></h:message>
+									</div>
+									<script>
+										$(function() {
+											$('input[id*="to"]')
+													.datepicker(
+															{
+																changeMonth : true,
+																changeYear : true,
+																maxDate : 0,
+																//minDate:$msg,
+																dateFormat : "dd/mm/yy",
+																yearRange : "-100:+0",
+																buttonImage : "/resources/image/calendar1.png"
+															});
+										});
+									</script>
 								</div>
 								<div class="form-group row">
 									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">From<span style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-3 col-xs-4">
-										<h:inputText locale="#{facesContext.viewRoot.locale}"
-											autocomplete="off" id="from" binding="#{from}"
-											class="form-control input-sm" escape="true"
-											value="#{userContactController.from}" maxlength="35"
-											required="true"
-											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-											requiredMessage="#{msg['strartdate_institution.message']}">
-											<f:convertDateTime type="date" dateType="short"
-												pattern="dd/MM/yyyy" />
-											<f:validateLength maximum="35" />
-										</h:inputText>
-										<script>
-											$(function() {
-												$('input[id*="from"]')
-														.datepicker(
-																{
-																	changeMonth : true,
-																	changeYear : true,
-																	maxDate : 0,
-																	//minDate: 0,
-																	dateFormat : "dd/mm/yy",
-																	yearRange : "-100:+0",
-																	buttonImage : "/resources/image/calendar1.png"
-																});
-											});
-										</script>
-									</div>
-									<div class="col-md-2">
-										<span class="tooltips-input-main"><a
-											class="tooltips-input"> <h:panelGroup
-													id="tooltips-contactDetails" layout="block">
-													<img
-														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
-														style="width: 15%" alt="question" />
-												</h:panelGroup> <p:tooltip id="toolTipContent"
-													for="tooltips-contactDetails" position="bottom">
-													<span> #{msg['help.contactFilter.message']} </span>
-												</p:tooltip>
-										</a></span>
+										class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
+									<div class="col-sm-4">
+										<h:commandButton class="btn btn-info btn-sm btn-block"
+											value="Submit"
+											action="#{userContactController.showContactFiltered()}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+
+										</h:commandButton>
 
 									</div>
-									<h:message for="from" styleClass="help-block"></h:message>
+									<span class="text-danger" id="customeordererror"></span>
 								</div>
-								<div class="form-group row">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">To<span style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-3 col-xs-4">
-										<h:inputText locale="#{facesContext.viewRoot.locale}"
-											autocomplete="off" id="to" binding="#{to}"
-											class="form-control input-sm" escape="true"
-											value="#{userContactController.to}" maxlength="35"
-											required="true"
-											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
-											requiredMessage="#{msg['enddate_institution.message']}">
-											<f:convertDateTime type="date" dateType="short"
-												pattern="dd/MM/yyyy" />
-											<f:validateLength maximum="35" />
-										</h:inputText>
+							</fieldset>
+						</p:outputPanel>
 
-									</div>
-									<h:message for="to" styleClass="help-block"></h:message>
-								</div>
-								<script>
-									$(function() {
-										$('input[id*="to"]')
-												.datepicker(
-														{
-															changeMonth : true,
-															changeYear : true,
-															maxDate : 0,
-															//minDate:$msg,
-															dateFormat : "dd/mm/yy",
-															yearRange : "-100:+0",
-															buttonImage : "/resources/image/calendar1.png"
-														});
-									});
-								</script>
-							</div>
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
-								<div class="col-sm-4">
-									<h:commandButton class="btn btn-info btn-sm btn-block"
-										value="Submit"
-										action="#{userContactController.showContactFiltered()}">
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 
-									</h:commandButton>
+						
+							<h:dataTable id="userTable" binding="#{tabl}"
+								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+       						 -webkit-box-shadow: none;
+       							 box-shadow: none !important;
+       								 margin: 20px 25px 0 !important;"
+								value="#{userContactController.contactDtoDetails}" var="cont"
+								class="table table-striped table-hover table-bordered tableUpdated ">
+								<f:facet name="header">
 
-								</div>
-								<span class="text-danger" id="customeordererror"></span>
-							</div>
-							<p:outputPanel id="toTable" autoUpdate="true"
-								rendered="#{userContactController.renderTable}">
-								<p:dataTable value="#{userContactController.contactDtoDetails}"
-									stclass="display" cellspacing="0"
-									style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-									var="cont" rowIndexVar="row" sortBy="#{cont.contactDetails}"
-									sortOrder="ASCENDING" rowKey="#{cont.contactDetails}">
+									<label
+										style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+										#{msg['message.header.completeUserContact.filter']}</label>
+								</f:facet>
+
+								<h:column>
 									<f:facet name="header">
-										<h4
-											style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-											#{msg['message.header.completeUserContact.filter']}</h4>
+										<label>No</label>
 									</f:facet>
-									<p:column headerText="No" style="width:5%;">
+									<h:outputText value="#{tabl.rowIndex + 1}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>StaffNames</label>
+									</f:facet>
+									<h:outputText value="#{cont.staffNames}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Email</label>
+									</f:facet>
+									<h:inputText value="#{cont.email}" size="15"
+										rendered="#{cont.editable}" id="email" required="true"
+										validatorMessage="#{msg['error.enter.invalid.email']}"
+										converterMessage="#{msg['error.enter.invalid.email']}"
+										requiredMessage="#{msg['error.enter.required.email']}">
+										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+									<h:message errorClass="errorMsg1" for="email"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
 
-										<h:outputText value="#{row+1}" />
-									</p:column>
-									<p:column headerText="Username">
-
-										<h:outputText value="#{cont.user.viewId}" />
-									</p:column>
-									<p:column headerText="Email">
-
-										<h:inputText value="#{cont.email}" size="15"
-											rendered="#{cont.editable}" id="email" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-										<h:message errorClass="errorMsg1" for="email"
-											style="font-size:12px;font-family:Time New Roman;"></h:message>
-
-										<h:outputText value="#{cont.email}"
-											rendered="#{not cont.editable}" />
-									</p:column>
-									<p:column headerText="Phone">
-
-										<h:inputText value="#{cont.phone}" size="15" id="phone"
+									<h:outputText value="#{cont.email}"
+										rendered="#{not cont.editable}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Phone</label>
+									</f:facet>
+									<h:inputText value="#{cont.phone}" size="15" id="phone"
 											rendered="#{cont.editable}" required="true"
 											converterMessage="#{msg['error.enter.invalid.phone']}"
 											requiredMessage="#{msg['requiered.phone.message']}"
@@ -222,27 +234,13 @@
 											style="font-size:12px;font-family:Time New Roman;"></h:message>
 										<h:outputText value="#{cont.phone}"
 											rendered="#{not cont.editable}" />
-									</p:column>
-									<p:column headerText="Contact Details">
+								</h:column>
 
-										<h:inputText value="#{cont.contactDetails}" size="15"
-											id="contDetails" rendered="#{cont.editable}" required="true"
-											converterMessage="#{msg['error.enter.invalid.conatactDetails']}"
-											validatorMessage="#{msg['error.enter.invalid.conatactDetails']}"
-											requiredMessage="#{msg['requiered.contactDetails.message']}">
-											<f:validateRegex
-												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-										<h:message errorClass="errorMsg1" for="contDetails"
-											style="font-size:12px;font-family:Time New Roman;"></h:message>
-										<h:outputText value="#{cont.contactDetails}"
-											rendered="#{not cont.editable}" />
-									</p:column>
-
-
-									<p:column headerText="Action">
-										<div class="btn-group" role="group" aria-label="Basic example">
+								<h:column>
+									<f:facet name="header">
+										<label>Action</label>
+									</f:facet>
+									<div class="btn-group" role="group" aria-label="Basic example">
 											<h:commandLink style="color:white" data-toggle="tooltip"
 												data-placement="left" title="Edit"
 												class="btn btn-success 	glyphicon glyphicon-edit"
@@ -279,11 +277,23 @@
 
 
 										</div>
-									</p:column>
+								</h:column>
 
-								</p:dataTable>
-							</p:outputPanel>
-						</fieldset>
+								<f:facet name="footer">
+									<label>Choose records per page:</label>
+									<h:selectOneMenu value="#{userContactController.range}"
+										style="width:25%;">
+										<f:selectItem itemLabel="5 Records" itemValue="5" />
+										<f:selectItem itemLabel="10 Records" itemValue="10" />
+										<f:selectItem itemLabel="15 Records" itemValue="15" />
+										<f:selectItem itemLabel="Date registered" itemValue="Date" />
+										<f:ajax render="@form" execute="@form" onevent="showProgress"
+											listener="#{userContactController.showUsersEditedContact()}" />
+									</h:selectOneMenu>
+									
+								</f:facet>
+							</h:dataTable>
+						
 
 					</div>
 				</div>

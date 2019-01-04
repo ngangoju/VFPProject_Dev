@@ -150,6 +150,20 @@ public class Login implements Serializable, DbConstant {
 
 		String url = request.getContextPath() + "/home.xhtml";
 		try {
+			
+			Users user= new Users();
+			user=(Users)session.getAttribute("userSession");
+			LoginHistoric his = new LoginHistoric();
+
+			his.setHistoricId(0);
+			his.setIpAddress(historic.getMachineIp());
+			his.setLogOutTime(new Date());
+			his.setCreatedBy(user.getFname() + " " + user.getLname());
+			his.setUpDtTime(timestamp);
+			his.setUsers(user);
+			historic.saveLoginHistoric(his);
+			user.setLoginStatus(OFFLINE);
+			usersImpl.UpdateUsers(user);
 			FacesContext.getCurrentInstance().getExternalContext().redirect(url);
 		} catch (IOException e) {
 

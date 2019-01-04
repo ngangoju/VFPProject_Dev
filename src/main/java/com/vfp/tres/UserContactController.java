@@ -75,7 +75,10 @@ public class UserContactController implements Serializable, DbConstant {
 	private int days;
 	private int staffSize;
 	private String boardName;
+	private String range;
 	private String selection;
+	private List<Contact> contactDetail = new ArrayList<Contact>();
+	private List<ContactDto> contactDtosInfo = new ArrayList<ContactDto>();
 	/*
 	 * private String viewId; private String fname; private String lname;
 	 */
@@ -135,8 +138,8 @@ public class UserContactController implements Serializable, DbConstant {
 			// End of the registers users
 
 			// count total number of user and showing users able to login
-			countUsersList = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status" },
-					new Object[] { ACTIVE, ACTIVE }, "Users", "userId desc");
+			countUsersList = usersImpl.getGenericListWithHQLParameter(new String[] { "loginStatus", "genericStatus" },
+					new Object[] { ONLINE, ACTIVE }, "Users", "userId desc");
 
 			userLoginSize = showAllLoginUsersSize(countUsersList);
 
@@ -145,6 +148,9 @@ public class UserContactController implements Serializable, DbConstant {
 			// Number of staff in a specific board
 			staffSize = supervisorStaff();
 
+			contactDetail = contactImpl.getListWithHQL("from Contact", 0, endrecord);
+			contactDtosInfo = showUserDetails(contactDetail);
+			contactDtoDetails=showUserDetails(contactDetail);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -154,6 +160,33 @@ public class UserContactController implements Serializable, DbConstant {
 
 	}
 
+	public void showUsersContact() throws Exception {
+
+		if (range.equals("5") || (range.equals("10")) || (range.equals("15"))) {
+			int endRecords = Integer.parseInt(range);
+			contactDetail = contactImpl.getListWithHQL("from Contact", 0, endRecords);
+			contactDtosInfo = showUserDetails(contactDetail);
+			this.renderDatePanel = false;
+
+		} else {
+			this.renderDatePanel = true;
+
+		}
+	}
+
+	public void showUsersEditedContact() throws Exception {
+		
+		if (range.equals("5") || (range.equals("10")) || (range.equals("15"))) {
+			int endRecords = Integer.parseInt(range);
+			contactDetail = contactImpl.getListWithHQL("from Contact", 0, endRecords);
+			contactDtoDetails=showUserDetails(contactDetail);
+			this.renderDatePanel = false;
+
+		} else {
+			this.renderDatePanel = true;
+
+		}
+	}
 	public int supervisorStaff() {
 		UserCategory cat = new UserCategory();
 		cat = usersSession.getUserCategory();
@@ -171,6 +204,7 @@ public class UserContactController implements Serializable, DbConstant {
 	@SuppressWarnings({ "static-access", "unchecked" })
 	public void showContactFiltered() {
 		try {
+			if(null!=to && null!=from) {
 			if (to.after(from)) {
 				Formating fmt = new Formating();
 				LOGGER.info("Start Date found:-----------:" + fmt.getMysqlFormatV2(from) + "End Date:::::::::"
@@ -189,6 +223,10 @@ public class UserContactController implements Serializable, DbConstant {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
+			}else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDate"));
+			}
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -196,6 +234,34 @@ public class UserContactController implements Serializable, DbConstant {
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public List<ContactDto> showUserDetails(List<Contact> contactList) {
+
+		try {
+			contactDtosInfo = new ArrayList<ContactDto>();
+			for (Contact contact : contactList) {
+				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + contact.getUser().getUserId()
+						+ ":: " + contact.getUser().getBoard().getBoardName() + "::::::::::::"
+						+ contact.getUser().getUserCategory().getUsercategoryName());
+				ContactDto contactDto = new ContactDto();
+				contactDto.setContactId(contact.getContactId());
+				contactDto.setViewId(contact.getUser().getViewId());
+				contactDto.setPhone(contact.getPhone());
+				contactDto.setEmail(contact.getEmail());
+				contactDto.setStaffNames(contact.getUser().getFname() + " " + contact.getUser().getLname());
+				contactDto.setBoardname(contact.getUser().getBoard().getBoardName());
+				contactDto.setCategoryname(contact.getUser().getUserCategory().getUsercategoryName());
+				contactDto.setUser(contact.getUser());
+				contactDtosInfo.add(contactDto);
+			}
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+		return (contactDtosInfo);
 	}
 
 	@SuppressWarnings({ "static-access" })
@@ -215,7 +281,8 @@ public class UserContactController implements Serializable, DbConstant {
 				contDto.setEmail(data[2] + "");
 				contDto.setPhone(data[3] + "");
 				contDto.setContactId(Integer.parseInt(data[0] + ""));
-				contDto.setUser((Users) data[4]);
+				contDto.setStaffNames(data[4]+"");
+				contDto.setUser((Users)data[4]);
 				contactDtoDetails.add(contDto);
 			}
 		} catch (ParseException e) {
@@ -404,61 +471,57 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 
 	@SuppressWarnings("static-access")
-	public void displayUsersByDateBetween() {
-		try {
-			if (to.after(from)) {
+	public void displayUsersDetailsByDateBetween() {
 
-				Formating fmt = new Formating();
+		Formating fmt = new Formating();
+		contactDtosInfo = new ArrayList<ContactDto>();
+
+		try {
+			if(null!=to && null!=from) {
+			if (to.after(from)) {
 				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
 						+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
 				days = fmt.daysBetween(from, to);
 
 				LOGGER.info("Days founded:......................" + days);
 				if (days <= 30) {
-					renderDataTable = true;
-					userDtosDetails = new ArrayList<UserDto>();
-					for (Object[] data : usersImpl.reportList(
-							"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,co.email,co.phone,ins.institutionName,us.genericStatus,us.board from Users us,Contact co,Institution ins,Board b where b.institution=ins.institutionId and b.boardId=us.board and co.user=us.userId and us.createdDate between '"
-									+ fmt.getMysqlFormatV2(from) + "' and  '" + fmt.getMysqlFormatV2(to) + "'")) {
-						LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: "
-								+ data[1] + "");
-						UserDto userDtos = new UserDto();
-						userDtos.setEditable(false);
-						userDtos.setUserId(Integer.parseInt(data[5] + ""));
-						userDtos.setFname(data[0] + "");
-						userDtos.setLname(data[1] + "");
-						userDtos.setViewId(data[2] + "");
-						userDtos.setUserCategory((UserCategory) data[3]);
-						userDtos.setStatus(data[4] + "");
-						userDtos.setEmail(data[6] + "");
-						userDtos.setPhone(data[7] + "");
-						userDtos.setInstitution(data[8] + "");
-						userDtos.setGenericStatus(data[9] + "");
-						userDtos.setBoard((Board) data[10]);
-						if (data[4].equals(ACTIVE)) {
-							userDtos.setAction(DESACTIVE);
-						} else {
-							userDtos.setAction(ACTIVE);
-						}
-						userDtosDetails.add(userDtos);
+
+					for (Object[] data : contactImpl.reportList(
+							"select co.contactId,bo.boardName,co.email,co.phone,us.fname,us.lname,cat.usercategoryName from Users us,Contact co,Board bo,UserCategory cat where co.user=us.userId and us.board=bo.boardId and us.userCategory=cat.userCatid and co.crtdDtTime between '"
+									+ fmt.getMysqlFormatV2(from) + "' and  '" + Formating.getMysqlFormatV2(to) + "'")) {
+
+						ContactDto contDto = new ContactDto();
+						contDto.setEditable(false);
+						contDto.setBoardname(data[1] + "");
+						contDto.setEmail(data[2] + "");
+						contDto.setPhone(data[3] + "");
+						contDto.setContactId(Integer.parseInt(data[0] + ""));
+						contDto.setStaffNames(data[4] + "  " + data[5] + " ");
+						contDto.setCategoryname(data[6] + " ");
+						contactDtosInfo.add(contDto);
 					}
 
-				} else {
+				}else {
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 				}
-
-			} else {
+			}else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 			}
+			}else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDate"));	
+			}
 
-		} catch (Exception e) {
+		} catch (ParseException e) {
+			JSFMessagers.resetMessages();
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-			LOGGER.info(e.getMessage());
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorfilter"));
+			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 		}
+
 	}
 
 	public void showLoginUsers() {
@@ -552,7 +615,7 @@ public class UserContactController implements Serializable, DbConstant {
 				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), useremail);
 				// ::: end sending email action:::::::::::://
 				if (verifyemail) {
-					LOGGER.info("returing values controller"+verifyemail);
+					LOGGER.info("returing values controller" + verifyemail);
 					contact.setEmail(useremail);
 					contact.setUpdatedBy(usersSession.getViewId());
 					// :::saving contact action:::::::::::://
@@ -1205,6 +1268,30 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void setRenderDataTable(boolean renderDataTable) {
 		this.renderDataTable = renderDataTable;
+	}
+
+	public List<Contact> getContactDetail() {
+		return contactDetail;
+	}
+
+	public void setContactDetail(List<Contact> contactDetail) {
+		this.contactDetail = contactDetail;
+	}
+
+	public List<ContactDto> getContactDtosInfo() {
+		return contactDtosInfo;
+	}
+
+	public void setContactDtosInfo(List<ContactDto> contactDtosInfo) {
+		this.contactDtosInfo = contactDtosInfo;
+	}
+
+	public String getRange() {
+		return range;
+	}
+
+	public void setRange(String range) {
+		this.range = range;
 	}
 
 }
