@@ -691,14 +691,6 @@ public class FormSampleController implements Serializable, DbConstant {
 	public void setPlan(StrategicPlan plan) {
 		this.plan = plan;
 	}
-	public StrategicPlan getPlan() {
-		return plan;
-	}
-
-	public void setPlan(StrategicPlan plan) {
-		this.plan = plan;
-	}
-
 	public List<UploadingFiles> getFilesUploaded() {
 		return filesUploaded;
 	}
