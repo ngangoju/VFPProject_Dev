@@ -43,6 +43,7 @@
 								<h:inputText class="name" style="display:none;"
 									value="#{statController.name}"></h:inputText>
 							</div>
+							
 						</div>
 						<div class="form-group">
 
@@ -51,6 +52,7 @@
 									action="#{statController.create()}" value="save"></h:commandButton>
 							</div>
 						</div>
+						<!-- This is another form -->
 					</h:form>
 					<b:dataTable value="#{statController.elementsList}" var="item">
 						<h:column>
