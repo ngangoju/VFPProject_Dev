@@ -65,20 +65,13 @@
 										<label>Names</label>
 									</f:facet>
 									<h:outputText value="#{act.fname} #{act.lname}" />
-								</h:column>
+								</h:column> 
 								<h:column>
 									<f:facet name="header">
-										<label>Email</label>
+										<label>Board</label>
 									</f:facet>
 									<h:outputText
-										value="#{evaluationController.getContactEmail(act)}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<label>Phone</label>
-									</f:facet>
-									<h:outputText
-										value="#{evaluationController.getContactEmail(act)}" />
+										value="#{act.board.boardName}" />
 								</h:column>
 								<h:column>
 									<f:facet name="header">
