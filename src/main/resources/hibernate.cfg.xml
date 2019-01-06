@@ -42,6 +42,7 @@
 		<mapping class="tres.domain.TaskComment" />
 		<mapping class="tres.domain.UploadingTask" />
 		<mapping class="tres.domain.Statistics" />
+		<mapping class="tres.domain.StatGraph" />
 	</session-factory>
 </hibernate-configuration>
 

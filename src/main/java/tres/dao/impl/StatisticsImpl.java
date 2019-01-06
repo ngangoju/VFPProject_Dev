@@ -18,6 +18,26 @@ public class StatisticsImpl extends AbstractDao<Long,Statistics> implements ISta
 		 return (List<Statistics>) (Object) getModelList();
 	}
 
+	public Statistics saveStatistics(Statistics statistics) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Statistics> getListStatistics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Statistics getStatisticsById(int id, String primaryKeyclomunName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Statistics UpdateStatistics(Statistics statistics) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }
