@@ -33,6 +33,7 @@ import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
+import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UploadingFilesImpl;
 import tres.dao.impl.UploadingStrategicPlanImpl;
@@ -71,12 +72,14 @@ public class FormSampleController implements Serializable, DbConstant {
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
 	DocumentsImpl documentsImpl = new DocumentsImpl();
 	UploadingFilesImpl uploadingFilesImpl = new UploadingFilesImpl();
+	StrategicPlanImpl planImpl = new StrategicPlanImpl();
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	private Documents documents;
 	private UploadingFiles uploadingFiles;
 	private UploadingStrategicPlan uploadingPlan;
 	private StrategicPlanDto planDto;
+	private StrategicPlan plan;
 	private Users usersSession;
 	private UploadingStrategicPlanImpl uploadingStrImpl = new UploadingStrategicPlanImpl();
 	private List<UploadingStrategicPlan> planList = new ArrayList<UploadingStrategicPlan>();
@@ -110,8 +113,7 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		if (planDto == null) {
 			planDto = new StrategicPlanDto();
-		}
-		
+		}		
 		if(actDto==null) {
 			actDto=new ActivityDto();
 		}
@@ -394,8 +396,8 @@ public class FormSampleController implements Serializable, DbConstant {
 	public List<UploadingStrategicPlan> stratPlanFileList() {
 
 		try {
-			return uploadingStrImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "UploadingStrategicPlan", " upLoadPlanId asc");
+			return uploadingStrImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "strategicPlan" },
+					new Object[] { ACTIVE, planImpl.getModelWithMyHQL(new String[] {"genericStatus"}, new Object[] {ACTIVE}, "from StrategicPlan") }, "UploadingStrategicPlan", " upLoadPlanId asc");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -674,10 +676,33 @@ public class FormSampleController implements Serializable, DbConstant {
 		this.actImpl = actImpl;
 	}
 
+	public StrategicPlanImpl getPlanImpl() {
+		return planImpl;
+	}	
+
+	public void setPlanImpl(StrategicPlanImpl planImpl) {
+		this.planImpl = planImpl;
+	}
+
+	public StrategicPlan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(StrategicPlan plan) {
+		this.plan = plan;
+	}
+	public StrategicPlan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(StrategicPlan plan) {
+		this.plan = plan;
+	}
+
 	public List<UploadingFiles> getFilesUploaded() {
 		return filesUploaded;
 	}
-
+	
 	public void setFilesUploaded(List<UploadingFiles> filesUploaded) {
 		this.filesUploaded = filesUploaded;
 	}
