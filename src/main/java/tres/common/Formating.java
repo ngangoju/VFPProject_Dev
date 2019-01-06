@@ -97,7 +97,7 @@ public class Formating {
 	}
 
 	public static String getMysqlFormatV2(Date inputDate) throws ParseException {
-		return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(inputDate);
+		return new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(inputDate);
 	}
 
 	public static Date getFormtTimeReturnMysqlFormat(String inputTime) throws ParseException {
@@ -113,7 +113,9 @@ public class Formating {
 		return (Date) (sdf2.parse(sdf2.format(d2)));
 
 	}
-
+	public static String getMysqlFormatV3(Date inputDate) throws ParseException {
+		return new java.text.SimpleDateFormat("yyyy-MM-dd").format(inputDate);
+	}
 	public static void main(String... aa) {
 
 	}
