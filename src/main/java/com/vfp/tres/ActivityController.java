@@ -528,6 +528,11 @@ public class ActivityController implements Serializable, DbConstant {
 					this.rejectRender = false;
 					this.completeRender = false;
 					this.commentRender = true;
+				} else if (selectedStatus.equals(NOTSTARTED)) {
+					this.approveRender = false;
+					this.rejectRender = false;
+					this.completeRender = false;
+					this.commentRender = true;
 				}
 				activityDetail = activityImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "status", "user" },

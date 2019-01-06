@@ -338,7 +338,7 @@
 									data-placement="left" title="#{msg['activity.confirmButton']}"
 									class="btn btn-warning 	glyphicon glyphicon-check"
 									action="#{activityController.completeAction(info)}"
-									rendered="#{ activityController.completeRender}">
+									rendered="#{ activityController.completeRender}" disabled="true">
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
 
