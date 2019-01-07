@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-sacale=1" />
  
 		<h:outputStylesheet name="cssTheme.css" library="css" />
+	<h:outputStylesheet name="jquery.dataTables.min.css" library="css" />
 	<h:outputStylesheet name="fontMin.css" library="css" />
 	<h:outputStylesheet name="google.css" library="css" />
 	<h:outputStylesheet name="w3.css" library="css" />
@@ -18,6 +19,8 @@
     <h:outputStylesheet name="bootstrap-glyphicons.css" library="css"/>
   
 	<h:outputScript library="js" name="bootstrap.min.js" />
+	<h:outputScript library="js" name="jquery-3.3.1.js" />
+	<h:outputScript library="js" name="jquery.dataTables.min.js" />
 	<!-- For date Picker -->
 	<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" />
 	 <h:outputStylesheet name="jquery-ui.css" library="css" />
@@ -114,7 +117,17 @@ background:url("#{loadUserInformationsController.getContextPath()}/resources/ima
 		</footer>
 </div>
 
+<!-- Used for datatable start -->
 
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "pagingType": "full_numbers"
+    } );
+} );
+</script>
+
+<!-- Used for datatable end -->
 
 <script type="text/javascript">
     $(document).ready(function(){

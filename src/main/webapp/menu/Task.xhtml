@@ -140,8 +140,11 @@
 					</div>
 					<p:dataTable value="#{taskController.taskDtoDetails}"
 						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-						var="act" rowIndexVar="row" sortBy="#{act.taskId}"
-						sortOrder="ASCENDING" rowKey="#{act.taskId}">
+						var="act" rowIndexVar="row" sortBy="#{act.taskId}" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" sortOrder="ASCENDING"
+						rowKey="#{act.taskId}">
 						<p:column headerText="#{msg['form.task.name']}"
 							sortBy="#{act.taskName}">
 
@@ -291,7 +294,10 @@
 					<p:dataTable value="#{taskController.taskAssignDetails}"
 						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 						var="act" rowIndexVar="row" sortBy="#{act.taskAssignmentId}"
-						sortOrder="ASCENDING" rowKey="#{act.taskAssignmentId}">
+						rows="10" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" sortOrder="ASCENDING"
+						rowKey="#{act.taskAssignmentId}">
 						<p:column headerText="#{msg['form.task.name']}"
 							sortBy="#{act.taskName}">
 

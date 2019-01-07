@@ -58,6 +58,8 @@ public class TaskController implements Serializable, DbConstant {
 	private boolean renderTable;
 	private boolean rendered = true;
 	private boolean renderTaskForm;
+	private boolean approveRender;
+	private boolean rejectRender;
 	private String btn;
 
 	/* class injection */
@@ -90,6 +92,9 @@ public class TaskController implements Serializable, DbConstant {
 		}
 
 		try {
+//			if() {
+//				
+//			}
 			userDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "userCategory", "board" },
 					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() }, "Users", "userId asc");
 			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
@@ -208,6 +213,8 @@ public class TaskController implements Serializable, DbConstant {
 			taskImpl.UpdateTask(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
+			this.approveRender=false;
+			this.rejectRender=true;
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
@@ -229,6 +236,8 @@ public class TaskController implements Serializable, DbConstant {
 			taskImpl.UpdateTask(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
+			this.approveRender=true;
+			this.rejectRender=false;
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.reject.form"));
@@ -535,6 +544,30 @@ public class TaskController implements Serializable, DbConstant {
 
 	public void setBtn(String btn) {
 		this.btn = btn;
+	}
+
+	public boolean isApproveRender() {
+		return approveRender;
+	}
+
+	public void setApproveRender(boolean approveRender) {
+		this.approveRender = approveRender;
+	}
+
+	public boolean isRejectRender() {
+		return rejectRender;
+	}
+
+	public void setRejectRender(boolean rejectRender) {
+		this.rejectRender = rejectRender;
+	}
+
+	public UserCategoryImpl getCategoryImpl() {
+		return categoryImpl;
+	}
+
+	public void setCategoryImpl(UserCategoryImpl categoryImpl) {
+		this.categoryImpl = categoryImpl;
 	}
 
 }

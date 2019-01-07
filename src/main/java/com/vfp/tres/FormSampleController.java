@@ -678,7 +678,7 @@ public class FormSampleController implements Serializable, DbConstant {
 
 	public StrategicPlanImpl getPlanImpl() {
 		return planImpl;
-	}	
+	}
 
 	public void setPlanImpl(StrategicPlanImpl planImpl) {
 		this.planImpl = planImpl;
