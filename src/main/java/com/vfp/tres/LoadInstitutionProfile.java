@@ -83,6 +83,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private Country country;
 	private String instName, instaddress;
 	private int rid;
+	private int nmbr[]= {0,1,2,3,4,5,6,7,8,9};
 
 	private Documents documents;
 	private InstitutionDto dto = new InstitutionDto();
@@ -186,7 +187,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					institution = institutionImpl.getModelWithMyHQL(new String[] { "request", "institutionType" },
 							new Object[] { request, "HeadQuoter" }, "from Institution");
 					if (institution != null) {
-						chngDiv = true; 
+						chngDiv = true;
 						try {
 							contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
 									new Object[] { institution }, "from InstitutionContact");
@@ -331,7 +332,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			logoPic.setInstitution(institution);
 			logoPic.setInstitutionRegDate(timestamp);
 			logoPic.setGenericStatus(ACTIVE);
-			logoImpl.saveInstitutionLogo(logoPic); 
+			logoImpl.saveInstitutionLogo(logoPic);
 			profileEditable = false;
 			frstDiv = false;
 			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
@@ -403,13 +404,12 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	/* saving branch starts */
 	public String saveBranchRequest() {
 		try {
-			institution = institutionImpl
-					.getModelWithMyHQL(new String[] { "institutionType", "request" },
-							new Object[] { "HeadOffice", requestImpl.getModelWithMyHQL(
-									new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
-									new Object[] { usersSession, "HeadQuoter", ACTIVE },
-									"from InstitutionRegistrationRequest") },
-							"from Institution");
+			InstitutionRegistrationRequest req = new InstitutionRegistrationRequest();
+			req = requestImpl.getModelWithMyHQL(
+					new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
+					new Object[] { usersSession, "HeadQuoter", ACTIVE }, "from InstitutionRegistrationRequest");
+			institution = institutionImpl.getModelWithMyHQL(new String[] { "genericStatus", "request" },
+					new Object[] { ACTIVE, req }, "from Institution");
 			request = new InstitutionRegistrationRequest();
 			request.setInstitutionName(instName);
 			request.setInstitutionAddress(instaddress);
@@ -429,8 +429,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
-			LOGGER.info(CLASSNAME + ":::Institution request not sent");
-			backToprofile();
+			LOGGER.info(CLASSNAME + ":::Institution request   sent"); 
 			return "";
 		} catch (Exception e) {
 			frstDiv = false;
@@ -1445,5 +1444,14 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void setSkip(boolean skip) {
 		this.skip = skip;
 	}
+
+	public int[] getNmbr() {
+		return nmbr;
+	}
+
+	public void setNmbr(int[] nmbr) {
+		this.nmbr = nmbr;
+	}
+	
 
 }

@@ -37,189 +37,188 @@
 						</div>
 					</div>
 				</p:outputPanel>
-				<p:outputPanel rendered="#{loadInstitutionProfile.chngDiv}">
-					<!-- div which is displayed when there is no institution yet registred ends-->
-					<!-- default div  -->
-					<p:outputPanel rendered="#{not loadInstitutionProfile.frstDiv}"
-						id="profle">
-						<div class="panel panel-info">
-							<div class="col-md-12 col-sm-12 col-xs-12">
-								<h:panelGroup layout="block"
-									rendered="#{loadInstitutionProfile.valid and not facesContext.validationFailed}">
-									<ul>
-										<ui:repeat value="#{facesContext.messageList}"
-											var="facesMessage">
-											<li
-												style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-												class="alert"><center>
-													<h:outputText value="#{facesMessage.summary}"
-														escape="false" />
-												</center></li>
-										</ui:repeat>
-									</ul>
-								</h:panelGroup>
-								<h:panelGroup layout="block"
-									rendered="#{not loadInstitutionProfile.valid and not facesContext.validationFailed}">
-									<ul>
-										<ui:repeat value="#{facesContext.messageList}"
-											var="facesMessage">
-											<li class="alert"
-												style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%"><center>
-													<h:outputText value="#{facesMessage.summary}"
-														escape="false" />
-												</center></li>
-										</ui:repeat>
-									</ul>
-								</h:panelGroup>
-							</div>
 
-							<div class="panel-heading">
-								<h5 class="glyphicon glyphicon-th-list" style="color: white">Institution
-									Profile</h5>
-							</div>
-							<div class="panel-body">
+				<!-- div which is displayed when there is no institution yet registred ends-->
+				<!-- default div  -->
+				<p:outputPanel rendered="#{not loadInstitutionProfile.frstDiv}"
+					id="profle">
+					<div class="panel panel-info">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<h:panelGroup layout="block"
+								rendered="#{loadInstitutionProfile.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li
+											style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+											class="alert"><center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								rendered="#{not loadInstitutionProfile.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li class="alert"
+											style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%"><center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+						</div>
 
-								<p:outputPanel>
-									<div class="w3-container  panel-body">
-										<div class="row w3-card w3-round w3-white">
-											<div class="w3-container">
-												<div class="row w3-card">
+						<div class="panel-heading">
+							<h5 class="glyphicon glyphicon-th-list" style="color: white">Institution
+								Profile</h5>
+						</div>
+						<div class="panel-body">
 
-													<div class=" w3-round w3-white col-md-3 col-sm-3 col-xs-3 ">
+							<p:outputPanel>
+								<div class="w3-container  panel-body">
+									<div class="row w3-card w3-round w3-white">
+										<div class="w3-container">
+											<div class="row w3-card">
 
-														<div class="w3-card w3-round w3-white">
-															<div>
-																<span class="w3-left"> <h:graphicImage
-																		class="image"
-																		style="width:70%; height:20%;padding-top:5%;padding-left:6%"
-																		alt="userImage"
-																		value="/images/dynamic/?file=#{loadInstitutionProfile.institution.instLogo}" />
-																</span>
-															</div>
+												<div class=" w3-round w3-white col-md-3 col-sm-3 col-xs-3 ">
+
+													<div class="w3-card w3-round w3-white">
+														<div>
+															<span class="w3-left"> <h:graphicImage
+																	class="image"
+																	style="width:70%; height:20%;padding-top:5%;padding-left:6%"
+																	alt="userImage"
+																	value="/images/dynamic/?file=#{loadInstitutionProfile.institution.instLogo}" />
+															</span>
 														</div>
-														<h:form>
-															<h:commandLink value="Edit logo" style="font-size:8pt;margin-left:9%"
-																action="#{loadInstitutionProfile.addLogview()}" >
-																<f:ajax render="@form" execute="@form"
-																	onevent="showProgress" />
-															</h:commandLink>
-														</h:form>
 													</div>
-													<div class="   col-md-9 col-sm-9 col-xs-9">
+													<h:form>
+														<h:commandLink value="Edit logo"
+															style="font-size:8pt;margin-left:9%"
+															action="#{loadInstitutionProfile.addLogview()}">
+															<f:ajax render="@form" execute="@form"
+																onevent="showProgress" />
+														</h:commandLink>
+													</h:form>
+												</div>
+												<div class="   col-md-9 col-sm-9 col-xs-9">
+													<div class=" col-md-12 col-sm-12 col-xs-12">
 														<div class=" col-md-12 col-sm-12 col-xs-12">
-															<div class=" col-md-12 col-sm-12 col-xs-12">
 
-																<h:inputText id="name1"
-																	value="#{loadInstitutionProfile.dto.request.institutionName}"
-																	size="20"
-																	rendered="#{loadInstitutionProfile.dto.editable}"
-																	required="true"
-																	requiredMessage="#{msg['institutionForm.requiered.name.message']}"
-																	validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}"
-																	style="width:40%;margin-top:2%">
-																	<f:validateRegex
-																		pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-																	<f:validateLength maximum="25" />
-																</h:inputText>
-																<p:outputPanel rendered="#{not ls.editable}">
-																	<h1>#{loadInstitutionProfile.dto.request.institutionName}</h1>
-																</p:outputPanel>
-
-															</div>
-															<div class=" col-md-12 col-sm-12 col-xs-12">
-
-																<p>
-																	<i class="w3-right"></i><span
-																		class="glyphicon glyphicon-asterisk"><h:outputText
-																			value="Type:" /> <h:inputText id="nameTyp"
-																			value="#{loadInstitutionProfile.dto.institutionType}"
-																			size="10"
-																			rendered="#{loadInstitutionProfile.dto.editable}"
-																			required="true"
-																			requiredMessage="#{msg['institutionForm.requiered.name.message']}"
-																			validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
-																			<f:validateRegex
-																				pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-																			<f:validateLength maximum="25" />
-																		</h:inputText> <h:outputText
-																			value="#{loadInstitutionProfile.dto.institutionType}"
-																			rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText></span>
-																</p>
-																<p>
-																	<i class="w3-right"></i> <span
-																		class="glyphicon glyphicon-asterisk"><h:outputText
-																			value="Country:" /> <h:outputText
-																			rendered="#{not loadInstitutionProfile.dto.editable}"
-																			value="#{loadInstitutionProfile.institution.request.country}"></h:outputText>
-																		<h:selectOneMenu class="input-sm" id="country1"
-																			value="#{institutionController.cntryId}"
-																			required="true"
-																			requiredMessage="#{msg['institutionForm.requiered.country.message']}"
-																			rendered="#{loadInstitutionProfile.dto.editable}">
-																			<f:selectItems
-																				value="#{institutionController.countries}"
-																				var="option" itemValue="#{option.taskId}"
-																				itemLabel="#{option.countryName_en}"
-																				itemLabelEscaped="true" />
-																		</h:selectOneMenu> <h:message errorClass="errorMsg1" for="country1"></h:message>
-																	</span>
-																</p>
-
-																<p>
-																	<i class="w3-right"></i><span
-																		class="glyphicon glyphicon-asterisk"><h:outputText
-																			value="Address:" /> <h:outputText
-																			value="#{loadInstitutionProfile.institution.request.institutionAddress}"
-																			rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText>
-																		<h:inputText
-																			value="#{loadInstitutionProfile.institution.request.institutionAddress}"
-																			rendered="#{loadInstitutionProfile.dto.editable}" />
-																	</span>
-																</p>
-																<p>
-																	<i class="w3-right"></i><span class=""> <h:commandLink
-																			style="color:white"
-																			class="btn btn-info 	glyphicon glyphicon-pencil"
-																			value=""
-																			action="#{loadInstitutionProfile.editAction()}"
-																			ajax="false"
-																			rendered="#{not loadInstitutionProfile.dto.editable}">
-																			<f:ajax render="@form" execute="@form"
-																				onevent="showProgress" />
-																		</h:commandLink> <h:commandLink style="color:white"
-																			class="btn btn-danger 	glyphicon glyphicon-remove"
-																			value=""
-																			action="#{loadInstitutionProfile.cancelPolicy()}"
-																			ajax="false"
-																			rendered="#{loadInstitutionProfile.dto.editable}">
-																			<f:ajax render="@form" execute="@form"
-																				onevent="showProgress" />
-																		</h:commandLink> <h:commandLink style="color:white"
-																			class="btn btn-info 	glyphicon glyphicon-saved"
-																			value=""
-																			action="#{loadInstitutionProfile.saveAction()}"
-																			ajax="false"
-																			rendered="#{loadInstitutionProfile.dto.editable}">
-																			<f:ajax render="@form" execute="@form"
-																				onevent="showProgress" />
-																		</h:commandLink>
-																	</span>
-																</p>
-
-															</div>
+															<h:inputText id="name1"
+																value="#{loadInstitutionProfile.dto.request.institutionName}"
+																size="20"
+																rendered="#{loadInstitutionProfile.dto.editable}"
+																required="true"
+																requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+																validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}"
+																style="width:40%;margin-top:2%">
+																<f:validateRegex
+																	pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+																<f:validateLength maximum="25" />
+															</h:inputText>
+															<p:outputPanel rendered="#{not ls.editable}">
+																<h1>#{loadInstitutionProfile.dto.request.institutionName}</h1>
+															</p:outputPanel>
 
 														</div>
+														<div class=" col-md-12 col-sm-12 col-xs-12">
+
+															<p>
+																<i class="w3-right"></i><span
+																	class="glyphicon glyphicon-asterisk"><h:outputText
+																		value="Type:" /> <h:inputText id="nameTyp"
+																		value="#{loadInstitutionProfile.dto.institutionType}"
+																		size="10"
+																		rendered="#{loadInstitutionProfile.dto.editable}"
+																		required="true"
+																		requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+																		validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
+																		<f:validateRegex
+																			pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+																		<f:validateLength maximum="25" />
+																	</h:inputText> <h:outputText
+																		value="#{loadInstitutionProfile.dto.institutionType}"
+																		rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText></span>
+															</p>
+															<p>
+																<i class="w3-right"></i> <span
+																	class="glyphicon glyphicon-asterisk"><h:outputText
+																		value="Country:" /> <h:outputText
+																		rendered="#{not loadInstitutionProfile.dto.editable}"
+																		value="#{loadInstitutionProfile.institution.request.country}"></h:outputText>
+																	<h:selectOneMenu class="input-sm" id="country1"
+																		value="#{institutionController.cntryId}"
+																		required="true"
+																		requiredMessage="#{msg['institutionForm.requiered.country.message']}"
+																		rendered="#{loadInstitutionProfile.dto.editable}">
+																		<f:selectItems
+																			value="#{institutionController.countries}"
+																			var="option" itemValue="#{option.taskId}"
+																			itemLabel="#{option.countryName_en}"
+																			itemLabelEscaped="true" />
+																	</h:selectOneMenu> <h:message errorClass="errorMsg1" for="country1"></h:message>
+																</span>
+															</p>
+
+															<p>
+																<i class="w3-right"></i><span
+																	class="glyphicon glyphicon-asterisk"><h:outputText
+																		value="Address:" /> <h:outputText
+																		value="#{loadInstitutionProfile.institution.request.institutionAddress}"
+																		rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText>
+																	<h:inputText
+																		value="#{loadInstitutionProfile.institution.request.institutionAddress}"
+																		rendered="#{loadInstitutionProfile.dto.editable}" />
+																</span>
+															</p>
+															<p>
+																<i class="w3-right"></i><span class=""> <h:commandLink
+																		style="color:white"
+																		class="btn btn-info 	glyphicon glyphicon-pencil"
+																		value=""
+																		action="#{loadInstitutionProfile.editAction()}"
+																		ajax="false"
+																		rendered="#{not loadInstitutionProfile.dto.editable}">
+																		<f:ajax render="@form" execute="@form"
+																			onevent="showProgress" />
+																	</h:commandLink> <h:commandLink style="color:white"
+																		class="btn btn-danger 	glyphicon glyphicon-remove"
+																		value=""
+																		action="#{loadInstitutionProfile.cancelPolicy()}"
+																		ajax="false"
+																		rendered="#{loadInstitutionProfile.dto.editable}">
+																		<f:ajax render="@form" execute="@form"
+																			onevent="showProgress" />
+																	</h:commandLink> <h:commandLink style="color:white"
+																		class="btn btn-info 	glyphicon glyphicon-saved"
+																		value=""
+																		action="#{loadInstitutionProfile.saveAction()}"
+																		ajax="false"
+																		rendered="#{loadInstitutionProfile.dto.editable}">
+																		<f:ajax render="@form" execute="@form"
+																			onevent="showProgress" />
+																	</h:commandLink>
+																</span>
+															</p>
+
+														</div>
+
 													</div>
+												</div>
 
-													<div
-														class="col-md-12 col-sm-12 col-xs-12 w3-card w3-round w3-white"
-														style="margin-top: 1%">
+												<div
+													class="col-md-12 col-sm-12 col-xs-12 w3-card w3-round w3-white"
+													style="margin-top: 1%">
 
-														<div class="w3-container">
-															<div class="row w3-white">
+													<div class="w3-container">
+														<div class="row w3-white">
 
-																<div class="col-md-12 col-sm-12 col-xs-12">
-																	<!-- <div class="col-md-12 col-sm-11 col-xs-12">
+															<div class="col-md-12 col-sm-12 col-xs-12">
+																<!-- <div class="col-md-12 col-sm-11 col-xs-12">
 																		<div class="col-md-6 col-sm-6 col-xs-6">
 																			<div class="heading">
 																				<div class="header">
@@ -228,718 +227,770 @@
 																			</div>
 
 																		</div>-->
-																	<div class="col-md-6 col-sm-6 col-xs-6"
-																		style="text-align: left; padding-top: 2%">
-																		<h:commandLink style="color:white"
-																			class="btn btn-success 	glyphicon glyphicon-plus"
-																			value="Branch request"
-																			action="#{loadInstitutionProfile.addbranchDiv()}"
-																			ajax="false">
-																			<f:ajax render="@form" execute="@form"
-																				onevent="showProgress" />
-																		</h:commandLink>
-																	</div>
-
-																	<div class="col-md-12 col-sm-12 col-xs-12">
-																		<h:dataTable id="taskAssignTable" binding="#{table}"
-																			style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:100% !important; -webkit-box-shadow: none; box-shadow: none !important; margin-top:1%;"
-																			value="#{loadInstitutionProfile.instDtos}" var="ls"
-																			class="table table-striped table-hover table-bordered tableUpdated">
-																			<f:facet name="header">
-																				<label style="margin-left: 2%; font-size: 18px">BRANCH</label>
-																			</f:facet>
-
-																			<h:column>
-																				<f:facet name="header">
-																					<label>#</label>
-																				</f:facet>
-																				<br />
-																				<h:outputText value="#{table.rowIndex + 1}" />
-																			</h:column>
-																			<h:column>
-																				<f:facet name="header">
-																					<label>Branch name</label>
-																				</f:facet>
-																				<br />
-																				<h:inputText id="name"
-																					value="#{ls.request.institutionName}" size="10"
-																					rendered="#{ls.editable}" required="true"
-																					requiredMessage="#{msg['institutionForm.requiered.name.message']}"
-																					validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
-																					<f:validateRegex
-																						pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-																					<f:validateLength maximum="25" />
-																				</h:inputText>
-																				<h:outputText value="#{ls.request.institutionName}"
-																					rendered="#{not ls.editable}" />
-																				<h:message errorClass="errorMsg1" for="name"></h:message>
-																			</h:column>
-																			<h:column>
-																				<f:facet name="header">
-																					<label>Country</label>
-																				</f:facet>
-																				<br />
-																				<h:panelGroup rendered="#{ls.editable}">
-																					<h:selectOneMenu class="form-control input-sm"
-																						id="nameCnt"
-																						value="#{institutionController.cntryId}"
-																						required="true"
-																						requiredMessage="#{msg['institutionForm.requiered.country.message']}">
-																						<f:selectItems
-																							value="#{institutionController.countries}"
-																							var="option" itemValue="#{option.taskId}"
-																							itemLabel="#{option.countryName_en}"
-																							itemLabelEscaped="true" />
-																					</h:selectOneMenu>
-																				</h:panelGroup>
-																				<h:outputText value="#{ls.request.country}"
-																					rendered="#{not ls.editable}" />
-																				<h:message errorClass="errorMsg1" for="nameCnt"></h:message>
-																			</h:column>
-																			<h:column>
-																				<f:facet name="header">
-																					<label>Address</label>
-																				</f:facet>
-																				<br />
-																				<h:outputText
-																					value="#{ls.request.institutionAddress}" size="10"
-																					rendered="#{not ls.editable}" />
-
-																				<h:inputText
-																					value="#{ls.request.institutionAddress}"
-																					rendered="#{ls.editable}" id="address"
-																					required="true"
-																					requiredMessage="#{msg['institutionForm.requiered.address.message']}"
-																					validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
-																					style="width:120px">
-																					<f:validateRegex
-																						pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
-																					<f:validateLength maximum="25" />
-																				</h:inputText>
-																			</h:column>
-																			<h:column>
-																				<f:facet name="header">
-																					<label>Created On</label>
-																				</f:facet>
-																				<br />
-																				<h:outputText style="border: none"
-																					value="#{ls.institutionRegDate}">
-																					<f:convertDateTime pattern="dd MMM hh:mm" />
-																				</h:outputText>
-																			</h:column>
-																			<h:column>
-																				<f:facet name="header">
-																					<label>Action</label>
-																				</f:facet>
-																				<div class="btn-group btn btn-sm" role="group"
-																					aria-label="Basic example"
-																					style="margin-top: 5%; margin-left: 10%">
-																					<h:commandLink style="color:white"
-																						class="btn btn-success 	glyphicon glyphicon-edit"
-																						value=""
-																						action="#{institutionController.editAction(ls)}"
-																						rendered="#{not ls.editable}">
-																						<f:ajax render="@form" execute="@form"
-																							onevent="showProgress" />
-																					</h:commandLink>
-																					<h:commandLink style="margin-left:2px;color:white"
-																						class="btn btn-danger 	glyphicon glyphicon-remove"
-																						value=""
-																						action="#{loadInstitutionProfile.cancel(ls)}"
-																						rendered="#{ls.editable}" ajax="false">
-																						<f:ajax render="@form" execute="@form"
-																							onevent="showProgress" />
-																					</h:commandLink>
-																					<h:commandLink value=""
-																						class="btn btn-success glyphicon glyphicon-saved	"
-																						action="#{loadInstitutionProfile.saveAction(ls)}"
-																						rendered="#{ls.editable}" ajax="false">
-																						<f:ajax render="@form" execute="@form"
-																							onevent="showProgress" />
-																					</h:commandLink>
-
-
-																				</div>
-																			</h:column>
-																		</h:dataTable>
-																	</div>
+																<div class="col-md-6 col-sm-6 col-xs-6"
+																	style="text-align: left; padding-top: 2%">
+																	<h:commandLink style="color:white"
+																		class="btn btn-success 	glyphicon glyphicon-plus"
+																		value="Branch request"
+																		action="#{loadInstitutionProfile.addbranchDiv()}"
+																		ajax="false">
+																		<f:ajax render="@form" execute="@form"
+																			onevent="showProgress" />
+																	</h:commandLink>
 																</div>
 
 																<div class="col-md-12 col-sm-12 col-xs-12">
-																	<hr></hr>
-																	<div class="border">
+																	<h:dataTable id="taskAssignTable" binding="#{table}"
+																		style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:100% !important; -webkit-box-shadow: none; box-shadow: none !important; margin-top:1%;"
+																		value="#{loadInstitutionProfile.instDtos}" var="ls"
+																		class="table table-striped table-hover table-bordered tableUpdated">
+																		<f:facet name="header">
+																			<label style="margin-left: 2%; font-size: 18px">BRANCH</label>
+																		</f:facet>
+
+																		<h:column>
+																			<f:facet name="header">
+																				<label>#</label>
+																			</f:facet>
+																			<br />
+																			<h:outputText value="#{table.rowIndex + 1}" />
+																		</h:column>
+																		<h:column>
+																			<f:facet name="header">
+																				<label>Branch name</label>
+																			</f:facet>
+																			<br />
+																			<h:inputText id="name"
+																				value="#{ls.request.institutionName}" size="10"
+																				rendered="#{ls.editable}" required="true"
+																				requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+																				validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
+																				<f:validateRegex
+																					pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+																				<f:validateLength maximum="25" />
+																			</h:inputText>
+																			<h:outputText value="#{ls.request.institutionName}"
+																				rendered="#{not ls.editable}" />
+																			<h:message errorClass="errorMsg1" for="name"></h:message>
+																		</h:column>
+																		<h:column>
+																			<f:facet name="header">
+																				<label>Country</label>
+																			</f:facet>
+																			<br />
+																			<h:panelGroup rendered="#{ls.editable}">
+																				<h:selectOneMenu class="form-control input-sm"
+																					id="nameCnt"
+																					value="#{institutionController.cntryId}"
+																					required="true"
+																					requiredMessage="#{msg['institutionForm.requiered.country.message']}">
+																					<f:selectItems
+																						value="#{institutionController.countries}"
+																						var="option" itemValue="#{option.taskId}"
+																						itemLabel="#{option.countryName_en}"
+																						itemLabelEscaped="true" />
+																				</h:selectOneMenu>
+																			</h:panelGroup>
+																			<h:outputText value="#{ls.request.country}"
+																				rendered="#{not ls.editable}" />
+																			<h:message errorClass="errorMsg1" for="nameCnt"></h:message>
+																		</h:column>
+																		<h:column>
+																			<f:facet name="header">
+																				<label>Address</label>
+																			</f:facet>
+																			<br />
+																			<h:outputText
+																				value="#{ls.request.institutionAddress}" size="10"
+																				rendered="#{not ls.editable}" />
+
+																			<h:inputText value="#{ls.request.institutionAddress}"
+																				rendered="#{ls.editable}" id="address"
+																				required="true"
+																				requiredMessage="#{msg['institutionForm.requiered.address.message']}"
+																				validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}"
+																				style="width:120px">
+																				<f:validateRegex
+																					pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
+																				<f:validateLength maximum="25" />
+																			</h:inputText>
+																		</h:column>
+																		<h:column>
+																			<f:facet name="header">
+																				<label>Created On</label>
+																			</f:facet>
+																			<br />
+																			<h:outputText style="border: none"
+																				value="#{ls.institutionRegDate}">
+																				<f:convertDateTime pattern="dd MMM hh:mm" />
+																			</h:outputText>
+																		</h:column>
+																		<h:column>
+																			<f:facet name="header">
+																				<label>Action</label>
+																			</f:facet>
+																			<div class="btn-group btn btn-sm" role="group"
+																				aria-label="Basic example"
+																				style="margin-top: 5%; margin-left: 10%">
+																				<h:commandLink style="color:white"
+																					class="btn btn-success 	glyphicon glyphicon-edit"
+																					value=""
+																					action="#{institutionController.editAction(ls)}"
+																					rendered="#{not ls.editable}">
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandLink>
+																				<h:commandLink style="margin-left:2px;color:white"
+																					class="btn btn-danger 	glyphicon glyphicon-remove"
+																					value=""
+																					action="#{loadInstitutionProfile.cancel(ls)}"
+																					rendered="#{ls.editable}" ajax="false">
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandLink>
+																				<h:commandLink value=""
+																					class="btn btn-success glyphicon glyphicon-saved	"
+																					action="#{loadInstitutionProfile.saveAction(ls)}"
+																					rendered="#{ls.editable}" ajax="false">
+																					<f:ajax render="@form" execute="@form"
+																						onevent="showProgress" />
+																				</h:commandLink>
+
+
+																			</div>
+																		</h:column>
+																	</h:dataTable>
+																</div>
+															</div>
+
+															<div class="col-md-12 col-sm-12 col-xs-12">
+																<hr></hr>
+																<div class="border">
+																	<p>
+																		<i class="w3-right"></i><span><p:commandLink
+																				value="Manage institution policies"
+																				class="glyphicon glyphicon-list-alt"
+																				action="#{loadInstitutionProfile.saveInstitutionPolicy()}"
+																				ajax="false" /> </span>
+																	</p>
+																	<p:outputPanel
+																		rendered="#{loadInstitutionProfile.hasContact}">
 																		<p>
-																			<i class="w3-right"></i><span><p:commandLink
-																					value="Manage institution policies"
-																					class="glyphicon glyphicon-list-alt"
-																					action="#{loadInstitutionProfile.saveInstitutionPolicy()}"
-																					ajax="false" /> </span>
+																			<i class="w3-right"></i><span><h:commandLink
+																					value="Add institution contact"
+																					class="glyphicon glyphicon-user"
+																					action="#{loadInstitutionProfile.saveInstitutionContact()}" />
+																			</span>
 																		</p>
-																		<p:outputPanel
-																			rendered="#{loadInstitutionProfile.hasContact}">
-																			<p>
-																				<i class="w3-right"></i><span><h:commandLink
-																						value="Add institution contact"
-																						class="glyphicon glyphicon-user"
-																						action="#{loadInstitutionProfile.saveInstitutionContact()}" />
-																				</span>
-																			</p>
-																		</p:outputPanel>
-																	</div>
+																	</p:outputPanel>
 																</div>
 															</div>
 														</div>
 													</div>
-													<div class="col-md-12 col-sm-12 col-xs-12 dark-blue2"
-														style="margin-top: 1%; color: white">
-														<div class="w3-container  ">
-															<div class="row">
-																<div class="col-md-6 col-sm-6 col-xs-6">
-																	<div>
-
-																		<p>
-																			<i class="w3-right"></i><span
-																				class="glyphicon glyphicon-envelope"><h:outputText
-																					value="" /> <h:outputText
-																					value="#{loadInstitutionProfile.contact.email}"></h:outputText></span>
-																			<i class="w3-right"></i><span
-																				class="glyphicon glyphicon-phone"><h:outputText
-																					value="" /> <h:outputText
-																					value="#{loadInstitutionProfile.contact.phone}"></h:outputText></span>
-																			<i class="w3-right"></i><span
-																				class="glyphicon glyphicon-mail"><h:outputText
-																					value="P.O.Box:" /> <h:outputText
-																					value="#{loadInstitutionProfile.contact.pobox}"></h:outputText></span>
-																		</p>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-
 												</div>
+												<div class="col-md-12 col-sm-12 col-xs-12 dark-blue2"
+													style="margin-top: 1%; color: white">
+													<div class="w3-container  ">
+														<div class="row">
+															<div class="col-md-6 col-sm-6 col-xs-6">
+																<div>
+
+																	<p>
+																		<i class="w3-right"></i><span
+																			class="glyphicon glyphicon-envelope"><h:outputText
+																				value="" /> <h:outputText
+																				value="#{loadInstitutionProfile.contact.email}"></h:outputText></span>
+																		<i class="w3-right"></i><span
+																			class="glyphicon glyphicon-phone"><h:outputText
+																				value="" /> <h:outputText
+																				value="#{loadInstitutionProfile.contact.phone}"></h:outputText></span>
+																		<i class="w3-right"></i><span
+																			class="glyphicon glyphicon-mail"><h:outputText
+																				value="P.O.Box:" /> <h:outputText
+																				value="#{loadInstitutionProfile.contact.pobox}"></h:outputText></span>
+																	</p>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
 											</div>
 										</div>
 									</div>
-								</p:outputPanel>
+								</div>
+							</p:outputPanel>
 
-							</div>
 						</div>
-					</p:outputPanel>
+					</div>
+				</p:outputPanel>
 
-					<!-- div for add branch -->
+				<!-- div for add branch -->
 
-					<p:outputPanel rendered="#{loadInstitutionProfile.div1}">
-						<div class="panel panel-info">
-							<div class="col-md-12 col-sm-12 col-xs-12">
-								<h:panelGroup layout="block"
-									rendered="#{loadInstitutionProfile.valid and not facesContext.validationFailed}">
-									<ul>
-										<ui:repeat value="#{facesContext.messageList}"
-											var="facesMessage">
-											<li
-												style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-												class="alert"><center>
-													<h:outputText value="#{facesMessage.summary}"
-														escape="false" />
-												</center></li>
-										</ui:repeat>
-									</ul>
-								</h:panelGroup>
-								<h:panelGroup layout="block"
-									rendered="#{not loadInstitutionProfile.valid and not facesContext.validationFailed}">
-									<ul>
-										<ui:repeat value="#{facesContext.messageList}"
-											var="facesMessage">
-											<li class="alert"
-												style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%"><center>
-													<h:outputText value="#{facesMessage.summary}"
-														escape="false" />
-												</center></li>
-										</ui:repeat>
-									</ul>
-								</h:panelGroup>
-							</div>
-							<div class="panel-heading">
+				<p:outputPanel rendered="#{loadInstitutionProfile.div1}">
+					<div class="panel panel-info">
+						<div style="width: 100%">
+							<h:panelGroup layout="block"
+								rendered="#{loadInstitutionProfile.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li
+											style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+											class="alert"><center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								rendered="#{not loadInstitutionProfile.valid and not facesContext.validationFailed}">
+								<ul>
+									<ui:repeat value="#{facesContext.messageList}"
+										var="facesMessage">
+										<li class="alert"
+											style="list-style: none; background-color: #FF2400; color: white; margin-left: -4.9%"><center>
+												<h:outputText value="#{facesMessage.summary}" escape="false" />
+											</center></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+						</div>
+						<div class="panel-heading  w3-card">
+							<p:outputPanel rendered="#{not loadInstitutionProfile.cmpltDiv}">
+								<div class="container" style="width: 100%; padding-bottom: 2%">
+									<div class="row">
+										<div class=" w3-round w3-white col-md-3 col-sm-3 col-xs-3 ">
+											<div class="w3-card w3-round w3-white">
+												<div>
+													<span class="w3-left"> <h:graphicImage class="image"
+															style="width:70%; height:20%;padding-top:5%;padding-left:6%"
+															alt="userImage"
+															value="/images/dynamic/?file=#{loadInstitutionProfile.institution.instLogo}" />
+													</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-9 col-sm-9 col-xs-9">
+											<div class=" col-md-12 col-sm-12 col-xs-12">
+												<div class=" col-md-12 col-sm-12 col-xs-12">
+													<p:outputPanel rendered="#{not ls.editable}">
+														<h1>#{loadInstitutionProfile.dto.request.institutionName}</h1>
+													</p:outputPanel>
+
+												</div>
+												<div class=" col-md-12 col-sm-12 col-xs-12">
+
+													<p>
+														<i class="w3-right"></i> <span
+															class="glyphicon glyphicon-asterisk"><h:outputText
+																value="   Type:" /> <h:outputText
+																value="#{loadInstitutionProfile.dto.institutionType}"
+																rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText></span>
+													</p>
+													<p>
+														<i class="w3-right"></i> <span
+															class="glyphicon glyphicon-asterisk"><h:outputText
+																value="Country:" /> <h:outputText
+																rendered="#{not loadInstitutionProfile.dto.editable}"
+																value="#{loadInstitutionProfile.institution.request.country}"></h:outputText>
+														</span>
+													</p>
+
+													<p>
+														<i class="w3-right"></i><span
+															class="glyphicon glyphicon-asterisk"><h:outputText
+																value="Address:" /> <h:outputText
+																value="#{loadInstitutionProfile.institution.request.institutionAddress}"
+																rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText>
+														</span>
+													</p>
+
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</p:outputPanel>
+							<p:outputPanel rendered="#{loadInstitutionProfile.cmpltDiv}">
 								<div class="form-group row">
 									<div class="col-sm-9 col-sm-9 col-xs-9">
 										<h5 style="text-align: left; color: white; font-weight: bold">INSTITUTION
-											DETAILS</h5>
+											FORM</h5>
 									</div>
 									<div class="col-sm-2 col-sm-2 col-xs-2 "></div>
 
 									<span class="text-danger" id="customeordererror"></span>
 								</div>
-							</div>
-							<div class="panel-body">
-								<span style="color: #737373; font-size: 10pt">Fields
-									marked with an asterisk <span style="color: red">(*)</span> are
-									mandatory.
-								</span> <br /> <br />
-								<div class="form-group row">
-									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-										style="color: black">#{msg['institutionForm.country']}
-										<span style="color: red">*</span>
-									</label>
-									<div class="col-md-4 col-sm-4 col-xs-4 ">
 
-										<h:selectOneMenu class="form-control input-sm" id="country"
-											value="#{loadInstitutionProfile.cntryId}" required="true"
-											requiredMessage="#{msg['institutionForm.requiered.country.message']}">
-											<f:selectItem
-												itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-											<f:selectItems value="#{loadInstitutionProfile.countries}"
-												var="option" itemValue="#{option.taskId}"
-												itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
-											<!-- 											<p:ajax update="container,update" -->
-											<!-- 												listener="#{institutionController.renderProvMethod()}" /> -->
-											<f:ajax render="container" onevent="showProgress"
-												listener="#{loadInstitutionProfile.renderProvMethod()}" />
-										</h:selectOneMenu>
-									</div>
-									<h:message errorClass="errorMsg1" for="country"></h:message>
-								</div>
-								<!-- province div starts-->
-
-								<h:panelGroup layout="block" id="container">
-									<p:outputPanel rendered="#{loadInstitutionProfile.skip}"
-										id="update" autoUpdate="true">
-										<div class="form-group row">
-											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-												style="color: black">#{msg['institutionForm.province']}
-												<span style="color: red">*</span>
-											</label>
-
-											<div class="col-md-4 col-sm-4 col-xs-4 ">
-
-												<h:selectOneMenu class="form-control input-sm" id="province"
-													value="#{loadInstitutionProfile.pid}" required="true"
-													requiredMessage="#{msg['institutionForm.requiered.province.message']}">
-													<f:selectItem
-														itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-														itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-													<f:selectItems value="#{loadInstitutionProfile.provinces}"
-														var="option" itemValue="#{option.provenceId}"
-														itemLabel="#{option.provenceName_en}"
-														itemLabelEscaped="true" />
-													<f:ajax
-														listener="#{loadInstitutionProfile.changeDistrict()}"
-														render="district" onevent="showProgress" />
-												</h:selectOneMenu>
-											</div>
-											<h:message errorClass="errorMsg1" for="province"></h:message>
-										</div>
-										<div class="form-group row">
-											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-												style="color: black">#{msg['institutionForm.district']}
-												<span style="color: red">*</span>
-											</label>
-
-											<div class="col-md-4 col-sm-4 col-xs-4">
-
-												<h:selectOneMenu class="form-control input-sm" id="district"
-													value="#{loadInstitutionProfile.did}" required="true"
-													requiredMessage="#{msg['institutionForm.requiered.district.message']}">
-													<f:selectItem
-														itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-														itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-													<f:selectItems value="#{loadInstitutionProfile.districts}"
-														var="option" itemValue="#{option.districtId}"
-														itemLabel="#{option.districtName_en}"
-														itemLabelEscaped="true" />
-													<f:ajax listener="#{loadInstitutionProfile.changeSector()}"
-														render="sector" onevent="showProgress" />
-												</h:selectOneMenu>
-											</div>
-											<h:message errorClass="errorMsg1" for="district"></h:message>
-										</div>
-										<div class="form-group row">
-											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-												style="color: black">#{msg['institutionForm.sector']}
-												<span style="color: red">*</span>
-											</label>
-
-											<div class="col-md-4 col-sm-4 col-xs-4">
-
-												<h:selectOneMenu class="form-control input-sm" id="sector"
-													value="#{loadInstitutionProfile.sid}" required="true"
-													requiredMessage="#{msg['institutionForm.requiered.sector.message']}">
-													<f:selectItem
-														itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-														itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-													<f:selectItems value="#{loadInstitutionProfile.sectors}"
-														var="option" itemValue="#{option.sectorId}"
-														itemLabel="#{option.sectorName_en}"
-														itemLabelEscaped="true" />
-													<f:ajax listener="#{loadInstitutionProfile.changeCell()}"
-														render="cell" onevent="showProgress" />
-												</h:selectOneMenu>
-											</div>
-											<h:message errorClass="errorMsg1" for="sector"></h:message>
-										</div>
-										<div class="form-group row">
-											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-												style="color: black">#{msg['institutionForm.cell']}
-												<span style="color: red">*</span>
-											</label>
-
-											<div class="col-md-4 col-sm-4 col-xs-4">
-
-												<h:selectOneMenu class="form-control input-sm" id="cell"
-													value="#{loadInstitutionProfile.cid}" required="true"
-													requiredMessage="#{msg['institutionForm.requiered.cell.message']}">
-													<f:selectItem
-														itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-														itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-													<f:selectItems value="#{loadInstitutionProfile.cells}"
-														var="option" itemValue="#{option.cellId}"
-														itemLabel="#{option.cellName_en}" itemLabelEscaped="true" />
-													<f:ajax
-														listener="#{loadInstitutionProfile.changeVilages()}"
-														render="village" onevent="showProgress" />
-
-												</h:selectOneMenu>
-											</div>
-											<h:message errorClass="errorMsg1" for="cell"></h:message>
-										</div>
-										<div class="form-group row">
-											<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-												style="color: black">#{msg['institutionForm.village']}
-												<span style="color: red">*</span>
-											</label>
-
-											<div class="col-md-4 col-sm-4 col-xs-4">
-
-												<h:selectOneMenu class="form-control input-sm" id="village"
-													value="#{loadInstitutionProfile.vid}" required="true"
-													requiredMessage="#{msg['institutionForm.requiered.village.message']}">
-													<f:selectItem
-														itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-														itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-													<f:selectItems value="#{loadInstitutionProfile.villages}"
-														var="option" itemValue="#{option.villageId}"
-														itemLabel="#{option.villageName_en}"
-														itemLabelEscaped="true" />
-												</h:selectOneMenu>
-											</div>
-											<h:message errorClass="errorMsg1" for="village"></h:message>
-										</div>
-									</p:outputPanel>
-								</h:panelGroup>
-
-
-								<!-- province div ends-->
-
-								<div class="form-group row">
-									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-										style="color: black">#{msg['institutionForm.name']} <span
-										style="color: red">*</span>
-									</label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-
-										<h:inputText class="form-control input-sm" id="name"
-											required="true"
-											requiredMessage="#{msg['institutionForm.requiered.name.message']}"
-											value="#{loadInstitutionProfile.instName}"
-											validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
-											<f:validateRegex
-												pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="name"></h:message>
-								</div>
-								<div class="form-group row">
-									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-										style="color: black">#{msg['institutionForm.address']}
-										<span style="color: red">*</span>
-									</label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-
-										<h:inputText class="form-control input-sm" id="address1"
-											required="true"
-											requiredMessage="#{msg['institutionForm.requiered.address.message']}"
-											value="#{loadInstitutionProfile.instaddress}"
-											validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}">
-											<f:validateRegex
-												pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-
-									</div>
-									<h:message errorClass="errorMsg1" for="address1"></h:message>
-								</div>
-
-								<hr></hr>
-								<div class="form-group row">
-
-									<div class="col-sm-8 col-sm-8 col-xs-8 ">
-										<!-- Saving new headquater starts -->
-										<p:outputPanel rendered="#{loadInstitutionProfile.cmpltDiv}">
-											<h:commandButton class="btn btn-info btn-sm btn-block"
-												value="Submit" style="float:left;margin-left:1%;"
-												action="#{loadInstitutionProfile.saveInstitutionRequest()}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandButton>
-										</p:outputPanel>
-										<!-- Saving new headquater ends -->
-										<!-- Saving new branch starts -->
-										<p:outputPanel
-											rendered="#{not loadInstitutionProfile.cmpltDiv}">
-											<div class="col-sm-2 col-sm-2 col-xs-2 ">
-												<h:commandButton class="btn btn-info btn-sm btn-block"
-													value="Submit"
-													action="#{loadInstitutionProfile.saveBranchRequest()}">
-													<f:ajax render="@form" execute="@form"
-														onevent="showProgress" />
-												</h:commandButton>
-											</div>
-											<div class="col-sm-2 col-sm-2 col-xs-2 ">
-												<h:commandButton class="btn btn-info btn-sm btn-block"
-													value="Back"
-													action="#{loadInstitutionProfile.backToprofile()}">
-													<f:ajax render="profle" onevent="showProgress" />
-												</h:commandButton>
-
-											</div>
-										</p:outputPanel>
-										<!-- Saving new branch ends -->
-
-									</div>
-
-									<div class="col-sm-9 col-sm-9 col-xs-9">
-										<h:outputText value=""
-											style="text-align: right; font-weight: bold" />
-									</div>
-									<span class="text-danger" id="customeordererror"></span>
-								</div>
-							</div>
-
-
+							</p:outputPanel>
 						</div>
-					</p:outputPanel>
-					<p:outputPanel rendered="#{loadInstitutionProfile.div2}">
-						<div class="panel panel-info">
-							<div class="panel-heading">
-								<h5 style="text-align: left; color: white; font-weight: bold">INSTITUTION
-									CONTACT</h5>
-							</div>
-							<div class="panel-body">
-								<span style="color: #737373; font-size: 10pt">Fields
-									marked with an asterisk <span style="color: red">(*)</span> are
-									mandatory.
-								</span> <br /> <br />
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Email']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.useremail}"
-											class="form-control input-sm" id="email" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="email"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Phone']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.tel}"
-											class="form-control input-sm" id="phone" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.phone.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="phone"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.pobox']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.pobx}"
-											class="form-control input-sm" id="pobox" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.pobox.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="pobox"></h:message>
-								</div>
-								<hr></hr>
-								<div class="form-group row">
+						<div class="panel-body">
 
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Save" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.saveContact()}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+							<span style="color: #737373; font-size: 10pt">Fields
+								marked with an asterisk <span style="color: red">(*)</span> are
+								mandatory.
+							</span> <br /> <br />
+							<div class="form-group row">
+								<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+									style="color: black">#{msg['institutionForm.country']}
+									<span style="color: red">*</span>
+								</label>
+								<div class="col-md-4 col-sm-4 col-xs-4 ">
 
-									</div>
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Back" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.backToprofile()}">
-											<f:ajax render="profle" execute="profle"
-												onevent="showProgress" />
-										</h:commandButton>
-
-									</div>
-									<div class="col-sm-7 col-sm-9 col-xs-9">
-										<h:outputText value="" style="text-align: font-weight: bold" />
-									</div>
-
-									<span class="text-danger" id="customeordererror"></span>
-								</div>
-							</div>
-
-
-						</div>
-					</p:outputPanel>
-
-					<p:outputPanel rendered="#{loadInstitutionProfile.div4}">
-						<div class="panel panel-info">
-							<div class="panel-heading">
-								<h5 style="text-align: left; color: white; font-weight: bold">BRANCH
-									CONTACT</h5>
-							</div>
-							<div class="panel-body">
-								<span style="color: #737373; font-size: 10pt">Fields
-									marked with an asterisk <span style="color: red">(*)</span> are
-									mandatory.
-								</span> <br /> <br />
-								<div class="col-md-4 col-sm-4 col-xs-4">
-
-									<h:selectOneMenu class="form-control input-sm" id="inst"
-										value="#{loadInstitutionProfile.rid}" required="true"
-										requiredMessage="#{msg['institutionForm.requiered.village.message']}">
+									<h:selectOneMenu class="form-control input-sm" id="country"
+										value="#{loadInstitutionProfile.cntryId}" required="true"
+										requiredMessage="#{msg['institutionForm.requiered.country.message']}">
 										<f:selectItem
 											itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
 											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-										<f:selectItems value="#{loadInstitutionProfile.instDtos}"
-											var="option" itemValue="#{option.institutionId}"
-											itemLabel="#{option.request.institutionName}"
-											itemLabelEscaped="true" />
+										<f:selectItems value="#{loadInstitutionProfile.countries}"
+											var="option" itemValue="#{option.taskId}"
+											itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
+										<!-- 											<p:ajax update="container,update" -->
+										<!-- 												listener="#{institutionController.renderProvMethod()}" /> -->
+										<f:ajax render="container" onevent="showProgress"
+											listener="#{loadInstitutionProfile.renderProvMethod()}" />
 									</h:selectOneMenu>
 								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Email']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.useremail}"
-											class="form-control input-sm" id="email1" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="email"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Phone']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.tel}"
-											class="form-control input-sm" id="phone1" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.phone.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="phone1"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.pobox']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.pobx}"
-											class="form-control input-sm" id="pobox1" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.pobox.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="pobox1"></h:message>
-								</div>
-								<hr></hr>
-								<div class="form-group row">
+								<h:message errorClass="errorMsg1" for="country"></h:message>
+							</div>
+							<!-- province div starts-->
 
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Save" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.SaveBranchContact()}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+							<h:panelGroup layout="block" id="container">
+								<p:outputPanel rendered="#{loadInstitutionProfile.skip}"
+									id="update" autoUpdate="true">
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">#{msg['institutionForm.province']}
+											<span style="color: red">*</span>
+										</label>
 
-									</div>
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:form>
-											<h:commandButton class="btn btn-info btn-sm btn-block"
-												value="Back" style="float:left;margin-left:1%"
-												action="#{loadInstitutionProfile.bacKnstitutionBranchContact()}">
-												<f:ajax onevent="showProgress" render="profle"
-													execute="profle" />
-											</h:commandButton>
-										</h:form>
-									</div>
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Back" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.backToprofile()}">
-											<f:ajax render="profle" execute="profle"
-												onevent="showProgress" />
-										</h:commandButton>
+										<div class="col-md-4 col-sm-4 col-xs-4 ">
 
+											<h:selectOneMenu class="form-control input-sm" id="province"
+												value="#{loadInstitutionProfile.pid}" required="true"
+												requiredMessage="#{msg['institutionForm.requiered.province.message']}">
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItems value="#{loadInstitutionProfile.provinces}"
+													var="option" itemValue="#{option.provenceId}"
+													itemLabel="#{option.provenceName_en}"
+													itemLabelEscaped="true" />
+												<f:ajax
+													listener="#{loadInstitutionProfile.changeDistrict()}"
+													render="district" onevent="showProgress" />
+											</h:selectOneMenu>
+										</div>
+										<h:message errorClass="errorMsg1" for="province"></h:message>
 									</div>
-									<div class="col-sm-7 col-sm-9 col-xs-9">
-										<h:outputText value="" style="text-align: font-weight: bold" />
-									</div>
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">#{msg['institutionForm.district']}
+											<span style="color: red">*</span>
+										</label>
 
-									<span class="text-danger" id="customeordererror1"></span>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+
+											<h:selectOneMenu class="form-control input-sm" id="district"
+												value="#{loadInstitutionProfile.did}" required="true"
+												requiredMessage="#{msg['institutionForm.requiered.district.message']}">
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItems value="#{loadInstitutionProfile.districts}"
+													var="option" itemValue="#{option.districtId}"
+													itemLabel="#{option.districtName_en}"
+													itemLabelEscaped="true" />
+												<f:ajax listener="#{loadInstitutionProfile.changeSector()}"
+													render="sector" onevent="showProgress" />
+											</h:selectOneMenu>
+										</div>
+										<h:message errorClass="errorMsg1" for="district"></h:message>
+									</div>
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">#{msg['institutionForm.sector']}
+											<span style="color: red">*</span>
+										</label>
+
+										<div class="col-md-4 col-sm-4 col-xs-4">
+
+											<h:selectOneMenu class="form-control input-sm" id="sector"
+												value="#{loadInstitutionProfile.sid}" required="true"
+												requiredMessage="#{msg['institutionForm.requiered.sector.message']}">
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItems value="#{loadInstitutionProfile.sectors}"
+													var="option" itemValue="#{option.sectorId}"
+													itemLabel="#{option.sectorName_en}" itemLabelEscaped="true" />
+												<f:ajax listener="#{loadInstitutionProfile.changeCell()}"
+													render="cell" onevent="showProgress" />
+											</h:selectOneMenu>
+										</div>
+										<h:message errorClass="errorMsg1" for="sector"></h:message>
+									</div>
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">#{msg['institutionForm.cell']} <span
+											style="color: red">*</span>
+										</label>
+
+										<div class="col-md-4 col-sm-4 col-xs-4">
+
+											<h:selectOneMenu class="form-control input-sm" id="cell"
+												value="#{loadInstitutionProfile.cid}" required="true"
+												requiredMessage="#{msg['institutionForm.requiered.cell.message']}">
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItems value="#{loadInstitutionProfile.cells}"
+													var="option" itemValue="#{option.cellId}"
+													itemLabel="#{option.cellName_en}" itemLabelEscaped="true" />
+												<f:ajax listener="#{loadInstitutionProfile.changeVilages()}"
+													render="village" onevent="showProgress" />
+
+											</h:selectOneMenu>
+										</div>
+										<h:message errorClass="errorMsg1" for="cell"></h:message>
+									</div>
+									<div class="form-group row">
+										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+											style="color: black">#{msg['institutionForm.village']}
+											<span style="color: red">*</span>
+										</label>
+
+										<div class="col-md-4 col-sm-4 col-xs-4">
+
+											<h:selectOneMenu class="form-control input-sm" id="village"
+												value="#{loadInstitutionProfile.vid}" required="true"
+												requiredMessage="#{msg['institutionForm.requiered.village.message']}">
+												<f:selectItem
+													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+												<f:selectItems value="#{loadInstitutionProfile.villages}"
+													var="option" itemValue="#{option.villageId}"
+													itemLabel="#{option.villageName_en}"
+													itemLabelEscaped="true" />
+											</h:selectOneMenu>
+										</div>
+										<h:message errorClass="errorMsg1" for="village"></h:message>
+									</div>
+								</p:outputPanel>
+							</h:panelGroup>
+
+
+							<!-- province div ends-->
+
+							<div class="form-group row">
+								<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+									style="color: black">#{msg['institutionForm.name']} <span
+									style="color: red">*</span>
+								</label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+
+									<h:inputText class="form-control input-sm" id="name"
+										required="true"
+										requiredMessage="#{msg['institutionForm.requiered.name.message']}"
+										value="#{loadInstitutionProfile.instName}"
+										validatorMessage="#{msg['error_institution.enter.invalid.institutioName']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.PLZ_ENTER_INSTITUTE_NAME']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
 								</div>
+								<h:message errorClass="errorMsg1" for="name"></h:message>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-2 col-sm-2 col-xs-6 control-label"
+									style="color: black">#{msg['institutionForm.address']}
+									<span style="color: red">*</span>
+								</label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+
+									<h:inputText class="form-control input-sm" id="address1"
+										required="true"
+										requiredMessage="#{msg['institutionForm.requiered.address.message']}"
+										value="#{loadInstitutionProfile.instaddress}"
+										validatorMessage="#{msg['error_institution.enter.invalid.institutioAddress']}">
+										<f:validateRegex
+											pattern="#{regex['regex.validation.message.PLZ_ENTER_ADDRESS']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+
+								</div>
+								<h:message errorClass="errorMsg1" for="address1"></h:message>
 							</div>
 
+							<hr></hr>
+							<div class="form-group row">
 
+								<div class="col-sm-8 col-sm-8 col-xs-8 ">
+									<!-- Saving new headquater starts -->
+									<p:outputPanel rendered="#{loadInstitutionProfile.cmpltDiv}">
+										<h:commandButton class="btn btn-info btn-sm btn-block"
+											value="Submit" style="float:left;margin-left:1%;"
+											action="#{loadInstitutionProfile.saveInstitutionRequest()}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandButton>
+									</p:outputPanel>
+									<!-- Saving new headquater ends -->
+									<!-- Saving new branch starts -->
+									<p:outputPanel
+										rendered="#{not loadInstitutionProfile.cmpltDiv}">
+										<div class="col-sm-2 col-sm-2 col-xs-2 ">
+											<h:commandLink class="btn btn-info btn-sm btn-block"
+												value="Submit"
+												action="#{loadInstitutionProfile.saveBranchRequest()}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink>
+										</div>
+										<div class="col-sm-2 col-sm-2 col-xs-2 ">
+											<h:commandLink
+												action="#{loadInstitutionProfile.backToprofile()}"
+												class="btn btn-info btn-sm btn-block" value="Back"></h:commandLink>
+										</div>
+									</p:outputPanel>
+									<!-- Saving new branch ends -->
+
+								</div>
+
+								<div class="col-sm-9 col-sm-9 col-xs-9">
+									<h:outputText value=""
+										style="text-align: right; font-weight: bold" />
+								</div>
+								<span class="text-danger" id="customeordererror"></span>
+							</div>
 						</div>
-					</p:outputPanel>
 
-					<p:outputPanel rendered="#{loadInstitutionProfile.div3 }">
-						<div class="panel panel-info">
+
+					</div>
+				</p:outputPanel>
+				<p:outputPanel rendered="#{loadInstitutionProfile.div2}">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h5 style="text-align: left; color: white; font-weight: bold">INSTITUTION
+								CONTACT</h5>
+						</div>
+						<div class="panel-body">
+							<span style="color: #737373; font-size: 10pt">Fields
+								marked with an asterisk <span style="color: red">(*)</span> are
+								mandatory.
+							</span> <br /> <br />
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.Email']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText value="#{loadInstitutionProfile.useremail}"
+										class="form-control input-sm" id="email" required="true"
+										validatorMessage="#{msg['error.enter.invalid.email']}"
+										converterMessage="#{msg['error.enter.invalid.email']}"
+										requiredMessage="#{msg['error.enter.required.email']}">
+										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="email"></h:message>
+							</div>
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.Phone']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText value="#{loadInstitutionProfile.tel}"
+										class="form-control input-sm" id="phone" required="true"
+										converterMessage="#{msg['error.enter.invalid.phone']}"
+										requiredMessage="#{msg['requiered.phone.message']}"
+										validatorMessage="#{msg['error.enter.invalid.phone']}">
+										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="phone"></h:message>
+							</div>
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.pobox']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText value="#{loadInstitutionProfile.pobx}"
+										class="form-control input-sm" id="pobox" required="true"
+										converterMessage="#{msg['error.enter.invalid.phone']}"
+										requiredMessage="#{msg['requiered.pobox.message']}"
+										validatorMessage="#{msg['error.enter.invalid.phone']}">
+										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="pobox"></h:message>
+							</div>
+							<hr></hr>
+							<div class="form-group row">
+
+								<div class="col-sm-2 col-sm-2 col-xs-2 ">
+									<h:commandButton class="btn btn-info btn-sm btn-block"
+										value="Save" style="float:left;left;margin-left:1%"
+										action="#{loadInstitutionProfile.saveContact()}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandButton>
+
+								</div>
+								<div class="col-sm-2 col-sm-2 col-xs-2 ">
+									<h:commandButton class="btn btn-info btn-sm btn-block"
+										value="Back" style="float:left;left;margin-left:1%"
+										action="#{loadInstitutionProfile.backToprofile()}">
+										<f:ajax render="profle" execute="profle"
+											onevent="showProgress" />
+									</h:commandButton>
+
+								</div>
+								<div class="col-sm-7 col-sm-9 col-xs-9">
+									<h:outputText value="" style="text-align: font-weight: bold" />
+								</div>
+
+								<span class="text-danger" id="customeordererror"></span>
+							</div>
+						</div>
+
+
+					</div>
+				</p:outputPanel>
+
+				<p:outputPanel rendered="#{loadInstitutionProfile.div4}">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h5 style="text-align: left; color: white; font-weight: bold">BRANCH
+								CONTACT</h5>
+						</div>
+						<div class="panel-body">
+							<span style="color: #737373; font-size: 10pt">Fields
+								marked with an asterisk <span style="color: red">(*)</span> are
+								mandatory.
+							</span> <br /> <br />
+							<div class="col-md-4 col-sm-4 col-xs-4">
+
+								<h:selectOneMenu class="form-control input-sm" id="inst"
+									value="#{loadInstitutionProfile.rid}" required="true"
+									requiredMessage="#{msg['institutionForm.requiered.village.message']}">
+									<f:selectItem
+										itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
+										itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+									<f:selectItems value="#{loadInstitutionProfile.instDtos}"
+										var="option" itemValue="#{option.institutionId}"
+										itemLabel="#{option.request.institutionName}"
+										itemLabelEscaped="true" />
+								</h:selectOneMenu>
+							</div>
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.Email']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText value="#{loadInstitutionProfile.useremail}"
+										class="form-control input-sm" id="email1" required="true"
+										validatorMessage="#{msg['error.enter.invalid.email']}"
+										converterMessage="#{msg['error.enter.invalid.email']}"
+										requiredMessage="#{msg['error.enter.required.email']}">
+										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+										<f:validateLength maximum="100" />
+									</h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="email"></h:message>
+							</div>
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.Phone']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText value="#{loadInstitutionProfile.tel}"
+										class="form-control input-sm" id="phone1" required="true"
+										converterMessage="#{msg['error.enter.invalid.phone']}"
+										requiredMessage="#{msg['requiered.phone.message']}"
+										validatorMessage="#{msg['error.enter.invalid.phone']}">
+										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="phone1"></h:message>
+							</div>
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-2 col-sm-2 col-xs-2 control-label"
+									style="color: black">#{msg['label.message.pobox']}<span
+									style="color: red">*</span></label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<h:inputText value="#{loadInstitutionProfile.pobx}"
+										class="form-control input-sm" id="pobox1" required="true"
+										converterMessage="#{msg['error.enter.invalid.phone']}"
+										requiredMessage="#{msg['requiered.pobox.message']}"
+										validatorMessage="#{msg['error.enter.invalid.phone']}">
+										<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+										<f:validateLength maximum="25" />
+									</h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="pobox1"></h:message>
+							</div>
+							<hr></hr>
+							<div class="form-group row">
+
+								<div class="col-sm-2 col-sm-2 col-xs-2 ">
+									<h:commandButton class="btn btn-info btn-sm btn-block"
+										value="Save" style="float:left;left;margin-left:1%"
+										action="#{loadInstitutionProfile.SaveBranchContact()}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandButton>
+
+								</div>
+								<div class="col-sm-2 col-sm-2 col-xs-2 ">
+									<h:form>
+										<h:commandButton class="btn btn-info btn-sm btn-block"
+											value="Back" style="float:left;margin-left:1%"
+											action="#{loadInstitutionProfile.bacKnstitutionBranchContact()}">
+											<f:ajax onevent="showProgress" render="profle"
+												execute="profle" />
+										</h:commandButton>
+									</h:form>
+								</div>
+								<div class="col-sm-2 col-sm-2 col-xs-2 ">
+									<h:commandButton class="btn btn-info btn-sm btn-block"
+										value="Back" style="float:left;left;margin-left:1%"
+										action="#{loadInstitutionProfile.backToprofile()}">
+										<f:ajax render="profle" execute="profle"
+											onevent="showProgress" />
+									</h:commandButton>
+
+								</div>
+								<div class="col-sm-7 col-sm-9 col-xs-9">
+									<h:outputText value="" style="text-align: font-weight: bold" />
+								</div>
+
+								<span class="text-danger" id="customeordererror1"></span>
+							</div>
+						</div>
+
+
+					</div>
+				</p:outputPanel>
+
+				<p:outputPanel rendered="#{loadInstitutionProfile.div3 }">
+					<div class="panel panel-info">
+						<div style="width: 100%">
 							<h:panelGroup layout="block"
 								rendered="#{not loadInstitutionProfile.valid and not facesContext.validationFailed}">
 								<ul>
@@ -964,10 +1015,66 @@
 									</ui:repeat>
 								</ul>
 							</h:panelGroup>
-							<div class="panel-heading">
-								<h5 style="text-align: left; color: white; font-weight: bold">INSTITUTION
-									ESCALET POLICY</h5>
+						</div>
+						<div class="panel-heading w3-card">
+							<h3 style="text-align: left; color: white; font-weight: bold">INSTITUTION
+								POLICIES</h3>
+							<div class="container" style="width: 100%; padding-bottom: 2%">
+								<div class="row">
+									<div class=" w3-round w3-white col-md-3 col-sm-3 col-xs-3 ">
+										<div class="w3-card w3-round w3-white">
+											<div>
+												<span class="w3-left"> <h:graphicImage class="image"
+														style="width:70%; height:20%;padding-top:5%;padding-left:6%"
+														alt="userImage"
+														value="/images/dynamic/?file=#{loadInstitutionProfile.institution.instLogo}" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-9 col-sm-9 col-xs-9">
+										<div class=" col-md-12 col-sm-12 col-xs-12">
+											<div class=" col-md-12 col-sm-12 col-xs-12">
+												<p:outputPanel rendered="#{not ls.editable}">
+													<h3>#{loadInstitutionProfile.dto.request.institutionName}</h3>
+												</p:outputPanel>
+
+											</div>
+											<div class=" col-md-12 col-sm-12 col-xs-12">
+
+												<p>
+													<i class="w3-right"></i> <span
+														class="glyphicon glyphicon-asterisk"><h:outputText
+															value="   Type:" /> <h:outputText
+															value="#{loadInstitutionProfile.dto.institutionType}"
+															rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText></span>
+												</p>
+												<p>
+													<i class="w3-right"></i> <span
+														class="glyphicon glyphicon-asterisk"><h:outputText
+															value="Country:" /> <h:outputText
+															rendered="#{not loadInstitutionProfile.dto.editable}"
+															value="#{loadInstitutionProfile.institution.request.country}"></h:outputText>
+													</span>
+												</p>
+
+												<p>
+													<i class="w3-right"></i><span
+														class="glyphicon glyphicon-asterisk"><h:outputText
+															value="Address:" /> <h:outputText
+															value="#{loadInstitutionProfile.institution.request.institutionAddress}"
+															rendered="#{not loadInstitutionProfile.dto.editable}"></h:outputText>
+													</span>
+												</p>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
 							</div>
+						</div>
+						<div class="panel-body">
 							<p:outputPanel rendered="#{not loadInstitutionProfile.div3_1}">
 								<!-- table start -->
 
@@ -1083,162 +1190,236 @@
 								<!-- table ends -->
 							</p:outputPanel>
 							<p:outputPanel rendered="#{loadInstitutionProfile.div3_1}">
-								<div class="panel-body">
-									<span style="color: #737373; font-size: 10pt">Fields
-										marked with an asterisk <span style="color: red">(*)</span>
-										are mandatory.
-									</span> <br /> <br />
-									<div class="form-group row">
-										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-											style="color: black">#{msg['message.com.institution.EscaletTime']}<span
+								<span style="color: #737373; font-size: 10pt">Fields
+									marked with an asterisk <span style="color: red">(*)</span> are
+									mandatory.
+								</span>
+								<br />
+								<br />
+								<div class="form-group row">
+									<p class="col-md-6 col-sm-6 col-xs-6 control-label"
+										style="color: black">
+										#{msg['message.com.institution.EscaletTime']}<span
 											style="color: red">*</span>
-										</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
+									</p>
+									<div class="col-md-1 col-sm-1 col-xs-1">
 
-											<h:inputText class="form-control input-sm" id="plcy"
-												required="true"
-												requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
-												value="#{loadInstitutionProfile.nmbrTime}"
-												validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
-												<f:validateRegex
-													pattern="#{regex['regex.validation.message.DIGITS']}" />
-											</h:inputText>
-										</div>
-										<h:message errorClass="errorMsg1" for="plcy"></h:message>
+										<h:inputText class="form-control input-sm" id="plcy"
+											required="true"
+											requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+											value="#{loadInstitutionProfile.nmbrTime}"
+											validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.DIGITS']}" />
+										</h:inputText>
 									</div>
-									<div class="form-group row">
-										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-											style="color: black">Short activity mark<span
-											style="color: red">*</span>
-										</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup id="id1"
+													layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 8%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent1" for="id1" position="bottom">
+													<span> #{msg['help.userdob.message']} </span>
+												</p:tooltip>
+										</a></span>
 
-											<h:inputText class="form-control input-sm" id="shtplcy"
-												required="true"
-												requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
-												value="#{loadInstitutionProfile.shrtActivityMark}"
-												validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
-												<f:validateRegex
-													pattern="#{regex['regex.validation.message.DIGITS']}" />
-											</h:inputText>
-										</div>
-										<h:message errorClass="errorMsg1" for="shtplcy"></h:message>
 									</div>
-									<div class="form-group row">
-										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-											style="color: black">Medium activity mark<span
-											style="color: red">*</span>
-										</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
-
-											<h:inputText class="form-control input-sm" id="mdplcy"
-												required="true"
-												requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
-												value="#{loadInstitutionProfile.mdumActivityMark}"
-												validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
-												<f:validateRegex
-													pattern="#{regex['regex.validation.message.DIGITS']}" />
-											</h:inputText>
-										</div>
-										<h:message errorClass="errorMsg1" for="mdplcy"></h:message>
-									</div>
-									<div class="form-group row">
-										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-											style="color: black">Long Task mark<span
-											style="color: red">*</span>
-										</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
-
-											<h:inputText class="form-control input-sm" id="lngmark"
-												required="true"
-												requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
-												value="#{loadInstitutionProfile.lngActivityMark}"
-												validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
-												<f:validateRegex
-													pattern="#{regex['regex.validation.message.DIGITS']}" />
-											</h:inputText>
-										</div>
-										<h:message errorClass="errorMsg1" for="lngmark"></h:message>
-									</div>
-									<div class="form-group row">
-										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-											style="color: black">Plan Period<span
-											style="color: red">*</span>
-										</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
-
-
-											<h:selectOneMenu class="form-control input-sm" id="plp"
-												value="#{loadInstitutionProfile.plp}" required="true"
-												requiredMessage="#{msg['institutionForm.requiered.planP.message']}">
-												<f:selectItem
-													itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-													itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-												<f:selectItem
-													itemLabel="#{msg['institutionForm.week.PLACEHOLDER']}"
-													itemValue="7" itemLabelEscaped="true" />
-												<f:selectItem
-													itemLabel="#{msg['institutionForm.trimestre.PLACEHOLDER']}"
-													itemValue="90" itemLabelEscaped="true" />
-												<f:selectItem
-													itemLabel="#{msg['institutionForm.semestre.PLACEHOLDER']}"
-													itemValue="180" itemLabelEscaped="true" />
-											</h:selectOneMenu>
-										</div>
-										<h:message errorClass="errorMsg1" for="plp"></h:message>
-									</div>
-									<div class="form-group row">
-										<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-											style="color: black">Variation<span
-											style="color: red">*</span>
-										</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
-
-											<h:inputText class="form-control input-sm" id="vr"
-												required="true"
-												requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
-												value="#{loadInstitutionProfile.variation}"
-												validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
-												<f:validateRegex
-													pattern="#{regex['regex.validation.message.DIGITS']}" />
-											</h:inputText>
-										</div>
-										<h:message errorClass="errorMsg1" for="vr"></h:message>
-									</div>
-									<hr></hr>
-									<div class="form-group row">
-
-										<div class="col-sm-2 col-sm-2 col-xs-2 ">
-											<h:commandButton class="btn btn-info btn-sm btn-block"
-												value="Submit" style="float:right;margin-left:1%"
-												action="#{loadInstitutionProfile.savePolicy()}">
-												<f:ajax render="@form" execute="@form"
-													onevent="showProgress" />
-											</h:commandButton>
-
-										</div>
-										<div class="col-sm-9 col-sm-9 col-xs-9">
-											<h:outputText value=""
-												style="text-align: left;; font-weight: bold" />
-										</div>
-
-										<span class="text-danger" id="customeordererror"></span>
-									</div>
+									<h:message errorClass="errorMsg1" for="plcy"></h:message>
 								</div>
+								<div class="form-group row">
+									<p class="col-md-6 col-sm-6 col-xs-6 control-label"
+										style="color: black">
+										#{msg['message.com.institution.shortActMarks']}<span
+											style="color: red">*</span>
+									</p>
+									<div class="col-md-1 col-sm-1 col-xs-1">
+
+										<h:inputText class="form-control input-sm" id="shtplcy"
+											required="true"
+											requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+											value="#{loadInstitutionProfile.shrtActivityMark}"
+											validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.DIGITS']}" />
+										</h:inputText>
+									</div>
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup id="id2"
+													layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 8%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent" for="id2" position="bottom">
+													<span> #{msg['help.userdob.message']} </span>
+												</p:tooltip>
+										</a></span>
+
+									</div>
+									<h:message errorClass="errorMsg1" for="shtplcy"></h:message>
+								</div>
+								<div class="form-group row">
+									<p class="col-md-6 col-sm-6 col-xs-6 control-label"
+										style="color: black">
+										#{msg['message.com.institution.mediumActMarks']}<span
+											style="color: red">*</span>
+									</p>
+									<div class="col-md-1 col-sm-1 col-xs-1">
+
+										<h:inputText class="form-control input-sm" id="mdplcy"
+											required="true"
+											requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+											value="#{loadInstitutionProfile.mdumActivityMark}"
+											validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.DIGITS']}" />
+										</h:inputText>
+									</div>
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup id="id3"
+													layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 8%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent3" for="id3" position="bottom">
+													<span> #{msg['help.userdob.message']} </span>
+												</p:tooltip>
+										</a></span>
+
+									</div>
+									<h:message errorClass="errorMsg1" for="mdplcy"></h:message>
+								</div>
+								<div class="form-group row">
+									<p class="col-md-6 col-sm-6 col-xs-6 control-label"
+										style="color: black">
+										#{msg['message.com.institution.longActMarks']}<span
+											style="color: red">*</span>
+									</p>
+									<div class="col-md-1 col-sm-1 col-xs-1">
+
+										<h:inputText class="form-control input-sm" id="lngmark"
+											required="true"
+											requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+											value="#{loadInstitutionProfile.lngActivityMark}"
+											validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.DIGITS']}" />
+										</h:inputText> 
+									</div>
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup id="id4"
+													layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 8%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent4" for="id4" position="bottom">
+													<span> #{msg['help.userdob.message']} </span>
+												</p:tooltip>
+										</a></span>
+
+									</div>
+									<h:message errorClass="errorMsg1" for="lngmark"></h:message>
+								</div>
+								<div class="form-group row">
+									<p class="col-md-6 col-sm-6 col-xs-6 control-label"
+										style="color: black">
+										Plan Period<span style="color: red">*</span>
+									</p>
+									<div class="col-md-1 col-sm-1 col-xs-1">
+
+
+										<h:selectOneMenu class="form-control input-sm" id="plp"
+											value="#{loadInstitutionProfile.plp}" required="true"
+											requiredMessage="#{msg['institutionForm.requiered.planP.message']}">
+											
+											<f:selectItems value="#{loadInstitutionProfile.nmbr}" var="nm"
+												 itemValue="#{nm}" itemLabelEscaped="true" />
+										</h:selectOneMenu>
+									</div>
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup id="id5"
+													layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 8%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent5" for="id5" position="bottom">
+													<span> #{msg['help.userdob.message']} </span>
+												</p:tooltip>
+										</a></span>
+
+									</div>
+									<h:message errorClass="errorMsg1" for="plp"></h:message>
+								</div>
+								<div class="form-group row">
+									<p class="col-md-6 col-sm-6 col-xs-6 control-label"
+										style="color: black">
+										Variation<span style="color: red">*</span>
+									</p>
+									<div class="col-md-1 col-sm-1 col-xs-1">
+
+										<h:inputText class="form-control input-sm" id="vr"
+											required="true"
+											requiredMessage="#{msg['message.com.institution.escaletTimerequired']}"
+											value="#{loadInstitutionProfile.variation}"
+											validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.DIGITS']}" />
+										</h:inputText>
+									</div>
+									<div class="col-md-2">
+										<span class="tooltips-input-main"><a
+											class="tooltips-input"> <h:panelGroup id="id6"
+													layout="block">
+													<img
+														src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+														style="width: 8%" alt="question" />
+												</h:panelGroup> <p:tooltip id="toolTipContent6" for="id6" position="bottom">
+													<span> #{msg['help.userdob.message']} </span>
+												</p:tooltip>
+										</a></span>
+
+									</div>
+									<h:message errorClass="errorMsg1" for="vr"></h:message>
+								</div>
+								<hr></hr>
+								<div class="form-group row">
+
+									<div class="col-sm-2 col-sm-2 col-xs-2 ">
+										<h:commandButton class="btn btn-info btn-sm btn-block"
+											value="Submit" style="float:right;margin-left:1%"
+											action="#{loadInstitutionProfile.savePolicy()}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandButton>
+
+									</div>
+									<div class="col-sm-9 col-sm-9 col-xs-9">
+										<h:outputText value=""
+											style="text-align: left;; font-weight: bold" />
+									</div>
+
+									<span class="text-danger" id="customeordererror"></span>
+								</div>
+
 							</p:outputPanel>
 						</div>
-					</p:outputPanel>
-					<p:outputPanel rendered="#{loadInstitutionProfile.profileEditable}">
-						<h:form>
-							<p:fileUpload
-								fileUploadListener="#{loadInstitutionProfile.UploadLogo}"
-								mode="advanced" dragDropSupport="true" multiple="true"
-								update="messages" sizeLimit="1000000" fileLimit="3"
-								allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
-							<p:growl id="messages" showDetail="true" />
-						</h:form>
-					</p:outputPanel>
+					</div>
 				</p:outputPanel>
+				<p:outputPanel rendered="#{loadInstitutionProfile.profileEditable}">
+					<h:form>
+						<p:fileUpload
+							fileUploadListener="#{loadInstitutionProfile.UploadLogo}"
+							mode="advanced" dragDropSupport="true" multiple="true"
+							update="messages" sizeLimit="1000000" fileLimit="3"
+							allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
+						<p:growl id="messages" showDetail="true" />
+					</h:form>
+				</p:outputPanel>
+
 			</h:form>
 		</ui:define>
 	</ui:composition>

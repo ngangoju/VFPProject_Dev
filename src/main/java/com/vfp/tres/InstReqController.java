@@ -25,6 +25,7 @@ import tres.dao.impl.CellImpl;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.CountryImpl;
 import tres.dao.impl.DistrictImpl;
+import tres.dao.impl.InstitutionContactImpl;
 import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.InstitutionRegRequestImpl;
 import tres.dao.impl.ProvinceImpl;
@@ -36,6 +37,7 @@ import tres.domain.Contact;
 import tres.domain.Country;
 import tres.domain.District;
 import tres.domain.Institution;
+import tres.domain.InstitutionContact;
 import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Province;
 import tres.domain.Sector;
@@ -50,7 +52,7 @@ public class InstReqController implements Serializable, DbConstant {
 	private String CLASSNAME = "InstReqController :: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid, selctDiv;
+	private boolean isValid, selctDiv, boolBottn, boolBottEnn, institutionPanel, requestPanel, defaultDiv;
 	/* end manage validation messages */
 	private Users usersSession;;
 	private InstitutionRegistrationRequest request;
@@ -69,6 +71,7 @@ public class InstReqController implements Serializable, DbConstant {
 	InstitutionImpl institutionImpl = new InstitutionImpl();
 	InstitutionRegRequestImpl requestImpl = new InstitutionRegRequestImpl();
 	ContactImpl contactImpl = new ContactImpl();
+	InstitutionContactImpl instContImpl = new InstitutionContactImpl();
 
 	@PostConstruct
 	public void init() {
@@ -87,7 +90,10 @@ public class InstReqController implements Serializable, DbConstant {
 			contact = new Contact();
 		}
 		try {
-
+			institutions = institutionImpl.getListWithHQL("select f from Institution f");
+			requests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstId asc");
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -107,7 +113,7 @@ public class InstReqController implements Serializable, DbConstant {
 							+ fmt.getMysqlFormatV2(from) + "' and '" + fmt.getMysqlFormatV2(to)
 							+ "' and i.genericStatus='active'")) {
 				InstitutionRegistrationRequest request = new InstitutionRegistrationRequest();
-				request=requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId");
+				request = requestImpl.getInstitutionRegRequestById(Integer.parseInt(data[0] + ""), "instRegReqstId");
 				requests.add(request);
 			}
 			LOGGER.info("Date FROM::::" + fmt.getMysqlFormatV2(from));
@@ -133,9 +139,9 @@ public class InstReqController implements Serializable, DbConstant {
 			InstitutionSave(request);
 			SendSupportEmail sendMail = new SendSupportEmail();
 			sendMail.sendMailForInstitution(request.getInstitutionRepresenative().getFname(),
-					request.getInstitutionRepresenative().getLname(),getContactEmail(request), "Confirmation",
+					request.getInstitutionRepresenative().getLname(), getContactEmail(request), "Confirmation",
 					"Your Institution registration has been Confirmed.");
-			setValid(true); 
+			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.institution.confrmation"));
 		} catch (Exception e) {
 			setValid(false);
@@ -145,8 +151,8 @@ public class InstReqController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 	}
-	
-	//returning email
+
+	// returning email
 	public String getContactEmail(InstitutionRegistrationRequest instReg) {
 
 		try {
@@ -189,6 +195,128 @@ public class InstReqController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 			return "";
+		}
+	}
+
+	// boolean method
+	public String rendButton(Institution inst) {
+		if (inst.getGenericStatus().equals(ACTIVE)) {
+			boolBottEnn = true;
+			return "not boolBottn";
+		} else {
+			boolBottn = true;
+			return "not boolBottEnn";
+		}
+
+	}
+
+	// block institution
+
+	public void blockInstitution(Institution inst) {
+		try {
+			inst.setGenericStatus(DISABLE);
+			inst.setUpdatedBy(usersSession.getViewId());
+			inst.setUpDtTime(timestamp);
+			institutionImpl.UpdateInstitution(inst);
+			institutions = institutionImpl.getListWithHQL("select f from Institution f");
+		} catch (Exception e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	// phone
+	public String getContactPhone(Institution inst) {
+
+		try {
+			InstitutionContact cnt1 = new InstitutionContact();
+			cnt1 = instContImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { inst },
+					"from InstitutionContact");
+			if (cnt1 != null) {
+				return cnt1.getPhone();
+			} else {
+				return "empty";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	// Email
+	public String getContactEmail(Institution inst) {
+
+		try {
+			InstitutionContact cnt1 = new InstitutionContact();
+			cnt1 = instContImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { inst },
+					"from InstitutionContact");
+			if (cnt1 != null) {
+				return cnt1.getEmail();
+			} else {
+				return "empty";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	// revers method for displaying request panel
+	public void displayRequestDivReverse() {
+		requestPanel = false;
+		defaultDiv = false;
+	}
+
+	// method for displaying institution panel
+	public void displayInstitutionDivReverse() {
+		institutionPanel = false;
+		defaultDiv = false;
+	}
+
+	// method for displaying request panel
+	public void displayRequestDiv() {
+		requestPanel = true;
+		defaultDiv = true;
+	}
+
+	// method for displaying institution panel
+	public void displayInstitutionDiv() {
+		institutionPanel = true;
+		defaultDiv = true;
+	}
+
+	// counting request
+	public int countRequests() {
+		int a = 0;
+		try {
+			for (Object[] data : requestImpl.reportList(
+					"select count(*),i.instRegReqstStatus from InstitutionRegistrationRequest i where i.instRegReqstStatus='"
+							+ PENDING + "' and i.genericStatus='" + ACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	// counting institution
+
+	public int countInstitution() {
+		int a = 0;
+		try {
+			for (Object[] data : institutionImpl.reportList(
+					"select count(*),i.genericStatus from Institution i where and i.genericStatus='" + ACTIVE + "'")) {
+				a = Integer.parseInt(data[0] + "");
+			}
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
 		}
 	}
 
@@ -335,6 +463,54 @@ public class InstReqController implements Serializable, DbConstant {
 
 	public void setSelctDiv(boolean selctDiv) {
 		this.selctDiv = selctDiv;
+	}
+
+	public boolean isBoolBottn() {
+		return boolBottn;
+	}
+
+	public void setBoolBottn(boolean boolBottn) {
+		this.boolBottn = boolBottn;
+	}
+
+	public boolean isBoolBottEnn() {
+		return boolBottEnn;
+	}
+
+	public void setBoolBottEnn(boolean boolBottEnn) {
+		this.boolBottEnn = boolBottEnn;
+	}
+
+	public boolean isInstitutionPanel() {
+		return institutionPanel;
+	}
+
+	public void setInstitutionPanel(boolean institutionPanel) {
+		this.institutionPanel = institutionPanel;
+	}
+
+	public boolean isRequestPanel() {
+		return requestPanel;
+	}
+
+	public void setRequestPanel(boolean requestPanel) {
+		this.requestPanel = requestPanel;
+	}
+
+	public InstitutionContactImpl getInstContImpl() {
+		return instContImpl;
+	}
+
+	public void setInstContImpl(InstitutionContactImpl instContImpl) {
+		this.instContImpl = instContImpl;
+	}
+
+	public boolean isDefaultDiv() {
+		return defaultDiv;
+	}
+
+	public void setDefaultDiv(boolean defaultDiv) {
+		this.defaultDiv = defaultDiv;
 	}
 
 }
