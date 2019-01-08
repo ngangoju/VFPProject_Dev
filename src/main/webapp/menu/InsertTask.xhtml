@@ -58,8 +58,16 @@
 						<fieldset>
 
 							<legend>#{msg['form.task.title']}</legend>
-
-
+							<h:panelGroup id="planPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['com.plan.title']}</label>
+									<div class="col-md-6 col-sm-6 col-xs-6"><p style="font-size:25px; color:#033c73;">#{taskController.plan.details}</p>
+									</div>
+									<h:message for="categoryId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
 							<h:panelGroup id="categoryPanel" layout="block">
 								<div class="form-group row">
 									<label for="todate"

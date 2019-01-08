@@ -262,7 +262,7 @@ public class FormSampleController implements Serializable, DbConstant {
 					LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
 					JSFMessagers.resetMessages();
 					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("upload.message.success"));
+					JSFMessagers.addInfoMessage(getProvider().getValue("upload.message.success"));
 					stratPlanFileList();
 				}
 			} else {

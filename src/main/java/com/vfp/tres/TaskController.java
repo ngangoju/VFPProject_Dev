@@ -21,13 +21,11 @@ import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
-import tres.domain.Activity;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.TaskDto;
-import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -95,15 +93,21 @@ public class TaskController implements Serializable, DbConstant {
 //			if() {
 //				
 //			}
-			userDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "userCategory", "board" },
-					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() }, "Users", "userId asc");
+			plan = planImpl.getModelWithMyHQL(new String[] { "genericStatus" }, new Object[] { ACTIVE },
+					SELECT_STRATEGIC_PLAN);
+			userDetails = usersImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "userCategory", "board" },
+					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() },
+					"Users", "userId asc");
 			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
 					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "TaskAssignment",
 					"taskAssignmentId asc");
 			taskDetail = taskImpl.getListWithHQL(SELECT_TASK);
-			taskDetails = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy" },
-					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname() }, "Task",
-					"taskId asc");
+			taskDetails = taskImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
+							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
+									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
+					"Task", "taskId asc");
 			listSize = taskDetails.size();
 			assignmentSize = taskAssignDetails.size();
 			for (Task task : taskDetails) {
@@ -142,15 +146,22 @@ public class TaskController implements Serializable, DbConstant {
 			plan = planImpl.getModelWithMyHQL(new String[] { "genericStatus" }, new Object[] { ACTIVE },
 					SELECT_STRATEGIC_PLAN);
 			task.setStrategicPlan(plan);
+//			if(task.getStartDate().getDay()<plan.getStartDate().getDay()) {
+//				 || task.getDueDate().getDay()>plan.getDueDate().getDay()
+//				JSFMessagers.resetMessages();
+//				setValid(false);
+//				JSFMessagers.addErrorMessage(getProvider().getValue("date.error.validation"));
+//			}else{
 			taskImpl.saveTask(task);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
-			LOGGER.info(CLASSNAME + ":::Task Details is saved");
+			LOGGER.info(
+					CLASSNAME + ":::Task Details is saved" + plan.getStartDate() + "and.message" + plan.getDueDate());
 			clearTaskFuileds();
 			// return"/menu/Task.xhtml?faces-redirect=true";
 			// showTasks();
-
+//			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
@@ -162,6 +173,7 @@ public class TaskController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void saveAssign() {
 		try {
 //			if(assignment.getGenericStatus().equals(ACTIVE) && assignment.getUser().equals(usersImpl.gettUserById(userId, "userId"))) {
@@ -187,6 +199,12 @@ public class TaskController implements Serializable, DbConstant {
 			assignment.setTask(taskImpl.getTaskById(taskID, "taskId"));
 			assignment.setUser(usersImpl.gettUserById(userId, "userId"));
 			taskAssignImpl.saveTaskAssignment(assignment);
+			
+//			taskDetails = taskImpl.getGenericListWithHQLParameter(
+//					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
+//							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
+//									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
+//					"Task", "taskId asc");
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
@@ -213,8 +231,8 @@ public class TaskController implements Serializable, DbConstant {
 			taskImpl.UpdateTask(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
-			this.approveRender=false;
-			this.rejectRender=true;
+			this.approveRender = false;
+			this.rejectRender = true;
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
@@ -236,8 +254,8 @@ public class TaskController implements Serializable, DbConstant {
 			taskImpl.UpdateTask(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
-			this.approveRender=true;
-			this.rejectRender=false;
+			this.approveRender = true;
+			this.rejectRender = false;
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.reject.form"));
