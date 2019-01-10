@@ -95,14 +95,10 @@
 															</span>
 														</div>
 													</div>
-													<h:form>
-														<h:commandLink value="Edit logo"
-															style="font-size:8pt;margin-left:9%"
-															action="#{loadInstitutionProfile.addLogview()}">
-															<f:ajax render="@form" execute="@form"
-																onevent="showProgress" />
-														</h:commandLink>
-													</h:form>
+													<a
+														href="#{loadUserInformationsController.getContextPath()}/menu/institutionLogo.xhtml">Edit
+														logo</a>
+
 												</div>
 												<div class="   col-md-9 col-sm-9 col-xs-9">
 													<div class=" col-md-12 col-sm-12 col-xs-12">
@@ -367,11 +363,10 @@
 																<hr></hr>
 																<div class="border">
 																	<p>
-																		<i class="w3-right"></i><span><p:commandLink
-																				value="Manage institution policies"
-																				class="glyphicon glyphicon-list-alt"
-																				action="#{loadInstitutionProfile.saveInstitutionPolicy()}"
-																				ajax="false" /> </span>
+																		<i class="w3-right"></i><span><a
+																			class="glyphicon glyphicon-list-alt"
+																			href="#{loadUserInformationsController.getContextPath()}/menu/EscaletPolicy.xhtml">Manage
+																				institution policies</a></span>
 																	</p>
 																	<p:outputPanel
 																		rendered="#{loadInstitutionProfile.hasContact}">
@@ -1307,7 +1302,7 @@
 											validatorMessage="#{msg['message.com.institution.escaletTimeValidation']}">
 											<f:validateRegex
 												pattern="#{regex['regex.validation.message.DIGITS']}" />
-										</h:inputText> 
+										</h:inputText>
 									</div>
 									<div class="col-md-2">
 										<span class="tooltips-input-main"><a
@@ -1335,9 +1330,9 @@
 										<h:selectOneMenu class="form-control input-sm" id="plp"
 											value="#{loadInstitutionProfile.plp}" required="true"
 											requiredMessage="#{msg['institutionForm.requiered.planP.message']}">
-											
-											<f:selectItems value="#{loadInstitutionProfile.nmbr}" var="nm"
-												 itemValue="#{nm}" itemLabelEscaped="true" />
+
+											<f:selectItems value="#{loadInstitutionProfile.nmbr}"
+												var="nm" itemValue="#{nm}" itemLabelEscaped="true" />
 										</h:selectOneMenu>
 									</div>
 									<div class="col-md-2">

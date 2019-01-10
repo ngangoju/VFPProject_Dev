@@ -83,7 +83,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private Country country;
 	private String instName, instaddress;
 	private int rid;
-	private int nmbr[]= {0,1,2,3,4,5,6,7,8,9};
+	private int nmbr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 	private Documents documents;
 	private InstitutionDto dto = new InstitutionDto();
@@ -338,7 +338,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
 			JSFMessagers.resetMessages();
 			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("upload.message.success"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("uploaded successfully"));
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + "testing save methode ");
 			JSFMessagers.resetMessages();
@@ -429,7 +429,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
-			LOGGER.info(CLASSNAME + ":::Institution request   sent"); 
+			LOGGER.info(CLASSNAME + ":::Institution request   sent");
 			return "";
 		} catch (Exception e) {
 			frstDiv = false;
@@ -548,8 +548,12 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 
 	/* method for displaying adding policy form starts */
 	public void displyPolicy() {
-		div3_1 = true;
-		LOGGER.info("TESTING IF REACHED:::::::::::");
+		div1 = true;
+	}
+
+	/* method for displaying adding policy form starts reverse */
+	public void displyPolicyReverse() {
+		div1 = false;
 	}
 
 	/* method for displaying adding policy form ends */
@@ -1452,6 +1456,5 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	public void setNmbr(int[] nmbr) {
 		this.nmbr = nmbr;
 	}
-	
 
 }
