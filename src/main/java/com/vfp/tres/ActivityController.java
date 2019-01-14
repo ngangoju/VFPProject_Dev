@@ -268,7 +268,7 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setDoneAction(true);
 			}
 
-			if (activityDto.getStatus().equals(REJECT)) {
+			if (activityDto.getStatus().equals(REJECT)&&(activityDto.getDueDate()==null)) {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
 				activityDto.setEditAction(false);
@@ -674,6 +674,7 @@ public class ActivityController implements Serializable, DbConstant {
 					act.setUpdatedBy(usersSession.getViewId());
 					act.setUpDtTime(timestamp);
 					act.setStatus(DONE);
+					act.setEndDate(timestamp);
 					activityImpl.UpdateActivity(act);
 					activityDetails = activityImpl.getGenericListWithHQLParameter(
 							new String[] { "genericStatus", "task", "user" },
@@ -693,6 +694,7 @@ public class ActivityController implements Serializable, DbConstant {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(DONE);
+				act.setEndDate(timestamp);
 				activityImpl.UpdateActivity(act);
 				activityDetails = activityImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "task", "user" },
