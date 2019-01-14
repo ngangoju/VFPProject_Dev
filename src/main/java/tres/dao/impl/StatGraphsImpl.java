@@ -19,58 +19,20 @@ import tres.domain.StatGraph;
 
 public class StatGraphsImpl extends AbstractDao<Long, StatGraph> implements IStatGraph {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-
-	public StatGraph saveStatGraphs(StatGraph statGraphs) {
-		return saveIntable(statGraphs);
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<StatGraph> getListStatisticGraphs() {
-		return (List<StatGraph>) (Object) getModelList();
-	}
-
-	public StatGraph gettStatGraphById(int graphId, String primaryKeyclomunName) {
-		return (StatGraph) getModelById(graphId, primaryKeyclomunName);
-	}
-
-	public StatGraph UpdateStatGraphs(StatGraph statGraphs) {
-		return updateIntable(statGraphs);
-	}
-
-	public StatGraph getStatGraphWithQuery(String[] propertyName, Object[] value, String hqlStatement) {
-		try {
-			return (StatGraph) getModelWithMyHQL(propertyName, value, hqlStatement);
-		} catch (Exception ex) {
-			LOGGER.info("getUsersWithQuery  Query error ::::" + ex.getMessage());
-		}
-		return null;
-	}
-
-	public String myNane() {
-		return "GWIZA ERIC";
-	}
-
-	public StatGraphsImpl() {
-
-	}
-
+	
 	public StatGraph saveStatGraph(StatGraph statGraph) {
-		// TODO Auto-generated method stub
-		return null;
+		return saveIntable(statGraph);
 	}
 
 	public List<StatGraph> getListStatGraphs() {
-		// TODO Auto-generated method stub
-		return null;
+		return (List<StatGraph>) (Object) getModelList();
 	}
 
 	public StatGraph getStatGraphById(int graphId, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+		return (StatGraph) getModelById(graphId, primaryKeyclomunName);
 	}
 
 	public StatGraph UpdateStatGraph(StatGraph statGraph) {
-		// TODO Auto-generated method stub
-		return null;
+		return updateIntable(statGraph);
 	}
 }

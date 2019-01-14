@@ -53,7 +53,7 @@
 						</table>
 
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 
 						<h:panelGroup layout="block"
 							rendered="#{not boardController.valid and not facesContext.validationFailed}">
@@ -131,28 +131,6 @@
 								</div>
 								<div class="form-group row">
 									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
-										style="color: black">#{msg['form.board.institution']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:selectOneMenu id="instinfo" styleClass="form-control"
-											required="true" value="#{boardController.instituteNumber}"
-											converterMessage="#{msg['requiered.username.institution']}"
-											requiredMessage="#{msg['required.institution.message']}">
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-											<f:selectItems value="#{boardController.institutionList}"
-												var="option" itemValue="#{option.institutionId}"
-												itemLabel="#{option.request.institutionName}"
-												itemLabelEscaped="true" />
-
-										</h:selectOneMenu>
-									</div>
-									<h:message errorClass="errorMsg1" for="instinfo"></h:message>
-								</div>
-
-								<div class="form-group row">
-									<label class="col-md-2 col-sm-2 col-xs-6 control-label"
 										style="color: black">#{msg['form.board.board']}<span
 										style="color: red">*</span></label>
 									<div class="col-md-4 col-sm-4 col-xs-4">
@@ -189,18 +167,43 @@
 
 						<p:outputPanel id="toTable" rendered="#{boardController.rendered}"
 							autoUpdate="true">
-							<p:dataTable value="#{boardController.boardDtoList}" var="board"
-								rows="10" id="tables"
-								style="font-family: Open Sans sans-serif !important; font-size: 14px !important; margin-top:20px;">
+							
+							<div class=" col-md-12" style="height:330px;overflow-y: scroll;">
+							<h:dataTable id="activityTable" binding="#{tabl}"
+								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:90% !important;
+       						 -webkit-box-shadow: none;
+       							 box-shadow: none !important;
+       								 margin: 16px 25px 0 !important;"
+								value="#{boardController.boardDtoList}" var="board"
+								class="table table-striped table-hover table-bordered tableUpdated ">
 								<f:facet name="header">
-									<h4
-										style="font-family: Open Sans sans-serif !important; font-size: 20px !important; color: black; font-weight: bold;">
-										#{msg['message.header.boardList.filter']}</h4>
+									<label
+										style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px;margin-left: 30%; font-size: 18px;">
+										#{msg['message.header.boardList.filter']}</label>
 								</f:facet>
 
-								<p:column headerText="boardName">
-
-									<h:inputText value="#{board.boardName}" size="10"
+								<h:column>
+									<f:facet name="header">
+										<label>No</label>
+									</f:facet>
+									<h:outputText value="#{tabl.rowIndex + 1}" />
+								</h:column>
+								
+								<h:column>
+									<f:facet name="header">
+										<label>Main board</label>
+									</f:facet>
+									<h:outputText value="#{boardController.showParentBoard(board)}"
+										/>
+									<h:message errorClass="errorMsg1" for="MainBoardName"
+										style="font-size:12px;font-family:Time New Roman;"></h:message>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Board name</label>
+									</f:facet>
+									
+									<h:inputText value="#{board.boardName}" size="20"
 										id="boardName" rendered="#{board.editable}" required="true"
 										requiredMessage="#{msg['requiered.fname.message']}"
 										converterMessage="#{msg['error.enter.invalid.fname']}"
@@ -214,13 +217,13 @@
 										rendered="#{not board.editable}" />
 									<h:message errorClass="errorMsg1" for="boardName"
 										style="font-size:12px;font-family:Time New Roman;"></h:message>
-								</p:column>
-
-
-								<p:column headerText="Description">
-
-
-									<h:inputText value="#{board.description}" size="10" id="desc"
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Board description</label>
+									</f:facet>
+									
+									<h:inputTextarea value="#{board.description}" size="20" id="desc"
 										rendered="#{board.editable}" required="true"
 										requiredMessage="#{msg['requiered.lname.message']}"
 										converterMessage="#{msg['error.enter.invalid.lname']}"
@@ -228,32 +231,39 @@
 										<f:validateRegex
 											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
 										<f:validateLength maximum="100"></f:validateLength>
-									</h:inputText>
+									</h:inputTextarea>
 									<h:outputText value="#{board.description}"
 										rendered="#{not board.editable}" />
 									<h:message errorClass="errorMsg1" for="desc"
 										style="font-size:12px;font-family:Time New Roman;"></h:message>
-
-								</p:column>
-								<p:column headerText="Status">
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Board status</label>
+									</f:facet>
 									<h:outputText value="#{board.status}" />
-
-								</p:column>
-								<p:column headerText=" Change Status">
-
-									<h:commandLink style="color:white"
-										class="btn btn-success 	glyphicon glyphicon-refresh"
-										value="#{board.action}"
+								</h:column>
+	
+								<h:column>
+									<f:facet name="header">
+										<label>Change status</label>
+									</f:facet>
+									<h:commandLink style="color:white" data-toggle="tooltip" data-placement="left"
+											title="#{board.action}"
+										class="btn btn-sm btn-success 	glyphicon glyphicon-refresh"
 										action="#{boardController.updateStatus(board)}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 									</h:commandLink>
-								</p:column>
-								<p:column headerText="Action">
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<label>Action</label>
+									</f:facet>
 									<div class="btn-group btn btn-sm" role="group"
 										aria-label="Basic example">
 										<h:commandLink data-toggle="tooltip" data-placement="left"
 											title="Edit"
-											class="btn btn-success 	glyphicon glyphicon-edit"
+											class="btn btn-sm btn-success 	glyphicon glyphicon-edit"
 											style="color:white;"
 											action="#{boardController.editAction(board)}"
 											rendered="#{not board.editable}">
@@ -262,15 +272,14 @@
 
 										<h:commandLink data-toggle="tooltip" data-placement="left"
 											title="Cancel"
-											class="btn btn-danger 	glyphicon glyphicon-remove"
+											class="btn btn-sm btn-danger 	glyphicon glyphicon-remove"
 											action="#{boardController.cancel(board)}"
 											style="color:white;" rendered="#{board.editable}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
 
-
 										<h:commandLink
-											class="btn btn-primary glyphicon glyphicon-floppy-disk"
+											class="btn btn-sm btn-primary glyphicon glyphicon-floppy-disk"
 											style="color:white;" data-toggle="tooltip"
 											data-placement="right" title="Save Changes"
 											action="#{boardController.newAction(board)}"
@@ -279,9 +288,25 @@
 
 										</h:commandLink>
 									</div>
-								</p:column>
-
-							</p:dataTable>
+								</h:column>
+								<f:facet name="footer">
+										<label>Choose records per page:</label>
+									<h:selectOneMenu value="#{boardController.range}" style="width:25%;">
+										<f:selectItem itemLabel="5 Records" itemValue="5" />
+										<f:selectItem itemLabel="10 Records" itemValue="10" />
+										<f:selectItem itemLabel="15 Records" itemValue="15" />
+										<f:selectItem itemLabel="All" itemValue="All" />
+										<f:ajax render="@form" execute="@form" onevent="showProgress"
+											listener="#{boardController.showBoard()}"/>
+									</h:selectOneMenu>
+									<a
+										href="#{loadUserInformationsController.getContextPath()}/menu/boardOrganigram.xhtml"
+										class="btn btn-primary glyphicon glyphicon-chevron-left"
+										style="font-size: 14px !important;margin-left:25%;">
+										#{msg['UserCatForm.BackBoardButtom']} </a>
+								</f:facet>
+							</h:dataTable>
+							</div>						
 						</p:outputPanel>
 					</div>
 				</div>

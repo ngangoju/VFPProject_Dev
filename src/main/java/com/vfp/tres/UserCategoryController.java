@@ -72,9 +72,11 @@ public class UserCategoryController implements Serializable, DbConstant {
 
 		try {
 			//categoryDetails = userCatImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },new Object[] { ACTIVE }, "UserCategory", "userCatid desc");
-			categoryDetails=userCatImpl.getListWithHQL("from UserCategory", 0, endrecord);
+			categoryDetails=userCatImpl.getListWithHQL("from UserCategory", 0, endCateRecord);
 
 			categoryDtoDetails = listCategory(categoryDetails);
+			
+				
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -342,8 +344,22 @@ public class UserCategoryController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String renderAction(UserCategoryDto cat) {
+	@SuppressWarnings("unchecked")
+	public String renderAction(UserCategoryDto cat) throws Exception {
 		cat.setNotify(true);
+		/*List<Contact>contactList= new ArrayList<Contact>();
+		contactList=contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+				new Object[] { ACTIVE}, "Contact", "contactId asc");*/
+		contactDetails= new ArrayList<Contact>();
+		for (Object[] data : usersImpl.reportList(
+				"select us.fname,us.lname, us.viewId,us.address, us.userId,co.email,co.phone from Contact co right  join  co.user us join us.userCategory cat where co.user is not null and cat.usercategoryName='"
+						+ INSTITUTE_REP + "'")) {
+			LOGGER.info("users>>" + data[0] + ":: " + data[1] + "");			
+			Contact cont= new Contact();
+			cont.setEmail(data[5]+"");
+			cont.setPhone(data[6]+"");
+			contactDetails.add(cont);
+		}	
 		return null;
 	}
 

@@ -48,6 +48,8 @@ public class BoardController implements Serializable, DbConstant {
 	private List<Board> boardList = new ArrayList<Board>();
 	private List<BoardDto> boardDtoList = new ArrayList<BoardDto>();
 	private List<Institution> institutionList = new ArrayList<Institution>();
+	private List<Board>ListBoard= new ArrayList<Board>();
+	private List<BoardDto>mainBoard= new ArrayList<BoardDto>();
 	private int instituteNumber;
 	private int boardNumber;
 	private String boardName;
@@ -60,13 +62,12 @@ public class BoardController implements Serializable, DbConstant {
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	private boolean rendered = true;
 	private boolean renderForm;
-
+	private String range;
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		HttpSession session = SessionUtils.getSession();
 		usersSession = (Users) session.getAttribute("userSession");
-
 		if (users == null) {
 			users = new Users();
 		}
@@ -79,13 +80,26 @@ public class BoardController implements Serializable, DbConstant {
 
 		try {
 			LOGGER.info("initialise lists:: ");
-			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Board", "boardId desc");
+			/*
+			  boardList = boardImpl.getGenericListWithHQLParameter(new String[] {
+			  "genericStatus" }, new Object[] { ACTIVE }, "Board", "boardId desc");
+			 */
+			
+			boardList = boardImpl.getListWithHQL("from Board", 0, endCateRecord);
 
 			institutionList = instituteImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Institution", "institutionId desc");
 			LOGGER.info("lis size :: " + institutionList.size());
+
 			boardDtoList = allBoard(boardList);
+			
+			for(Object[] data:boardImpl.reportList("select b.boardId,b.boardName from Board b where b.boardId in(select d.board from Board d)")) {
+				BoardDto boardDto = new BoardDto();
+				boardDto.setEditable(false);
+				boardDto.setBoardId(Integer.parseInt(data[0]+""));
+				boardDto.setBoardName(data[1]+"");
+				mainBoard.add(boardDto);	
+			}
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -95,6 +109,28 @@ public class BoardController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public void showBoard() throws Exception {
+		if (range.equals("5") || (range.equals("10")) || (range.equals("15"))) {
+			int endRecords = Integer.parseInt(range);
+			boardList = boardImpl.getListWithHQL("from Board", 0, endRecords);
+			boardDtoList = allBoard(boardList);
+			
+		} else {
+			boardList = boardImpl.getGenericListWithHQLParameter(new String[] {
+			  "genericStatus" }, new Object[] { ACTIVE }, "Board", "boardId desc");
+			boardDtoList = allBoard(boardList);
+		}		
+	}
+
+	
+	public String showParentBoard(BoardDto bd) {
+		if(null!=bd.getBoard()) {
+			return bd.getBoard().getBoardName();
+		}else {
+			return bd.getBoardName();
+		}
+	}
 	public List<BoardDto> allBoard(List<Board> boardlist) {
 
 		boardDtoList = new ArrayList<BoardDto>();
@@ -103,6 +139,16 @@ public class BoardController implements Serializable, DbConstant {
 			boardDto.setEditable(false);
 			boardDto.setBoardId(board.getBoardId());
 			boardDto.setDescription(board.getDescription());
+			/*if (board.getBoard() != null) {
+				boardDto.setBoardName(board.getBoardName());
+			} else {
+				
+				boardDto.setBoardName(board.getBoardName());
+				LOGGER.info("Parent Board name:::::::"+board.getBoardName());
+				
+				
+				//boardDto.setBoardName("This is the main board");
+			}*/
 			boardDto.setBoardName(board.getBoardName());
 			boardDto.setInstitution(board.getInstitution());
 			boardDto.setBoard(board.getBoard());
@@ -119,23 +165,30 @@ public class BoardController implements Serializable, DbConstant {
 
 	}
 
-	public String newAction(BoardDto board) {
+	public String newAction(BoardDto boards) throws Exception {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
 		Board bd = new Board();
 		bd = new Board();
-		if (board != null)
+		if (boards != null)
+			LOGGER.info("here we are sart for " + boards.getBoardId() + "");
+			
 			/* us = usersImpl.gettUserById(user.getUserId(), "userId"); */
-			bd = boardImpl.getBoardById(board.getBoardId(), "boardId");
+			bd = boardImpl.getBoardById(boards.getBoardId(), "boardId");
 		if (bd != null)
 			LOGGER.info("here update sart for " + bd + " useriD " + bd.getGenericStatus());
-		board.setEditable(false);
-		bd.setBoardName(board.getBoardName());
-		bd.setDescription(board.getDescription());
+		boards.setEditable(false);
+		bd.setBoardName(boards.getBoardName());
+		bd.setDescription(boards.getDescription());
+		/*board=boardImpl.getBoardById(instituteNumber, "boardId");*/
+		bd.setBoard(boards.getBoard());
 		boardImpl.UpdateBoard(bd);
-		// return to current page
-		return "null";
-		// return "/menu/ViewUsersList.xhtml?faces-redirect=true";
+		boardList = boardImpl.getListWithHQL("from Board", 0, endrecord);
+		boardDtoList = allBoard(boardList);
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+		return null;
 
 	}
 
@@ -154,7 +207,7 @@ public class BoardController implements Serializable, DbConstant {
 
 	}
 
-	public String updateStatus(BoardDto board) {
+	public String updateStatus(BoardDto board) throws Exception {
 		LOGGER.info("update  saveAction method");
 		// get all existing value but set "editable" to false
 		/* Users us = new Users(); */
@@ -162,36 +215,41 @@ public class BoardController implements Serializable, DbConstant {
 		bd = new Board();
 
 		if (board != null)
-			/* us = usersImpl.gettUserById(user.getUserId(), "userId"); */
 			bd = boardImpl.getBoardById(board.getBoardId(), "boardId");
-		if (bd != null)
 			LOGGER.info("here update sart for " + bd + " useriD " + bd.getGenericStatus());
 		if (board.getStatus().equals(ACTIVE)) {
 			bd.setStatus(DESACTIVE);
-
-			// us.setStatus(DESACTIVE)
 		} else {
 			bd.setStatus(ACTIVE);
-			/* us.setStatus(ACTIVE); */
+		
 		}
 		boardImpl.UpdateBoard(bd);
-		boardDtoList = allBoard(boardList);
-		/* usersImpl.UpdateUsers(us); */
-		/* listUsersByDateBetween(); */
-		// return to current page
-		return "null";
-		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
 
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+		boardList = boardImpl.getListWithHQL("from Board", 0, endrecord);
+		boardDtoList = allBoard(boardList);
+		return "null";
 	}
 
-	public String saveBoard() throws Exception {
+	public String saveBoard() {
 		try {
-
+			Institution inst = new Institution();
+			Board bd1 = new Board();
 			try {
 
 				Board bd = new Board();
 				bd = boardImpl.getModelWithMyHQL(new String[] { "boardName" }, new Object[] { boardName },
 						"from Board");
+
+				inst = instituteImpl.getModelWithMyHQL(new String[] { "genericstatus", "institutionType", "createdBy" },
+						new Object[] { ACTIVE, "HeadQuoter", usersSession.getViewId() }, "from Institution");
+				LOGGER.info(inst.getInstitutionId() + ":::------->>>>>>Institute founded");
+
+				bd1 = boardImpl.getModelWithMyHQL(new String[] { "boardId", "genericstatus" },
+						new Object[] { boardNumber, ACTIVE }, "from Board ");
+
 				if (null != bd) {
 
 					JSFMessagers.resetMessages();
@@ -215,29 +273,23 @@ public class BoardController implements Serializable, DbConstant {
 			board.setGenericStatus(ACTIVE);
 			board.setStatus(ACTIVE);
 			board.setUpDtTime(timestamp);
-			Institution inst = new Institution();
-			inst = instituteImpl.getModelWithMyHQL(new String[] { "institutionId", "genericstatus" },
-					new Object[] { instituteNumber, ACTIVE }, "from Institution ");
 
-			Board bd1 = new Board();
+			if (null != bd1 || null == bd1) {
+				if (null != inst) {
 
-			bd1 = boardImpl.getModelWithMyHQL(new String[] { "boardId", "genericstatus" },
-					new Object[] { boardNumber, ACTIVE }, "from Board ");
-			if ((null != inst) || (null != bd1)) {
-				LOGGER.info(inst.getInstitutionId() + ":::------->>>>>>Institute founded");
-				board.setInstitution(instituteImpl.getInstitutionById(inst.getInstitutionId(), "institutionId"));
-				board.setUpdatedBy(usersSession.getViewId());
-				board.setBoardName(boardName);
-				board.setBoard(bd1);
-				boardImpl.saveBoards(board);
-				JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.board"));
-				LOGGER.info(CLASSNAME + ":::Contact Details is saved");
-				clearContactFuileds();
-				return "/menu/boardOrganigram.xhtml?faces-redirect=true";
+					board.setInstitution(instituteImpl.getInstitutionById(inst.getInstitutionId(), "institutionId"));
+					board.setUpdatedBy(usersSession.getViewId());
+					board.setBoardName(boardName);
+					board.setBoard(bd1);
+					boardImpl.saveBoards(board);
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.board"));
+					LOGGER.info(CLASSNAME + ":::board Details is saved");
+					clearContactFuileds();
+				}
 			}
-			return "/menu/Organigram.xhtml?faces-redirect=true";
+			return null;
 		} catch (HibernateException e) {
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
 			JSFMessagers.resetMessages();
@@ -245,7 +297,7 @@ public class BoardController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
-			return "";
+			return null;
 		}
 
 	}
@@ -566,4 +618,27 @@ public class BoardController implements Serializable, DbConstant {
 		this.renderForm = renderForm;
 	}
 
+	public String getRange() {
+		return range;
+	}
+
+	public void setRange(String range) {
+		this.range = range;
+	}
+
+	public List<Board> getListBoard() {
+		return ListBoard;
+	}
+
+	public void setListBoard(List<Board> listBoard) {
+		ListBoard = listBoard;
+	}
+
+	public List<BoardDto> getMainBoard() {
+		return mainBoard;
+	}
+
+	public void setMainBoard(List<BoardDto> mainBoard) {
+		this.mainBoard = mainBoard;
+	}	
 }

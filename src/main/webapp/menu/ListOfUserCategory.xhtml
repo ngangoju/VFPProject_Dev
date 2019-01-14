@@ -15,41 +15,9 @@
 			<h:form>
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<table>
-							<tr>
-								<td>
-									<div>
-										<h:commandLink
-											class="btn btn-primary btn-xlg btn-block glyphicon "
-											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-											value="#{msg['UserCatForm.availButtom']}"
-											actionListener="#{userCategoryController.showCatTable()}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-
-										</h:commandLink>
-									</div>
-
-								</td>
-							</tr>
-						</table>
 					</div>
 					<div class="panel-body"
 						style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-
-
-						<fieldset>
-							<legend> </legend>
-							<h:panelGrid columns="1" columnClasses="left,right"
-								style="width:100%">
-								<p:chart type="pie"
-									model="#{chartPresentationController.pieModel2}"
-									style="width:350px;height:300px" />
-							</h:panelGrid>
-
-
-
-						</fieldset>
-						<br />
 						<h:panelGroup layout="block"
 							rendered="#{not userCategoryController.valid and not facesContext.validationFailed}">
 							<ul>
@@ -76,10 +44,6 @@
 							</ul>
 						</h:panelGroup>
 
-						<p:outputPanel id="toTable"
-							rendered="#{userCategoryController.rendered}" autoUpdate="true">
-							<hr />
-							
 							<h:dataTable id="activityTable" binding="#{tabl}"
 								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:70% !important;
        						 -webkit-box-shadow: none;
@@ -107,7 +71,7 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">
-										<label>Categoryname</label>
+										<label>Category name</label>
 									</f:facet>
 									<h:inputText value="#{cat.usercategoryName}" size="25"
 										rendered="#{cat.editable}" required="true" id="catname"
@@ -126,7 +90,7 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">
-										<label>Changestatus</label>
+										<label>Change status</label>
 									</f:facet>
 									
 									<!-- Start of change Status Action -->
@@ -142,15 +106,23 @@
 									<h:outputText rendered="#{cat.notify}"
 										value="Notify representative by email:"
 										style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;" />
-									<h:inputText rendered="#{cat.notify}"
-										style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;width:100%;height:60%;"
-										value="#{userCategoryController.repEmail}"
-										class="form-control" id="email"
-										validatorMessage="#{msg['error.enter.invalid.email']}"
-										converterMessage="#{msg['error.enter.invalid.email']}">
-										<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-										<f:validateLength maximum="100" />
-									</h:inputText>
+									<h:selectOneMenu id="email" styleClass="form-control"
+											rendered="#{cat.notify}"
+											value="#{userCategoryController.repEmail}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems
+												value="#{userCategoryController.contactDetails}" var="option"
+												itemValue="#{option.email}"
+												itemLabel="#{option.email}"
+												itemLabelEscaped="true" />
+											<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+											<f:validateRegex
+													pattern="#{regex['regex.validation.email']}" />
+												<f:validateLength maximum="100" />
+										</h:selectOneMenu>
+									
 									<h:message errorClass="errorMsg1" for="email"></h:message>
 									<!-- End of Email Box -->
 									<!-- Cancel Button -->
@@ -221,11 +193,8 @@
 										style="font-size: 14px !important;margin-left:25%;">
 										#{msg['UserCatForm.BackBoardButtom']} </a>
 								</f:facet>
-							</h:dataTable>
-							
-							
-							
-						</p:outputPanel>
+							</h:dataTable>						
+						
 					</div>
 				</div>
 			</h:form>

@@ -6,36 +6,25 @@ import tres.dao.generic.AbstractDao;
 import tres.dao.interfc.IActivity;
 import tres.dao.interfc.IStatistics;
 import tres.domain.Activity;
+import tres.domain.StatGraph;
 import tres.domain.Statistics;
 
 public class StatisticsImpl extends AbstractDao<Long,Statistics> implements IStatistics {
 
-	public Statistics saveActivity(Statistics activity) {
-		return saveIntable(activity);
-	}
-
-	public List<Statistics> getListActivities() {
-		 return (List<Statistics>) (Object) getModelList();
-	}
 
 	public Statistics saveStatistics(Statistics statistics) {
-		// TODO Auto-generated method stub
-		return null;
+		return saveIntable(statistics);
 	}
 
 	public List<Statistics> getListStatistics() {
-		// TODO Auto-generated method stub
-		return null;
+		return (List<Statistics>) (Object) getModelList();
 	}
-
 	public Statistics getStatisticsById(int id, String primaryKeyclomunName) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Statistics) getModelById(id, primaryKeyclomunName);
 	}
 
 	public Statistics UpdateStatistics(Statistics statistics) {
-		// TODO Auto-generated method stub
-		return null;
+		return updateIntable(statistics);
 	}
 
 	

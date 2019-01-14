@@ -140,6 +140,11 @@ public interface DbConstant {
 	public static final String NORMAL="Normal";
 	public static final String MILESTONE="Vfp";
 	public static final String NOTDONE="notdone";
-	public static final int endrecord = 5;
 	public static final String DISABLE="disable";
+	public static final int endrecord = 6;
+	public static final int endCateRecord = 5;
+	public static final String DAILY="Daily";
+	public static final String WEEKLY="Weekly";
+	public static final String MONTHLY="Monthly";
+	public static final String YEARLY="Yearly";
 }

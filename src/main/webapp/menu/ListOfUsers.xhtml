@@ -96,7 +96,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Firstname</label>
+											<label>First name</label>
 										</f:facet>
 										<h:inputText value="#{user.fname}" size="10" id="fname"
 											rendered="#{user.editable}" required="true"
@@ -115,7 +115,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Lastname</label>
+											<label>Last name</label>
 										</f:facet>
 
 										<h:inputText value="#{user.lname}" size="10" id="lname"
@@ -134,7 +134,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Username</label>
+											<label>User name</label>
 										</f:facet>
 										<h:outputText value="#{user.viewId}" />
 									</h:column>
@@ -146,7 +146,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Loginstatus</label>
+											<label>Login status</label>
 										</f:facet>
 										<h:outputText value="#{user.loginStatus}" />
 									</h:column>
@@ -176,7 +176,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Changestatus</label>
+											<label>Change status</label>
 										</f:facet>
 										<h:message errorClass="errorMsg1" for="email"></h:message>
 										<div class="btn-group btn btn-sm" role="group"
@@ -195,17 +195,23 @@
 											<h:outputText rendered="#{user.notify}"
 												value="Notify Representative by email:"
 												style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;float:left;" />
-											<h:inputText rendered="#{user.notify}"
-												style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;height:60%;"
-												value="#{userAccountController.useremail}"
-												class="form-control" id="email"
-												validatorMessage="#{msg['error.enter.invalid.email']}"
-												converterMessage="#{msg['error.enter.invalid.email']}">
-												<f:validateRegex
+											
+											<h:selectOneMenu id="email" styleClass="form-control"
+											rendered="#{user.notify}"
+											value="#{userAccountController.useremail}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems
+												value="#{userAccountController.contactDetails}" var="option"
+												itemValue="#{option.email}"
+												itemLabel="#{option.email}"
+												itemLabelEscaped="true" />
+											<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+											<f:validateRegex
 													pattern="#{regex['regex.validation.email']}" />
 												<f:validateLength maximum="100" />
-											</h:inputText>
-
+										</h:selectOneMenu>
 											<!-- End of Email Box -->
 
 											<!-- Cancel Button -->
@@ -415,7 +421,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Representativenames</label>
+											<label>Representative names</label>
 										</f:facet>
 										<h:outputText value="#{cont.fname} &nbsp;#{cont.lname}" />
 									</h:column>
@@ -427,7 +433,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Username</label>
+											<label>User name</label>
 										</f:facet>
 										<h:outputText value="#{cont.viewId}" />
 									</h:column>
@@ -608,7 +614,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>StaffNames</label>
+											<label>Representative names</label>
 										</f:facet>
 										<h:outputText
 											value="#{cont.user.fname} &nbsp;#{cont.user.lname}" />
@@ -701,7 +707,7 @@
 									<f:facet name="footer">
 										<a href="ListOfUsers.xhtml"
 									style="font-size: 14px !important; margin-left: 2%;"
-									class="btn btn-primary btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
+									class="btn btn-primary glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
 										style="background-color: red; color: white" class="badge"></span></b>
 								</a>
 								<!-- End Back -->

@@ -362,7 +362,7 @@
 													{
 														changeMonth : true,
 														changeYear : true,
-														maxDate : 0,
+														maxDate : 1,
 														//minDate:$msg,
 														dateFormat : "dd/mm/yy",
 														yearRange : "-100:+0",
@@ -419,7 +419,7 @@
 						</h:column>
 						<h:column>
 							<f:facet name="header">
-								<label>StaffNames</label>
+								<label>Staff names</label>
 							</f:facet>
 							<h:outputText value="#{user.staffNames}" />
 						</h:column>
@@ -500,13 +500,13 @@
 						</h:column>
 						<h:column>
 							<f:facet name="header">
-								<label>Firstname</label>
+								<label>First name</label>
 							</f:facet>
 							<h:outputText value="#{cont.fname}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">
-								<label>Lastname</label>
+								<label>Last name</label>
 							</f:facet>
 							<h:outputText value="#{cont.lname}" />
 						</h:column>
@@ -519,7 +519,7 @@
 
 						<h:column>
 							<f:facet name="header">
-								<label>Username</label>
+								<label>User name</label>
 							</f:facet>
 							<h:outputText value="#{cont.viewId}" />
 						</h:column>
@@ -578,7 +578,7 @@
 						</h:column>
 						<h:column>
 							<f:facet name="header">
-								<label>StaffNames</label>
+								<label>Staff names</label>
 							</f:facet>
 							<h:outputText value="#{cont.fname} &nbsp;#{cont.lname}" />
 						</h:column>
@@ -597,7 +597,7 @@
 
 						<h:column>
 							<f:facet name="header">
-								<label>Loginstatus</label>
+								<label>Login status</label>
 							</f:facet>
 							<h:outputText value="#{cont.loginStatus}" />
 						</h:column>
@@ -726,7 +726,7 @@
 									requiredMessage="#{msg['requiered.phone.message']}"
 									validatorMessage="#{msg['error.enter.invalid.phone']}">
 									<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-									<f:validateLength maximum="25" />
+									
 								</h:inputText>
 							</div>
 							<div class="col-md-2">

@@ -272,6 +272,13 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">
+										<label>Assigned date</label>
+									</f:facet>
+									<br />
+									<h:outputText value="#{activityController.getMyFormattedDate(info)}"/>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
 										<label>Action</label>
 									</f:facet>
 									<div class="btn-group btn btn-sm" role="group"
@@ -279,12 +286,12 @@
 										style="margin-top: 5%; margin-left: 10%">
 										<h:commandLink data-toggle="tooltip" data-placement="left"
 											title="#{msg['createactivity.editButton']}"
-											class="btn btn-info glyphicon glyphicon-edit"
+											class="btn btn-sm btn-info glyphicon glyphicon-edit"
 											action="#{activityController.createActivity(info)}">
 										</h:commandLink>
 										<h:commandLink data-toggle="tooltip" data-placement="left"
 											title="#{msg['viewactivity.editButton']}"
-											class="btn btn-primary glyphicon glyphicon-list"
+											class="btn btn-sm btn-primary glyphicon glyphicon-list"
 											action="#{activityController.viewActivity(info)}">
 										</h:commandLink>
 

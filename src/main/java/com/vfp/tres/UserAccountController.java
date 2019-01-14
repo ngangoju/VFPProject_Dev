@@ -107,7 +107,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 	private List<UserDto> repDtosDetails = new ArrayList<UserDto>();
 	private List<UserCategory> userCatDetails = new ArrayList<UserCategory>();
-	
+	private List<Contact> contactDetails = new ArrayList<Contact>();
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -268,7 +268,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	
 	@SuppressWarnings("unchecked")
 	public void showUsers() throws Exception {
-		if (range.equals("5") || (range.equals("10")) || (range.equals("15"))) {
+		if (range.equals("6") || (range.equals("11")) || (range.equals("16"))) {
 			int endRecords = Integer.parseInt(range);
 			useravail = usersImpl.getListWithHQL("from Users", 0, endRecords);
 			userDtosDetails = showUsersByPageRecords(useravail);
@@ -614,8 +614,16 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
-	public String renderAction(UserDto user) {
+	@SuppressWarnings("unchecked")
+	public String renderAction(UserDto user) throws Exception {
 		user.setNotify(true);
+		Users users= new Users();
+		users = usersImpl.getModelWithMyHQL(new String[] { "userId" }, new Object[] { user.getUserId() },
+				"from Users");
+		if(null!=users) {
+		contactDetails=contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","user" },
+				new Object[] { ACTIVE,users}, "Contact", "contactId asc");
+		}
 		return null;
 	}
 
@@ -732,7 +740,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
 			useravail = usersImpl.getListWithHQL("from Users", 0,endrecord);
 			userDtosDetails = showUsersByPageRecords(useravail);
-			return "null";
+			return null;
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.updateuserError"));
@@ -825,38 +833,44 @@ public class UserAccountController implements Serializable, DbConstant {
 			Users us = new Users();
 			us = new Users();
 			Contact ct = new Contact();
+			if (user != null)
+				us = usersImpl.gettUserById(user.getUserId(), "userId");
+			if (us != null)
+				LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
+
+			if (user.getStatus().equals(ACTIVE)) {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(DESACTIVE);
+				user.setNotify(false);
+			} else {
+				us.setUpdatedBy(usersSession.getViewId());
+				us.setUpDtTime(timestamp);
+				us.setStatus(ACTIVE);
+				user.setNotify(false);
+			}
+					
 			if (null != useremail) {
 				ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { useremail },
 						"from Contact");
 			if (null != ct) {
+				usersImpl.UpdateUsers(us);
+				useravail = usersImpl.getListWithHQL("from Users", 0,endrecord);
+				userDtosDetails = showUsersByPageRecords(useravail);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers
+						.addErrorMessage(getProvider().getValue("com.save.form.userupdate"));
+				LOGGER.info(CLASSNAME + "::Email sent successuful!!");
+				this.useremail = null;
 			LOGGER.info("EMAIL TO NOTIFY::::::::::::::::::::::::::::::::::::::" + useremail);
 			boolean valid = notifyRepresentativeChange(useremail);
 			if (valid) {
-				if (user != null)
-					us = usersImpl.gettUserById(user.getUserId(), "userId");
-				if (us != null)
-					LOGGER.info("here update sart for " + us + " useriD " + us.getStatus());
-
-				if (user.getStatus().equals(ACTIVE)) {
-					us.setUpdatedBy(usersSession.getViewId());
-					us.setUpDtTime(timestamp);
-					us.setStatus(DESACTIVE);
-					user.setNotify(false);
-				} else {
-					us.setUpdatedBy(usersSession.getViewId());
-					us.setUpDtTime(timestamp);
-					us.setStatus(ACTIVE);
-					user.setNotify(false);
-				}
-						usersImpl.UpdateUsers(us);
-						useravail = usersImpl.getListWithHQL("from Users", 0,endrecord);
-						userDtosDetails = showUsersByPageRecords(useravail);
-						JSFMessagers.resetMessages();
-						setValid(true);
-						JSFMessagers
-								.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
-						LOGGER.info(CLASSNAME + "::Email sent successuful!!");
-						this.useremail = null;
+				/*JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers
+						.addErrorMessage(getProvider().getValue("com.server.side.email.notification.status"));
+				LOGGER.info(CLASSNAME + "::Email sent successuful!!");*/
 						// return to current page
 					} else {
 						JSFMessagers.resetMessages();
@@ -1223,6 +1237,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			for (Users users : userslist) {
 				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + users.getUserId() + ":: "
 						+ users.getFname() + "");
+				if(users.getUserCategory().getUserCatid()!=1){
 				UserDto userDtos = new UserDto();
 				userDtos.setEditable(false);
 				userDtos.setNotify(false);
@@ -1240,6 +1255,7 @@ public class UserAccountController implements Serializable, DbConstant {
 					userDtos.setAction(ACTIVE);
 				}
 				userDtosDetails.add(userDtos);
+				}
 			}
 			return (userDtosDetails);
 
@@ -1301,26 +1317,31 @@ public class UserAccountController implements Serializable, DbConstant {
 				renderEditedTableByBoard = true;
 				userDtosDetails = new ArrayList<UserDto>();
 				for (Object[] data : usersImpl.reportList(
-						"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.board,b.boardName from Users us ,Board b where us.board=b.boardId and b.boardName='"
+						"select us.fname,us.lname,us.viewId,us.userCategory,us.status,us.userId,us.board,us.loginStatus from Users us ,Board b where us.board=b.boardId and b.boardName='"
 								+ choice + "'")) {
 					LOGGER.info(
 							"users::::::::::::::::::::::::::::::::::::::::::::::::>>" + data[0] + ":: " + data[1] + "");
-					UserDto userDtos = new UserDto();
-					userDtos.setEditable(false);
-					userDtos.setNotify(false);
-					userDtos.setUserId(Integer.parseInt(data[5] + ""));
-					userDtos.setFname(data[0] + "");
-					userDtos.setLname(data[1] + "");
-					userDtos.setViewId(data[2] + "");
-					userDtos.setUserCategory(((UserCategory) data[3]));
-					userDtos.setStatus(data[4] + "");
-					userDtos.setBoard(((Board) data[6]));
-					if (data[4].equals(ACTIVE)) {
-						userDtos.setAction(DESACTIVE);
-					} else {
-						userDtos.setAction(ACTIVE);
+						int catId=Integer.parseInt(((UserCategory)data[3]).getUserCatid()+"");
+						if(catId!=1) {
+						UserDto userDtos = new UserDto();
+						userDtos.setEditable(false);
+						userDtos.setNotify(false);
+						userDtos.setUserId(Integer.parseInt(data[5] + ""));
+						userDtos.setFname(data[0] + "");
+						userDtos.setLname(data[1] + "");
+						userDtos.setViewId(data[2] + "");
+						userDtos.setUserCategory((UserCategory) data[3]);
+						userDtos.setStatus(data[4] + "");
+						userDtos.setBoard(((Board) data[6]));
+						userDtos.setLoginStatus(data[7]+"");
+						if (data[4].equals(ACTIVE)) {
+							userDtos.setAction(DESACTIVE);
+						} else {
+							userDtos.setAction(ACTIVE);
+						}
+						userDtosDetails.add(userDtos);
 					}
-					userDtosDetails.add(userDtos);
+					
 				}
 
 			} else {
@@ -2345,6 +2366,13 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setUserCatid(int userCatid) {
 		this.userCatid = userCatid;
+	}
+	public List<Contact> getContactDetails() {
+		return contactDetails;
+	}
+
+	public void setContactDetails(List<Contact> contactDetails) {
+		this.contactDetails = contactDetails;
 	}
 
 

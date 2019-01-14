@@ -21,9 +21,11 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Institution;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
 import tres.domain.UserCategory;
@@ -42,7 +44,6 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	private UserCategory userCategory;
 	private MenuAssignment menuAssignment;
 	private MenuGroup menuGroup;
-
 	private List<MenuAssignment> menuAssignmentDetails = new ArrayList<MenuAssignment>();
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
 
@@ -56,7 +57,6 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	private String dob;
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -87,7 +87,8 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 				menuAssignmentDetails = menuAssignmentImpl.getGenericListWithHQLParameter(
 						new String[] { "userCategory", "genericStatus" },
 						new Object[] { users.getUserCategory(), ACTIVE }, "MenuAssignment", "menuAssgnId asc");
-				LOGGER.info("menu size ::>>" + menuAssignmentDetails.size());
+				LOGGER.info("menu size ::>>" + menuAssignmentDetails.size());		
+				
 			} catch (Exception e) {
 				LOGGER.info("error loading generic menu:::");
 				setValid(false);

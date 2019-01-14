@@ -5,11 +5,13 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +20,11 @@ import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.FilenameUtils;
+
+import com.itextpdf.text.pdf.PdfDocument.Destination;
 
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
@@ -29,12 +36,15 @@ import tres.dao.impl.CommentImpl;
 import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.TaskAssignmentImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
 import tres.domain.Comment;
 import tres.domain.Documents;
+import tres.domain.InstitutionRegistrationRequest;
+import tres.domain.Statistics;
 import tres.domain.Board;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Task;
@@ -42,6 +52,7 @@ import tres.domain.TaskAssignment;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -876,7 +887,9 @@ public class ActivityController implements Serializable, DbConstant {
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
-
+	public String getMyFormattedDate(TaskAssignment statDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(statDate.getCrtdDtTime());
+	}
 	public String deleteFile(UploadingActivity info) {
 		try {
 			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();

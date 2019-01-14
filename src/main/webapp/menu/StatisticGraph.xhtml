@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:body>
+	<ui:composition template="/template/common/commonLayout.xhtml">
+		<ui:define name="content">
+			<h:body>
+				<script
+					src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js">
+					
+				</script>
+				<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+				<style type="text/css">
+@media ( max-width :960) {
+	.myChartDiv {
+		width: 100%;
+	}
+}
+</style>
+				<!-- <h1 style="margin-top: 150px;">Reporting Graph</h1> -->
+				<div id="orgChartContainer">
+					<div id="orgChart"></div>
+				</div>
+				<div id="consoleOutput">
+
+					<h1>Working Graph @VFP</h1>
+					<h2>#{statController.graphSession.graphTitle}</h2>
+					<div class="myChartDiv" style="width: 900px;">
+						<canvas id="myChart"> </canvas>
+					</div>
+					<fieldset style="width: 100%;">
+						<legend>
+							<label
+								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+								Please fill the below form to create a graph</label>
+						</legend>
+						<h:panelGroup layout="block"
+							rendered="#{not statController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							rendered="#{statController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+						<div class="main-login main-center"
+							style="width: 60%; margin-left: 10%;">
+							<h:form class="form-horizontal" method="post" action="#">	
+								
+							<div class="form-group row"
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+								<label for="todate"
+									class="col-md-5 col-sm-5 col-xs-5 control-label"
+									style="color: black">Enter
+										marks value for #{statController.graphSession.graphTitle}<span
+									style="color: red">*</span></label>
+								<div class="col-md-6 col-sm-6 col-xs-6">
+									<h:inputText a:type="text" class="form-control" name="name"
+												id="value" value="#{statController.marks}"
+												a:placeholder="Enter marks (ex:25)">
+											</h:inputText>
+											<h:inputText class="name" style="display:none;"
+												value="#{statController.name}"></h:inputText>
+								</div>
+								<h:message errorClass="errorMsg1" for="value"></h:message>
+							</div>
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black"></label>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<h:commandButton class="btn btn-primary"
+											action="#{statController.create()}" value="save">
+											
+											</h:commandButton>
+									</div>
+									<span class="text-danger" id="err"></span>
+								</div>
+							</h:form>
+						</div>
+					</fieldset>
+					<br />
+					<div class=" col-md-12" style="height:330px;overflow-y: scroll;">
+					<h:dataTable id="graphTable" binding="#{tabl}"
+						style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+       						 -webkit-box-shadow: none;
+       							 box-shadow: none !important;
+       								 margin: 17px 25px 0 !important;"
+						value="#{statController.elementsList}" var="item"
+						class="table table-striped table-hover table-bordered tableUpdated ">
+
+						<f:facet name="header">
+							<label
+								style="margin-left: 30%; font-size: 16px; font-family: Open Sans sans-serif !important;">Graph
+								title:<p:outputLabel
+									value="#{statController.graphSession.graphTitle}" />
+							</label>
+							<br />
+							<label
+								style="margin-left: 35%; font-size: 17px; font-family: Open Sans sans-serif !important">List
+								of marks available</label>
+						</f:facet>
+						<h:column>
+							<f:facet name="header">No</f:facet>
+							<h:outputText value="#{tabl.rowIndex + 1}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">Marks</f:facet>
+				#{item.marks}
+			</h:column>
+						<h:column>
+							<f:facet name="header">Graph status</f:facet>
+							#{item.genericStatus} 
+				</h:column>
+						<h:column>
+							<f:facet name="header">Created on</f:facet>
+							#{statController.getMyFormattedDate(item)} 
+				</h:column>
+
+						<f:facet name="footer">
+
+							<a
+								href="#{loadUserInformationsController.getContextPath()}/menu/statisticalReport.xhtml"
+								class="btn btn-primary glyphicon glyphicon-chevron-left"
+								style="font-size: 14px !important;">
+								#{msg['UserCatForm.BackBoardButtom']} </a>
+
+							<br/><label
+								style="font-family: Open Sans sans-serif !important; font-size: 14px !important;margin-top:2%;">Created
+								by:#{loadUserInformationsController.users.fname}
+								&nbsp;#{loadUserInformationsController.users.lname}</label>
+						</f:facet>
+					</h:dataTable>
+						</div>
+				</div>
+				<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+				<script
+					src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+				<script>
+					$(function() {
+
+						var j;
+						var ctx = document.getElementById('myChart')
+								.getContext('2d');
+						var replacedData = $(".name").val();
+						var req = replacedData.replace("id", "x");
+						req.replace("marks", "y");
+						console.log(req);
+
+						var value = [];
+						var labels = [];
+						function recusive(n, testData, n2) {
+							if (n2 >= n) {
+								value.push(testData[n].marks);
+								labels.push(testData[n].id);
+								recusive(n + 1, testData, n2);
+							}
+						}
+						var testData = JSON.parse($(".name").val());
+						console.log(testData[0].id);
+						recusive(0, testData, testData.length - 1);
+						console.log(value);
+
+						var myLineChart = new Chart(ctx, {
+							type : 'line',
+							data : {
+								labels : labels,
+								datasets : [ {
+									label : "Marks",
+									data : value,
+								} ]
+							},
+							options : {
+								elements : {
+									line : {
+										tension : 0, // disables bezier curves
+									}
+								}
+							}
+						});
+					});
+				</script>
+			</h:body>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

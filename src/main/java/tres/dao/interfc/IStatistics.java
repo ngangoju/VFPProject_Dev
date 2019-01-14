@@ -7,10 +7,6 @@ import tres.domain.StatGraph;
 import tres.domain.Statistics;
 
 public interface IStatistics {
-	public Statistics saveActivity(Statistics activity);
-
-	public List<Statistics> getListActivities();
-	
 	public Statistics saveStatistics(Statistics statistics);
 
 	public List<Statistics> getListStatistics();

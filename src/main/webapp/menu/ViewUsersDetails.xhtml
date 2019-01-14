@@ -69,6 +69,7 @@
 							<p:outputPanel id="toTable"
 								rendered="#{userAccountController.renderBoard}"
 								autoUpdate="true">
+								<div class=" col-md-12" style="height:450px;overflow-y: scroll;">
 								<h:dataTable id="activityTable" binding="#{tabl}"
 									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
@@ -91,7 +92,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Firstname</label>
+											<label>First name</label>
 										</f:facet>
 										<h:inputText value="#{user.fname}" size="10" id="fname"
 											rendered="#{user.editable}" required="true"
@@ -109,7 +110,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Lastname</label>
+											<label>Last name</label>
 										</f:facet>
 
 										<h:inputText value="#{user.lname}" size="10" id="lname"
@@ -182,7 +183,7 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Loginstatus</label>
+											<label>Login status</label>
 										</f:facet>
 										<h:outputText value="#{user.loginStatus}" />
 									</h:column>
@@ -207,17 +208,23 @@
 											<h:outputText rendered="#{user.notify}"
 												value="Notify Staff by email:"
 												style="font-family: Open Sans sans-serif !important; font-size: 12px !important; color: black; font-weight: bold;float:left;" />
-											<h:inputText rendered="#{user.notify}"
-												style="font-family: Open Sans sans-serif !important; font-size: 13px !important;color: black; font-weight: bold;height:60%;"
-												value="#{userAccountController.useremail}"
-												class="form-control" id="email"
-												validatorMessage="#{msg['error.enter.invalid.email']}"
-												converterMessage="#{msg['error.enter.invalid.email']}">
-												<f:validateRegex
+		
+										<h:selectOneMenu id="email" styleClass="form-control"
+											rendered="#{user.notify}"
+											value="#{userAccountController.useremail}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems
+												value="#{userAccountController.contactDetails}" var="option"
+												itemValue="#{option.email}"
+												itemLabel="#{option.email}"
+												itemLabelEscaped="true" />
+											<!-- <f:ajax event="change" execute="@this"  render="userInfoPanel" />-->
+											<f:validateRegex
 													pattern="#{regex['regex.validation.email']}" />
 												<f:validateLength maximum="100" />
-											</h:inputText>
-
+										</h:selectOneMenu>
 											<!-- End of Email Box -->
 
 											<!-- Cancel Button -->
@@ -284,9 +291,9 @@
 											<label>Choose records per page:</label>
 											<h:selectOneMenu value="#{userAccountController.range}"
 												style="width:25%;">
-												<f:selectItem itemLabel="5 Records" itemValue="5" />
-												<f:selectItem itemLabel="10 Records" itemValue="10" />
-												<f:selectItem itemLabel="15 Records" itemValue="15" />
+												<f:selectItem itemLabel="5 Records" itemValue="6" />
+												<f:selectItem itemLabel="10 Records" itemValue="11" />
+												<f:selectItem itemLabel="15 Records" itemValue="16" />
 												<f:selectItem itemLabel="Board" itemValue="Board" />
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress"
@@ -325,6 +332,7 @@
 
 									</f:facet>
 								</h:dataTable>
+								</div>
 							</p:outputPanel>
 							<!-- ENDS USERS VIEW BY PAGE RECORDS -->
 						</fieldset>

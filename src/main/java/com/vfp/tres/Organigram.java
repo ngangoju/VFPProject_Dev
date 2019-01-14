@@ -15,7 +15,7 @@ import tres.dao.impl.BoardImpl;
 import tres.domain.Board;
 import tres.domain.BoardTemplate;
 
-@ManagedBean(name = "organigram")
+@ManagedBean(name = "organigrams")
 @ViewScoped
 public class Organigram {
 	private List<Board> boardList = new ArrayList<Board>();

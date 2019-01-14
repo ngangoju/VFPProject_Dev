@@ -479,8 +479,11 @@ public class UserContactController implements Serializable, DbConstant {
 		try {
 			if(null!=to && null!=from) {
 			if (to.after(from)) {
-				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV2(from)
-						+ "End Date:-------->>>" + fmt.getMysqlFormatV2(to));
+				
+				LOGGER.info("tart Date form::"+from+
+				 "::end form::" + to);
+				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV3(from)
+						+ "End Date:-------->>>" + fmt.getMysqlFormatV3(to));
 				days = fmt.daysBetween(from, to);
 
 				LOGGER.info("Days founded:......................" + days);
@@ -488,7 +491,7 @@ public class UserContactController implements Serializable, DbConstant {
 
 					for (Object[] data : contactImpl.reportList(
 							"select co.contactId,bo.boardName,co.email,co.phone,us.fname,us.lname,cat.usercategoryName from Users us,Contact co,Board bo,UserCategory cat where co.user=us.userId and us.board=bo.boardId and us.userCategory=cat.userCatid and co.crtdDtTime between '"
-									+ fmt.getMysqlFormatV2(from) + "' and  '" + Formating.getMysqlFormatV2(to) + "'")) {
+									+ fmt.getMysqlFormatV3(from) + "' and  '" + Formating.getMysqlFormatV3(to) + "'")) {
 
 						ContactDto contDto = new ContactDto();
 						contDto.setEditable(false);
