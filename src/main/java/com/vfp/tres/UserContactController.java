@@ -620,6 +620,7 @@ public class UserContactController implements Serializable, DbConstant {
 				// :::saving contact action:::::::::::://	
 				contactImpl.saveContact(contact);			
 				// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
+				JSFMessagers.resetMessages();
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
 				LOGGER.info("OBTAINED DETAILS:"+users.getFname()+"::::::::"+users.getLname()+":::::::::"+contact.getEmail());
@@ -702,7 +703,6 @@ public class UserContactController implements Serializable, DbConstant {
 
 			if (null != contactDto) {
 				users = contactDto.getUser();
-
 				contact.setCreatedBy(usersSession.getViewId());
 				contact.setCrtdDtTime(timestamp);
 				contact.setGenericStatus(ACTIVE);

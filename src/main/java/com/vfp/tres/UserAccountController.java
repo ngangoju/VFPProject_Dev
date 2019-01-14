@@ -1371,6 +1371,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			try {
 
 				Contact ct = new Contact();
+			LOGGER.info("USER DETAILS:::::::::::"+contact.getEmail()+":::::::::"+users.getFname()+"::::"+users.getLname());
 				if (null != contact.getEmail())
 					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { contact.getEmail() },
 							"from Contact");
@@ -1415,15 +1416,15 @@ public class UserAccountController implements Serializable, DbConstant {
 				contact.setUpdatedBy(usersSession.getViewId());
 				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
 				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
-				// :::sending email action:::::::::::://
-				//contact.setEmail(useremail);
+			
 				contact.setUpdatedBy(usersSession.getViewId());
 				// :::saving contact action:::::::::::://
 				contactImpl.saveContact(contact);
 				// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
+				//JSFMessagers.resetMessages();
 				JSFMessagers.resetMessages();
 				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
 				LOGGER.info(CLASSNAME + ":::Contact Details is saved"+contact.getEmail()+":::::::"+users.getFname()+":::"+users.getLname());
 				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), contact.getEmail());
 				// ::: end sending email action:::::::::::://
@@ -1432,11 +1433,10 @@ public class UserAccountController implements Serializable, DbConstant {
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifications"));
 					LOGGER.info(CLASSNAME + ":::Contact Details is saved");
-					clearContactFuileds();
 				} else {
 					JSFMessagers.resetMessages();
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
 				}
 			} else {
 				JSFMessagers.resetMessages();
@@ -1610,14 +1610,14 @@ public class UserAccountController implements Serializable, DbConstant {
 				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
 				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
 				// :::sending email action:::::::::::://
-				contact.setEmail(useremail);
 				contact.setUpdatedBy(usersSession.getViewId());
 				// :::saving contact action:::::::::::://
 				contactImpl.saveContact(contact);
 				// :::::End of saving:::::::::::::// 
+				JSFMessagers.resetMessages();
 				setValid(true); //
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
-				LOGGER.info(CLASSNAME + ":::Contact Details is saved"+users.getFname()+"::::"+ users.getLname()+"::"+contact.getEmail());
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
+				LOGGER.info(CLASSNAME + ":::Other Contact:::::"+users.getFname()+"::::"+ users.getLname()+"::"+contact.getEmail());
 				
 				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), contact.getEmail());
 				// ::: end sending email action:::::::::::://
@@ -1629,7 +1629,7 @@ public class UserAccountController implements Serializable, DbConstant {
 				} else {
 					JSFMessagers.resetMessages();
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
 				}
 			} else {
 

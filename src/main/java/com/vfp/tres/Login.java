@@ -109,6 +109,7 @@ public class Login implements Serializable, DbConstant {
 				LOGGER.info(CLASSNAME + "Loging Save Login Historic");
 				LOGGER.info("step 111");
 				user.setLoginStatus(ONLINE);
+				user.setGenericStatus(ACTIVE);
 				usersImpl.UpdateUsers(user);
 
 				LOGGER.info(CLASSNAME + "Creating Sessions for users::" + user.getFname());
@@ -163,6 +164,7 @@ public class Login implements Serializable, DbConstant {
 			his.setUsers(user);
 			historic.saveLoginHistoric(his);
 			user.setLoginStatus(OFFLINE);
+			user.setGenericStatus(ACTIVE);
 			usersImpl.UpdateUsers(user);
 			FacesContext.getCurrentInstance().getExternalContext().redirect(url);
 		} catch (IOException e) {

@@ -555,7 +555,7 @@
 				<!-- Data Table fo login users -->
 
 				<p:outputPanel id="lognTable" autoUpdate="true" rendered="#{userContactController.renderLoginTable}">
-					
+					<div class=" col-md-12" style="height:330px;overflow-y: scroll;">
 					<h:dataTable id="loginTable" binding="#{tablogin}"
 						style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
@@ -617,6 +617,7 @@
 							</h:commandLink>
 						</f:facet>
 					</h:dataTable>
+					</div>
 					</p:outputPanel>
 				
 				<!-- End of Data Table -->
