@@ -234,12 +234,10 @@
 						<!-- LIST OF ASSIGNED TASK  TABLE VIEW -->
 						<p:outputPanel rendered="#{activityController.renderTask}"
 							autoUpdate="true">
+							<div class=" col-md-12" style="height:330px;overflow-y: scroll;">
 							<h:dataTable id="taskAssignTable" binding="#{table}"
-								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:80% !important;
-       						 -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 45px 0 !important;"
-								rows="10" paginator="true"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,15"
+								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:90% !important;
+       						 -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 25px 0 !important;"
 								value="#{activityController.taskAssignDetails}" var="info"
 								class="table table-striped table-hover table-bordered tableUpdated ">
 								<f:facet name="header">
@@ -283,7 +281,7 @@
 									</f:facet>
 									<div class="btn-group btn btn-sm" role="group"
 										aria-label="Basic example"
-										style="margin-top: 5%; margin-left: 10%">
+										style="margin-top: 5%;">
 										<h:commandLink data-toggle="tooltip" data-placement="left"
 											title="#{msg['createactivity.editButton']}"
 											class="btn btn-sm btn-info glyphicon glyphicon-edit"
@@ -299,12 +297,14 @@
 									</div>
 								</h:column>
 							</h:dataTable>
+							</div>
 						</p:outputPanel>
 						<!-- END OF TASK VIEW -->
 
 						<!-- LIST OF CREATED ACTIVITIES ON THE TASK  TABLE VIEW -->
 						<p:outputPanel rendered="#{activityController.renderCompleted}"
 							autoUpdate="true">
+							<div class=" col-md-12" style="height:330px;overflow-y: scroll;">
 							<h:dataTable id="activityTable" binding="#{tabl}"
 								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
@@ -528,12 +528,13 @@
 										#{msg['UserCatForm.BackBoardButtom']} </a>
 								</f:facet>
 							</h:dataTable>
+							</div>
 						</p:outputPanel>
 						<!-- END OF ACTIVITIES VIEW -->
 
 						<!-- COMMENT AREA -->
 						<p:outputPanel rendered="#{activityController.renderCommentTable}">
-
+						<div class=" col-md-12" style="height:330px;overflow-y: scroll;">
 							<table
 								class="table table-striped table-hover table-bordered tableUpdated "
 								style="font-family: Time new roman !important; font-size: 15px !important; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
@@ -639,6 +640,7 @@
 								</tr>
 
 							</table>
+							</div>
 						</p:outputPanel>
 						<!-- COMMENT END -->
 
