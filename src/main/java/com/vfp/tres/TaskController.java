@@ -174,9 +174,9 @@ public class TaskController implements Serializable, DbConstant {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void saveAssign() {
+	public void saveAssign(Task actS) {
 		try {
-//			if(assignment.getGenericStatus().equals(ACTIVE) && assignment.getUser().equals(usersImpl.gettUserById(userId, "userId"))) {
+//			if(assignment.) {
 //				taskAssignImpl.saveTaskAssignment(assignment);
 //				JSFMessagers.resetMessages();
 //				setValid(false);
@@ -196,10 +196,9 @@ public class TaskController implements Serializable, DbConstant {
 			assignment.setGenericStatus(ACTIVE);
 			assignment.setUpDtTime(timestamp);
 			assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
-			assignment.setTask(taskImpl.getTaskById(taskID, "taskId"));
+			assignment.setTask(actS);
 			assignment.setUser(usersImpl.gettUserById(userId, "userId"));
 			taskAssignImpl.saveTaskAssignment(assignment);
-			
 //			taskDetails = taskImpl.getGenericListWithHQLParameter(
 //					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
 //							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
@@ -224,6 +223,12 @@ public class TaskController implements Serializable, DbConstant {
 		}
 
 	}
+	
+	public void assignAct(Task act) {
+			this.rendered = false;
+			this.renderTable = true;
+			task=act;
+			}
 
 	public void taskApproval(Task act) {
 		try {
@@ -309,7 +314,6 @@ public class TaskController implements Serializable, DbConstant {
 
 	public String backBtn() {
 		return "/menu/Task.xhtml?faces-redirect=true";
-		// showAssignments();
 	}
 
 	private void clearTaskFuileds() {

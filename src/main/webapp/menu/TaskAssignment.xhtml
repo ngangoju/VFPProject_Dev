@@ -57,8 +57,143 @@
 
 						<fieldset>
 
-							<legend>#{msg['assign.task.form']}</legend>
+<p:outputPanel id="table" autoUpdate="true"
+					rendered="#{taskController.rendered}">
+					<h1>#{msg['form.task.table']}</h1>
+					<div class="nav">
+						<div class="div-action pull pull-right"
+							style="padding-bottom: 20px;">
+									<h:commandLink class="btn btn-primary"
+										action="#{taskController.backBtn()}">
+										<i class="glyphicon glyphicon-chevron-left"></i>#{msg['UserRegForm.BackButton']}
+					</h:commandLink>
 
+						</div>
+					</div>
+					<p:dataTable value="#{taskController.taskDetails}"
+						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+						var="act" rowIndexVar="row" sortBy="#{act.taskId}" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" sortOrder="ASCENDING"
+						rowKey="#{act.taskId}">
+						<p:column headerText="#{msg['form.task.name']}"
+							sortBy="#{act.taskName}">
+
+							<h:outputText value="#{act.taskName}" />
+						</p:column>
+
+
+						<p:column headerText="#{msg['form.activity.description']}"
+							sortBy="#{act.description}">
+
+							<h:outputText value="#{act.description}"/>
+						</p:column>
+
+
+						<p:column headerText="#{msg['form.task.startDate']}"
+							sortBy="#{act.startDate}">
+							<h:outputText value="#{act.startDate}" />
+						</p:column>
+
+						<p:column headerText="#{msg['form.task.dueDate']}"
+							sortBy="#{act.dueDate}">
+							<h:outputText value="#{act.dueDate}"/>
+
+						</p:column>
+
+						<p:column headerText="Action">
+
+							<h:commandLink style="color:white"
+								class="btn btn-primary 	glyphicon glyphicon-chevron-right"
+								value="#{msg['assign.form']}"
+								action="#{taskController.assignAct(act)}" />
+								
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+
+
+<p:outputPanel id="table2" autoUpdate="true"
+					rendered="#{taskController.renderTable}">					
+							<h1>#{msg['assign.task.form']}</h1>
+					<h:form>
+							<h:panelGroup id="planPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['com.plan.title']}</label>
+									<div class="col-md-6 col-sm-6 col-xs-6"><p style="font-size:25px; color:#033c73;">#{taskController.plan.details}</p>
+									</div>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="surnamePanl" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.task.name']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:inputText id="tasknameId" binding="#{surnameId}"
+											styleClass="form-control" disabled="true"
+											value="#{taskController.task.taskName}">
+										</h:inputText>
+									</div>
+								</div>
+							</h:panelGroup>
+
+							<h:panelGroup id="ReasonPanel" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.task.description']}<span
+										style="color: red">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:inputTextarea id="descriptionId" styleClass="form-control"
+											value="#{taskController.task.description}" disabled="true">
+										</h:inputTextarea>
+									</div>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="fromDatePanel" layout="block">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.task.startDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_start_date_id"
+											class="form-control" disabled="true" 
+											value="#{taskController.task.startDate}">
+										</h:inputText>
+									</div>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="fromDatePane" layout="block">
+
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.task.dueDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}" 
+											class="form-control" disabled="true" 
+											value="#{taskController.task.dueDate}">
+										</h:inputText>
+									</div>
+								</div>
+							</h:panelGroup>
 
 							<h:panelGroup id="categoryPanel" layout="block">
 								<div class="form-group row">
@@ -83,45 +218,6 @@
 								</div>
 							</h:panelGroup>
 
-							<h:panelGroup id="categoryPanel1" layout="block">
-
-								<div class="form-group row">
-
-									<label for="todate" class="col-md-2 col-sm-3 control-label"
-										style="color: black">#{msg['task.form']}</label>
-
-									<div class="col-md-6 col-sm-6 col-xs-7">
-
-
-										<h:selectOneMenu id="categoryId1" styleClass="form-control"
-											required="false" value="#{taskController.taskID}"
-											requiredMessage="#{msg['task.required.form']}">
-
-											<f:selectItem
-												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-												itemValue="#{null}" escapeItem="true" />
-
-
-											<f:selectItems value="#{taskController.taskDetails}"
-												var="option" itemValue="#{option.taskId}"
-												itemLabel="#{option.taskName}" itemLabelEscaped="true" />
-											<!-- <f:ajax render="@form" execute="@form" onevent="showProgress" />-->
-
-										</h:selectOneMenu>
-
-
-									</div>
-
-
-									<h:message for="categoryId1" styleClass="help-block"></h:message>
-
-
-								</div>
-
-
-							</h:panelGroup>
-
-
 
 							<div class="form-group row">
 								<label for="todate"
@@ -129,22 +225,24 @@
 									style="color: black"></label>
 								<div class="col-md-5 col-sm-5 col-xs-6">
 									<h:commandButton class="btn btn-info btn-xlg btn-block"
-										action="#{taskController.saveAssign}"
+										action="#{taskController.saveAssign(taskController.task)}"
 										value="#{msg['assign.form']}">
 										<f:ajax render="@form" execute="@form" onevent="showProgress" />
 									</h:commandButton>
 
 								</div>
 								<div class="col-md-5 col-sm-5 col-xs-5">
-									<h:commandLink class="btn btn-info"
-										action="#{taskController.backBtn()}">
-										<i class="glyphicon glyphicon-chevron-left"></i>#{msg['UserRegForm.BackButton']}
-					</h:commandLink>
-
+							<h:commandLink
+								class="btn btn-info glyphicon glyphicon-chevron-left"
+								actionListener="#{taskController.back()}"
+								value="#{msg['UserRegForm.BackButton']}">
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandLink>
 								</div>
 								<span class="text-danger" id="err"></span>
 							</div>
-
+							</h:form>
+</p:outputPanel>
 
 						</fieldset>
 
