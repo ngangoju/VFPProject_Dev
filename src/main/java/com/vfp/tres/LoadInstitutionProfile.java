@@ -376,22 +376,23 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		try {
 			contact = new InstitutionContact();
 			contact.setCreatedBy(usersSession.getViewId());
-			contact.setPhone(tel);
-			contact.setPobox(pobx);
+			//contact.setPhone(tel);
+			//contact.setPobox(pobx);
 			contact.setCrtdDtTime(timestamp);
 			contact.setGenericStatus(ACTIVE);
 			contact.setUpDtTime(timestamp);
 			contact.setInstitution(institution);
-			contact.setEmail(useremail);
+			//contact.setEmail(useremail);
 			contact.setUpdatedBy(usersSession.getViewId());
 			instContactImpl.saveContact(contact);
-			saveInstitutionContact();
+			//saveInstitutionContact();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
 			LOGGER.info(CLASSNAME + ":::Contact Details is saved");
-			backToprofile();
+			//backToprofile();
+			JSFMessagers.resetMessages(); 
 		} catch (HibernateException e) {
 			div2 = true;
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
@@ -615,7 +616,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.Policy"));
-			LOGGER.info(CLASSNAME + ":::Contact creation failed");
+			LOGGER.info(CLASSNAME + ":::Policy");
 			div3_1 = false;
 		} catch (Exception e) {
 			div3 = true;

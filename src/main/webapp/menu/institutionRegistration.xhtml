@@ -79,6 +79,8 @@
 										<!-- 											<p:ajax update="container,update" -->
 										<!-- 												listener="#{institutionController.renderProvMethod()}" /> -->
 										<f:ajax render="container" onevent="showProgress"
+											 />
+										<p:ajax update="container,update"
 											listener="#{loadInstitutionProfile.renderProvMethod()}" />
 									</h:selectOneMenu>
 								</div>
@@ -281,7 +283,7 @@
 				<p:outputPanel rendered="#{loadInstitutionProfile.nextpage}">
 					<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 2%">
 						<p>
-							Your registration request has been sent successfully <span
+							Your registration request has been sent successfully, It is now <span
 								style="color: blue">#{loadInstitutionProfile.request.getInstRegReqstStatus()}</span>,Once
 							approved you will be notified by email.
 						</p>

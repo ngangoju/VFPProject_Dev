@@ -63,8 +63,9 @@ public class InstitutionContact extends CommonDomain implements Serializable {
 		return pobox;
 	}
 
-	public void setPobox(String pobox) {
-		this.pobox = pobox;
+	public void setPobox(String pobox) { 
+			this.pobox = pobox; 
+		
 	}
 
 	public Institution getInstitution() {

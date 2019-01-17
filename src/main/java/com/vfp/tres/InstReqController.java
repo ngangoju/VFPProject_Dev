@@ -53,7 +53,7 @@ public class InstReqController implements Serializable, DbConstant {
 	private String CLASSNAME = "InstReqController :: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid, selctDiv, boolBottn, boolBottEnn, institutionPanel, requestPanel, defaultDiv;
+	private boolean isValid, selctDiv, nextpage, boolBottn, boolBottEnn, institutionPanel, requestPanel, defaultDiv;
 	/* end manage validation messages */
 	private Users usersSession;;
 	private InstitutionRegistrationRequest request;
@@ -69,13 +69,41 @@ public class InstReqController implements Serializable, DbConstant {
 	private List<Institution> institutions = new ArrayList<Institution>();
 	private List<InstitutionDto> dtos = new ArrayList<InstitutionDto>();
 
+	private List<Country> countries = new ArrayList<Country>();
+	private List<Province> provinces = new ArrayList<Province>();
+	private List<District> districts = new ArrayList<District>();
+	private List<Sector> sectors = new ArrayList<Sector>();
+	private List<Cell> cells = new ArrayList<Cell>();
+	private List<Village> villages = new ArrayList<Village>();
+
+	private Country country;
+	private Village village;
+	private Province province;
+	private District district;
+	private Sector sector;
+	private Cell cell;
+	private int cntryId;
+
+	private int pid;
+	private int did;
+	private int cid;
+	private int vid;
+	private int sid;
+
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
 	InstitutionImpl institutionImpl = new InstitutionImpl();
 	InstitutionRegRequestImpl requestImpl = new InstitutionRegRequestImpl();
-	ContactImpl contactImpl = new ContactImpl();
 	InstitutionContactImpl instContImpl = new InstitutionContactImpl();
+
+	ProvinceImpl provImpl = new ProvinceImpl();
+	DistrictImpl districtImpl = new DistrictImpl();
+	SectorImpl sectorImpl = new SectorImpl();
+	CellImpl cellImpl = new CellImpl();
+	VillageImpl villageImpl = new VillageImpl();
+	CountryImpl countryImpl = new CountryImpl();
+	ContactImpl contactImpl = new ContactImpl();
 
 	@PostConstruct
 	public void init() {
@@ -221,6 +249,7 @@ public class InstReqController implements Serializable, DbConstant {
 			institution.setUpdatedBy(usersSession.getViewId());
 			institution.setUpDtTime(timestamp);
 			institutionImpl.saveInstitution(institution);
+			nextpage = true;
 			LOGGER.info("Test Institution Saved");
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -414,6 +443,59 @@ public class InstReqController implements Serializable, DbConstant {
 	}
 
 	/* saving Institution ends */
+
+	public void changeDistrict() {
+		try {
+			province = provImpl.getProvinceById(pid, "provenceId");
+			districts = districtImpl.getGenericListWithHQLParameter(new String[] { "province" },
+					new Object[] { province }, "District", "code asc");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void changeSector() {
+		try {
+			district = districtImpl.getDistrictById(did, "districtId");
+			sectors = sectorImpl.getGenericListWithHQLParameter(new String[] { "distric" }, new Object[] { district },
+					"Sector", "code asc");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void changeCell() {
+		try {
+			sector = sectorImpl.getSectorById(sid, "sectorId");
+			cells = sectorImpl.getGenericListWithHQLParameter(new String[] { "sector" }, new Object[] { sector },
+					"Cell", "Code asc");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void changeVilages() {
+		try {
+			cell = cellImpl.getCellById(cid, "cellId");
+			villages = sectorImpl.getGenericListWithHQLParameter(new String[] { "cell" }, new Object[] { cell },
+					"Village", "Code asc");
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public JSFBoundleProvider getProvider() {
 		return provider;
 	}
@@ -620,6 +702,14 @@ public class InstReqController implements Serializable, DbConstant {
 
 	public void setDtos(List<InstitutionDto> dtos) {
 		this.dtos = dtos;
+	}
+
+	public boolean isNextpage() {
+		return nextpage;
+	}
+
+	public void setNextpage(boolean nextpage) {
+		this.nextpage = nextpage;
 	}
 
 }

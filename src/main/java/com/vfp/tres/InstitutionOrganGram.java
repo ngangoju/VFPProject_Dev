@@ -1,5 +1,8 @@
 package com.vfp.tres;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -13,6 +16,9 @@ import org.primefaces.event.organigram.OrganigramNodeSelectEvent;
 import org.primefaces.model.DefaultOrganigramNode;
 import org.primefaces.model.OrganigramNode;
 
+import tres.dao.impl.BoardImpl;
+import tres.domain.Board;
+
 @ManagedBean
 @ViewScoped
 public class InstitutionOrganGram {
@@ -20,21 +26,65 @@ public class InstitutionOrganGram {
 	private OrganigramNode selection;
 
 	private boolean zoom = false;
-	private String style = "widht:800px";
+	private String style = "widht:100%";
 	private int leafNodeConnectionHeight = 0;
 	private boolean autoScollToSelection = false;
 
 	private String employeeName;
 
+	private List<Board> boardList = new ArrayList<Board>();
+	private Board board;
+	BoardImpl boardImpl = new BoardImpl();
+
 	@PostConstruct
 	public void init() {
-		selection = new DefaultOrganigramNode();
-		rootNode = new DefaultOrganigramNode("root", "CommerceBay", null);
-		rootNode.setCollapsible(false);
-		rootNode.setDroppable(true);
+		if (board == null) {
+			board = new Board();
+		}
+		try {
+			
+			selection = new DefaultOrganigramNode();
+			selection = new DefaultOrganigramNode(null, "Ridvan Agar", null);
 
-		OrganigramNode hd = addDivision(rootNode, "Software", "Rittt");
+			rootNode = new DefaultOrganigramNode("root", "CommerceBay GmbH", null);
+			rootNode.setCollapsible(false);
+			rootNode.setDroppable(true);
+			
+			boardList = boardImpl.getListWithHQL("select b from Board b");
+			for(Board board:boardList) {
+				OrganigramNode softwareDevelopment = addDivision(rootNode, "Software Development", "Ridvan Agar"); 
+			}
 
+			OrganigramNode softwareDevelopment = addDivision(rootNode, "Software Development", "Ridvan Agar");
+
+			OrganigramNode teamJavaEE = addDivision(softwareDevelopment, "Team JavaEE");
+			addDivision(teamJavaEE, "JSF", "Thomas Andraschko");
+			addDivision(teamJavaEE, "Backend", "Marie Louise");
+
+			OrganigramNode teamMobile = addDivision(softwareDevelopment, "Team Mobile");
+			addDivision(teamMobile, "Android", "Andy Ruby");
+			addDivision(teamMobile, "iOS", "Stevan Jobs");
+
+			addDivision(rootNode, "Managed Services", "Thorsten Schultze", "Sandra Becker");
+
+			OrganigramNode marketing = addDivision(rootNode, "Marketing");
+			addDivision(marketing, "Social Media", "Ali Mente", "Lisa Boehm");
+			addDivision(marketing, "Press", "Michael Gmeiner", "Hans Peter");
+
+			addDivision(rootNode, "Management", "Hassan El Manfalouty");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+
+	public Board getRoot() {
+		try {
+			board = boardImpl.getModelWithMyHQL(new String[] { "board" }, new Object[] { null }, "from Board");
+			return board;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	protected OrganigramNode addDivision(OrganigramNode parent, String name, String... employees) {
@@ -67,7 +117,7 @@ public class InstitutionOrganGram {
 
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
-	
+
 	public void nodeCollopseListener(OrganigramNodeCollapseEvent event) {
 		FacesMessage message = new FacesMessage();
 		message.setSummary("Node'" + event.getOrganigramNode().getData() + "'collopsed.");
@@ -75,7 +125,7 @@ public class InstitutionOrganGram {
 
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
-	
+
 	public void nodeExpandListener(OrganigramNodeExpandEvent event) {
 		FacesMessage message = new FacesMessage();
 		message.setSummary("Node'" + event.getOrganigramNode().getData() + "'collopsed.");
@@ -139,8 +189,5 @@ public class InstitutionOrganGram {
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
 	}
-	
-	
-	
-	
+
 }

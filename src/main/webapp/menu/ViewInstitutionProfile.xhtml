@@ -225,52 +225,59 @@
 
 													</div>
 												</div>
-												<hr />
-												<div class=" col-md-12"
-													style="height: 330px; overflow-y: scroll;">
-													<p:growl id="growl" />
-													<p:organigram id="organigram" widgetVar="organigram"
-														value="#{organigramView.rootNode}" var="node"
-														leafNodeConnectorHeight="#{organigramView.leafNodeConnectorHeight}"
-														autoScrollToSelection="#{organigramView.autoScrollToSelection}"
-														zoom="#{organigramView.zoom}"
-														selection="#{organigramView.selection}"
-														style="#{organigramView.style}">
+												<div class="container" style="width: 100%">
+													<div class="row">
+														<div class="col-md-12">
+															<p:growl id="growl" />
+															<p:organigram id="organigram" widgetVar="organigram"
+																value="#{institutionOrganGram.rootNode}" var="node"
+																leafNodeConnectorHeight="#{institutionOrganGram.leafNodeConnectorHeight}"
+																autoScrollToSelection="#{institutionOrganGram.autoScrollToSelection}"
+																zoom="#{institutionOrganGram.zoom}"
+																selection="#{institutionOrganGram.selection}"
+																style="#{institutionOrganGram.style}">
+																<p:organigramNode>
+																	<h:outputText value="#{node.data}" />
+																</p:organigramNode>
 
-														<p:ajax event="dragdrop" process="@this"
-															update="@form:growl"
-															listener="#{organigramView.nodeDragDropListener}" />
-														<p:ajax event="select" process="@this"
-															update="@form:growl"
-															listener="#{organigramView.nodeSelectListener}" />
-														<p:ajax event="contextmenu" process="@this" />
-														<p:ajax event="collapse" process="@this"
-															update="@form:growl"
-															listener="#{organigramView.nodeCollapseListener}" />
-														<p:ajax event="expand" process="@this"
-															update="@form:growl"
-															listener="#{organigramView.nodeExpandListener}" />
+																<p:organigramNode type="root"
+																	style="border-radius: 10px;">
+																	<h:outputText value="#{node.data}" />
+																</p:organigramNode>
 
-														<p:organigramNode>
-															<h:outputText value="#{node.data}" />
-														</p:organigramNode>
+																<p:organigramNode type="division" styleClass="division"
+																	icon="pi pi-briefcase" iconPos="left">
+																	<h:outputText value="#{node.data}" />
+																</p:organigramNode>
 
-														<p:organigramNode type="root" style="border-radius: 10px;">
-															<h:outputText value="#{node.data}" />
-														</p:organigramNode>
-
-														<p:organigramNode type="division" styleClass="division"
-															icon="pi pi-briefcase" iconPos="left">
-															<h:outputText value="#{node.data}" />
-														</p:organigramNode>
-
-														<p:organigramNode type="employee" styleClass="employee"
-															icon="pi pi-user">
-															<h:outputText value="#{node.data}" />
-														</p:organigramNode>
-													</p:organigram>
+																<p:organigramNode type="employee" styleClass="employee"
+																	icon="pi pi-user">
+																	<h:outputText value="#{node.data}" />
+																</p:organigramNode>
+															</p:organigram>
+														</div>
+													</div>
 												</div>
-
+												<div class="col-md-9 col-sm-9 col-xs-9 dark-blue2"
+													style="margin-top: 2%; margin-left: 2%; color: white">
+													<div class="w3-container">
+														<p:outputPanel>
+															<i class="w3-right"></i>
+															<span class="glyphicon glyphicon-list"> <a
+																href="#{loadUserInformationsController.getContextPath()}/menu/EscaletPolicy.xhtml">Manage
+																	policy</a>
+															</span>
+														</p:outputPanel>
+														<p:outputPanel>
+															<i class="w3-right"></i>
+															<span class="glyphicon glyphicon glyphicon-user">
+																<a
+																href="#{loadUserInformationsController.getContextPath()}/menu/InstitutionDefaultPage.xhtml">
+																	Institution contact </a>
+															</span>
+														</p:outputPanel>
+													</div>
+												</div>
 												<div class="col-md-12 col-sm-12 col-xs-12 dark-blue2"
 													style="margin-top: 1%; color: white">
 													<div class="w3-container  ">
@@ -621,8 +628,6 @@
 								<span class="text-danger" id="customeordererror"></span>
 							</div>
 						</div>
-
-
 					</div>
 				</p:outputPanel>
 

@@ -13,7 +13,7 @@
 				<div style="width: 100%">
 					<!--error massage  -->
 					<h:panelGroup layout="block"
-						rendered="#{not instReqController.valid and not facesContext.validationFailed}">
+						rendered="#{not loadInstitutionProfile.valid and not facesContext.validationFailed}">
 						<ul>
 							<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 								<li class="alert"
@@ -26,7 +26,7 @@
 						</ul>
 					</h:panelGroup>
 					<h:panelGroup layout="block"
-						rendered="#{instReqController.valid and  not facesContext.validationFailed}">
+						rendered="#{loadInstitutionProfile.valid and  not facesContext.validationFailed}">
 						<ul>
 							<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 								<li
@@ -38,128 +38,124 @@
 						</ul>
 					</h:panelGroup>
 				</div>
-				<div class="panel-heading">info</div>
+				<div class="panel-heading">
+					<div class="w3-panel">
+						<div class="row">
+							<div class=" w3-round w3-white col-md-3 col-sm-3 col-xs-3 ">
+								<div class="w3-card w3-round w3-white">
+									<div>
+										<span class="w3-left"> <h:graphicImage
+												class="image w3-round"
+												style="width:30%; height:10%;padding-top:5%;padding-left:6%"
+												alt="userImage"
+												value="/images/dynamic/?file=#{loadInstitutionProfile.institution.instLogo}" />
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-9 col-sm-9 col-xs-9">
+								<div class=" col-md-12 col-sm-12 col-xs-12">
+									<div class=" col-md-12 col-sm-12 col-xs-12">
+										<p:outputPanel rendered="#{not ls.editable}">
+											<h3>#{loadInstitutionProfile.dto.request.institutionName}
+												policies</h3>
+										</p:outputPanel>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
 				<div class="panel-body">
-					<p:outputPanel rendered="#{loadInstitutionProfile.div4}">
-						<div class="panel panel-info">
-							<div class="panel-heading">
-								<h5 style="text-align: left; color: white; font-weight: bold">BRANCH
-									CONTACT</h5>
-							</div>
-							<div class="panel-body">
-								<span style="color: #737373; font-size: 10pt">Fields
-									marked with an asterisk <span style="color: red">(*)</span> are
-									mandatory.
-								</span> <br /> <br />
-								<div class="col-md-4 col-sm-4 col-xs-4">
 
-									<h:selectOneMenu class="form-control input-sm" id="inst"
-										value="#{loadInstitutionProfile.rid}" required="true"
-										requiredMessage="#{msg['institutionForm.requiered.village.message']}">
-										<f:selectItem
-											itemLabel="#{msg['institutionForm.select.PLACEHOLDER']}"
-											itemValue="#{null}" escapeItem="true" itemDisabled="false" />
-										<f:selectItems value="#{loadInstitutionProfile.instDtos}"
-											var="option" itemValue="#{option.institutionId}"
-											itemLabel="#{option.request.institutionName}"
-											itemLabelEscaped="true" />
-									</h:selectOneMenu>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Email']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.useremail}"
-											class="form-control input-sm" id="email1" required="true"
-											validatorMessage="#{msg['error.enter.invalid.email']}"
-											converterMessage="#{msg['error.enter.invalid.email']}"
-											requiredMessage="#{msg['error.enter.required.email']}">
-											<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-											<f:validateLength maximum="100" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="email"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.Phone']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.tel}"
-											class="form-control input-sm" id="phone1" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.phone.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="phone1"></h:message>
-								</div>
-								<div class="form-group row"
-									style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-									<label for="todate"
-										class="col-md-2 col-sm-2 col-xs-2 control-label"
-										style="color: black">#{msg['label.message.pobox']}<span
-										style="color: red">*</span></label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
-										<h:inputText value="#{loadInstitutionProfile.pobx}"
-											class="form-control input-sm" id="pobox1" required="true"
-											converterMessage="#{msg['error.enter.invalid.phone']}"
-											requiredMessage="#{msg['requiered.pobox.message']}"
-											validatorMessage="#{msg['error.enter.invalid.phone']}">
-											<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-											<f:validateLength maximum="25" />
-										</h:inputText>
-									</div>
-									<h:message errorClass="errorMsg1" for="pobox1"></h:message>
-								</div>
-								<hr></hr>
-								<div class="form-group row">
+					<span style="color: #737373; font-size: 10pt">Fields marked
+						with an asterisk <span style="color: red">(*)</span> are
+						mandatory.
+					</span> <br /> <br />
+					<div class="form-group row"
+						style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+						<label for="todate"
+							class="col-md-2 col-sm-2 col-xs-2 control-label"
+							style="color: black">#{msg['label.message.Email']}<span
+							style="color: red">*</span></label>
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<h:inputText value="#{loadInstitutionProfile.contact.email}"
+								class="form-control input-sm" id="email" required="true"
+								validatorMessage="#{msg['error.enter.invalid.email']}"
+								converterMessage="#{msg['error.enter.invalid.email']}"
+								requiredMessage="#{msg['error.enter.required.email']}">
+								<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+								<f:validateLength maximum="100" />
+							</h:inputText>
+						</div>
+						<h:message errorClass="errorMsg1" for="email"></h:message>
+					</div>
+					<div class="form-group row"
+						style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+						<label for="todate"
+							class="col-md-2 col-sm-2 col-xs-2 control-label"
+							style="color: black">#{msg['label.message.Phone']}<span
+							style="color: red">*</span></label>
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<h:inputText value="#{loadInstitutionProfile.contact.phone}"
+								class="form-control input-sm" id="phone" required="true"
+								converterMessage="#{msg['error.enter.invalid.phone']}"
+								requiredMessage="#{msg['requiered.phone.message']}"
+								validatorMessage="#{msg['error.enter.invalid.phone']}">
+								<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+								<f:validateLength maximum="25" />
+							</h:inputText>
+						</div>
+						<h:message errorClass="errorMsg1" for="phone"></h:message>
+					</div>
+					<div class="form-group row"
+						style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+						<label for="todate"
+							class="col-md-2 col-sm-2 col-xs-2 control-label"
+							style="color: black">#{msg['label.message.pobox']}<span
+							style="color: red">*</span></label>
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<h:inputText value="#{loadInstitutionProfile.contact.pobox}"
+								class="form-control input-sm" id="pobox" required="true"
+								converterMessage="Invalid B.P box"
+								requiredMessage="#{msg['requiered.pobox.message']}"
+								validatorMessage="Invalid B.P box">
+								<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+								<f:validateLength maximum="4" />
+							</h:inputText>
+						</div>
+						<h:message errorClass="errorMsg1" for="pobox"></h:message>
+					</div>
+					<hr></hr>
+					<div class="form-group row">
 
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Save" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.SaveBranchContact()}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandButton>
+						<div class="col-sm-2 col-sm-2 col-xs-2 ">
+							<h:commandButton class="btn btn-info btn-sm btn-block"
+								value="Save" style="float:left;left;margin-left:1%"
+								action="#{loadInstitutionProfile.saveContact()}">
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandButton>
 
-									</div>
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:form>
-											<h:commandButton class="btn btn-info btn-sm btn-block"
-												value="Back" style="float:left;margin-left:1%"
-												action="#{loadInstitutionProfile.bacKnstitutionBranchContact()}">
-												<f:ajax onevent="showProgress" render="profle"
-													execute="profle" />
-											</h:commandButton>
-										</h:form>
-									</div>
-									<div class="col-sm-2 col-sm-2 col-xs-2 ">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
-											value="Back" style="float:left;left;margin-left:1%"
-											action="#{loadInstitutionProfile.backToprofile()}">
-											<f:ajax render="profle" execute="profle"
-												onevent="showProgress" />
-										</h:commandButton>
-
-									</div>
-									<div class="col-sm-7 col-sm-9 col-xs-9">
-										<h:outputText value="" style="text-align: font-weight: bold" />
-									</div>
-
-									<span class="text-danger" id="customeordererror1"></span>
-								</div>
-							</div>
+						</div>
+						<div class="col-sm-2 col-sm-2 col-xs-2 ">
+							<span ><a
+						href="#{loadUserInformationsController.getContextPath()}/menu/ViewInstitutionProfile.xhtml"
+						class="btn btn-info glyphicon glyphicon-chevron-left"
+						style="font-size: 14px !important;">
+						#{msg['UserCatForm.BackBoardButtom']} </a>
+							</span>
 
 
 						</div>
-					</p:outputPanel>
+						<div class="col-sm-7 col-sm-9 col-xs-9">
+							<h:outputText value="" style="text-align: font-weight: bold" />
+						</div>
+
+						<span class="text-danger" id="customeordererror"></span>
+					</div>
+
+
 				</div>
 			</div>
 		</ui:define>
