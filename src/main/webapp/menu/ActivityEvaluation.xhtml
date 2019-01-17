@@ -113,6 +113,12 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">
+										<label>Activity type</label>
+									</f:facet>
+									<h:outputText value="#{act.type}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
 										<label>Activity weight</label>
 									</f:facet>
 									<h:outputText value="#{act.weight}" />
@@ -166,7 +172,6 @@
 											href="#{loadUserInformationsController.getContextPath()}/menu/activitFiledown.xhtml"
 											style="color: white" title="View attached files"
 											class="btn btn-success glyphicon glyphicon-file"></a>
-
 									</div>
 
 								</h:column>

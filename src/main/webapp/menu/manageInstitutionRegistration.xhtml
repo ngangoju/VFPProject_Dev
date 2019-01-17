@@ -24,6 +24,34 @@
 		<ui:define name="content">
 
 			<div class="panel panel-info">
+				<div style="width: 100%">
+					<!--error massage  -->
+					<h:panelGroup layout="block"
+						rendered="#{not instReqController.valid and not facesContext.validationFailed}">
+						<ul>
+							<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+								<li class="alert"
+									style="list-style: none; background-color: #FF2400; color: white">
+									<center>
+										<h:outputText value="#{facesMessage.summary}" escape="false" />
+									</center>
+								</li>
+							</ui:repeat>
+						</ul>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{instReqController.valid and  not facesContext.validationFailed}">
+						<ul>
+							<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+								<li
+									style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+									class="alert alert-success"><center>
+										<h:outputText value="#{facesMessage.summary}" escape="false" />
+									</center></li>
+							</ui:repeat>
+						</ul>
+					</h:panelGroup>
+				</div>
 				<div class="panel-heading">
 					<p>#{msg['message.institution.requestManagement.title']}</p>
 				</div>
@@ -37,8 +65,7 @@
 
 										<div class="circle-tile-heading2 green2">
 											<center style="margin-top: 30px">
-												<h:outputText
-													value="#{instReqController.countInstitution()}" />
+												<h:outputText value="#{instReqController.nmbrInst}" />
 											</center>
 										</div>
 
@@ -104,14 +131,11 @@
 
 							<h:form>
 								<p:dataTable style="margin:2px" id="tableStateDT" var="ls"
-									value="#{instReqController.institutions}"
-									widgetVar="Institution" multiViewState="true" rows="10"
-									paginator="true"
+									value="#{instReqController.dtos}" widgetVar="Institution"
+									multiViewState="true" rows="10" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="5,10,15"
-									emptyMessage="No institution found"
-									filteredValue="#{dtTableStateView.filteredCars}"
-									rowIndexVar="index">
+									emptyMessage="No institution found" rowIndexVar="index">
 
 									<p:column>
 										<f:facet name="header">
@@ -167,18 +191,18 @@
 										</f:facet>
 										<div class="btn-group">
 											<h:commandLink style="margin-left:2px;color:white"
-												disabled="#{instReqController.rendButton(ls)}"
-												data-toggle="tooltip" data-placement="left" title="Disable"
+												rendered="#{not ls.editable}" data-toggle="tooltip"
+												data-placement="left" title="Disable"
 												class="btn btn-secondary btn-danger 	glyphicon glyphicon-ban-circle"
 												action="#{instReqController.blockInstitution(ls)}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
 											<h:commandLink style="margin-left:2px;color:white"
-												rendered="#{instReqController.rendButton(ls)}"
-												data-toggle="tooltip" data-placement="left" title="Enable"
+												rendered="#{ls.editable}" data-toggle="tooltip"
+												data-placement="left" title="Enable"
 												class="btn btn-secondary btn-info 	glyphicon glyphicon-play-circle"
-												action="#">
+												action="#{instReqController.activeInstitution(ls)}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
@@ -263,14 +287,14 @@
 											class="btn btn-success 	glyphicon glyphicon-ok" value=""
 											data-toggle="tooltip" data-placement="left" title="Confirm"
 											action="#{instReqController.confirmRequest(ls)}" ajax="false">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+											<f:ajax render="tableStateDT" execute="@form" onevent="showProgress" />
 										</h:commandLink>
 										<h:commandLink style="margin-left:2px;color:white"
 											data-toggle="tooltip" data-placement="left" title="Reject"
 											class="btn btn-danger 	glyphicon glyphicon-remove" value=""
-											action="#{institutionController.institutonRejected(ls)}"
+											action="#{instReqController.rejectRequest(ls)}"
 											ajax="false">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+											<f:ajax render="tableStateDT" onevent="showProgress" />
 										</h:commandLink>
 									</h:form>
 								</p:column>

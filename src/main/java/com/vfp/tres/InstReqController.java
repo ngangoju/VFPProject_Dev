@@ -43,6 +43,7 @@ import tres.domain.Province;
 import tres.domain.Sector;
 import tres.domain.Users;
 import tres.domain.Village;
+import tres.vfp.dto.InstitutionDto;
 
 @SuppressWarnings("unchecked")
 @ViewScoped
@@ -59,11 +60,14 @@ public class InstReqController implements Serializable, DbConstant {
 	private Institution institution;
 	private Contact contact;
 
+	private int nmbrInst;
+
 	private Date from;
 	private Date to;
 
 	private List<InstitutionRegistrationRequest> requests = new ArrayList<InstitutionRegistrationRequest>();
 	private List<Institution> institutions = new ArrayList<Institution>();
+	private List<InstitutionDto> dtos = new ArrayList<InstitutionDto>();
 
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -90,10 +94,12 @@ public class InstReqController implements Serializable, DbConstant {
 			contact = new Contact();
 		}
 		try {
-			institutions = institutionImpl.getListWithHQL("select f from Institution f");
 			requests = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
 					"InstitutionRegistrationRequest", "instRegReqstId asc");
+			institutions = institutionImpl.getListWithHQL("select f from Institution f");
+			nmbrInst = institutions.size();
+			dtos = display();
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -130,7 +136,7 @@ public class InstReqController implements Serializable, DbConstant {
 	/* Method for displaying request ends */
 
 	/* Confirmation method starts */
-	public void confirmRequest(InstitutionRegistrationRequest request) {
+	public String confirmRequest(InstitutionRegistrationRequest request) {
 		try {
 			request.setInstRegReqstStatus(ACCEPTED);
 			request.setUpDtTime(timestamp);
@@ -143,12 +149,46 @@ public class InstReqController implements Serializable, DbConstant {
 					"Your Institution registration has been Confirmed.");
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.institution.confrmation"));
+			requests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstId asc");
+			return "loadUserInformationsController.getContextPath()}/menu/manageInstitutionRegistration.xhtml";
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
+			return "loadUserInformationsController.getContextPath()}/menu/manageInstitutionRegistration.xhtml";
+		}
+	}
+
+	// reject
+	/* Confirmation method starts */
+	public String rejectRequest(InstitutionRegistrationRequest request) {
+		try {
+			request.setInstRegReqstStatus(REJECTED);
+			request.setUpDtTime(timestamp);
+			request.setUpdatedBy(usersSession.getViewId());
+			requestImpl.UpdateInstitRegReqsts(request);
+			InstitutionSave(request);
+			SendSupportEmail sendMail = new SendSupportEmail();
+			sendMail.sendMailForInstitution(request.getInstitutionRepresenative().getFname(),
+					request.getInstitutionRepresenative().getLname(), getContactEmail(request), "Confirmation",
+					"Your Institution registration has been Rejected.");
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Institution was Rejected Successfuly"));
+			requests = requestImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
+					"InstitutionRegistrationRequest", "instRegReqstId asc");
+			return "loadUserInformationsController.getContextPath()}/menu/manageInstitutionRegistration.xhtml";
+		} catch (Exception e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return "loadUserInformationsController.getContextPath()}/menu/manageInstitutionRegistration.xhtml";
 		}
 	}
 
@@ -199,26 +239,49 @@ public class InstReqController implements Serializable, DbConstant {
 	}
 
 	// boolean method
-	public String rendButton(Institution inst) {
+	public void rendButton(Institution inst) {
 		if (inst.getGenericStatus().equals(ACTIVE)) {
 			boolBottEnn = true;
-			return "not boolBottn";
 		} else {
 			boolBottn = true;
-			return "not boolBottEnn";
 		}
 
 	}
 
 	// block institution
 
-	public void blockInstitution(Institution inst) {
+	public void blockInstitution(InstitutionDto instdto) {
 		try {
+			Institution inst = new Institution();
+			inst = institutionImpl.getInstitutionById(instdto.getInstitutionId(), "institutionId");
 			inst.setGenericStatus(DISABLE);
 			inst.setUpdatedBy(usersSession.getViewId());
 			inst.setUpDtTime(timestamp);
 			institutionImpl.UpdateInstitution(inst);
-			institutions = institutionImpl.getListWithHQL("select f from Institution f");
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Institution Blocked"));
+			dtos = display();
+		} catch (Exception e) {
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	// activate
+	public void activeInstitution(InstitutionDto instdto) {
+		try {
+			Institution inst = new Institution();
+			inst = institutionImpl.getInstitutionById(instdto.getInstitutionId(), "institutionId");
+			inst.setGenericStatus(ACTIVE);
+			inst.setUpdatedBy(usersSession.getViewId());
+			inst.setUpDtTime(timestamp);
+			institutionImpl.UpdateInstitution(inst);
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Institution Blocked"));
+			dtos = display();
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -229,11 +292,12 @@ public class InstReqController implements Serializable, DbConstant {
 	}
 
 	// phone
-	public String getContactPhone(Institution inst) {
+	public String getContactPhone(InstitutionDto inst) {
 
 		try {
 			InstitutionContact cnt1 = new InstitutionContact();
-			cnt1 = instContImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { inst },
+			cnt1 = instContImpl.getModelWithMyHQL(new String[] { "institution" },
+					new Object[] { institutionImpl.getInstitutionById(inst.getInstitutionId(), "institutionId") },
 					"from InstitutionContact");
 			if (cnt1 != null) {
 				return cnt1.getPhone();
@@ -247,11 +311,12 @@ public class InstReqController implements Serializable, DbConstant {
 	}
 
 	// Email
-	public String getContactEmail(Institution inst) {
+	public String getContactEmail(InstitutionDto inst) {
 
 		try {
 			InstitutionContact cnt1 = new InstitutionContact();
-			cnt1 = instContImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { inst },
+			cnt1 = instContImpl.getModelWithMyHQL(new String[] { "institution" },
+					new Object[] { institutionImpl.getInstitutionById(inst.getInstitutionId(), "institutionId") },
 					"from InstitutionContact");
 			if (cnt1 != null) {
 				return cnt1.getEmail();
@@ -309,14 +374,42 @@ public class InstReqController implements Serializable, DbConstant {
 	public int countInstitution() {
 		int a = 0;
 		try {
-			for (Object[] data : institutionImpl.reportList(
-					"select count(*),i.genericStatus from Institution i where and i.genericStatus='" + ACTIVE + "'")) {
+			for (Object[] data : institutionImpl.reportList("select count(*) as amount from Institution")) {
 				a = Integer.parseInt(data[0] + "");
 			}
+			LOGGER.info("Number of institution:::" + a);
 			return a;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
+		}
+	}
+
+	// dto
+	@SuppressWarnings("unchecked")
+	public List<InstitutionDto> display() {
+		try {
+			institutions = institutionImpl.getListWithHQL("select f from Institution f");
+			List<InstitutionDto> dtos = new ArrayList<InstitutionDto>();
+			for (Institution inst : institutions) {
+				InstitutionDto institutionDto = new InstitutionDto();
+				if (inst.getGenericStatus().equals(ACTIVE)) {
+					institutionDto.setEditable(false);
+				} else {
+					institutionDto.setEditable(true);
+				}
+				institutionDto.setInstitutionRegDate(inst.getInstitutionRegDate());
+				institutionDto.setInstitutionId(inst.getInstitutionId());
+				institutionDto.setBranch(inst.getBranch());
+				institutionDto.setRequest(inst.getRequest());
+				dtos.add(institutionDto);
+			}
+			return dtos;
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			return null;
 		}
 	}
 
@@ -511,6 +604,22 @@ public class InstReqController implements Serializable, DbConstant {
 
 	public void setDefaultDiv(boolean defaultDiv) {
 		this.defaultDiv = defaultDiv;
+	}
+
+	public int getNmbrInst() {
+		return nmbrInst;
+	}
+
+	public void setNmbrInst(int nmbrInst) {
+		this.nmbrInst = nmbrInst;
+	}
+
+	public List<InstitutionDto> getDtos() {
+		return dtos;
+	}
+
+	public void setDtos(List<InstitutionDto> dtos) {
+		this.dtos = dtos;
 	}
 
 }

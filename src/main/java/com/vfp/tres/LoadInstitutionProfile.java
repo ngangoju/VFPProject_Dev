@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -83,7 +84,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	private Country country;
 	private String instName, instaddress;
 	private int rid;
-	private int nmbr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	private int nmbr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 	private Documents documents;
 	private InstitutionDto dto = new InstitutionDto();
@@ -183,31 +184,31 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 				request = requestImpl.getModelWithMyHQL(
 						new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
 						new Object[] { usersSession, "HeadQuoter", ACTIVE }, "from InstitutionRegistrationRequest");
-				if ((request != null) && (request.getInstRegReqstStatus().equals(ACCEPTED))) {
-					institution = institutionImpl.getModelWithMyHQL(new String[] { "request", "institutionType" },
-							new Object[] { request, "HeadQuoter" }, "from Institution");
-					if (institution != null) {
-						chngDiv = true;
-						try {
-							contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
-									new Object[] { institution }, "from InstitutionContact");
-						} catch (Exception e) {
-
+				if (request != null) {
+					if (request.getInstRegReqstStatus().equals(ACCEPTED)) {
+						institution = institutionImpl.getModelWithMyHQL(new String[] { "request", "institutionType" },
+								new Object[] { request, "HeadQuoter" }, "from Institution");
+						if (null != institution) {
+							chngDiv = true;
+							instDtos = display(institution);
+							dto = dtoObject(institution);
+							policyDtos = displayPolicy(institution);
+							try {
+								contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
+										new Object[] { institution }, "from InstitutionContact");
+							} catch (Exception e) {
+								LOGGER.info("Contact Message::" + e.getMessage());
+							}
 						}
-						if (contact == null) {
-							hasContact = true;
-						}
-						instDtos = display(institution);
-
-						dto = dtoObject(institution);
-						policyDtos = displayPolicy(institution);
 					} else {
 						nextpage = true;
+						frstDiv = true;
 					}
+				} else {
+					frstDiv = true;
+					countries = countryImpl.getListWithHQL("select f from Country f");
+					provinces = provImpl.getListWithHQL("select f from Province f");
 				}
-				countries = countryImpl.getListWithHQL("select f from Country f");
-				provinces = provImpl.getListWithHQL("select f from Province f");
-
 			} catch (Exception e) {
 				setValid(false);
 				e.printStackTrace();
@@ -218,6 +219,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		}
 
 	}
+
+	/* Method for navigation to page */
 
 	/* method for render province panel starts */
 	public void renderProvMethod() {
@@ -465,9 +468,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
-			LOGGER.info(CLASSNAME + ":::Institution request not sent");
-			// div1 = false;
-			chngDiv = false;
+			LOGGER.info(CLASSNAME + ":::Institution request sent");
 			nextpage = true;
 			return "";
 		} catch (Exception e) {

@@ -45,7 +45,8 @@ public class Institution extends CommonDomain implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "request")
 	private InstitutionRegistrationRequest request;
-
+ 
+	
 	public int getInstitutionId() {
 		return institutionId;
 	}
