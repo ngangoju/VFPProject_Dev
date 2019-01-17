@@ -89,6 +89,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private Documents document;
 	private DocumentsImpl docsImpl = new DocumentsImpl();
 	private UploadingActivityImpl uplActImpl = new UploadingActivityImpl();
+	private int lSize;
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
@@ -155,6 +156,14 @@ public class ActivityController implements Serializable, DbConstant {
 			document = new Documents();
 		}
 		try {
+			if(usersSession.getUserCategory().getUsercategoryName().equalsIgnoreCase("supervisor")) {
+				activityDetail = activityImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "user", "status" },
+						new Object[] { ACTIVE, usersImpl.getModelWithMyHQL(new String[] { "genericStatus", "board" }, new Object[] { ACTIVE },
+								SELECT_USERS), NOTSTARTED },
+						"Activity", "activityId asc");
+				lSize=activityDetail.size();
+			}
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
 					" from Users");
 			for (Object[] data : usersImpl.reportList(
@@ -166,20 +175,7 @@ public class ActivityController implements Serializable, DbConstant {
 				user.setLname(data[2] + "");
 				user.setBoard((Board) data[3]);
 				usersDetail.add(user);
-//				Activity act = new Activity();
-//				act.setDescription(data[4] + "");
-//				act.setStatus(data[5] + "");
-//				act.setWeight(data[6] + "");
-//				act.setStartDate((Date) data[7]);
-//				act.setDueDate((Date) data[8]);
-//				act.setCrtdDtTime( (Timestamp) data[9]);
-//				act.setTask((Task) data[10]);
-//				activityDetail.add(act);
 			}
-//			activityDetail = activityImpl.getGenericListWithHQLParameter(
-//			new String[] { "genericStatus", "user", "status" }, 
-//			new Object[] { ACTIVE, users, PLANNED },
-//			"Activity", "activityId asc");
 
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
@@ -1376,6 +1372,14 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setUploadingActivityDetails(List<UploadingActivity> uploadingActivityDetails) {
 		this.uploadingActivityDetails = uploadingActivityDetails;
+	}
+
+	public int getlSize() {
+		return lSize;
+	}
+
+	public void setlSize(int lSize) {
+		this.lSize = lSize;
 	}
 
 }
