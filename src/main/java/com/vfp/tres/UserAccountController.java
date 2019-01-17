@@ -208,7 +208,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			boardList = boardImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Board", "boardId desc");
 			Users user = usersImpl.gettUserById(usersSession.getUserId(), "userId");
-
+			if(null!=user) {
 			UserDto userDto = new UserDto();
 			userDto.setEditable(false);
 			userDto.setFname(user.getFname());
@@ -220,6 +220,7 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDto.setLoginStatus(user.getLoginStatus());
 			userDto.setGender(user.getGender());
 			userDtoDetails.add(userDto);
+			}
 			repDtosDetails = displayRepresentativeByDateBetween();
 			this.renderRepContactDash = true;
 			listrepSize = showAvailRep();
