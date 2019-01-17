@@ -78,8 +78,7 @@
 											itemLabel="#{option.countryName_en}" itemLabelEscaped="true" />
 										<!-- 											<p:ajax update="container,update" -->
 										<!-- 												listener="#{institutionController.renderProvMethod()}" /> -->
-										<f:ajax render="container" onevent="showProgress"
-											 />
+										<f:ajax render="container" onevent="showProgress" />
 										<p:ajax update="container,update"
 											listener="#{loadInstitutionProfile.renderProvMethod()}" />
 									</h:selectOneMenu>
@@ -280,15 +279,15 @@
 						</div>
 					</div>
 				</h:form>
-				<p:outputPanel rendered="#{loadInstitutionProfile.nextpage}">
-					<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 2%">
-						<p>
-							Your registration request has been sent successfully, It is now <span
-								style="color: blue">#{loadInstitutionProfile.request.getInstRegReqstStatus()}</span>,Once
-							approved you will be notified by email.
-						</p>
-					</div>
-				</p:outputPanel>
+			</p:outputPanel>
+			<p:outputPanel rendered="#{loadInstitutionProfile.nextpage}">
+				<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 2%">
+					<p>
+						Your registration request has been sent successfully, It is now <span
+							style="color: blue">#{loadInstitutionProfile.request.getInstRegReqstStatus()}</span>,Once
+						approved you will be notified by email.
+					</p>
+				</div>
 			</p:outputPanel>
 		</ui:define>
 	</ui:composition>

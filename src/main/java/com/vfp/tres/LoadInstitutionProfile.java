@@ -376,23 +376,23 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		try {
 			contact = new InstitutionContact();
 			contact.setCreatedBy(usersSession.getViewId());
-			//contact.setPhone(tel);
-			//contact.setPobox(pobx);
+			// contact.setPhone(tel);
+			// contact.setPobox(pobx);
 			contact.setCrtdDtTime(timestamp);
 			contact.setGenericStatus(ACTIVE);
 			contact.setUpDtTime(timestamp);
 			contact.setInstitution(institution);
-			//contact.setEmail(useremail);
+			// contact.setEmail(useremail);
 			contact.setUpdatedBy(usersSession.getViewId());
 			instContactImpl.saveContact(contact);
-			//saveInstitutionContact();
+			// saveInstitutionContact();
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notification"));
 			LOGGER.info(CLASSNAME + ":::Contact Details is saved");
-			//backToprofile();
-			JSFMessagers.resetMessages(); 
+			// backToprofile();
+			JSFMessagers.resetMessages();
 		} catch (HibernateException e) {
 			div2 = true;
 			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
@@ -470,8 +470,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.message"));
 			LOGGER.info(CLASSNAME + ":::Institution request sent");
-			nextpage = true;
-			return "";
+			LoadUserInformationsController loadUserInformationsController = new LoadUserInformationsController();
+			return loadUserInformationsController.getContextPath() + "/menu/institutionRegistration.xhtml";
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Institution request not sent with HibernateException  error");
 			JSFMessagers.resetMessages();
