@@ -251,8 +251,6 @@
 					</p:dataTable>
 				</p:outputPanel>
 
-
-
 				<!-- COMMENT AREA -->
 				<p:outputPanel rendered="#{activityController.renderCommentTable}">
 					<div class=" col-md-12" style="height: 330px; overflow-y: scroll;">
@@ -307,11 +305,9 @@
 												action="#{activityController.replyComment(coment)}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-											</h:commandLink></td>
+										</h:commandLink></td>
 
 									</tr>
-
-
 								</tbody>
 							</ui:repeat>
 							<p:outputPanel rendered="#{activityController.rendercomment}"
@@ -371,7 +367,6 @@
 									class="btn btn-primary glyphicon glyphicon-chevron-left">
 										Back </a></td>
 							</tr>
-
 						</table>
 					</div>
 				</p:outputPanel>

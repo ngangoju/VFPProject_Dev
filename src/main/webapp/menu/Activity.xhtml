@@ -478,6 +478,14 @@
 										</h:commandLink>
 										<h:commandLink style="color:white" data-toggle="tooltip"
 											data-placement="left"
+											title="#{msg['UserCategoryView.commentButton']}"
+											class="btn btn-sm btn-primary glyphicon glyphicon-info-sign"
+											action="#{activityController.commentAction(act)}"
+											rendered="#{ not act.approvedComment}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+										<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
 											title="#{msg['UserCategoryView.cancelButton']}"
 											class="btn btn-sm btn-danger glyphicon glyphicon-remove"
 											action="#{activityController.cancel(act)}"
@@ -542,10 +550,13 @@
 								<thead>
 									<tr>
 
-										<th colspan="2" bgcolor="#99b1bf"><center>
-												<label style="color: white;">Activity related
-													comment</label>
-											</center></th>
+										<th colspan="2" bgcolor="#99b1bf"><h:commandLink
+											value="New comment" style="font-size: 14px !important;"
+											class="btn btn-secondary btn-success   glyphicon glyphicon-edit"
+											action="#{activityController.newComment()}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink> <label style="color: white; margin-left: 15%;">Activity
+											related comment</label></th>
 									</tr>
 
 									<tr>
@@ -616,11 +627,23 @@
 									</tr>
 									<tr>
 
-										<td style="width: 30%;"><h:commandLink
-												value="Send comment" style="font-size: 14px !important;"
+										<td style="width: 30%;"><p:outputPanel
+											rendered="#{activityController.renderUpload}" autoUpdate="true">
+											<h:commandLink value="Send comment"
+												style="font-size: 14px !important;"
 												class="btn btn-info  glyphicon glyphicon-edit"
 												action="#{activityController.saveComment()}">
-											</h:commandLink></td>
+											</h:commandLink>
+										</p:outputPanel> 
+										
+										<p:outputPanel rendered="#{activityController.planBtn}"
+											autoUpdate="true">
+											<h:commandLink value="Save comment"
+												style="font-size: 14px !important;"
+												class="btn btn-info  glyphicon glyphicon-edit"
+												action="#{activityController.saveSupervisorComment()}">
+											</h:commandLink>
+										</p:outputPanel></td>
 										<td><h:commandLink
 												action="#{activityController.cancelComment()}"
 												value="#{msg['UserCategoryView.cancelButton']}"

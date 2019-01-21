@@ -256,12 +256,14 @@ public class ActivityController implements Serializable, DbConstant {
 			}
 			if (activityDto.getStatus().equals(APPROVED)) {
 				activityDto.setReportAction(false);
-				activityDto.setCommmentAction(false);
+				//activityDto.setCommmentAction(false);
 				activityDto.setDoneAction(false);
+				activityDto.setApprovedComment(false);
 			} else {
 				activityDto.setReportAction(true);
-				activityDto.setCommmentAction(true);
+				//activityDto.setCommmentAction(true);
 				activityDto.setDoneAction(true);
+				activityDto.setApprovedComment(true);
 			}
 
 			if (activityDto.getStatus().equals(REJECT)&&(activityDto.getDueDate()==null)) {
@@ -890,6 +892,7 @@ public class ActivityController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public String commentAction(ActivityDto activ) {
 		try {
+			HttpSession session = SessionUtils.getSession();
 			Activity act = new Activity();
 			if (null != activ) {
 
@@ -898,6 +901,7 @@ public class ActivityController implements Serializable, DbConstant {
 				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "ActivityComment",
 						"commentActId asc");
+				session.setAttribute("selectedActivity", act);
 			}
 			if (commentDetail.size() < 0) {
 				JSFMessagers.resetMessages();

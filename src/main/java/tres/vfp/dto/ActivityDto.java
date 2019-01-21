@@ -49,6 +49,7 @@ public class ActivityDto implements Serializable {
 	private boolean showAction;
 	private boolean showPlanedIcon;
 	private boolean showNotStartedIcon;
+	private boolean approvedComment;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -247,6 +248,14 @@ public class ActivityDto implements Serializable {
 
 	public void setShowNotStartedIcon(boolean showNotStartedIcon) {
 		this.showNotStartedIcon = showNotStartedIcon;
+	}
+
+	public boolean isApprovedComment() {
+		return approvedComment;
+	}
+
+	public void setApprovedComment(boolean approvedComment) {
+		this.approvedComment = approvedComment;
 	}
 	
 }
