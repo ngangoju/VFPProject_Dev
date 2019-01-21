@@ -108,109 +108,7 @@
 				<!-- 			CLOSE OF ALL STAFF IN THE SAME BOARD TABLE			 -->
 
 
-				<!-- COMMENT AREA -->
-				<p:outputPanel rendered="#{activityController.renderCommentTable}">
 
-					<table
-						class="table table-striped table-hover table-bordered tableUpdated "
-						style="font-family: Time new roman !important; font-size: 15px !important; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
-
-						<thead>
-							<tr>
-
-								<th colspan="2" bgcolor="#99b1bf"><center>
-										<label style="color: white;">Activity related comment</label>
-									</center></th>
-							</tr>
-
-							<tr>
-
-								<th bgcolor="#99b1bf"><label style="color: white;">ActivityDescription:</label>
-								</th>
-								<th bgcolor="#99b1bf"><label style="color: white;"><h:outputText
-											value="#{activityController.activity.description}"></h:outputText></label></th>
-							</tr>
-						</thead>
-						<ui:repeat var="coment"
-							value="#{activityController.commentDetail}">
-							<tbody class="details">
-								<tr>
-									<td style="width: 30%;"><label>Comment description</label></td>
-									<td><h:outputText value="#{coment.comment.description}"></h:outputText></td>
-								</tr>
-								<tr>
-									<td style="width: 30%;"><label>comment date:</label></td>
-									<td><h:outputText value="#{coment.comment.crtdDtTime}">
-											<f:convertDateTime pattern="dd/MM/yyyy" />
-										</h:outputText></td>
-								</tr>
-								<tr>
-									<td style="width: 30%;"><label>Comment given by:</label></td>
-									<td><h:outputText value="#{coment.createdBy}"></h:outputText></td>
-								</tr>
-
-								<tr>
-									<td style="width: 30%;" colspan="2"><h:commandLink
-											value="Reply this comment"
-											style="font-size: 14px !important;"
-											class="btn btn-info  glyphicon glyphicon-edit"
-											action="#{activityController.replyComment(coment)}">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink></td>
-
-								</tr>
-
-
-							</tbody>
-						</ui:repeat>
-						<p:outputPanel rendered="#{activityController.rendercomment}"
-							autoUpdate="true">
-							<tr>
-								<td colspan="2"></td>
-							</tr>
-							<tr>
-								<td colspan="2"></td>
-							</tr>
-							<tr>
-								<td colspan="2"></td>
-							</tr>
-							<tr>
-								<td style="width: 30%;"><label>Enter your comment:</label></td>
-								<td><h:inputTextarea style="width:55%;" id="coment"
-										value="#{activityController.commentDescription}"
-										maxlength="35">
-										<f:validateRegex
-											pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-									</h:inputTextarea><br /> <h:message errorClass="errorMsg1" for="coment"
-										style="font-size:12px;font-family:Time New Roman;"></h:message>
-								</td>
-							</tr>
-							<tr>
-
-								<td style="width: 30%;"><h:commandLink value="Send comment"
-										style="font-size: 14px !important;"
-										class="btn btn-info  glyphicon glyphicon-edit"
-										action="#{activityController.saveComment()}">
-									</h:commandLink></td>
-								<td><h:commandLink
-										action="#{activityController.cancelComment()}"
-										value="#{msg['UserCategoryView.cancelButton']}"
-										style="font-size: 14px !important;"
-										class="btn btn-danger glyphicon glyphicon-remove">
-										<f:ajax render="@form" execute="@form" onevent="showProgress" />
-									</h:commandLink></td>
-							</tr>
-						</p:outputPanel>
-						<tr>
-							<td colspan="2"><a
-								href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
-								style="font-size: 14px !important;"
-								class="btn btn-primary glyphicon glyphicon-chevron-left">
-									Back </a></td>
-						</tr>
-
-					</table>
-				</p:outputPanel>
 
 				<p:outputPanel id="table6" autoUpdate="true"
 					rendered="#{activityController.renderTable}">
@@ -230,7 +128,7 @@
 							</h:commandLink>
 						</div>
 					</div>
-					<p:dataTable id="example7" class="display" cellspacing="0" 
+					<p:dataTable id="example7" class="display" cellspacing="0"
 						rows="10" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15"
@@ -328,7 +226,7 @@
 									data-placement="left"
 									title="#{msg['UserCategoryView.commentButton']}"
 									class="btn btn-primary glyphicon glyphicon-envelope"
-									action="#{activityController.commentAction(info)}"
+									action="#{activityController.AddRejectedComment(info)}"
 									rendered="#{ activityController.commentRender}">
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandLink>
@@ -351,6 +249,131 @@
 							</div>
 						</p:column>
 					</p:dataTable>
+				</p:outputPanel>
+
+
+
+				<!-- COMMENT AREA -->
+				<p:outputPanel rendered="#{activityController.renderCommentTable}">
+					<div class=" col-md-12" style="height: 330px; overflow-y: scroll;">
+						<table
+							class="table table-striped table-hover table-bordered tableUpdated "
+							style="font-family: Time new roman !important; font-size: 15px !important; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
+
+							<thead>
+								<tr>
+
+									<th colspan="2" bgcolor="#99b1bf"><h:commandLink
+											value="New comment" style="font-size: 14px !important;"
+											class="btn btn-secondary btn-success   glyphicon glyphicon-edit"
+											action="#{activityController.newComment()}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink> <label style="color: white; margin-left: 15%;">Activity
+											related comment</label></th>
+								</tr>
+
+								<tr>
+
+									<th bgcolor="#99b1bf"><label style="color: white;">ActivityDescription:</label>
+									</th>
+									<th bgcolor="#99b1bf"><label style="color: white;"><h:outputText
+												value="#{activityController.activity.description}"></h:outputText></label></th>
+								</tr>
+							</thead>
+							<ui:repeat var="coment"
+								value="#{activityController.commentDetail}">
+								<tbody class="details">
+									<tr>
+										<td style="width: 30%;"><label>Comment
+												description</label></td>
+										<td><h:outputText value="#{coment.comment.description}"></h:outputText></td>
+									</tr>
+									<tr>
+										<td style="width: 30%;"><label>comment date:</label></td>
+										<td><h:outputText value="#{coment.comment.crtdDtTime}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText></td>
+									</tr>
+									<tr>
+										<td style="width: 30%;"><label>Comment given by:</label></td>
+										<td><h:outputText value="#{coment.createdBy}"></h:outputText></td>
+									</tr>
+
+									<tr>
+										<td style="width: 30%;" colspan="2"><h:commandLink
+												value="Reply this comment"
+												style="font-size: 14px !important;"
+												class="btn btn-info  glyphicon glyphicon-edit"
+												action="#{activityController.replyComment(coment)}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
+											</h:commandLink></td>
+
+									</tr>
+
+
+								</tbody>
+							</ui:repeat>
+							<p:outputPanel rendered="#{activityController.rendercomment}"
+								autoUpdate="true">
+								<tr>
+									<td colspan="2"></td>
+								</tr>
+								<tr>
+									<td colspan="2"></td>
+								</tr>
+								<tr>
+									<td colspan="2"></td>
+								</tr>
+								<tr>
+									<td style="width: 30%;"><label>Enter your comment:</label></td>
+									<td><h:inputTextarea style="width:55%;" id="coment"
+											value="#{activityController.commentDescription}"
+											maxlength="35">
+											<f:validateRegex
+												pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+										</h:inputTextarea><br /> <h:message errorClass="errorMsg1" for="coment"
+											style="font-size:12px;font-family:Time New Roman;"></h:message>
+									</td>
+								</tr>
+								<tr>
+
+									<td style="width: 30%;"><p:outputPanel
+											rendered="#{activityController.renderUpload}" autoUpdate="true">
+											<h:commandLink value="Send comment"
+												style="font-size: 14px !important;"
+												class="btn btn-info  glyphicon glyphicon-edit"
+												action="#{activityController.saveComment()}">
+											</h:commandLink>
+										</p:outputPanel> 
+										
+										<p:outputPanel rendered="#{activityController.planBtn}"
+											autoUpdate="true">
+											<h:commandLink value="Save comment"
+												style="font-size: 14px !important;"
+												class="btn btn-info  glyphicon glyphicon-edit"
+												action="#{activityController.saveSupervisorComment()}">
+											</h:commandLink>
+										</p:outputPanel></td>
+									<td><h:commandLink
+											action="#{activityController.cancelComment()}"
+											value="#{msg['UserCategoryView.cancelButton']}"
+											style="font-size: 14px !important;"
+											class="btn btn-danger glyphicon glyphicon-remove">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink></td>
+								</tr>
+							</p:outputPanel>
+							<tr>
+								<td colspan="2"><a
+									href="#{loadUserInformationsController.getContextPath()}/menu/ManageActivity.xhtml"
+									style="font-size: 14px !important;"
+									class="btn btn-primary glyphicon glyphicon-chevron-left">
+										Back </a></td>
+							</tr>
+
+						</table>
+					</div>
 				</p:outputPanel>
 			</h:form>
 		</ui:define>

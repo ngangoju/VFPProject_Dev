@@ -741,6 +741,50 @@ public class ActivityController implements Serializable, DbConstant {
 			sessionuser.setAttribute("commentinfo", coment);
 			this.rendercomment = true;
 			this.rendered = false;
+			this.renderUpload=true;
+			this.planBtn=false;
+		}
+		return null;
+	}
+	@SuppressWarnings("unchecked")
+	public String saveSupervisorComment() {
+		try {
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			activity = (Activity) session.getAttribute("selectedActivity");
+			if(null!=activity) {
+			LOGGER.info("selected act:::::::"+activity.getDescription()+"::::::"+activity.getStatus());
+			}
+			if (null != commentDescription) {
+				comments.setCreatedBy(usersSession.getViewId());
+				comments.setCrtdDtTime(timestamp);
+				comments.setDescription(commentDescription);
+				comments.setGenericStatus(ACTIVE);
+				commentImpl.saveComment(comments);
+				actComment.setActivity(activity);
+				actComment.setComment(comments);
+				actComment.setCreatedBy(usersSession.getViewId());
+				actComment.setGenericStatus(ACTIVE);
+				actComment.setUpdatedBy(usersSession.getViewId());
+				actComment.setCrtdDtTime(timestamp);
+				actComment.setUpDtTime(timestamp);
+				actcommentImpl.saveActivityComment(actComment);
+				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, activity },
+						"ActivityComment", "commentActId asc");
+				clearComment();
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.comment.form.saved"));
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.comment.nullform.fail"));
+			}
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.comment.form.fail"));
 		}
 		return null;
 	}
@@ -802,6 +846,51 @@ public class ActivityController implements Serializable, DbConstant {
 		this.commentDescription = null;
 	}
 
+	public void newComment() {
+		HttpSession session = SessionUtils.getSession();
+		activity = (Activity) session.getAttribute("selectedActivity");
+		if(null!=activity) {
+		LOGGER.info("selected act:::::::"+activity.getDescription()+"::::::"+activity.getStatus());
+		this.rendercomment=true;
+		this.planBtn=true;
+		this.renderUpload=false;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void AddRejectedComment(Activity activ) {
+		try {
+			HttpSession session = SessionUtils.getSession();
+			Activity act = new Activity();
+			if (null != activ) {
+
+				act = activityImpl.getModelWithMyHQL(new String[] { "ACTIVITY_ID" },
+						new Object[] { activ.getActivityId() }, "from Activity");
+				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "ActivityComment",
+						"commentActId asc");
+				session.setAttribute("selectedActivity", act);
+			}
+			if (commentDetail.size() < 0) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.commentError.form.activity"));
+			} else {
+				this.renderTable=false;
+				this.renderCompleted = false;
+				this.renderCommentTable = true;
+				activity = act;
+				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "ActivityComment",
+						"commentActId asc");
+			}
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+		}
+	}
 	@SuppressWarnings("unchecked")
 	public String commentAction(ActivityDto activ) {
 		try {
