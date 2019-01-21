@@ -158,7 +158,7 @@ public class TaskController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
 			LOGGER.info(
 					CLASSNAME + ":::Task Details is saved" + plan.getStartDate() + "and.message" + plan.getDueDate());
-			clearTaskFuileds();
+			// clearTaskFuileds();
 			// return"/menu/Task.xhtml?faces-redirect=true";
 			// showTasks();
 //			}
@@ -176,42 +176,36 @@ public class TaskController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public void saveAssign(Task actS) {
 		try {
-//			if(assignment.) {
-//				taskAssignImpl.saveTaskAssignment(assignment);
-//				JSFMessagers.resetMessages();
-//				setValid(false);
-//				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.complete"));
-//				LOGGER.info(CLASSNAME + ":::Task Assignment is not okay");
-//			}else if(assignment.getGenericStatus().equals(DESACTIVE) && assignment.getUser().equals(usersImpl.gettUserById(userId, "userId"))) {
+			TaskAssignment assignm = new TaskAssignment();
+			assignm=taskAssignImpl.getModelWithMyHQL(new String[] { "task","user" }, new Object[] { actS,usersImpl.gettUserById(userId, "userId") },
+					"from TaskAssignment");
+			if(null==assignm) {
 			assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			LOGGER.info(assignment.getCreatedBy());
 			assignment.setCrtdDtTime(timestamp);
-//			taskAssignDetail = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "user", "genericStatus" },
-//					new Object[] { usersImpl.gettUserById(userId, "userId"),ACTIVE }, "TaskAssignment",
-//					"taskAssignmentId asc");
-//			for(TaskAssignment assign : taskAssignDetail) {
-//				assign.setGenericStatus(DESACTIVE);
-//				taskAssignImpl.UpdateTask(assign);
-//			}
 			assignment.setGenericStatus(ACTIVE);
 			assignment.setUpDtTime(timestamp);
 			assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			assignment.setTask(actS);
 			assignment.setUser(usersImpl.gettUserById(userId, "userId"));
 			taskAssignImpl.saveTaskAssignment(assignment);
-//			taskDetails = taskImpl.getGenericListWithHQLParameter(
-//					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
-//							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
-//									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
-//					"Task", "taskId asc");
+			taskDetails = taskImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
+							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
+									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
+					"Task", "taskId asc");
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
 			LOGGER.info(CLASSNAME + ":::Task Assignment is saved");
 			clearTaskFuileds();
-			// showAssignments();
-			// return"/menu/Task.xhtml?faces-redirect=true";
-//			}
+			}
+			else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.duplicate.taskAssignment"));
+				LOGGER.info(CLASSNAME + "You have already assign the task to the same user");
+			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();

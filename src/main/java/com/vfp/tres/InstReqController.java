@@ -53,7 +53,7 @@ public class InstReqController implements Serializable, DbConstant {
 	private String CLASSNAME = "InstReqController :: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid, selctDiv, nextpage, boolBottn, boolBottEnn, institutionPanel, requestPanel, defaultDiv;
+	private boolean isValid, selctDiv, nextpage, boolBottn, boolBottEnn, institutionPanel, requestPanel, defaultDiv,rendered;
 	/* end manage validation messages */
 	private Users usersSession;;
 	private InstitutionRegistrationRequest request;
@@ -121,6 +121,32 @@ public class InstReqController implements Serializable, DbConstant {
 		if (contact == null) {
 			contact = new Contact();
 		}
+		if (country == null) {
+			country = new Country();
+		}
+
+		if (request == null) {
+			request = new InstitutionRegistrationRequest();
+		}
+		if (province == null) {
+
+			province = new Province();
+		}
+		if (sector == null) {
+
+			sector = new Sector();
+		}
+		if (cell == null) {
+			cell = new Cell();
+		}
+
+		if (district == null) {
+			district = new District();
+		}
+		if (village == null) {
+
+			village = new Village();
+		}
 		try {
 			requests = requestImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "instRegReqstStatus" }, new Object[] { ACTIVE, PENDING },
@@ -128,6 +154,8 @@ public class InstReqController implements Serializable, DbConstant {
 			institutions = institutionImpl.getListWithHQL("select f from Institution f");
 			nmbrInst = institutions.size();
 			dtos = display();
+			countries = countryImpl.getListWithHQL("select f from Country f");
+			provinces = provImpl.getListWithHQL("select f from Province f");
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -483,6 +511,24 @@ public class InstReqController implements Serializable, DbConstant {
 		}
 	}
 
+	public void renderProvMethod() {
+		try {
+			country = countryImpl.getCountryById(cntryId, "taskId");
+			if (country != null) {
+				if (country.getCountryName_en().equals("RWANDA")) {
+					rendered = true;
+				} else {
+					rendered = false;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		/* clear fields */
+		institution.setInstitutionType(null);
+		/* end clear field */
+
+	}
 	public void changeVilages() {
 		try {
 			cell = cellImpl.getCellById(cid, "cellId");
@@ -712,4 +758,205 @@ public class InstReqController implements Serializable, DbConstant {
 		this.nextpage = nextpage;
 	}
 
+	public boolean isRendered() {
+		return rendered;
+	}
+
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
+	}
+
+	public List<Country> getCountries() {
+		return countries;
+	}
+
+	public void setCountries(List<Country> countries) {
+		this.countries = countries;
+	}
+
+	public List<Province> getProvinces() {
+		return provinces;
+	}
+
+	public void setProvinces(List<Province> provinces) {
+		this.provinces = provinces;
+	}
+
+	public List<District> getDistricts() {
+		return districts;
+	}
+
+	public void setDistricts(List<District> districts) {
+		this.districts = districts;
+	}
+
+	public List<Sector> getSectors() {
+		return sectors;
+	}
+
+	public void setSectors(List<Sector> sectors) {
+		this.sectors = sectors;
+	}
+
+	public List<Cell> getCells() {
+		return cells;
+	}
+
+	public void setCells(List<Cell> cells) {
+		this.cells = cells;
+	}
+
+	public List<Village> getVillages() {
+		return villages;
+	}
+
+	public void setVillages(List<Village> villages) {
+		this.villages = villages;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public Village getVillage() {
+		return village;
+	}
+
+	public void setVillage(Village village) {
+		this.village = village;
+	}
+
+	public Province getProvince() {
+		return province;
+	}
+
+	public void setProvince(Province province) {
+		this.province = province;
+	}
+
+	public District getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(District district) {
+		this.district = district;
+	}
+
+	public Sector getSector() {
+		return sector;
+	}
+
+	public void setSector(Sector sector) {
+		this.sector = sector;
+	}
+
+	public Cell getCell() {
+		return cell;
+	}
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
+	}
+
+	public int getCntryId() {
+		return cntryId;
+	}
+
+	public void setCntryId(int cntryId) {
+		this.cntryId = cntryId;
+	}
+
+	public int getPid() {
+		return pid;
+	}
+
+	public void setPid(int pid) {
+		this.pid = pid;
+	}
+
+	public int getDid() {
+		return did;
+	}
+
+	public void setDid(int did) {
+		this.did = did;
+	}
+
+	public int getCid() {
+		return cid;
+	}
+
+	public void setCid(int cid) {
+		this.cid = cid;
+	}
+
+	public int getVid() {
+		return vid;
+	}
+
+	public void setVid(int vid) {
+		this.vid = vid;
+	}
+
+	public int getSid() {
+		return sid;
+	}
+
+	public void setSid(int sid) {
+		this.sid = sid;
+	}
+
+	public ProvinceImpl getProvImpl() {
+		return provImpl;
+	}
+
+	public void setProvImpl(ProvinceImpl provImpl) {
+		this.provImpl = provImpl;
+	}
+
+	public DistrictImpl getDistrictImpl() {
+		return districtImpl;
+	}
+
+	public void setDistrictImpl(DistrictImpl districtImpl) {
+		this.districtImpl = districtImpl;
+	}
+
+	public SectorImpl getSectorImpl() {
+		return sectorImpl;
+	}
+
+	public void setSectorImpl(SectorImpl sectorImpl) {
+		this.sectorImpl = sectorImpl;
+	}
+
+	public CellImpl getCellImpl() {
+		return cellImpl;
+	}
+
+	public void setCellImpl(CellImpl cellImpl) {
+		this.cellImpl = cellImpl;
+	}
+
+	public VillageImpl getVillageImpl() {
+		return villageImpl;
+	}
+
+	public void setVillageImpl(VillageImpl villageImpl) {
+		this.villageImpl = villageImpl;
+	}
+
+	public CountryImpl getCountryImpl() {
+		return countryImpl;
+	}
+
+	public void setCountryImpl(CountryImpl countryImpl) {
+		this.countryImpl = countryImpl;
+	}
+
+	
 }
