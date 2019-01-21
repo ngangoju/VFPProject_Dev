@@ -11,11 +11,14 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.common.UploadUtility;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.ContactImpl;
 import tres.dao.impl.EvaluationImpl;
@@ -85,7 +88,6 @@ public class EvaluationController implements Serializable, DbConstant {
 			institution = new Institution();
 		}
 		try {
-
 			staffs = getUserDetails(usersSession);// staff with complete activities
 		} catch (Exception e) {
 			setValid(false);
@@ -124,6 +126,23 @@ public class EvaluationController implements Serializable, DbConstant {
 	public void backHome() {
 		viewSpecfcStaff = false;
 		viewStaffActiv = false;
+	}
+
+	// renderdownload
+
+	public void getDownoadPage(Activity activity) {
+		try {
+			HttpSession ses = SessionUtils.getSession();
+			ses.setAttribute("activitySession", activity);
+			LoadUserInformationsController loadUserInformationsController = new LoadUserInformationsController();
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+					.getRequest();
+			String url = loadUserInformationsController.getContextPath() + "/menu/activitFiledown.xhtml";
+			FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.info(e.getMessage());
+		}
 	}
 
 	// contact
@@ -167,77 +186,11 @@ public class EvaluationController implements Serializable, DbConstant {
 		}
 	}
 
-	/* Evaluation method for checking if time rang is valid starts */
-
-	public boolean isOnTime(Activity activity) {
-		try {
-			LOGGER.info("Is on time due date is::::");
-			if (activity.getDueDate().before(timestamp)) {
-				LOGGER.info("Founded::::");
-				return true;
-			} else {
-				return false;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/* Evaluation Method For making */
-
-	public int activityMarksByWeight(Activity activity) {
-		try {
-			LOGGER.info("Method founds::");
-			int mark = 0;
-			institution = activity.getUser().getBoard().getInstitution();
-			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
-					"from InstitutionEscaletePolicy");
-			Date dt = addDay(activity.getDueDate());
-			if (activity.getWeight().equals(SHORT)) {
-				if (isOnTime(activity)) {
-					mark = (int) policy.getShortMarks();
-				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
-					mark = (int) policy.getShortMarks() / 2;
-				} else if ((!isOnTime(activity)) && (!timestamp.before(addDay(activity.getDueDate())))) {
-					mark = 0;
-					LOGGER.info("We are giving Date Conditions::::" + activity.getDueDate());
-				} else {
-					LOGGER.info("Lost Date Conditions::::" + activity.getDueDate());
-				}
-
-			} else if (activity.getWeight().equals(MEDIUM)) {
-				if (isOnTime(activity)) {
-					mark = (int) policy.getMediumgMarks();
-				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
-					mark = (int) policy.getMediumgMarks() / 2;
-				} else {
-					mark = 0;
-				}
-			} else if (activity.getWeight().equals(LONG)) {
-				if (isOnTime(activity)) {
-					mark = (int) policy.getLongMarks();
-				} else if ((!isOnTime(activity)) && (timestamp.before(addDay(activity.getDueDate())))) {
-					mark = (int) policy.getLongMarks() / 2;
-				} else {
-					mark = 0;
-				}
-			}
-			LOGGER.info("ACTIVITY MARK IS:::" + mark);
-			return mark;
-		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.info(e.getMessage());
-			LOGGER.info("Method Not founds::");
-			return 0;
-		}
-	}
-
 	/* Evaluation Method For Completed task */
 
 	public boolean isCompleted(Activity activity) {
 		try {
-			if (activity.getStatus().equals(COMPLETED)) {
+			if (activity.getStatus().equals(DONE)) {
 				return true;
 			} else {
 				return false;
@@ -293,19 +246,36 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	/* Saving Evaluation */
 
-	public String savingEvaluationData(Activity activity, int mrks, String decsn) {
+	public String savingEvaluationData(Activity activity) {
 		try {
+		if(addDay(activity).before(new Date())) {
 			evaluation.setActivity(activity);
 			evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			evaluation.setCrtdDtTime(timestamp);
-			evaluation.setDecision(decsn);
+			evaluation.setDecision(COMPLETED);
 			evaluation.setEvaluationDate(timestamp);
-			evaluation.setEvaluationMarks(mrks);
+			evaluation.setEvaluationMarks(getMarks(activity));
 			evaluation.setGenericStatus(ACTIVE);
 			evaluation.setUpdatedBy(usersSession.getViewId());
 			evaluation.setUpDtTime(timestamp);
 			evaluationImpl.saveEvaluation(evaluation);
 			LOGGER.info("Evaluation information saved:::::");
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
+		}else {
+			evaluation.setActivity(activity);
+			evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+			evaluation.setCrtdDtTime(timestamp);
+			evaluation.setDecision(FAILED);
+			evaluation.setEvaluationDate(timestamp);
+			evaluation.setEvaluationMarks(0);
+			evaluation.setGenericStatus(ACTIVE);
+			evaluation.setUpdatedBy(usersSession.getViewId());
+			evaluation.setUpDtTime(timestamp);
+			evaluationImpl.saveEvaluation(evaluation);
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
+		}
 			return "";
 		} catch (Exception e) {
 			LOGGER.info("DB ERROR:::");
@@ -318,43 +288,16 @@ public class EvaluationController implements Serializable, DbConstant {
 		}
 	}
 
-	/* Evaluation Method */
+/*Add variant days to due date*/
 
-	public void evaluationMethod(Activity activity) {
-		try {
-			if (isCompleted(activity)) {
-				int mrk = activityMarksByWeight(activity);
-				LOGGER.info("MARKS::::" + mrk);
-				savingEvaluationData(activity, mrk, evalutionDecition(activity));
-				JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("evaluationController.confirm.message"));
-				LOGGER.info(CLASSNAME + ":::");
-			} else {
-				savingEvaluationData(activity, 0, FAILED);
-				JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("evaluationController.confirm.message"));
-			}
-		} catch (Exception e) {
-			LOGGER.info("DB ERROR:::");
-			setValid(false);
-			e.printStackTrace();
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
-			LOGGER.info(e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	// evaluating due date
-
-	public Date addDay(Date dueDate) {
+	public Date addDay(Activity activity) {
 		institution = activity.getUser().getBoard().getInstitution();
 		try {
 			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
-			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution","genericStatus" }, new Object[] { institution,ACTIVE },
 					"from InstitutionEscaletePolicy");
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(dueDate);
+			cal.setTime(activity.getDueDate());
 			cal.add(Calendar.DAY_OF_MONTH, policy.getVariation());
 			String dt = smf.format(cal.getTime());
 			LOGGER.info("Due date is ::" + cal.getTime());
@@ -368,16 +311,32 @@ public class EvaluationController implements Serializable, DbConstant {
 	// returning files forms
 
 	@SuppressWarnings("unchecked")
-	public void showFiles(Activity activity) {
+	public List<UploadingActivity> showFiles() {
 		try {
-			try {
-				viewSpecfcStaff = false;
-				viewAttached = true;
-				docmts = upimpl.getGenericListWithHQLParameter(new String[] { "activity" }, new Object[] { activity },
+			List<UploadingActivity> doc1 = new ArrayList<UploadingActivity>();
+			Activity activ = new Activity();
+			HttpSession ses = SessionUtils.getSession();
+			activ = (Activity) ses.getAttribute("activitySession");
+			if (activ != null) {
+				doc1 = upimpl.getGenericListWithHQLParameter(new String[] { "activity" }, new Object[] { activ },
 						"UploadingActivity", "activity desc");
-			} catch (Exception e) {
+				return doc1;
+			} else {
+				return null;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	// download
+
+	public void downloadFile() {
+		UploadUtility ut = new UploadUtility();
+		try {
+			ut.downloadFileUtil();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -391,10 +350,11 @@ public class EvaluationController implements Serializable, DbConstant {
 	/* Activity completion starts */
 	public void completeAction(Activity act) {
 		try {
-			act.setStatus(COMPLETED);
-			act.setGenericStatus(ACTIVE);
-			activityImpl.UpdateActivity(act);
-			evaluationMethod(act);
+			/*
+			 * act.setStatus(COMPLETED); act.setGenericStatus(ACTIVE);
+			 * activityImpl.UpdateActivity(act);
+			 */
+			//evaluationMethod(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			staffCompl(act.getUser());
@@ -420,7 +380,7 @@ public class EvaluationController implements Serializable, DbConstant {
 			act.setStatus(NOTDONE);
 			act.setGenericStatus(ACTIVE);
 			activityImpl.UpdateActivity(act);
-			evaluationMethod(act);
+			//evaluationMethod(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
@@ -443,8 +403,8 @@ public class EvaluationController implements Serializable, DbConstant {
 	public int getMarks(Activity act) {
 		try {
 			institution = act.getUser().getBoard().getInstitution();
-			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { institution },
-					"from InstitutionEscaletePolicy");
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
 			if (act.getWeight().equals(LONG))
 				return (int) policy.getLongMarks();
 			else if ((act.getWeight().equals(MEDIUM)))
