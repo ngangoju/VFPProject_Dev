@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.hibernate.ejb.criteria.Renderable;
 
 import tres.common.DbConstant;
+import tres.common.GenerateNotificationTemplete;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
@@ -102,7 +103,8 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	}
 
-	public String savePlan() {
+	@SuppressWarnings("unchecked")
+	public void savePlan() {
 		try {
 			strategicPlanDetails = strategicPlanImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
 					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "StrategicPlan",
@@ -125,19 +127,15 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
 			LOGGER.info(CLASSNAME + ":::StrategicPlan Details is saved");
 			clearPlanFuileds();
-			// userDetails=usersImpl.getGenericListWithHQLParameter(new String[]
-			// {"genericStatus","userCategory"}, new Object[] {ACTIVE,
-			// categoryImpl.getModelWithMyHQL(new String[] {"userCatid"}, new Object[] {4},
-			// "UserCategory")}, "Users", "userId asc");
-			// LOGGER.info("LIST OF SUPERVISORS : "+userDetails.size());
-			// for(Users user : userDetails) {
-			// contact= contactImpl.getModelWithMyHQL(new String[] {"user"}, new Object[]
-			// {user.getUserId()}, "Contact");
-			SendSupportEmail email = new SendSupportEmail();
-			email.sendMailTest("Junior", "Ngango", "ngangoju@gmail.com", "Communication",
-					"I hope this email finds you well, this is to inform you that you have a new strategic plan.");
-			// }
-			return "/menu/StrategicPlan.xhtml?faces-redirect=true";
+//			SendSupportEmail email = new SendSupportEmail();
+//			userDetails=usersImpl.getGenericListWithHQLParameter(new String[] {"genericStatus","userCategory"},
+//					new Object[] {ACTIVE, userCategory.getUsercategoryName().equalsIgnoreCase("Superviser")}, "Users", "userId asc");
+//			for(Users us: userDetails) {
+//				 contact= contactImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" }, new Object[]
+//				 { ACTIVE, us }, "from Contact");
+//				email.sendMailStrategicPlan(us.getFname(), usersSession.getFname()+" "+usersSession.getLname(), contact.getEmail());
+//				LOGGER.info(us.getFname()+" receives email from "+ usersSession.getFname()+" "+usersSession.getLname()+" on this email ");
+//			}
 
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Strategic Plan Details is failling with HibernateException  error");
@@ -146,7 +144,6 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
-			return "";
 		}
 
 	}
@@ -155,7 +152,10 @@ public class StrategicPlanController implements Serializable, DbConstant {
 		strategicPlan = new StrategicPlan();
 		strategicPlanDetails = null;
 	}
-
+	public String backBtn() {
+		return "/menu/StrategicPlan.xhtml?faces-redirect=true";
+	}
+	
 	public String newPlan() {
 		return "/menu/InsertStrategicPlan.xhtml?faces-redirect=true";
 	}

@@ -57,8 +57,7 @@
 
 						<fieldset>
 
-<p:outputPanel id="table" autoUpdate="true"
-					rendered="#{taskController.rendered}">
+<p:outputPanel id="table" rendered="#{taskController.rendered}">
 					<h1>#{msg['form.task.table']}</h1>
 					<div class="nav">
 						<div class="div-action pull pull-right"
@@ -77,6 +76,7 @@
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15" sortOrder="ASCENDING"
 						rowKey="#{act.taskId}">
+						<p:autoUpdate /> 
 						<p:column headerText="#{msg['form.task.name']}"
 							sortBy="#{act.taskName}">
 
@@ -115,8 +115,7 @@
 				</p:outputPanel>
 
 
-<p:outputPanel id="table2" autoUpdate="true"
-					rendered="#{taskController.renderTable}">					
+<p:outputPanel id="table2" rendered="#{taskController.renderTable}">					
 							<h1>#{msg['assign.task.form']}</h1>
 					<h:form>
 							<h:panelGroup id="planPanel" layout="block">
@@ -213,6 +212,13 @@
 												itemLabelEscaped="true" />
 											<!-- 									<f:ajax render="@form" execute="@form" onevent="showProgress" /> -->
 										</h:selectOneMenu>
+										<h:inputText id="oooo"> </h:inputText>
+       <script>
+           $(document).ready(function() {$("input:text['oooo']").autocomplete({
+                   source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+               });
+           });
+       </script>
 									</div>
 									<h:message for="categoryId" styleClass="help-block"></h:message>
 								</div>

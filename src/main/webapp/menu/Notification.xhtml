@@ -23,7 +23,7 @@
 			<h:form>
 				<p:outputPanel id="dash" autoUpdate="true"
 					rendered="#{userContactController.renderForeignCountry}">
-					<div class="row blue2 ">
+					<div class="row ">
 						<ui:repeat value="#" var="menuAss">
 							<div class="col-md-4 col-sm-6">
 								<div class="circle-tile2 ">
@@ -85,46 +85,12 @@
 
 							</div>
 
-							<!-- User able to login -->
-							<div class="col-md-4 col-sm-6">
-								<div class="circle-tile2">
-
-									<div class="circle-tile-heading2 orange2   ">
-										<i class="glyphicon glyphicon-user fa-fw fa-3x"></i>
-									</div>
-
-									<div class="circle-tile-content2  orange2  ">
-										<div class="circle-tile-description text-faded2">
-											<label
-												style="font-family: Open Sans sans-serif !important; font-size: 18px !important; color: white;">
-												#{msg['message.TaskSchedule.TimeLine']}</label>
-										</div>
-										<div class="circle-tile-number2 text-faded2">
-											<span class="glyphicon glyphicon-cog"></span> <span
-												id="sparklineB"></span><label
-												style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
-												<!--  -->&nbsp;#{msg['message.alluser.login']}
-											</label>
-										</div>
-										<h:commandLink styleClass="circle-tile-footer"
-											actionListener="#{userContactController.showLoginUsers()}"
-											value="More Info">
-											<i class="glyphicon glyphicon-chevron-right"></i>
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-
-									</div>
-								</div>
-
-							</div>
-							<!-- End of login -->
 						</ui:repeat>
 					</div>
 				</p:outputPanel>
 
 
-				<p:outputPanel id="dash1" autoUpdate="true"
-					rendered="#{userContactController.planRender}">
+				<p:outputPanel id="dash1" rendered="#{userContactController.planRender}">
 					<h:form>
 
 						<button class="btn btn-default">
@@ -135,7 +101,7 @@
 
 					<p:dataTable value="#{formSampleController.stratPlanFileList()}"
 						var="fileDetails">
-
+						<p:autoUpdate /> 
 						<p:column headerText="Strategic Plan">
 							<h:outputText value="#{fileDetails.strategicPlan.details}" />
 

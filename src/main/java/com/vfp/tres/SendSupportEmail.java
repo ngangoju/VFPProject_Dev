@@ -88,6 +88,51 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 		LOGGER.info("::: notidficatio sent   ");
 	}
 
+	public boolean sendMailStrategicPlan(String fname,String senderName, String email) {
+
+		boolean valid=false;
+		if ((null != fname) && (null != email) && (null != senderName)) {
+			String msg = "<pre>"
+					+ "I hope this email finds you well."
+					+ "This is to notify you the new strategic plan created, "
+					+ "you can now check it out and find the attached document with full details."
+					+ "Regards,"
+					+ ""
+					+ senderName
+					+ "</pre>";
+			
+			/* End send content in table sample */
+			try {
+				
+				gen.sendEmailNotification(email, fname, "Strategic plan", msg);
+				valid = true;
+			} catch (AddressException e) {
+				LOGGER.info("returing false1");
+				valid = false;
+				setValid(false);
+				e.printStackTrace();
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
+				e.printStackTrace();
+				LOGGER.info("returing false2");
+				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::"
+						+ email + " on " + timestamp);
+			} catch (MessagingException e) {
+			LOGGER.info(
+						"This content" + msg + " was not send to ::" + email + " on " + timestamp);
+				valid = false;
+				setValid(false);
+				e.printStackTrace();
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+				e.printStackTrace();
+			}
+			LOGGER.info("::: notidficatio sent   ");
+		} else {
+			valid = false;
+		}
+		LOGGER.info("returing values"+valid);
+		return (valid);
+	}
+
 	public boolean sendMailTestVersion(String fname, String lname, String email) {
 
 		boolean valid=false;

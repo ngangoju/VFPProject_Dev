@@ -55,8 +55,7 @@
 							</ul>
 						</h:panelGroup>
 						<p:outputPanel id="strapView"
-							rendered="#{strategicPlanController.renderStPlan}"
-							autoUpdate="true">
+							rendered="#{strategicPlanController.renderStPlan}">
 
 							<fieldset>
 								<legend
@@ -66,7 +65,7 @@
                  paginator="true"
                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                  rowsPerPageTemplate="5,10,15" value="#{strategicPlanController.strategicPlanDtoDetails}"	var="act">
-
+										<p:autoUpdate /> 
 									<p:column headerText="#{msg['form.strategicPlan.details']}">
 
 										<h:inputTextarea id="descriptionId" value="#{act.details}"

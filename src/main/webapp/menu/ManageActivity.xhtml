@@ -129,10 +129,11 @@
 						</div>
 					</div>
 					<p:dataTable id="example7" class="display" cellspacing="0"
-						rows="10" paginator="true"
+						rows="5" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15"
 						value="#{activityController.activityDetail}" var="info">
+						<p:autoUpdate /> 
 						<f:facet name="header">
 
 							<div class="form-group row">
@@ -232,19 +233,6 @@
 								</h:commandLink>
 
 								<!-- 								END OF COMMENT BUTTON		 -->
-
-								<!-- 								CONFIRM COMPLETION BUTTON		 -->
-
-								<h:commandLink style="color:white" data-toggle="tooltip"
-									data-placement="left" title="#{msg['activity.confirmButton']}"
-									class="btn btn-warning 	glyphicon glyphicon-check"
-									action="#{activityController.completeAction(info)}"
-									rendered="#{ activityController.completeRender}"
-									disabled="true">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-
-								<!-- 								END OF CONFIRM COMPLETION BUTTON		 -->
 
 							</div>
 						</p:column>

@@ -24,7 +24,7 @@ public class GenerateNotificationTemplete {
 				+ "table{font-size:13px; border-collapse: collapse;}\n" + "table, th, td  {border: 1px solid black;}\n"
 				+ "a {color: #00779a;}\n" + ".generated{font-size:12px; font-weight: 500;}\n"
 				+ ".footer{font-size:11px; text-align:justify;line-height:1.2em;}\n" + "</style>\n" + "\n" + "\n"
-				+ "<body><br/>" + "<b>Dear :</b>" + receiverNames + "" + " <br/><br/>";
+				+ "<body><br/>" + "<b>Dear " + receiverNames + ",</b>" + " <br/><br/>";
 
 		content = "<b>" + notificationMassage + "</b>";
 
@@ -37,10 +37,7 @@ public class GenerateNotificationTemplete {
 		fullMail = head + content + footer;
 		
 			sendMail.sendEmail(receiverEmail, subJect, fullMail);
-		
-			
-		
-		
+						
 
 		return "";
 	}

@@ -89,7 +89,7 @@
 
 					</div>
 				</p:outputPanel>
-				<p:outputPanel id="table" autoUpdate="true"
+				<p:outputPanel id="table"
 					rendered="#{taskController.renderTable}">
 					<h1>#{msg['form.task.table']}</h1>
 					<div class="nav">
@@ -110,13 +110,14 @@
 							</h:commandLink>
 						</div>
 					</div>
+					
 					<p:dataTable value="#{taskController.taskDtoDetails}"
-						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-						var="act" rowIndexVar="row" sortBy="#{act.taskId}" rows="10"
-						paginator="true"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15" sortOrder="ASCENDING"
-						rowKey="#{act.taskId}">
+						var="act" rowIndexVar="row" sortBy="#{act.taskId}"  widgetVar="Task"
+									multiViewState="true" rows="10" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15"
+									emptyMessage="No task found" sortOrder="ASCENDING"
+						rowKey="#{act.taskId}"><p:autoUpdate /> 
 						<p:column headerText="#{msg['form.task.name']}"
 							sortBy="#{act.taskName}">
 
@@ -162,6 +163,7 @@
 								rendered="#{act.editable}"
 								converterMessage="#{msg['validation.message.DATE_FORMAT']}"
 								requiredMessage="#{msg['startDate.required.message']}">
+								
 								<f:convertDateTime type="date" dateType="short"
 									pattern="dd/MM/yyyy" />
 								<f:validateLength maximum="35" />
@@ -242,7 +244,7 @@
 				</p:outputPanel>
 
 
-				<p:outputPanel id="table2" autoUpdate="true"
+				<p:outputPanel id="table2"
 					rendered="#{taskController.renderTaskForm}">
 					<h1>#{msg['assign.task.form']}s</h1>
 					<div class="nav">
@@ -266,10 +268,11 @@
 					<p:dataTable value="#{taskController.taskAssignDetails}"
 						style="width:100%; margin-top:10px;;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
 						var="act" rowIndexVar="row" sortBy="#{act.taskAssignmentId}"
-						rows="10" paginator="true"
+						rows="5" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15" sortOrder="ASCENDING"
 						rowKey="#{act.taskAssignmentId}">
+						<p:autoUpdate /> 
 						<p:column headerText="#{msg['form.task.name']}"
 							sortBy="#{act.taskName}">
 
