@@ -267,7 +267,7 @@ public class InstReqController implements Serializable, DbConstant {
 	public String InstitutionSave(InstitutionRegistrationRequest request) {
 		try {
 			institution.setBranch(request.getInstitution());
-			institution.setCreatedBy(usersSession.getViewId());
+			institution.setCreatedBy(request.getCreatedBy());
 			institution.setGenericStatus(ACTIVE);
 			institution.setCrtdDtTime(timestamp);
 			institution.setInstitutionRegDate(timestamp);

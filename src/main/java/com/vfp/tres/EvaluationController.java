@@ -248,34 +248,34 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	public String savingEvaluationData(Activity activity) {
 		try {
-		if(addDay(activity).before(new Date())) {
-			evaluation.setActivity(activity);
-			evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
-			evaluation.setCrtdDtTime(timestamp);
-			evaluation.setDecision(COMPLETED);
-			evaluation.setEvaluationDate(timestamp);
-			evaluation.setEvaluationMarks(getMarks(activity));
-			evaluation.setGenericStatus(ACTIVE);
-			evaluation.setUpdatedBy(usersSession.getViewId());
-			evaluation.setUpDtTime(timestamp);
-			evaluationImpl.saveEvaluation(evaluation);
-			LOGGER.info("Evaluation information saved:::::");
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
-		}else {
-			evaluation.setActivity(activity);
-			evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
-			evaluation.setCrtdDtTime(timestamp);
-			evaluation.setDecision(FAILED);
-			evaluation.setEvaluationDate(timestamp);
-			evaluation.setEvaluationMarks(0);
-			evaluation.setGenericStatus(ACTIVE);
-			evaluation.setUpdatedBy(usersSession.getViewId());
-			evaluation.setUpDtTime(timestamp);
-			evaluationImpl.saveEvaluation(evaluation);
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
-		}
+			if (addDay(activity).before(new Date())) {
+				evaluation.setActivity(activity);
+				evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				evaluation.setCrtdDtTime(timestamp);
+				evaluation.setDecision(COMPLETED);
+				evaluation.setEvaluationDate(timestamp);
+				evaluation.setEvaluationMarks(getMarks(activity));
+				evaluation.setGenericStatus(ACTIVE);
+				evaluation.setUpdatedBy(usersSession.getViewId());
+				evaluation.setUpDtTime(timestamp);
+				evaluationImpl.saveEvaluation(evaluation);
+				LOGGER.info("Evaluation information saved:::::");
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
+			} else {
+				evaluation.setActivity(activity);
+				evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				evaluation.setCrtdDtTime(timestamp);
+				evaluation.setDecision(COMPLETED);
+				evaluation.setEvaluationDate(timestamp);
+				evaluation.setEvaluationMarks(0);
+				evaluation.setGenericStatus(ACTIVE);
+				evaluation.setUpdatedBy(usersSession.getViewId());
+				evaluation.setUpDtTime(timestamp);
+				evaluationImpl.saveEvaluation(evaluation);
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
+			}
 			return "";
 		} catch (Exception e) {
 			LOGGER.info("DB ERROR:::");
@@ -288,14 +288,14 @@ public class EvaluationController implements Serializable, DbConstant {
 		}
 	}
 
-/*Add variant days to due date*/
+	/* Add variant days to due date */
 
 	public Date addDay(Activity activity) {
 		institution = activity.getUser().getBoard().getInstitution();
 		try {
 			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
-			policy = policyImpl.getModelWithMyHQL(new String[] { "institution","genericStatus" }, new Object[] { institution,ACTIVE },
-					"from InstitutionEscaletePolicy");
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(activity.getDueDate());
 			cal.add(Calendar.DAY_OF_MONTH, policy.getVariation());
@@ -354,7 +354,7 @@ public class EvaluationController implements Serializable, DbConstant {
 			 * act.setStatus(COMPLETED); act.setGenericStatus(ACTIVE);
 			 * activityImpl.UpdateActivity(act);
 			 */
-			//evaluationMethod(act);
+			// evaluationMethod(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			staffCompl(act.getUser());
@@ -380,7 +380,7 @@ public class EvaluationController implements Serializable, DbConstant {
 			act.setStatus(NOTDONE);
 			act.setGenericStatus(ACTIVE);
 			activityImpl.UpdateActivity(act);
-			//evaluationMethod(act);
+			// evaluationMethod(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
 			JSFMessagers.resetMessages();
