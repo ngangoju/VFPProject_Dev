@@ -401,7 +401,7 @@ public class ActivityController implements Serializable, DbConstant {
 			EvaluationController ec = new EvaluationController();
 			act.setStatus(COMPLETED);
 			act.setGenericStatus(ACTIVE);
-			ec.evaluationMethod(act);
+//			ec.evaluationMethod(act);
 			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
