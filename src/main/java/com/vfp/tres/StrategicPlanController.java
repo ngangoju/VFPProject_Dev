@@ -109,10 +109,6 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			strategicPlanDetails = strategicPlanImpl.getGenericListWithHQLParameter(new String[] { "createdBy" },
 					new Object[] { usersSession.getFname() + " " + usersSession.getLname() }, "StrategicPlan",
 					"planId asc");
-			for (StrategicPlan strategicP : strategicPlanDetails) {
-				strategicP.setGenericStatus(DESACTIVE);
-				strategicPlanImpl.UpdateStrategicPlan(strategicP);
-			}
 			strategicPlan.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			strategicPlan.setCrtdDtTime(timestamp);
 			strategicPlan.setGenericStatus(ACTIVE);
@@ -122,6 +118,10 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			strategicPlan.setRecordedDate(timestamp);
 			strategicPlan.setEndDate(strategicPlan.getDueDate());
 			strategicPlanImpl.saveStrategicPlan(strategicPlan);
+			for (StrategicPlan strategicP : strategicPlanDetails) {
+				strategicP.setGenericStatus(DESACTIVE);
+				strategicPlanImpl.UpdateStrategicPlan(strategicP);
+			}
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.strategicPlan"));
