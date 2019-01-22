@@ -145,8 +145,15 @@ public class TaskController implements Serializable, DbConstant {
 			task.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 			task.setParentTask(taskImpl.getTaskById(taskID, "taskId"));
 			task.setEndDate(task.getDueDate());
+			task.setBoard(usersSession.getBoard());
+			task.setTaskStatus(ACTIVE);
 			plan = planImpl.getModelWithMyHQL(new String[] { "genericStatus" }, new Object[] { ACTIVE },
 					SELECT_STRATEGIC_PLAN);
+			if(plan==null) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
+			}else {
 			task.setStrategicPlan(plan);
 //			if(task.getStartDate().getDay()<plan.getStartDate().getDay()) {
 //				 || task.getDueDate().getDay()>plan.getDueDate().getDay()
@@ -165,12 +172,12 @@ public class TaskController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
 			LOGGER.info(
 					CLASSNAME + ":::Task Details is saved" + plan.getStartDate() + "and.message" + plan.getDueDate());
-			 clearTaskFuileds();
+			 clearTaskFuileds();}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(CLASSNAME + "" + e.getMessage());
 			e.printStackTrace();
 		}

@@ -19,24 +19,27 @@ import javax.persistence.TemporalType;
  * @author NGANGO
  */
 @Entity
-@Table(name = "Task")
+@Table(name = "Target")
 @NamedQuery(name = "Task.findAll", query = "select r from Task r order by v desc")
 public class Task extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
-	@Column(name = "taskId")
+	@Column(name = "targetId")
 	private int taskId;
 
-	@Column(name = "taskName")
+	@Column(name = "targetName")
 	private String taskName;
 
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "taskStatus")
+	@Column(name = "targetStatus")
 	private String taskStatus;
+
+	@Column(name = "targetWeight")
+	private String taskWeight;
 
 	@Column(name = "startDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -51,7 +54,7 @@ public class Task extends CommonDomain implements Serializable {
 	private Date endDate;
 
 	@ManyToOne
-	@JoinColumn(name = "parentTask")
+	@JoinColumn(name = "parentTarget")
 	private Task parentTask;
 
 	@ManyToOne
@@ -100,6 +103,14 @@ public class Task extends CommonDomain implements Serializable {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getTaskWeight() {
+		return taskWeight;
+	}
+
+	public void setTaskWeight(String taskWeight) {
+		this.taskWeight = taskWeight;
 	}
 
 	public StrategicPlan getStrategicPlan() {

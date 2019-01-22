@@ -123,16 +123,42 @@
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:inputTextarea id="descriptionId" styleClass="form-control"
-											value="#{taskController.task.description}" maxlength="150"
+											value="#{taskController.task.description}" maxlength="1000"
 											required="true"
 											requiredMessage="#{msg['description.required.message']}"
 											validatorMessage="#{msg['error.maxlength.form']}">
-											<f:validateLength maximum="150" />
+											<f:validateLength maximum="1000" />
 										</h:inputTextarea>
 									</div>
 									<div class="col-md-1 col-sm-1 col-xs-1"></div>
 
 									<h:message for="descriptionId" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
+
+
+							<h:panelGroup id="categoryPane" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-2 col-sm-2 col-xs-2 control-label"
+										style="color: black">#{msg['form.activity.weight']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:selectOneMenu id="weightId" styleClass="form-control"
+											required="true" value="#{taskController.task.taskWeight}"
+											requiredMessage="#{msg['weight.required.message']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems value="#{activityController.weight}"
+												var="option" itemValue="#{option}" itemLabelEscaped="true" />
+											<f:ajax event="change" execute="@this"
+												listener="#{activityController.changeSelectBox('Junior')}"
+												render="ReasonPanel" />
+										</h:selectOneMenu>
+									</div>
+									<div class="col-md-1 col-sm-1 col-xs-1"></div>
+									<h:message for="weightId" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
 
