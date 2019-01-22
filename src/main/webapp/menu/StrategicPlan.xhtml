@@ -70,10 +70,10 @@
 
 										<h:inputTextarea id="descriptionId" value="#{act.details}"
 											styleClass="form-control" size="10"
-											rendered="#{act.editable}" maxlength="250" required="true"
+											rendered="#{act.editable}" maxlength="1500" required="true"
 											requiredMessage="#{msg['plan.required.message']}"
-											validatorMessage="#{msg['error.address.maxlength']}">
-											<f:validateLength maximum="150" />
+											validatorMessage="#{msg['error.maxlength.form']}">
+											<f:validateLength maximum="1000" />
 										</h:inputTextarea>
 										<h:message for="descriptionId" styleClass="help-block"></h:message>
 

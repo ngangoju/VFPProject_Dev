@@ -19,26 +19,26 @@ import javax.persistence.TemporalType;
  * @author NGANGO
  */
 @Entity
-@Table(name = "Target")
+@Table(name = "Task")
 @NamedQuery(name = "Task.findAll", query = "select r from Task r order by v desc")
 public class Task extends CommonDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
-	@Column(name = "targetId")
+	@Column(name = "taskId")
 	private int taskId;
 
-	@Column(name = "targetName")
+	@Column(name = "taskName")
 	private String taskName;
 
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "targetStatus")
+	@Column(name = "taskStatus")
 	private String taskStatus;
 
-	@Column(name = "targetWeight")
+	@Column(name = "taskWeight")
 	private String taskWeight;
 
 	@Column(name = "startDate", columnDefinition = "DATETIME")
@@ -54,7 +54,7 @@ public class Task extends CommonDomain implements Serializable {
 	private Date endDate;
 
 	@ManyToOne
-	@JoinColumn(name = "parentTarget")
+	@JoinColumn(name = "parentTask")
 	private Task parentTask;
 
 	@ManyToOne
