@@ -100,14 +100,14 @@
 									<div class="col-md-6 col-sm-6 col-xs-7">
 										<h:inputText id="tasknameId" binding="#{surnameId}"
 											styleClass="form-control"
-											value="#{taskController.task.taskName}" maxlength="80"
+											value="#{taskController.task.taskName}" maxlength="500"
 											required="true"
-											validatorMessage="#{msg['error.enter.invalid.surname']}"
-											converterMessage="#{msg['error.enter.invalid.surname']}"
+											validatorMessage="#{msg['error.enter.invalid.taskName']}"
+											converterMessage="#{msg['error.enter.invalid.taskName']}"
 											requiredMessage="#{msg['tname.required.message']}">
 											<f:validateRegex
 												pattern="#{regex['regex.string.Validation']}" />
-											<f:validateLength maximum="35" />
+											<f:validateLength maximum="350" />
 										</h:inputText>
 									</div>
 									<h:message for="tasknameId" styleClass="help-block"></h:message>

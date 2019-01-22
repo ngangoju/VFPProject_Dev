@@ -209,7 +209,7 @@ public class TaskController implements Serializable, DbConstant {
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
 			LOGGER.info(CLASSNAME + ":::Task Assignment is saved");
-			clearTaskFuileds();
+//			clearTaskFuileds();
 			}
 			else {
 				JSFMessagers.resetMessages();
