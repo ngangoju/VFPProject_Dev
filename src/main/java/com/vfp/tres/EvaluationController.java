@@ -274,7 +274,8 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluation.setUpDtTime(timestamp);
 				evaluationImpl.saveEvaluation(evaluation);
 				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
+				JSFMessagers
+						.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
 			}
 			return "";
 		} catch (Exception e) {
@@ -377,12 +378,20 @@ public class EvaluationController implements Serializable, DbConstant {
 	public void rejectAction(Activity act) {
 		try {
 			LOGGER.info("IGIKORWA CYITWA: " + act.getDescription());
-			act.setStatus(NOTDONE);
+			act.setUpdatedBy(usersSession.getViewId());
+			act.setUpDtTime(timestamp);
+			act.setStatus(FAILED);
 			act.setGenericStatus(ACTIVE);
 			activityImpl.UpdateActivity(act);
-			// evaluationMethod(act);
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
+			evaluation = new Evaluation();
+			evaluation.setActivity(act);
+			evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+			evaluation.setCrtdDtTime(timestamp);
+			evaluation.setDecision(FAILED);
+			evaluation.setEvaluationDate(timestamp);
+			evaluation.setEvaluationMarks(0);
+			evaluation.setGenericStatus(ACTIVE);
+			evaluationImpl.saveEvaluation(evaluation);
 			JSFMessagers.resetMessages();
 			setValid(true);
 			staffCompl(act.getUser());
