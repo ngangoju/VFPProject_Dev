@@ -21,6 +21,14 @@
 	background: -webkit-linear-gradient(top, #88c048 0%, #69a038 100%);
 	background: linear-gradient(to bottom, #88c048 0%, #69a038 100%);
 }
+
+.ui-diagram-element {
+	border: 0.1em dotted #d4e06b;
+	width: 14em;
+	height: 4em;
+	line-height: 4em;
+	text-align: center;
+}
 </style>
 </h:head>
 <h:body>
@@ -228,33 +236,25 @@
 												<div class="container" style="width: 100%">
 													<div class="row">
 														<div class="col-md-12">
-															<p:growl id="growl" />
-															<p:organigram id="organigram" widgetVar="organigram"
-																value="#{institutionOrganGram.rootNode}" var="node"
-																leafNodeConnectorHeight="#{institutionOrganGram.leafNodeConnectorHeight}"
-																autoScrollToSelection="#{institutionOrganGram.autoScrollToSelection}"
-																zoom="#{institutionOrganGram.zoom}"
-																selection="#{institutionOrganGram.selection}"
-																style="#{institutionOrganGram.style}">
-																<p:organigramNode>
-																	<h:outputText value="#{node.data}" />
-																</p:organigramNode>
+															<p:growl id="growl" showSummary="true" showDetail="true">
+																<p:autoUpdate />
+															</p:growl>
 
-																<p:organigramNode type="root"
-																	style="border-radius: 10px;">
-																	<h:outputText value="#{node.data}" />
-																</p:organigramNode>
+															<p:timeline id="timeline"  
+																value="#{basicView.model}" height="250px"
+																selectable="#{basicView.selectable}"
+																zoomable="#{basicView.zoomable}"
+																moveable="#{basicView.moveable}"
+																stackEvents="#{basicView.stackEvents}"
+																axisOnTop="#{basicView.axisOnTop}"
+																eventStyle="#{basicView.eventStyle}"
+																showCurrentTime="#{basicView.showCurrentTime}"
+																showNavigation="#{basicView.showNavigation}">
 
-																<p:organigramNode type="division" styleClass="division"
-																	icon="pi pi-briefcase" iconPos="left">
-																	<h:outputText value="#{node.data}" />
-																</p:organigramNode>
+																<p:ajax event="select"
+																	listener="#{basicView.onSelect}" />
 
-																<p:organigramNode type="employee" styleClass="employee"
-																	icon="pi pi-user">
-																	<h:outputText value="#{node.data}" />
-																</p:organigramNode>
-															</p:organigram>
+															</p:timeline>
 														</div>
 													</div>
 												</div>
