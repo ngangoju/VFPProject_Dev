@@ -299,6 +299,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 		if (!document.isOpen()) {
 			document.open();
 		}
+		
 		//document.add(new Paragraph("\n"));
 		
 		Board t = boardImpl.getBoardById(selectedBoard, "boardId");
