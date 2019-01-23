@@ -266,7 +266,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 	}
 
 	public static PdfPCell createImageCell(String path) throws DocumentException, IOException {
-
 		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 		String realPath = ctx.getRealPath("/");
 		LOGGER.info("Filse Reals Path::::" + realPath);
@@ -286,7 +285,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
 		Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD,BaseColor.BLACK);
 		Date date = new Date();
-		SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  hh:mm:ss");
+		SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss");
 		String xdate = dt.format(date);
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();

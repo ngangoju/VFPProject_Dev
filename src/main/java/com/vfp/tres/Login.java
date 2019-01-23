@@ -53,8 +53,12 @@ public class Login implements Serializable, DbConstant {
 
 	public String validateUsernamePassword() {
 		LOGGER.info(CLASSNAME + ":::step one");
+		
 		HttpSession session = SessionUtils.getSession();
-
+	if(session.getAttribute("userSession")!=null) {
+		
+		session.invalidate();	
+	}
 		Users user = new Users();
 		try {
 
@@ -109,10 +113,9 @@ public class Login implements Serializable, DbConstant {
 				LOGGER.info(CLASSNAME + "Loging Save Login Historic");
 				LOGGER.info("step 111");
 				user.setLoginStatus(ONLINE);
-				user.setGenericStatus(ACTIVE);
 				usersImpl.UpdateUsers(user);
 
-				LOGGER.info(CLASSNAME + "Creating Sessions for users::" + user.getFname());
+				LOGGER.info(CLASSNAME + "Creating Sessions for users::" + user.getViewId());
 			} catch (Exception ex) {
 				LOGGER.info(CLASSNAME + "Loging Fail whene login" + ex.getMessage());
 				setValid(false);
@@ -164,7 +167,6 @@ public class Login implements Serializable, DbConstant {
 			his.setUsers(user);
 			historic.saveLoginHistoric(his);
 			user.setLoginStatus(OFFLINE);
-			user.setGenericStatus(ACTIVE);
 			usersImpl.UpdateUsers(user);
 			FacesContext.getCurrentInstance().getExternalContext().redirect(url);
 		} catch (IOException e) {
