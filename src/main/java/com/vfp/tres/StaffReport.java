@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.omg.CORBA.DATA_CONVERSION;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
@@ -57,9 +58,13 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPCellEvent;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.vfp.tres.SubTotal.SubTotalEvent;
+import com.vfp.tres.SubTotal.Totals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -99,7 +104,7 @@ public class StaffReport implements Serializable, DbConstant {
 	ActivityImpl activityImpl = new ActivityImpl();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	Date date = new Date();
-    SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+    SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     String xdate = dt.format(date);
 	
 	/*class injection*/
@@ -114,18 +119,18 @@ public class StaffReport implements Serializable, DbConstant {
 	Clearance clearance=new Clearance();
 	ClearanceImpl clearanceImpl=new ClearanceImpl();
 	private List<Clearance>Clearancedetails=new ArrayList<Clearance>();
+	Totals totals = new Totals();
 	Task tc= new Task();
 	
 	/*end class injection*/
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 	
 	//fonts
-	Font ffont0 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD,BaseColor.GREEN);
+	Font ffont0 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD,BaseColor.RED);
 	Font ffont4 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD,BaseColor.RED);
 	Font ffont5 = new Font(Font.FontFamily.UNDEFINED, 10, Font.NORMAL,BaseColor.BLACK);
 	Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.BOLD);
 	Font ffont3 = new Font(Font.FontFamily.UNDEFINED, 12, Font.BOLDITALIC,BaseColor.BLUE);
-	
 	
 	@PostConstruct
 	public void init() {
@@ -133,16 +138,12 @@ public class StaffReport implements Serializable, DbConstant {
         createPieModels();
 		HttpSession session = SessionUtils.getSession();
 		usersSession = (Users) session.getAttribute("userSession");
-
 		if (users == null) {
 			users = new Users();
 		}
-
 		if (task == null) {
 			task = new Task();
 		}
-
-
 		try {
 			
 			//ClearanceDtoDetails=myClearance();
@@ -150,8 +151,47 @@ public class StaffReport implements Serializable, DbConstant {
 		}
 	}
 	
+	//creating the grand total and sub total
+	
+	class Totals {
+    	double subtotal = 0;
+    	double total = 0;
+    }
+ 
+    class SubTotalEvent implements PdfPCellEvent {
+ 
+    	Double price;
+    	Totals totals;
+ 
+    	public SubTotalEvent(Totals totals, double price) {
+    		this.totals = totals;
+    		this.price = price;
+    	}
+ 
+    	public SubTotalEvent(Totals totals) {
+    		this.totals = totals;
+    		price = null;
+    	}
+ 
+		//@Override
+		public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
+			if (price == null) {
+				PdfContentByte canvas = canvases[PdfPTable.TEXTCANVAS];
+				ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
+						new Phrase(String.valueOf(totals.subtotal)),
+						position.getLeft() + 2, position.getBottom() + 2, 0);
+				totals.subtotal = 0;
+				return;
+			}
+			totals.subtotal += price;
+			totals.total += price;
+		}
+ 
+    }
+
 	// creating pdf header Image and text aside
 
+	
 			public static PdfPCell createTextCell(String text) throws DocumentException, IOException {
 				PdfPCell cell = new PdfPCell();
 				Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.ITALIC, BaseColor.ORANGE);
@@ -179,6 +219,7 @@ public class StaffReport implements Serializable, DbConstant {
 				cell.setBorder(Rectangle.NO_BORDER);
 				return cell;
 			}
+			
 	//Codes for setting the footer and header.-->
 	
     class MyFooter extends PdfPageEventHelper {
@@ -209,7 +250,7 @@ public class StaffReport implements Serializable, DbConstant {
     @SuppressWarnings("unchecked")
     @PostConstruct
 	public void createPDFfoClearance() throws IOException, DocumentException {
-
+    
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();
 		Rectangle rect = new Rectangle(100, 100, 700, 700);
@@ -250,19 +291,19 @@ public class StaffReport implements Serializable, DbConstant {
 				Paragraph welcome = new Paragraph();
 				// LOGO IMAGE FOR TRESS
 
-				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				/*ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 				String realPath = ctx.getRealPath("/");
 				LOGGER.info("Filse Reals Path::::" + realPath);
 				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
 				LOGGER.info("Path::" + destination);
 				Image img = Image.getInstance("" + destination);
 				img.scaleAbsolute(50f, 50f);
-				
-				welcome.add(img);
+				//welcome.add(img);
+*/				
 				PdfPTable tableh = new PdfPTable(2);
 				tableh.setWidthPercentage(100);
 				tableh.setWidths(new int[] { 1, 4 });
-				tableh.addCell(createImageCell(img + ""));
+				tableh.addCell(createImageCell( ""));
 				tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
 				document.add(tableh);
 				document.add(header1);
@@ -275,6 +316,7 @@ public class StaffReport implements Serializable, DbConstant {
 				document.add(new Paragraph("                                              "));
 
 				PdfPTable table = new PdfPTable(7);
+				//table.setWidths(new int[]{3, 2, 1, 1, 1, 1 ,1});
 				table.setTotalWidth(PageSize.A4.getWidth());
 				table.setLockedWidth(true);
 				
@@ -312,6 +354,15 @@ public class StaffReport implements Serializable, DbConstant {
 				pc7.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc7);
 				table.setHeaderRows(2);
+				// footer
+		        /*PdfPCell cell = new PdfPCell(new Paragraph("Subtotal"));
+		        cell.setColspan(2);
+		        table.addCell(cell);
+		        cell = new PdfPCell();
+		        cell.setCellEvent(new SubTotalEvent(totals));
+		        table.addCell(cell);
+		        // definitions
+		        table.setFooterRows(1);*/
 				
 				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask,\r\n" + 
 						"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n" + 
@@ -344,12 +395,17 @@ public class StaffReport implements Serializable, DbConstant {
 					PdfPCell pcel7 = new PdfPCell(new Paragraph(data[6] + "%",ffont5));
 					pcel7.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel7);
+					
+					
 				}
 				document.add(table);
+				
+		        document.close();
+		        
+             
+				
 
-				document.close();
-
-				writePDFToResponse(context.getExternalContext(), baos, "Staff_report"+xdate);
+				writePDFToResponse(context.getExternalContext(), baos, "Clearance_report"+xdate);
 
 				context.responseComplete();
 
@@ -401,26 +457,26 @@ public class StaffReport implements Serializable, DbConstant {
 				document.add(new Paragraph("\n"));
 				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
 				Users t = usersImpl.gettUserById(usersSession.getUserId(), "userId");
-				String myNane = t.getFname()+""+t.getLname();
+				String myNane = t.getFname()+" "+t.getLname();
 				//PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
 				Paragraph header1 = new Paragraph("Report of all activities created by:\n" + myNane, ffont2);
 				header1.setAlignment(Element.ALIGN_CENTER);
-				Paragraph welcome = new Paragraph();
+				//Paragraph welcome = new Paragraph();
 				// LOGO IMAGE FOR TRESS
-
+/*
 				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 				String realPath = ctx.getRealPath("/");
 				LOGGER.info("Filse Reals Path::::" + realPath);
 				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
 				LOGGER.info("Path::" + destination);
 				Image img = Image.getInstance("" + destination);
-				img.scaleAbsolute(50f, 50f);
+				img.scaleAbsolute(50f, 50f);*/
 				
-				welcome.add(img);
+				//welcome.add(img);
 				PdfPTable tableh = new PdfPTable(2);
 				tableh.setWidthPercentage(100);
 				tableh.setWidths(new int[] { 1, 4 });
-				tableh.addCell(createImageCell(img + ""));
+				tableh.addCell(createImageCell(""));
 				tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
 				document.add(tableh);
 				document.add(header1);
@@ -432,11 +488,16 @@ public class StaffReport implements Serializable, DbConstant {
 				
 				document.add(new Paragraph("                                              "));
 				
-				PdfPTable table = new PdfPTable(4);
+				PdfPTable table = new PdfPTable(5);
+				table.setWidths(new int[] { 1, 5, 5, 5, 5 });
 				table.setTotalWidth(PageSize.A4.getWidth());
 				table.setLockedWidth(true);
 				
-				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution period", ffont3));
+				PdfPCell pco = new PdfPCell(new Paragraph(" #", ffont3));
+				pco.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pco);
+				
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" Execution date", ffont3));
 				pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc1);
 
@@ -456,9 +517,14 @@ public class StaffReport implements Serializable, DbConstant {
 				pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc5);
 				table.setHeaderRows(1);*/
-				
+				int number=1;
 				for (Activity activity : activitydetails) {
-					PdfPCell p1 = new PdfPCell(new Paragraph(activity.getFormatedDate1()));
+					
+					PdfPCell p = new PdfPCell(new Paragraph(number+""));
+					p.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(p);
+					
+					PdfPCell p1 = new PdfPCell(new Paragraph(activity.getFormatedDate2()));
 					p1.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(p1);
 					
@@ -473,16 +539,13 @@ public class StaffReport implements Serializable, DbConstant {
 					PdfPCell p4 = new PdfPCell(new Paragraph(activity.getStatus()));
 					p4.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(p4);
+					number++;
 					
-
-					/*PdfPCell p5 = new PdfPCell(new Paragraph("" + activity.getCreatedBy()));
-					p5.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(p5);*/
 				}
 				document.add(table);
 
 				document.close();
-
+				LOGGER.info(context.getExternalContext()+"my Pdf Error");
 				writePDFToResponse(context.getExternalContext(), baos, "Staff_report"+xdate);
 
 				context.responseComplete();
@@ -664,8 +727,9 @@ public List<Activity>activities() throws Exception{
 		new Object[] {ACTIVE, usersImpl.gettUserById(usersSession.getUserId(), "userId")}, "Activity", "activityId asc");
 		
 		if (activitydetails.size() > 0) {
+		   
 			for(Activity activit : activitydetails) {
-				
+			
 				activitydetails.add(activit);
 			}
 

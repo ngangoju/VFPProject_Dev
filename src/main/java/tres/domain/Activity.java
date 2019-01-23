@@ -2,7 +2,9 @@ package tres.domain;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -65,7 +67,7 @@ public class Activity extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user")
 	private Users user;
-
+	
 	public int getActivityId() {
 		return activityId;
 	}
@@ -153,7 +155,7 @@ public class Activity extends CommonDomain implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-
+	
 	public String getFormatedDate1(){
 	       SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
 	       return sdf.format(startDate);
