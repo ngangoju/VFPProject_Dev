@@ -115,7 +115,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	UserImpl usersImpl = new UserImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  hh:mm:ss");
+	SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss");
 	Date date =new Date();
 	String xdate = dt.format(date);
 	Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.BOLD);
@@ -219,10 +219,8 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private void createPieModel2() {
 		pieModel2 = new PieChartModel();
 		UserImpl usImpl = new UserImpl();
-
 		for (Object[] data : usImpl.reportList(
 				"select count(*),tas.taskName from Task tas, Activity ac where ac.task=tas.taskId group by tas.taskId")) {
-
 			pieModel2.set(data[1] + "", Integer.parseInt(data[0] + ""));
 		}
 		pieModel2.setTitle("Pie chart ");
@@ -233,12 +231,9 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		pieModel2.setShadow(false);
 	}
 	// CREATING FOOTER AND HEADER
-
 	class MyFooter extends PdfPageEventHelper {
 		Font ffont1 = new Font(Font.FontFamily.UNDEFINED, 12, Font.ITALIC);
-
 		Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.ITALIC);
-
 		public void onEndPage(PdfWriter writer, Document document) {
 			PdfContentByte cb = writer.getDirectContent();
 			Date date = new Date();
@@ -788,7 +783,6 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	}
 	
 	
-
 	public String getCLASSNAME() {
 		return CLASSNAME;
 	}
