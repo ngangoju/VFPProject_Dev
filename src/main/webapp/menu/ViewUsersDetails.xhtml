@@ -71,10 +71,10 @@
 								autoUpdate="true">
 								<div class=" col-md-12" style="height:450px;overflow-y: scroll;">
 								<h:dataTable id="activityTable" binding="#{tabl}"
-									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:100% !important;
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
-       								 margin: 20px 25px 0 !important;"
+       								 margin: 17px 5px 0 !important;"
 									value="#{userAccountController.userDtosDetails}" var="user"
 									class="table table-striped table-hover table-bordered tableUpdated ">
 									<f:facet name="header">
@@ -163,7 +163,7 @@
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
 											<f:selectItems
-												value="#{userAccountController.userCatDetails}" var="option"
+												value="#{userAccountController.staffPosition}" var="option"
 												itemValue="#{option.userCatid}"
 												itemLabel="#{option.usercategoryName}"
 												itemLabelEscaped="true" />

@@ -179,6 +179,29 @@
 												rendered="#{not user.editable}" /></td>
 
 									</tr>
+									
+									<tr>
+									<td><br/> Board name:</td>
+									<td>
+									<h:selectOneMenu id="brd" styleClass="form-control"
+											rendered="#{user.renderBoard}"
+											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											required="true" value="#{userAccountController.boardId}"
+											requiredMessage="#{msg[required.boardName.message]}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
+											<f:selectItems value="#{userAccountController.boardList}"
+												var="option" itemValue="#{option.boardId}"
+												itemLabel="#{option.boardName}" itemLabelEscaped="true" />
+
+										</h:selectOneMenu>
+										 <br /><h:message errorClass="errorMsg1" for="brd"
+												style="font-size:12px;font-family:Time New Roman;"></h:message>
+										<h:outputText value="#{user.board.boardName}"
+											rendered="#{not user.renderBoard}" />
+									</td>
+									</tr>
 									<tr>
 										<td><br />Date of birth:</td>
 										<td><br />
