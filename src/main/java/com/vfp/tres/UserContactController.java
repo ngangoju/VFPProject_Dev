@@ -44,6 +44,7 @@ public class UserContactController implements Serializable, DbConstant {
 	private Users users;
 	private UserDto userDto;
 	private ContactDto contactDto;
+	private UserCategory categ;
 	private Users usersSession;
 	private int userIdNumber;
 	private List<Users> usersDetails = new ArrayList<Users>();
@@ -74,11 +75,13 @@ public class UserContactController implements Serializable, DbConstant {
 	private Date from, to;
 	private int days;
 	private int staffSize;
+	private int staffDetails;
 	private String boardName;
 	private String range;
 	private String selection;
 	private List<Contact> contactDetail = new ArrayList<Contact>();
 	private List<ContactDto> contactDtosInfo = new ArrayList<ContactDto>();
+
 	/*
 	 * private String viewId; private String fname; private String lname;
 	 */
@@ -108,7 +111,9 @@ public class UserContactController implements Serializable, DbConstant {
 		if (contactDto == null) {
 			contactDto = new ContactDto();
 		}
-
+		if (categ == null) {
+			categ = new UserCategory();
+		}
 		try {
 			contactDetails = contactImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Contact", "contactId asc");
@@ -117,22 +122,34 @@ public class UserContactController implements Serializable, DbConstant {
 
 			contactSize = contactDtoDetails.size();
 			for (Object[] data : usersImpl.reportList(
-					"select us.fname,us.lname, us.viewId,us.address, us.userId from Contact co right  join  co.user us where co.user is null")) {
+					"select us.fname,us.lname, us.viewId,us.address, us.userId,us.userCategory from Contact co right  join  co.user us where co.user is null")) {
 
 				LOGGER.info("users>>" + data[0] + ":: " + data[1] + "");
 				Users users = new Users();
+				
+				if(((UserCategory)data[5]).getUserCatid()!=1) {
 				users.setFname(data[0] + "");
 				users.setLname(data[1] + "");
 				users.setViewId(data[2] + "");
 				users.setAddress(data[3] + "");
 				users.setUserId(Integer.parseInt(data[4] + ""));
 				usersDetails.add(users);
+				}
 			}
 			listSize = usersDetails.size();
 			// count total number of registered users
 
-			countUsersList = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Users", "userId desc");
+			/*countUsersList = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "Users", "userId desc");*/
+
+			for (Object[] data : usersImpl.reportList(
+					"select us.fname,us.lname,us.userCategory, cat.userCatid,cat.usercategoryName from UserCategory cat,Users us where us.userCategory=cat.userCatid and us.board is not null and cat.usercategoryName<>'" + SUPER_ADMIN + "'")) {
+				Users us = new Users();
+				us.setFname(data[0] + "");
+				us.setLname(data[1] + "");
+				us.setUserCategory((UserCategory)data[2]);
+				countUsersList.add(us);
+			}
 
 			countUserSize = showAllUsersSize(countUsersList);
 			// End of the registers users
@@ -149,8 +166,12 @@ public class UserContactController implements Serializable, DbConstant {
 			staffSize = supervisorStaff();
 
 			contactDetail = contactImpl.getListWithHQL("from Contact", 0, endrecord);
+			
+			
 			contactDtosInfo = showUserDetails(contactDetail);
-			contactDtoDetails=showUserDetails(contactDetail);
+			//Staff Details size
+			staffDetails=contactDtosInfo.size();
+			contactDtoDetails = showUserDetails(contactDetail);
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -175,11 +196,11 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 
 	public void showUsersEditedContact() throws Exception {
-		
+
 		if (range.equals("5") || (range.equals("10")) || (range.equals("15"))) {
 			int endRecords = Integer.parseInt(range);
 			contactDetail = contactImpl.getListWithHQL("from Contact", 0, endRecords);
-			contactDtoDetails=showUserDetails(contactDetail);
+			contactDtoDetails = showUserDetails(contactDetail);
 			this.renderDatePanel = false;
 
 		} else {
@@ -187,6 +208,7 @@ public class UserContactController implements Serializable, DbConstant {
 
 		}
 	}
+
 	public int supervisorStaff() {
 		UserCategory cat = new UserCategory();
 		cat = usersSession.getUserCategory();
@@ -204,26 +226,27 @@ public class UserContactController implements Serializable, DbConstant {
 	@SuppressWarnings({ "static-access", "unchecked" })
 	public void showContactFiltered() {
 		try {
-			if(null!=to && null!=from) {
-			if (to.after(from)) {
-				Formating fmt = new Formating();
-				LOGGER.info("Start Date found:-----------:" + fmt.getMysqlFormatV2(from) + "End Date:::::::::"
-						+ fmt.getMysqlFormatV2(to));
-				days = fmt.daysBetween(from, to);
-				if (days <= 30) {
-					renderTable = true;
-					contactDtoDetails = filterContactByDate(from, to);
+			if (null != to && null != from) {
+				if (to.after(from)) {
+					Formating fmt = new Formating();
+					LOGGER.info("Start Date found:-----------:" + fmt.getMysqlFormatV2(from) + "End Date:::::::::"
+							+ fmt.getMysqlFormatV2(to));
+					days = fmt.daysBetween(from, to);
+					if (days <= 30) {
+						renderTable = true;
+						contactDtoDetails = filterContactByDate(from, to);
 
+					} else {
+						setValid(false);
+						JSFMessagers
+								.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
+					}
 				} else {
+
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 				}
 			} else {
-
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
-			}
-			}else {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDate"));
 			}
@@ -241,19 +264,18 @@ public class UserContactController implements Serializable, DbConstant {
 		try {
 			contactDtosInfo = new ArrayList<ContactDto>();
 			for (Contact contact : contactList) {
-				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + contact.getUser().getUserId()
-						+ ":: " + contact.getUser().getBoard().getBoardName() + "::::::::::::"
-						+ contact.getUser().getUserCategory().getUsercategoryName());
 				ContactDto contactDto = new ContactDto();
-				contactDto.setContactId(contact.getContactId());
-				contactDto.setViewId(contact.getUser().getViewId());
-				contactDto.setPhone(contact.getPhone());
-				contactDto.setEmail(contact.getEmail());
-				contactDto.setStaffNames(contact.getUser().getFname() + " " + contact.getUser().getLname());
-				contactDto.setBoardname(contact.getUser().getBoard().getBoardName());
-				contactDto.setCategoryname(contact.getUser().getUserCategory().getUsercategoryName());
-				contactDto.setUser(contact.getUser());
-				contactDtosInfo.add(contactDto);
+				if(contact.getUser().getBoard()!=null) {
+					contactDto.setContactId(contact.getContactId());
+					contactDto.setViewId(contact.getUser().getViewId());
+					contactDto.setPhone(contact.getPhone());
+					contactDto.setEmail(contact.getEmail());
+					contactDto.setStaffNames(contact.getUser().getFname() + " " + contact.getUser().getLname());
+					contactDto.setCategoryname(contact.getUser().getUserCategory().getUsercategoryName());
+					contactDto.setUser(contact.getUser());
+					contactDto.setBoardname(contact.getUser().getBoard().getBoardName());
+					contactDtosInfo.add(contactDto);
+				}	
 			}
 		} catch (Exception e) {
 			setValid(false);
@@ -281,8 +303,8 @@ public class UserContactController implements Serializable, DbConstant {
 				contDto.setEmail(data[2] + "");
 				contDto.setPhone(data[3] + "");
 				contDto.setContactId(Integer.parseInt(data[0] + ""));
-				contDto.setStaffNames(data[4]+"");
-				contDto.setUser((Users)data[4]);
+				contDto.setStaffNames(data[4] + "");
+				contDto.setUser((Users) data[4]);
 				contactDtoDetails.add(contDto);
 			}
 		} catch (ParseException e) {
@@ -442,7 +464,6 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 
 	public void showAllusers() {
-		if (listSize != 0)
 			rendered = false;
 		renderContactForm = false;
 		renderTable = true;
@@ -451,7 +472,6 @@ public class UserContactController implements Serializable, DbConstant {
 	}
 
 	public void showContacts() {
-		if (listSize != 0)
 			this.rendered = true;
 		this.renderContactDash = false;
 		/*
@@ -477,44 +497,45 @@ public class UserContactController implements Serializable, DbConstant {
 		contactDtosInfo = new ArrayList<ContactDto>();
 
 		try {
-			if(null!=to && null!=from) {
-			if (to.after(from)) {
-				
-				LOGGER.info("tart Date form::"+from+
-				 "::end form::" + to);
-				LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV3(from)
-						+ "End Date:-------->>>" + fmt.getMysqlFormatV3(to));
-				days = fmt.daysBetween(from, to);
+			if (null != to && null != from) {
+				if (to.after(from)) {
 
-				LOGGER.info("Days founded:......................" + days);
-				if (days <= 30) {
+					LOGGER.info("tart Date form::" + from + "::end form::" + to);
+					LOGGER.info("Here We are :--------------->>" + "Start Date:" + fmt.getMysqlFormatV3(from)
+							+ "End Date:-------->>>" + fmt.getMysqlFormatV3(to));
+					days = fmt.daysBetween(from, to);
 
-					for (Object[] data : contactImpl.reportList(
-							"select co.contactId,bo.boardName,co.email,co.phone,us.fname,us.lname,cat.usercategoryName from Users us,Contact co,Board bo,UserCategory cat where co.user=us.userId and us.board=bo.boardId and us.userCategory=cat.userCatid and co.crtdDtTime between '"
-									+ fmt.getMysqlFormatV3(from) + "' and  '" + Formating.getMysqlFormatV3(to) + "'")) {
+					LOGGER.info("Days founded:......................" + days);
+					if (days <= 30) {
 
-						ContactDto contDto = new ContactDto();
-						contDto.setEditable(false);
-						contDto.setBoardname(data[1] + "");
-						contDto.setEmail(data[2] + "");
-						contDto.setPhone(data[3] + "");
-						contDto.setContactId(Integer.parseInt(data[0] + ""));
-						contDto.setStaffNames(data[4] + "  " + data[5] + " ");
-						contDto.setCategoryname(data[6] + " ");
-						contactDtosInfo.add(contDto);
+						for (Object[] data : contactImpl.reportList(
+								"select co.contactId,bo.boardName,co.email,co.phone,us.fname,us.lname,cat.usercategoryName from Users us,Contact co,Board bo,UserCategory cat where co.user=us.userId and us.board=bo.boardId and us.userCategory=cat.userCatid and co.crtdDtTime between '"
+										+ fmt.getMysqlFormatV3(from) + "' and  '" + Formating.getMysqlFormatV3(to)
+										+ "'")) {
+
+							ContactDto contDto = new ContactDto();
+							contDto.setEditable(false);
+							contDto.setBoardname(data[1] + "");
+							contDto.setEmail(data[2] + "");
+							contDto.setPhone(data[3] + "");
+							contDto.setContactId(Integer.parseInt(data[0] + ""));
+							contDto.setStaffNames(data[4] + "  " + data[5] + " ");
+							contDto.setCategoryname(data[6] + " ");
+							contactDtosInfo.add(contDto);
+						}
+
+					} else {
+						setValid(false);
+						JSFMessagers
+								.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
 					}
-
-				}else {
+				} else {
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDaysRange"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
 				}
-			}else {
+			} else {
 				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidRange"));
-			}
-			}else {
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDate"));	
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.invalidDate"));
 			}
 
 		} catch (ParseException e) {
@@ -546,18 +567,20 @@ public class UserContactController implements Serializable, DbConstant {
 
 	}
 
-	public List displayContactByDateBetween(List<Contact> contactDto) {
+	public List<ContactDto> displayContactByDateBetween(List<Contact> contactDto) {
 
 		List<ContactDto> contactDtoDetails = new ArrayList<ContactDto>();
 		for (Contact contact : contactDetails) {
 			ContactDto contDto = new ContactDto();
 			contDto.setEditable(false);
+			if(contact.getUser().getUserCategory().getUserCatid()!=1) {
 			contDto.setContactDetails(contact.getContactDetails());
 			contDto.setEmail(contact.getEmail());
 			contDto.setPhone(contact.getPhone());
 			contDto.setContactId(contact.getContactId());
 			contDto.setUser(contact.getUser());
 			contactDtoDetails.add(contDto);
+			}
 		}
 		return (contactDtoDetails);
 	}
@@ -569,8 +592,8 @@ public class UserContactController implements Serializable, DbConstant {
 			try {
 
 				Contact ct = new Contact();
-				
-				LOGGER.info("EMAIL AND PHONE DETAILS::::"+contact.getEmail()+":::::::"+contact.getPhone());
+
+				LOGGER.info("EMAIL AND PHONE DETAILS::::" + contact.getEmail() + ":::::::" + contact.getPhone());
 				if (null != contact.getEmail())
 					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { contact.getEmail() },
 							"from Contact");
@@ -614,18 +637,20 @@ public class UserContactController implements Serializable, DbConstant {
 				contact.setUpdatedBy(usersSession.getViewId());
 				LOGGER.info(users.getUserId() + "" + users.getFname() + ":::------->>>>>>User searched founded");
 				contact.setUser(usersImpl.gettUserById(users.getUserId(), "userId"));
-				// :::sending email action:::::::::::://			
-				//contact.setEmail(useremail);
+				// :::sending email action:::::::::::://
+				// contact.setEmail(useremail);
 				contact.setUpdatedBy(usersSession.getViewId());
-				// :::saving contact action:::::::::::://	
-				contactImpl.saveContact(contact);			
+				// :::saving contact action:::::::::::://
+				contactImpl.saveContact(contact);
 				// :::::End of saving:::::::::::::// JSFMessagers.resetMessages();
 				JSFMessagers.resetMessages();
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
-				LOGGER.info("OBTAINED DETAILS:"+users.getFname()+"::::::::"+users.getLname()+":::::::::"+contact.getEmail());
-			
-				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(), contact.getEmail());
+				LOGGER.info("OBTAINED DETAILS:" + users.getFname() + "::::::::" + users.getLname() + ":::::::::"
+						+ contact.getEmail());
+
+				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(),
+						contact.getEmail());
 				// ::: end sending email action:::::::::::://
 				if (verifyemail) {
 					LOGGER.info("returing values controller" + verifyemail);
@@ -663,7 +688,7 @@ public class UserContactController implements Serializable, DbConstant {
 			try {
 
 				Contact ct = new Contact();
-				LOGGER.info("EMAIL AND PHONE DETAILS::::"+contact.getEmail()+":::::::"+contact.getPhone());
+				LOGGER.info("EMAIL AND PHONE DETAILS::::" + contact.getEmail() + ":::::::" + contact.getPhone());
 				if (null != contact.getEmail())
 					ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { contact.getEmail() },
 							"from Contact");
@@ -719,11 +744,13 @@ public class UserContactController implements Serializable, DbConstant {
 				contactImpl.saveContact(contact);
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
-				LOGGER.info("OBTAINED DETAILS:"+users.getFname()+"::::::::"+users.getLname()+":::::::::"+contact.getEmail());
-				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(),contact.getEmail());
+				LOGGER.info("OBTAINED DETAILS:" + users.getFname() + "::::::::" + users.getLname() + ":::::::::"
+						+ contact.getEmail());
+				boolean verifyemail = support.sendMailTestVersion(users.getFname(), users.getLname(),
+						contact.getEmail());
 				// ::: end sending email action:::::::::::://
 				if (verifyemail) {
-					setValid(true);				
+					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifications"));
 					LOGGER.info(CLASSNAME + ":::Contact Details is saved");
 				} else {
@@ -1294,6 +1321,22 @@ public class UserContactController implements Serializable, DbConstant {
 
 	public void setRange(String range) {
 		this.range = range;
+	}
+
+	public UserCategory getCateg() {
+		return categ;
+	}
+
+	public void setCateg(UserCategory categ) {
+		this.categ = categ;
+	}
+
+	public int getStaffDetails() {
+		return staffDetails;
+	}
+
+	public void setStaffDetails(int staffDetails) {
+		this.staffDetails = staffDetails;
 	}
 
 }

@@ -52,6 +52,7 @@ public class UserDto implements Serializable {
 	private Timestamp upDtTime;
 	private String updatedBy;
 	private boolean notify;
+	private boolean renderBoard;
 
 	public String getAction() {
 		return action;
@@ -248,6 +249,14 @@ public class UserDto implements Serializable {
 
 	public void setNotify(boolean notify) {
 		this.notify = notify;
+	}
+
+	public boolean isRenderBoard() {
+		return renderBoard;
+	}
+
+	public void setRenderBoard(boolean renderBoard) {
+		this.renderBoard = renderBoard;
 	}
 
 }
