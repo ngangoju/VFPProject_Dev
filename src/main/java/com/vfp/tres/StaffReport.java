@@ -62,8 +62,8 @@ import com.itextpdf.text.pdf.PdfPCellEvent;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.vfp.tres.SubTotal.SubTotalEvent;
-import com.vfp.tres.SubTotal.Totals;
+//import com.vfp.tres.SubTotal.SubTotalEvent;
+//import com.vfp.tres.SubTotal.Totals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

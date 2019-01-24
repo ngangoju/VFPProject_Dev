@@ -223,6 +223,33 @@
 
 						</p:column>
 
+						<p:column headerText="#{msg['form.target.weight']}"
+							sortBy="#{act.weight}">
+									<h:selectOneMenu id="weightId" styleClass="form-control"
+											required="true" value="#{taskController.task.taskWeight}"
+											requiredMessage="#{msg['weight.required.message']}"
+								rendered="#{act.editable}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems value="#{activityController.weight}"
+												var="option" itemValue="#{option}" itemLabelEscaped="true" />
+											<f:ajax event="change" execute="@this"
+												listener="#{activityController.changeSelectBox('Junior')}"
+												render="ReasonPanel" />
+										</h:selectOneMenu>
+
+									<h:message for="weightId" styleClass="help-block"></h:message>
+							<h:outputText value="#{act.weight}"
+								rendered="#{not act.editable}" />
+						</p:column>
+
+						<p:column headerText="#{msg['message.StrategicPlan.registered']}"
+							sortBy="#{act.strategicPlan.details}">
+
+							<h:outputText value="#{act.strategicPlan.details}"/>
+						</p:column>
+
 						<p:column headerText="Action">
 
 							<h:commandLink style="color:white"

@@ -107,8 +107,8 @@ public class TaskController implements Serializable, DbConstant {
 									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
 					"Task", "taskId asc");
 			taskDetails = taskImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "createdBy" }, new Object[] { ACTIVE,
-							usersSession.getFname() + " " + usersSession.getLname() },
+					new String[] { "genericStatus", "board" }, new Object[] { ACTIVE,
+							usersSession.getBoard() },
 					"Task", "taskId asc");
 			listSize = taskDetails.size();
 			assignmentSize = taskAssignDetails.size();
@@ -123,7 +123,9 @@ public class TaskController implements Serializable, DbConstant {
 				taskDto.setTask(task.getParentTask());
 				taskDto.setGenericstatus(task.getGenericStatus());
 				taskDto.setDueDate(task.getDueDate());
-				taskDto.setStatus(task.getGenericStatus());
+				taskDto.setStatus(task.getTaskStatus());
+				taskDto.setWeight(task.getTaskWeight());
+				taskDto.setStrategicPlan(task.getStrategicPlan());
 				taskDtoDetails.add(taskDto);
 			}
 

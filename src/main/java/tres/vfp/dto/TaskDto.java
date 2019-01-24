@@ -23,6 +23,8 @@ public class TaskDto implements Serializable {
 	private StrategicPlan strategicPlan;
 
 	private String status;
+	
+	private String weight;
 
 	private Task task;
 
@@ -136,6 +138,14 @@ public class TaskDto implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
 	}
 
 }
