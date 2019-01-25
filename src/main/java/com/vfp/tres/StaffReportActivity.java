@@ -267,16 +267,43 @@ public class StaffReportActivity implements Serializable, DbConstant {
 
 			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 			String realPath = ctx.getRealPath("/");
-			LOGGER.info("Filse Reals Path::::" + realPath);
-			final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
-			LOGGER.info("Path::" + destination);
-			Image img = Image.getInstance("" + destination);
-			img.scaleAbsolute(50f, 50f);
-			PdfPCell cell = new PdfPCell(img, true);
-			cell.setFixedHeight(60);
-			cell.setBorder(Rectangle.NO_BORDER);
-			return cell;
+			
+			//Codes to check the operating system
+			String OS = null;
+			// String path="c:/some\\\\path/file.txt";
+			if (OS == null) {
+				OS = System.getProperty("os.name");
+			}
+
+			if (OS.startsWith("Windows")) {
+				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+				// System.out.println(path);
+				LOGGER.info("Filse Reals Path::::" + realPath);
+				LOGGER.info("THE PATH IS FOR WINDOWS::::" + realPath);
+				LOGGER.info("Path::" + destination);
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				PdfPCell cell = new PdfPCell(img, true);
+				cell.setFixedHeight(60);
+				cell.setBorder(Rectangle.NO_BORDER);
+				return cell;
+
+			} else {
+				LOGGER.info("THE PATH IS FOR other operating system::::" + realPath);
+				realPath = realPath.replaceAll("\\", "/");
+				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+				// System.out.println(path);
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				PdfPCell cell = new PdfPCell(img, true);
+				cell.setFixedHeight(60);
+				cell.setBorder(Rectangle.NO_BORDER);
+				return cell;
+
+			}
+			 //end of checking the operating system
 		}
+		
 	// Codes for creating the table and its contents
 	@SuppressWarnings("unchecked")
 	public void createPdf() throws IOException, DocumentException {
@@ -437,7 +464,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 				setValid(true);
 				document.add(new Paragraph("\n"));
 				Users t = usersImpl.gettUserById(Integer.parseInt(myName + ""), "userId");
-				String myNane = t.getFname() + "" + t.getLname();
+				String myNane = t.getFname() + " " + t.getLname();
 				//PdfPCell pc = new PdfPCell(new Paragraph("Report for all activities for:\n" + myNane));
 				Paragraph header1 = new Paragraph("Report of all activities created by:\n" + myNane, ffont2);
 				header1.setAlignment(Element.ALIGN_CENTER);

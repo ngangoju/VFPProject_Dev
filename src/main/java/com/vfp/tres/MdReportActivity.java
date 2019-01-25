@@ -268,16 +268,42 @@ public class MdReportActivity implements Serializable, DbConstant {
 	public static PdfPCell createImageCell(String path) throws DocumentException, IOException {
 		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 		String realPath = ctx.getRealPath("/");
-		LOGGER.info("Filse Reals Path::::" + realPath);
-		final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
-		LOGGER.info("Path::" + destination);
-		Image img = Image.getInstance("" + destination);
-		img.scaleAbsolute(50f, 50f);
-		PdfPCell cell = new PdfPCell(img, true);
-		cell.setFixedHeight(60);
-		cell.setBorder(Rectangle.NO_BORDER);
-		return cell;
+		String OS = null;
+		// String path="c:/some\\\\path/file.txt";
+		if (OS == null) {
+			OS = System.getProperty("os.name");
+		}
+
+		if (OS.startsWith("Windows")) {
+			final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+			// System.out.println(path);
+			LOGGER.info("Filse Reals Path::::" + realPath);
+			LOGGER.info("THE PATH IS FOR WINDOWS::::" + realPath);
+			LOGGER.info("Path::" + destination);
+			Image img = Image.getInstance("" + destination);
+			img.scaleAbsolute(50f, 50f);
+			PdfPCell cell = new PdfPCell(img, true);
+			cell.setFixedHeight(60);
+			cell.setBorder(Rectangle.NO_BORDER);
+			return cell;
+
+		} else {
+			LOGGER.info("THE PATH IS FOR other operating system::::" + realPath);
+			realPath = realPath.replaceAll("\\", "/");
+			final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+			// System.out.println(path);
+			Image img = Image.getInstance("" + destination);
+			img.scaleAbsolute(50f, 50f);
+			PdfPCell cell = new PdfPCell(img, true);
+			cell.setFixedHeight(60);
+			cell.setBorder(Rectangle.NO_BORDER);
+			return cell;
+
+		}
+		 //end of checking the operating system
 	}
+    
+	
 	// Codes for creating the table and its contents
 
 	public void createPdf() throws IOException, DocumentException {
