@@ -288,9 +288,9 @@ public class MdReportActivity implements Serializable, DbConstant {
 			return cell;
 
 		} else {
-			LOGGER.info("THE PATH IS FOR other operating system::::" + realPath);
-			realPath = realPath.replaceAll("\\", "/");
+			LOGGER.info("THE PATH IS FOR unix operating system::::" + realPath);
 			final Path destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");
+			LOGGER.info("THE PATH IS FOR unix operating system finish::::" + realPath);
 			// System.out.println(path);
 			Image img = Image.getInstance("" + destination);
 			img.scaleAbsolute(50f, 50f);

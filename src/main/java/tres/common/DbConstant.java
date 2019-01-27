@@ -147,5 +147,5 @@ public interface DbConstant {
 	public static final String WEEKLY="Weekly";
 	public static final String MONTHLY="Monthly";
 	public static final String YEARLY="Yearly";
-	public static final String FILELOCATIONUNIX = "Vfp_Document/";
+	public static final String FILELOCATIONUNIX = "Vfp_Document//";
 }
