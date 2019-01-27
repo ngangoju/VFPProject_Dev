@@ -291,7 +291,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			} else {
 				LOGGER.info("THE PATH IS FOR other operating system::::" + realPath);
 				realPath = realPath.replaceAll("\\", "/");
-				final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+				final Path destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");
 				// System.out.println(path);
 				Image img = Image.getInstance("" + destination);
 				img.scaleAbsolute(50f, 50f);

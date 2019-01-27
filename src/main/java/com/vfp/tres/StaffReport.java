@@ -229,7 +229,7 @@ public class StaffReport implements Serializable, DbConstant {
 
 		} else {
 			LOGGER.info("THE PATH IS FOR other operating system::::" + realPath);
-			String fileLocation = FILELOCATION.replaceAll("\\", "/");
+			realPath = realPath.replaceAll("\\", "/");
 			final Path destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");
 			// System.out.println(path);
 			Image img = Image.getInstance("" + destination);
@@ -276,7 +276,6 @@ public class StaffReport implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void createPDFfoClearance() throws IOException, DocumentException {
-
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();
 		Rectangle rect = new Rectangle(100, 100, 700, 700);
@@ -548,29 +547,33 @@ public class StaffReport implements Serializable, DbConstant {
 				 */
 				int number = 1;
 				for (Activity activity : activitydetails) {
+					if(activity.getFormatedDate1()!=null && activity.getFormatedDate2()!=null) {
+						
+						PdfPCell p = new PdfPCell(new Paragraph(number + ""));
+						p.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(p);
 
-					PdfPCell p = new PdfPCell(new Paragraph(number + ""));
-					p.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(p);
+						PdfPCell p1 = new PdfPCell(new Paragraph(activity.getFormatedDate2()));
+						p1.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(p1);
 
-					PdfPCell p1 = new PdfPCell(new Paragraph(activity.getFormatedDate2()));
-					p1.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(p1);
+						PdfPCell p2 = new PdfPCell(new Paragraph(activity.getDescription()));
+						p2.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(p2);
 
-					PdfPCell p2 = new PdfPCell(new Paragraph(activity.getDescription()));
-					p2.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(p2);
+						PdfPCell p3 = new PdfPCell(new Paragraph(
+								"     " + activity.getFormatedDate1() + "\n " + "to" + " " + activity.getFormatedDate2()));
+						p3.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(p3);
 
-					PdfPCell p3 = new PdfPCell(new Paragraph(
-							"     " + activity.getFormatedDate1() + "\n " + "to" + " " + activity.getFormatedDate2()));
-					p3.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(p3);
-
-					PdfPCell p4 = new PdfPCell(new Paragraph(activity.getStatus()));
-					p4.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(p4);
-					number++;
-
+						PdfPCell p4 = new PdfPCell(new Paragraph(activity.getStatus()));
+						p4.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(p4);
+						number++;
+					}else {
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
+					}
 				}
 				document.add(table);
 
