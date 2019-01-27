@@ -112,12 +112,12 @@
 												value="#{staffReport.activities()}" scrollable="true"
 												scrollHeight="200">
 												<f:facet name="header">List of activities</f:facet>
-												<p:column> #{a.formatedDate2}<f:facet
+												<p:column> #{a.endDate}<f:facet
 														name="header">Execution Date</f:facet>
 												</p:column>
 												<p:column> #{a.description}<f:facet name="header">Description</f:facet>
 												</p:column>
-												<p:column> #{a.formatedDate1} to #{a.formatedDate2}<f:facet
+												<p:column> #{a.startDate} to #{a.endDate}<f:facet
 														name="header">Week</f:facet>
 												</p:column>
 												<p:column> #{a.status}<f:facet name="header">Status</f:facet>

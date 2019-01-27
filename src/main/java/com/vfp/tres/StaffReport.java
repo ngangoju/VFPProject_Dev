@@ -313,17 +313,24 @@ public class StaffReport implements Serializable, DbConstant {
 				Paragraph header1 = new Paragraph("Clearance report", ffont2);
 				header1.setAlignment(Element.ALIGN_CENTER);
 				Paragraph welcome = new Paragraph();
-				// LOGO IMAGE FOR TRESS
-
-				/*
-				 * ServletContext ctx = (ServletContext)
-				 * FacesContext.getCurrentInstance().getExternalContext().getContext(); String
-				 * realPath = ctx.getRealPath("/"); LOGGER.info("Filse Reals Path::::" +
-				 * realPath); final Path destination = Paths.get(realPath + FILELOCATION +
-				 * "logo.jpeg"); LOGGER.info("Path::" + destination); Image img =
-				 * Image.getInstance("" + destination); img.scaleAbsolute(50f, 50f);
-				 * //welcome.add(img);
-				 */
+				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				String realPath = ctx.getRealPath("/");
+				LOGGER.info("Filse Reals Path::::" + realPath);
+				 Path destination=null;
+				String OS = null;
+				if (OS == null) {
+					OS = System.getProperty("os.name");
+				}
+		     if (OS.startsWith("Windows")) {
+				  destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+		     }else {
+			  destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");	
+			 LOGGER.info("Path UNIX::" + destination);
+		     }
+				
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				welcome.add(img);
 				PdfPTable tableh = new PdfPTable(2);
 				tableh.setWidthPercentage(100);
 				tableh.setWidths(new int[] { 1, 4 });
@@ -484,18 +491,26 @@ public class StaffReport implements Serializable, DbConstant {
 				// myNane));
 				Paragraph header1 = new Paragraph("Report of all activities created by:\n" + myNane, ffont2);
 				header1.setAlignment(Element.ALIGN_CENTER);
-				// Paragraph welcome = new Paragraph();
+				Paragraph welcome = new Paragraph();
 				// LOGO IMAGE FOR TRESS
-				/*
-				 * ServletContext ctx = (ServletContext)
-				 * FacesContext.getCurrentInstance().getExternalContext().getContext(); String
-				 * realPath = ctx.getRealPath("/"); LOGGER.info("Filse Reals Path::::" +
-				 * realPath); final Path destination = Paths.get(realPath + FILELOCATION +
-				 * "logo.jpeg"); LOGGER.info("Path::" + destination); Image img =
-				 * Image.getInstance("" + destination); img.scaleAbsolute(50f, 50f);
-				 */
-
-				// welcome.add(img);
+				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				String realPath = ctx.getRealPath("/");
+				LOGGER.info("Filse Reals Path::::" + realPath);
+				 Path destination=null;
+				String OS = null;
+				if (OS == null) {
+					OS = System.getProperty("os.name");
+				}
+		     if (OS.startsWith("Windows")) {
+				  destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+		     }else {
+			  destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");	
+			 LOGGER.info("Path UNIX::" + destination);
+		     }
+				
+				Image img = Image.getInstance("" + destination);
+				img.scaleAbsolute(50f, 50f);
+				welcome.add(img);
 				PdfPTable tableh = new PdfPTable(2);
 				tableh.setWidthPercentage(100);
 				tableh.setWidths(new int[] { 1, 4 });
@@ -547,13 +562,14 @@ public class StaffReport implements Serializable, DbConstant {
 				 */
 				int number = 1;
 				for (Activity activity : activitydetails) {
-				//	if(activity.getFormatedDate1()!=null && activity.getFormatedDate2()!=null) {
+					
+				if(sdf.format(activity.getStartDate())!=null && sdf.format(activity.getDueDate())!=null) {
 						
 						PdfPCell p = new PdfPCell(new Paragraph(number + ""));
 						p.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p);
 
-						PdfPCell p1 = new PdfPCell(new Paragraph(activity.getDueDate()+""));
+						PdfPCell p1 = new PdfPCell(new Paragraph(sdf.format(activity.getDueDate())));
 						p1.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p1);
 
@@ -562,7 +578,7 @@ public class StaffReport implements Serializable, DbConstant {
 						table.addCell(p2);
 
 						PdfPCell p3 = new PdfPCell(new Paragraph(
-								"     " + activity.getStartDate() + "\n " + "to" + " " + activity.getDueDate()));
+								"     " + sdf.format(activity.getStartDate()) + "\n " + "to" + " " + sdf.format(activity.getDueDate())));
 						p3.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p3);
 
@@ -570,10 +586,10 @@ public class StaffReport implements Serializable, DbConstant {
 						p4.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p4);
 						number++;
-					//}else {
-						//setValid(false);
-						//JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
-					//}
+					}else {
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
+					}
 				}
 				document.add(table);
 

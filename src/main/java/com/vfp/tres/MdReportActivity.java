@@ -346,12 +346,12 @@ public class MdReportActivity implements Serializable, DbConstant {
 		if (OS == null) {
 			OS = System.getProperty("os.name");
 		}
-if (OS.startsWith("Windows")) {
+     if (OS.startsWith("Windows")) {
 		  destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
-}else {
+     }else {
 	  destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");	
 	 LOGGER.info("Path UNIX::" + destination);
-}
+     }
 		
 		Image img = Image.getInstance("" + destination);
 		img.scaleAbsolute(50f, 50f);
@@ -373,8 +373,13 @@ if (OS.startsWith("Windows")) {
 		
 		PdfPTable table = new PdfPTable(5);
 		table.setTotalWidth(PageSize.A4.getWidth());
+		table.setWidths(new int[] {1,5,5,5,5});
 	
 		table.setLockedWidth(true);
+		
+		PdfPCell pc0 = new PdfPCell(new Paragraph("#", font0));
+		pc0.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(pc0);
 		
 		PdfPCell pc1 = new PdfPCell(new Paragraph("TASK NAME", font0));
 		pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -387,18 +392,19 @@ if (OS.startsWith("Windows")) {
 		PdfPCell pc3 = new PdfPCell(new Paragraph("STATUS", font0));
 		pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc3);
-
-		PdfPCell pc4 = new PdfPCell(new Paragraph("DEPARTMENT", font0));
-		pc4.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(pc4);
 		
-		PdfPCell pc5 = new PdfPCell(new Paragraph(" MARKS", font0));
+		PdfPCell pc5 = new PdfPCell(new Paragraph(" PROGRESS", font0));
 		pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc5);
 		table.setHeaderRows(1);
 		try {
+			int number=1;
 			for (Object[] data : taskImpl.reportList(
 					"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b  where t.board=b.boardId and t.board='"+ selectedBoard + "'")) {
+				PdfPCell p = new PdfPCell(new Paragraph(number + ""));
+				p.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(p);
+				
 				PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + ""));
 				pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pcel1);
@@ -409,11 +415,12 @@ if (OS.startsWith("Windows")) {
 				PdfPCell pcel3 = new PdfPCell(new Paragraph(data[2] + ""));
 				pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pcel3);
-				PdfPCell pcel4 = new PdfPCell(new Paragraph(data[3] + ""));
+				/*PdfPCell pcel4 = new PdfPCell(new Paragraph(data[3] + ""));
 				pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(pcel4);
+				table.addCell(pcel4);*/
 				
 				table.addCell("");
+				number++;
 			}
 			document.add(table);
 
