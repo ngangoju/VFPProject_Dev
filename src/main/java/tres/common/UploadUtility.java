@@ -42,18 +42,29 @@ public class UploadUtility implements Serializable, DbConstant {
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+	 Path destination =null;
 
 	public Documents fileUploadUtil(FileUploadEvent event, String validationCode) throws Exception {
 		LOGGER.info("FILE 22::::" + event.getFile().getFileName());
 		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
 	            .getExternalContext().getContext();
+		
+		String OS = null;
+		if (OS == null) {
+			OS = System.getProperty("os.name");
+		}
+
+		
 	String realPath = ctx.getRealPath("/");
 	LOGGER.info("Filse Reals Path::::" + realPath);
 		Documents documents = new Documents();
 		String systemFileName = UUID.randomUUID().toString() + "."
 				+ FilenameUtils.getName(event.getFile().getFileName());
-	
-		final Path destination = Paths.get(realPath+FILELOCATION + systemFileName);
+		if (OS.startsWith("Windows")) {
+		 destination = Paths.get(realPath+FILELOCATION + systemFileName);
+		}else {
+			destination= Paths.get(realPath+FILELOCATIONUNIX + systemFileName);
+		}
 		LOGGER.info("Path::" + destination);
 		InputStream bytes = null;
 		try {
@@ -65,7 +76,11 @@ public class UploadUtility implements Serializable, DbConstant {
 			documents.setOriginalFileName(event.getFile().getFileName());
 			documents.setSysFilename(systemFileName);
 			documents.setValidDocCode(validationCode);
+			if (OS.startsWith("Windows")) {
 			documents.setDocumentLoc(realPath+FILELOCATION);
+			}else {
+				documents.setDocumentLoc(realPath+FILELOCATIONUNIX);	
+			}
 			documents = documentsImpl.saveIntable(documents);
 		} catch (IOException e) {
 
@@ -78,6 +93,7 @@ public class UploadUtility implements Serializable, DbConstant {
 		LOGGER.info("FILE ::::" + event.getFile().getFileName());
 		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance()
 	            .getExternalContext().getContext();
+		String OS=null;
 	String realPath = ctx.getRealPath("/");
 		LOGGER.info("FILE tt::::" + realPath);
 	
@@ -86,8 +102,13 @@ public class UploadUtility implements Serializable, DbConstant {
 				+ FilenameUtils.getName(event.getFile().getFileName());
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
+		if (OS.startsWith("Windows")) {
+			 Path destination = Paths.get(realPath+FILELOCATION + systemFileName);
+			}else {
+				 Path destination = Paths.get(realPath+FILELOCATIONUNIX + systemFileName);	
+			}
 		
-		final Path destination = Paths.get(realPath+FILELOCATION + systemFileName);
+	 
 		LOGGER.info("Path::" + destination);
 		InputStream bytes = null;
 		HttpSession session = SessionUtils.getSession();
@@ -102,7 +123,12 @@ public class UploadUtility implements Serializable, DbConstant {
 			documents.setOriginalFileName(event.getFile().getFileName());
 			documents.setSysFilename(systemFileName);
 			documents.setValidDocCode(validationCode);
-			documents.setDocumentLoc(realPath+FILELOCATION);
+			if (OS.startsWith("Windows")) {
+				documents.setDocumentLoc(realPath+FILELOCATION);
+				}else {
+					documents.setDocumentLoc(realPath+FILELOCATIONUNIX);
+				}
+		
 			documents = documentsImpl.saveIntable(documents);
 			///Updating user image in db start here
 			Users us = new Users();
