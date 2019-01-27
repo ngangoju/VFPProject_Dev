@@ -156,14 +156,6 @@ public class Activity extends CommonDomain implements Serializable {
 		this.type = type;
 	}
 	
-	public String getFormatedDate1(){
-	       SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
-	       return sdf.format(startDate);
-	   }
-	   public String getFormatedDate2(){
-	       SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
-	     
-		return sdf.format(dueDate);
-	   }
+
 
 }

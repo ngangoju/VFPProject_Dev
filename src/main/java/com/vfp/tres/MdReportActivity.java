@@ -341,8 +341,18 @@ public class MdReportActivity implements Serializable, DbConstant {
 		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 		String realPath = ctx.getRealPath("/");
 		LOGGER.info("Filse Reals Path::::" + realPath);
-		final Path destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
-		LOGGER.info("Path::" + destination);
+		 Path destination=null;
+		String OS = null;
+		if (OS == null) {
+			OS = System.getProperty("os.name");
+		}
+if (OS.startsWith("Windows")) {
+		  destination = Paths.get(realPath + FILELOCATION + "logo.jpeg");
+}else {
+	  destination = Paths.get(realPath + FILELOCATIONUNIX + "logo.jpeg");	
+	 LOGGER.info("Path UNIX::" + destination);
+}
+		
 		Image img = Image.getInstance("" + destination);
 		img.scaleAbsolute(50f, 50f);
 		welcome.add(img);

@@ -547,13 +547,13 @@ public class StaffReport implements Serializable, DbConstant {
 				 */
 				int number = 1;
 				for (Activity activity : activitydetails) {
-					if(activity.getFormatedDate1()!=null && activity.getFormatedDate2()!=null) {
+				//	if(activity.getFormatedDate1()!=null && activity.getFormatedDate2()!=null) {
 						
 						PdfPCell p = new PdfPCell(new Paragraph(number + ""));
 						p.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p);
 
-						PdfPCell p1 = new PdfPCell(new Paragraph(activity.getFormatedDate2()));
+						PdfPCell p1 = new PdfPCell(new Paragraph(activity.getDueDate()+""));
 						p1.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p1);
 
@@ -562,7 +562,7 @@ public class StaffReport implements Serializable, DbConstant {
 						table.addCell(p2);
 
 						PdfPCell p3 = new PdfPCell(new Paragraph(
-								"     " + activity.getFormatedDate1() + "\n " + "to" + " " + activity.getFormatedDate2()));
+								"     " + activity.getStartDate() + "\n " + "to" + " " + activity.getDueDate()));
 						p3.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p3);
 
@@ -570,10 +570,10 @@ public class StaffReport implements Serializable, DbConstant {
 						p4.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table.addCell(p4);
 						number++;
-					}else {
-						setValid(false);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
-					}
+					//}else {
+						//setValid(false);
+						//JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
+					//}
 				}
 				document.add(table);
 
