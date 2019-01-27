@@ -399,7 +399,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 				}
 
 				for (Activity activity : activityDetails) {
-					PdfPCell pcel1 = new PdfPCell(new Paragraph(activity.getFormatedDate2() + ""));
+					PdfPCell pcel1 = new PdfPCell(new Paragraph(activity.getDueDate() + ""));
 					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel1);
 					
@@ -407,7 +407,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 					pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel2);
 					
-					PdfPCell pcel3 = new PdfPCell(new Paragraph("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2()));
+					PdfPCell pcel3 = new PdfPCell(new Paragraph("     "+activity.getStartDate()+"\n "+"to"+" "+activity.getDueDate()));
 					pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel3);
 					
@@ -523,7 +523,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 				table.setHeaderRows(1);
 
 				for (Activity activity : activityDetailz) {
-					PdfPCell pcel1 = new PdfPCell(new Paragraph(activity.getFormatedDate2() + ""));
+					PdfPCell pcel1 = new PdfPCell(new Paragraph(activity.getDueDate() + ""));
 					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel1);
 					
@@ -532,7 +532,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 					table.addCell(pcel2);
 					
 
-					PdfPCell pcel3 = new PdfPCell(new Paragraph("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2()));
+					PdfPCell pcel3 = new PdfPCell(new Paragraph("     "+activity.getStartDate()+"\n "+"to"+" "+activity.getDueDate()));
 					pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel3);
 					
@@ -618,13 +618,13 @@ public class StaffReportActivity implements Serializable, DbConstant {
 					Row row = sheet.createRow(i);
 
 					Cell cell1 = row.createCell(0);
-					cell1.setCellValue(activity.getFormatedDate2());
+					cell1.setCellValue(activity.getDueDate());
 
 					Cell cell2 = row.createCell(1);
 					cell2.setCellValue(activity.getDescription());
 
 					Cell cell3 = row.createCell(2);
-					cell3.setCellValue("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
+					cell3.setCellValue("     "+activity.getStartDate()+"\n "+"to"+" "+activity.getDueDate());
 
 					Cell cell4 = row.createCell(3);
 					cell4.setCellValue(activity.getStatus());
@@ -692,13 +692,13 @@ public class StaffReportActivity implements Serializable, DbConstant {
 					Row row = sheet.createRow(i);
 
 					Cell cell1 = row.createCell(0);
-					cell1.setCellValue(activity.getFormatedDate2());
+					cell1.setCellValue(activity.getDueDate());
 
 					Cell cell2 = row.createCell(1);
 					cell2.setCellValue(activity.getDescription());
 
 					Cell cell3 = row.createCell(2);
-					cell3.setCellValue("     "+activity.getFormatedDate1()+"\n "+"to"+" "+activity.getFormatedDate2());
+					cell3.setCellValue("     "+activity.getStartDate()+"\n "+"to"+" "+activity.getDueDate());
 
 					Cell cell4 = row.createCell(3);
 					cell4.setCellValue(activity.getStatus());
