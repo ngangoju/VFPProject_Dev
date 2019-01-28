@@ -236,3 +236,8 @@ insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,up
 insert  menuassignment(menuAssgnId,createdBy,crtdDtTime,genericStatus,optLock,upDtTime,updatedBy,defaultMenuUrl,listOfMenu,userCategory) values(37,'admin',now(),'active',now(),now(),'admin',null,40,3);
 
 ======================By Gwiza================================================================
+Create view InstitutionReportView as select a.ACTIVITY_ID AS activity,p.details AS stategicplan,t.
+taskName AS mytask,u.fname AS myName,a.description AS activityName,a.status AS status,b.boardName AS boardName,i.institutionName
+ AS institutionName from task t ,board b ,institution i,users u ,strategicplan p,activity a where ((p.planId = t.strategicPlan) 
+ and (i.institutionId = b.institution) and (b.boardId = u.board) and (u.userId = a.user) and (a.task = t.taskId))
+ ==================by RICHARD===============================================================
