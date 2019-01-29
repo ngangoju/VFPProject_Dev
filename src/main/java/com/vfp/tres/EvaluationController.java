@@ -381,6 +381,9 @@ public class EvaluationController implements Serializable, DbConstant {
 			act.setUpdatedBy(usersSession.getViewId());
 			act.setUpDtTime(timestamp);
 			act.setStatus(FAILED);
+			act.setDueDate(null);
+			act.setStartDate(null);
+			act.setEndDate(null);
 			act.setGenericStatus(ACTIVE);
 			activityImpl.UpdateActivity(act);
 			evaluation = new Evaluation();

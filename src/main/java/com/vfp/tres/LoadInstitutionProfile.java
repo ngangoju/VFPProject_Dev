@@ -601,23 +601,49 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 
 	public void savePolicy() {
 		try {
-			policy.setCreatedBy(usersSession.getViewId());
-			policy.setCrtdDtTime(timestamp);
-			policy.setGenericStatus(ACTIVE);
-			policy.setUpDtTime(timestamp);
-			policy.setReschduleTime(Integer.parseInt(nmbrTime));
-			policy.setInstitution(institution);
-			policy.setShortMarks(Double.parseDouble(shrtActivityMark));
-			policy.setMediumgMarks(Double.parseDouble(mdumActivityMark));
-			policy.setLongMarks(Double.parseDouble(lngActivityMark));
-			policy.setPlanPeriod(Integer.parseInt(plp));
-			policy.setVariation(Integer.parseInt(variation));
-			policyImpl.saveInstEscalPolicy(policy);
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.Policy"));
-			LOGGER.info(CLASSNAME + ":::Policy");
-			div3_1 = false;
+			policy = new InstitutionEscaletePolicy();
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution" }, new Object[] { ACTIVE },
+					"from InstitutionEscaletePolicy");
+			if (policy != null) {
+				policy.setGenericStatus(DESACTIVE);
+				policy.setUpdatedBy(usersSession.getViewId());
+				policy.setUpDtTime(timestamp);
+				policyImpl.UpdateInstEscalPolicy(policy);
+
+				policy.setCreatedBy(usersSession.getViewId());
+				policy.setCrtdDtTime(timestamp);
+				policy.setGenericStatus(ACTIVE);
+				policy.setUpDtTime(timestamp);
+				policy.setReschduleTime(Integer.parseInt(nmbrTime));
+				policy.setInstitution(institution);
+				policy.setShortMarks(Double.parseDouble(shrtActivityMark));
+				policy.setMediumgMarks(Double.parseDouble(mdumActivityMark));
+				policy.setLongMarks(Double.parseDouble(lngActivityMark));
+				policy.setPlanPeriod(Integer.parseInt(plp));
+				policy.setVariation(Integer.parseInt(variation));
+				policyImpl.saveInstEscalPolicy(policy);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.Policy"));
+				LOGGER.info(CLASSNAME + ":::Policy");
+			} else {
+				policy.setCreatedBy(usersSession.getViewId());
+				policy.setCrtdDtTime(timestamp);
+				policy.setGenericStatus(ACTIVE);
+				policy.setUpDtTime(timestamp);
+				policy.setReschduleTime(Integer.parseInt(nmbrTime));
+				policy.setInstitution(institution);
+				policy.setShortMarks(Double.parseDouble(shrtActivityMark));
+				policy.setMediumgMarks(Double.parseDouble(mdumActivityMark));
+				policy.setLongMarks(Double.parseDouble(lngActivityMark));
+				policy.setPlanPeriod(Integer.parseInt(plp));
+				policy.setVariation(Integer.parseInt(variation));
+				policyImpl.saveInstEscalPolicy(policy);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.Policy"));
+				LOGGER.info(CLASSNAME + ":::Policy");
+			}
 		} catch (Exception e) {
 			div3 = true;
 			setValid(false);
