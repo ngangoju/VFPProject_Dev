@@ -127,8 +127,8 @@ public interface DbConstant {
 	public static final String GLYPHICONGLYPHICONINBOX = "glyphicon glyphicon-inbox";
 	public static final String SUPER_ADMIN = "Super Admin";
 	public static final String INSTITUTE_REP = "Institution Representative";
-	public static final String FAILED = "failed";
-	public static final String DONE = "done";
+	public static final String FAILED = "Failed";
+	public static final String DONE = "Done";
 	public static final String ESCALET = "escalet";
 	public static final String Board_opt = "board";
 	public static final String Date_opt = "dates";
@@ -136,7 +136,7 @@ public interface DbConstant {
 	public static final String LINK = "http://localhost:8080/";
 	public static final String SUPER_VISOR = "Superviser";
 	public static final String RESCHDULER = "reschduler";
-	public static final String PLAN_ACTIVITY="planned";
+	public static final String PLAN_ACTIVITY="Planned";
 	public static final String NORMAL="Normal";
 	public static final String MILESTONE="Vfp";
 	public static final String NOTDONE="notdone";

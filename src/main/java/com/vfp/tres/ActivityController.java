@@ -223,8 +223,9 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	public List<ActivityDto> showActivity(List<Activity> list) {
-
+		HttpSession sessionfailedActiv = SessionUtils.getSession();
 		List<ActivityDto> ActivityDtoList = new ArrayList<ActivityDto>();
+		int FailedAct=0;
 		for (Activity activity : list) {
 			ActivityDto activityDto = new ActivityDto();
 			activityDto.setActivityId(activity.getActivityId());
@@ -238,6 +239,20 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDto.setTask(activity.getTask());
 			activityDto.setType(activity.getType());
 			activityDto.setGenericstatus(activity.getGenericStatus());
+			if(activityDto.getStatus().equals(FAILED)&&(activityDto.getDueDate()==null)) {
+				activityDto.setAction(false);
+				activityDto.setFailedAction(false);
+				activityDto.setEditFailedAction(false);
+				activityDto.setPlanFailedAction(false);
+				activityDto.setShowFailedStartedIcon(true);
+				FailedAct++;
+			}else {
+				activityDto.setAction(true);
+				activityDto.setFailedAction(true);
+				activityDto.setEditFailedAction(true);
+				activityDto.setPlanFailedAction(true);
+				activityDto.setShowFailedStartedIcon(false);
+			}
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
 				activityDto.setShowPlanedIcon(true);
@@ -285,6 +300,7 @@ public class ActivityController implements Serializable, DbConstant {
 
 			ActivityDtoList.add(activityDto);
 		}
+		sessionfailedActiv.setAttribute("activfailed", FailedAct);
 		return ActivityDtoList;
 	}
 
@@ -576,13 +592,19 @@ public class ActivityController implements Serializable, DbConstant {
 				activity.setAction(false);
 				activity.setPlanAction(false);
 				activity.setChangeAction(false);
-			} else {
+			} else if(activity.getStatus().equals(REJECT)) {
 				activity.setEditable(false);
 				activity.setAction(false);
-				activity.setReplanAction(false);
 				activity.setCommmentAction(false);
+				activity.setReplanAction(false);
 				activity.setEditAction(false);
+			}else if(activity.getStatus().equals(FAILED)) {
+				activity.setEditable(false);
+				activity.setAction(false);
+				activity.setPlanFailedAction(false);
+				activity.setEditFailedAction(false);		
 			}
+			
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -622,6 +644,9 @@ public class ActivityController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public String planAction(ActivityDto activity) {
 		try {
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			int ActFailCount = (Integer) session.getAttribute("activfailed");
 			Activity act = new Activity();
 			act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
@@ -629,20 +654,28 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
-				act.setUpdatedBy(usersSession.getViewId());
-				act.setUpDtTime(timestamp);
-				act.setStatus(PLAN_ACTIVITY);
+			if(ActFailCount==0) {
+				if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(PLAN_ACTIVITY);
+				}
+				activityImpl.UpdateActivity(act);
+				activityDetails = activityImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "task", "user" },
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+				activityDtoDetails = showActivity(activityDetails);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			}else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.failed.form.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");	
 			}
-			activityImpl.UpdateActivity(act);
-			activityDetails = activityImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "task", "user" },
-					new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
-			activityDtoDetails = showActivity(activityDetails);
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -654,6 +687,41 @@ public class ActivityController implements Serializable, DbConstant {
 		return null;
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	public String planFailedActivity(ActivityDto activity) {
+		try{
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			int ActFailCount = (Integer) session.getAttribute("activfailed");
+		Activity act = new Activity();
+		act = new Activity();
+		act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+
+		LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
+
+		if (activity.getStatus().equals(FAILED) && ActFailCount>0 ) {
+			act.setUpdatedBy(usersSession.getViewId());
+			act.setUpDtTime(timestamp);
+			act.setStatus(PLAN_ACTIVITY);
+		}
+		activityImpl.UpdateActivity(act);
+		activityDetails = activityImpl.getGenericListWithHQLParameter(
+				new String[] { "genericStatus", "task", "user" },
+				new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+		activityDtoDetails = showActivity(activityDetails);
+		JSFMessagers.resetMessages();
+		setValid(true);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+		LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+	} catch (Exception e) {
+		JSFMessagers.resetMessages();
+		setValid(false);
+		JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
+		LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+	}
+		return null;
+	}
 	@SuppressWarnings("unchecked")
 	public String reportAction(ActivityDto activity) {
 		try {
@@ -721,13 +789,19 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setAction(false);
 			activity.setPlanAction(false);
 			activity.setChangeAction(false);
-		} else {
+		} else if(activity.getStatus().equals(REJECT)) {
 			activity.setEditable(false);
 			activity.setAction(false);
-			activity.setReplanAction(false);
 			activity.setCommmentAction(false);
+			activity.setReplanAction(false);
 			activity.setEditAction(false);
+		}else if(activity.getStatus().equals(FAILED)) {
+			activity.setEditable(false);
+			activity.setAction(false);
+			activity.setPlanFailedAction(false);
+			activity.setEditFailedAction(false);		
 		}
+		
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -964,18 +1038,29 @@ public class ActivityController implements Serializable, DbConstant {
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
+	
+	public String editFailAction(ActivityDto activity) {
+		if(activity.getStatus().equals(FAILED)) {
+			activity.setEditable(true);
+			activity.setAction(true);
+			activity.setPlanFailedAction(true);
+			activity.setEditFailedAction(true);
+		}
+		return null;
+	}
 
 	public String editChangeAction(ActivityDto activity) {
 
+		if(activity.getStatus().equals(REJECT)) {
 		activity.setEditable(true);
 		activity.setAction(true);
-		activity.setPlanAction(true);
+		//activity.setPlanAction(true);
 		activity.setCommmentAction(true);
 		activity.setReplanAction(true);
-		activity.setReportAction(true);
-		activity.setDoneAction(true);
+		/*activity.setReportAction(true);
+		activity.setDoneAction(true);*/
 		activity.setEditAction(true);
-		// usersImpl.UpdateUsers(user);
+		}
 		return null;
 	}
 	public String getMyFormattedDate(TaskAssignment statDate) {

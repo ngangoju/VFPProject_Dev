@@ -50,6 +50,10 @@ public class ActivityDto implements Serializable {
 	private boolean showPlanedIcon;
 	private boolean showNotStartedIcon;
 	private boolean approvedComment;
+	private boolean failedAction;
+	private boolean planFailedAction;
+	private boolean editFailedAction;
+	private boolean showFailedStartedIcon;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -256,6 +260,38 @@ public class ActivityDto implements Serializable {
 
 	public void setApprovedComment(boolean approvedComment) {
 		this.approvedComment = approvedComment;
+	}
+
+	public boolean isFailedAction() {
+		return failedAction;
+	}
+
+	public void setFailedAction(boolean failedAction) {
+		this.failedAction = failedAction;
+	}
+
+	public boolean isPlanFailedAction() {
+		return planFailedAction;
+	}
+
+	public void setPlanFailedAction(boolean planFailedAction) {
+		this.planFailedAction = planFailedAction;
+	}
+
+	public boolean isEditFailedAction() {
+		return editFailedAction;
+	}
+
+	public void setEditFailedAction(boolean editFailedAction) {
+		this.editFailedAction = editFailedAction;
+	}
+
+	public boolean isShowFailedStartedIcon() {
+		return showFailedStartedIcon;
+	}
+
+	public void setShowFailedStartedIcon(boolean showFailedStartedIcon) {
+		this.showFailedStartedIcon = showFailedStartedIcon;
 	}
 	
 }
