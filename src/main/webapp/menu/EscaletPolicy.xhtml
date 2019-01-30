@@ -62,11 +62,6 @@
 							</div>
 						</div>
 					</div>
-					<a
-						href="#{loadUserInformationsController.getContextPath()}/menu/ViewInstitutionProfile.xhtml"
-						class="btn btn-primary glyphicon glyphicon-chevron-left"
-						style="font-size: 14px !important;">
-						#{msg['UserCatForm.BackBoardButtom']} </a>
 				</div>
 				<div class="panel-body">
 					<p:outputPanel rendered="#{not loadInstitutionProfile.div1}">
@@ -106,6 +101,40 @@
 											rendered="#{not ls.editable}" />
 										<h:message errorClass="errorMsg1" for="times"></h:message>
 									</p:column>
+
+									<p:column style="border: none;">
+										<f:facet name="header">
+											<h:outputText value="Plan period" />
+										</f:facet>
+										<h:selectOneMenu rendered="#{ls.editable}"
+											class="form-control input-sm" id="planP"
+											value="#{loadInstitutionProfile.planPeriod}" required="true"
+											requiredMessage="#{msg['institutionForm.requiered.planP.message']}">
+											<f:selectItems value="#{loadInstitutionProfile.nmbr}"
+												var="nm" itemValue="#{nm}" itemLabelEscaped="true" />
+										</h:selectOneMenu>
+										<h:outputText
+											value="#{loadInstitutionProfile.getPlanPeriod(ls.planPeriod)}"
+											rendered="#{not ls.editable}" />
+										<h:message errorClass="errorMsg1" for="planP"></h:message>
+									</p:column>
+
+									<p:column style="border: none;">
+										<f:facet name="header">
+											<h:outputText value="Variation period" />
+										</f:facet>
+										<h:selectOneMenu rendered="#{ls.editable}"
+											class="form-control input-sm" id="variat"
+											value="#{loadInstitutionProfile.planPeriod}" required="true"
+											requiredMessage="#{msg['institutionForm.requiered.planP.message']}">
+											<f:selectItems value="#{loadInstitutionProfile.nmbr}"
+												var="nm" itemValue="#{nm}" itemLabelEscaped="true" />
+										</h:selectOneMenu>
+										<h:outputText style="textAlign:center" value="#{ls.variation}"
+											rendered="#{not ls.editable}" />
+										<h:message errorClass="errorMsg1" for="variat"></h:message>
+									</p:column>
+
 									<p:column style="border: none;">
 										<f:facet name="header">
 											<h:outputText value="Long Activity marks" />
@@ -139,14 +168,6 @@
 												var="nm" itemValue="#{nm}" itemLabelEscaped="true" />
 										</h:selectOneMenu>
 									</p:column>
-
-									<p:column style="border: none;">
-										<f:facet name="header">
-											<h:outputText value="Institution name" />
-										</f:facet>
-										<h:outputText
-											value="#{ls.institution.request.institutionName}" />
-									</p:column>
 									<p:column style="border: none;">
 										<f:facet name="header">
 											<h:outputText value="Status" />
@@ -176,6 +197,11 @@
 
 									</p:column>
 								</p:dataTable>
+								<a
+									href="#{loadUserInformationsController.getContextPath()}/menu/ViewInstitutionProfile.xhtml"
+									class="btn btn-primary glyphicon glyphicon-chevron-left"
+									style="font-size: 14px !important;">
+									#{msg['UserCatForm.BackBoardButtom']} </a>
 							</h:form>
 						</div>
 
