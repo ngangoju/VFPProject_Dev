@@ -11,21 +11,21 @@
 	<ui:composition >
 
       <!-- Profile -->
-      <div class="w3-card w3-round w3-white">
+      <div class="w3-card w3-round w3-white" style="font: italic 14px/18px Georgia, serif">
         <div class="w3-container">
     
          <span class="w3-left"><h:graphicImage class="w3-circle" style="width:50%;margin: 5px" alt="userImage" value="/images/dynamic/?file=#{loadUserInformationsController.users.image}" /> </span>
         
-         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText value="#{loadUserInformationsController.users.fname}"></h:outputText></span></p> 
-         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText value="#{loadUserInformationsController.users.lname}"></h:outputText></span></p> 
-         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText value="#{loadUserInformationsController.users.address}"></h:outputText></span></p> 
-       <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk" style="font-weight: bold;color:blue;"><h:outputText value="#{loadUserInformationsController.users.userCategory.usercategoryName}"></h:outputText></span></p> 
+         <p style="font: italic bold 14px/18px Georgia, serif"><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText style="font: italic bold 13px/16px Georgia, serif;" value="#{loadUserInformationsController.users.fname}"></h:outputText></span></p> 
+         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText  style="font: italic bold 13px/16px Georgia, serif;" value="#{loadUserInformationsController.users.lname}"></h:outputText></span></p> 
+         <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk"><h:outputText  style="font: italic bold 13px/16px Georgia, serif;" value="#{loadUserInformationsController.users.address}"></h:outputText></span></p> 
+       <p><i class="w3-right"></i><span class="glyphicon glyphicon-asterisk" style="font-weight: bold;color:blue;"><h:outputText style="font: italic bold 13px/16px Georgia, serif;" value="#{loadUserInformationsController.users.userCategory.usercategoryName}"></h:outputText></span></p> 
         </div>
       </div>
       <br/>
 
       <!-- Accordion -->
-  <div class="w3-card w3-round">
+  <div class="w3-card w3-round" style="font: italic 14px/18px Georgia, serif">
 		<div class="w3-white">
 			<ui:repeat value="#{loadUserInformationsController.getListMenuGroup()}" var="menuGp">
 						
@@ -39,9 +39,9 @@
 								<ui:repeat value="#{loadUserInformationsController.menuAssignmentDetails}" var="menuAss">
 								   <h:panelGroup rendered="#{menuAss.listOfMenu.menuGroup.menuGroupId == menuGp.menuGroupId}">
            								<div style="margin: 4px; background-color: #edf8ff; color: withe; border-radius: 6px; color: white">
-										       <a style="text-decoration: none; color: black"
+										       <a style="text-decoration: none; color: black;"
 											   class="glyphicon glyphicon-asterisk"
-											   href="#{loadUserInformationsController.getContextPath()}#{menuAss.listOfMenu.urlName}">#{menuAss.listOfMenu.description} </a>
+											   href="#{loadUserInformationsController.getContextPath()}#{menuAss.listOfMenu.urlName}"><label style="font: italic 13px/16px Georgia, serif">#{menuAss.listOfMenu.description} </label></a>
 									       </div>
 									         </h:panelGroup>
 									</ui:repeat>

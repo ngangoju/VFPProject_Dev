@@ -10,10 +10,10 @@
 
 	<ui:composition template="/template/common/commonLayout.xhtml">
 		<ui:define name="content">
-			<h4>
+			<h4 style="font: italic bold 14px/25px Georgia, serif;">
 				#{loadUserInformationsController.users.userCategory.usercategoryName}
 				<span class="glyphicon glyphicon-dashboard">
-					#{msg['message.com.userManagement.dashaboard']}</span>
+					<label style="font: italic 13px/18px Georgia, serif">#{msg['message.com.userManagement.dashaboard']}</label></span>
 			</h4>
 			<div
 				style="border-bottom: 1.5px solid #91DBFA; margin-bottom: 6px; width: 100%"></div>
@@ -27,7 +27,7 @@
 									<td>
 										<div>
 											<a href="UsersAccount.xhtml"
-												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+												style="font: italic 14px/18px Georgia, serif"
 												class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-pencil ">#{msg['UserRepForm.addButton']}<b><span
 													style="background-color: red; color: white" class="badge"></span></b>
 											</a>
@@ -65,14 +65,14 @@
 								</ul>
 							</h:panelGroup>
 							<legend
-								style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
+								style="font: italic bold 14px/18px Georgia, serif">
 								#{msg['message.header.repFilter.info']}</legend>
 
 							<p:outputPanel id="toTable" autoUpdate="true"
 								rendered="#{userAccountController.renderRepTable}">
 
 								<h:dataTable id="loginTable" binding="#{tablogins}"
-									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+									style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 20px 25px 0 !important;"
@@ -81,7 +81,7 @@
 									<f:facet name="header">
 
 										<label
-											style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+											style="font: italic bold 13px/16px Georgia, serif; margin-top: 10px; margin-left: 35%;">
 											#{msg['message.header.RepList.filter']}</label>
 									</f:facet>
 
@@ -287,7 +287,7 @@
 							<!-- Start of contact Mgt Dashboard -->
 							<p:outputPanel id="contactdash" autoUpdate="true"
 								rendered="#{userAccountController.renderRepContactDash}">
-								<div class="row">
+								<div class="row" style="font: italic 13px/18px Georgia, serif">
 									<ui:repeat value="#" var="menuAss">
 										<div class="col-md-4 col-sm-6">
 											<div class="circle-tile2 ">
@@ -397,7 +397,7 @@
 								rendered="#{userAccountController.rendered}">
 
 								<h:dataTable binding="#{tab}"
-									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+									style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 20px 25px 0 !important;"
@@ -406,7 +406,7 @@
 									<f:facet name="header">
 
 										<label
-											style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+											style="font: italic bold 16px/20px Georgia, serif; color: black; margin-top: 10px; margin-left: 35%;">
 											#{msg['message.header.RepNoContact.filter']}</label>
 									</f:facet>
 
@@ -468,10 +468,10 @@
 
 								<fieldset>
 
-									<legend> #{msg['message.header.contactDetails.info']}</legend>
+									<legend><label style="font: italic 13px/18px Georgia, serif"> #{msg['message.header.contactDetails.info']}</label></legend>
 
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['label.message.username']}<span
@@ -483,7 +483,7 @@
 										</div>
 									</div>
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['massages.cmn.common.first.fname']}<span
@@ -495,7 +495,7 @@
 										</div>
 									</div>
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['massages.cmn.common.last.lname']}<span
@@ -509,7 +509,7 @@
 
 									
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['label.message.Email']}<span
@@ -529,7 +529,7 @@
 									</div>
 
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif;">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['label.message.Phone']}<span
@@ -578,7 +578,7 @@
 									</div>
 									<!-- Back FilterContact Page -->
 									<br /> <a href="ListOfUsers.xhtml"
-										style="font-size: 14px !important; width: 25%; margin-left: 5%;"
+										style="font: italic 14px/16px Georgia, serif; width: 25%; margin-left: 5%;"
 										class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
 											style="background-color: red; color: white" class="badge"></span></b>
 									</a>
@@ -590,7 +590,7 @@
 							<p:outputPanel id="toTable2" autoUpdate="true"
 								rendered="#{userAccountController.renderRepContactAvailTable}">
 								<h:dataTable id="loginTables" binding="#{tablogin}"
-									style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+									style="font: italic 16px/18px Georgia, serif;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 20px 25px 0 !important;"
@@ -599,7 +599,7 @@
 									<f:facet name="header">
 
 										<label
-											style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+											style="font: italic bold 14px/16px Georgia, serif color: black; margin-top: 10px; margin-left: 35%;">
 											#{msg['message.header.completeContact.filter']}</label>
 									</f:facet>
 
@@ -703,8 +703,8 @@
 
 									<f:facet name="footer">
 										<a href="ListOfUsers.xhtml"
-									style="font-size: 14px !important; margin-left: 2%;"
-									class="btn btn-primary glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
+									style=" margin-left: 2%;"
+									class="btn btn-primary glyphicon glyphicon-chevron-left"><label style="font: italic bold 14px/16px Georgia, serif"></label>#{msg['UserRegForm.GoBackButton']}<b><span
 										style="background-color: red; color: white" class="badge"></span></b>
 								</a>
 								<!-- End Back -->
@@ -720,10 +720,10 @@
 								autoUpdate="true">
 								<fieldset>
 
-									<legend> #{msg['message.header.contactDetails.info']}</legend>
+									<legend style="font: italic bold 16px/18px Georgia, serif"> #{msg['message.header.contactDetails.info']}</legend>
 
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['label.message.username']}<span
@@ -736,7 +736,7 @@
 										</div>
 									</div>
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['massages.cmn.common.first.fname']}<span
@@ -749,7 +749,7 @@
 										</div>
 									</div>
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['massages.cmn.common.last.lname']}<span
@@ -763,7 +763,7 @@
 									</div>
 									
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['label.message.Email']}<span
@@ -783,7 +783,7 @@
 									</div>
 
 									<div class="form-group row"
-										style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+										style="font: italic 14px/16px Georgia, serif">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['label.message.Phone']}<span
@@ -808,7 +808,7 @@
 															style="width: 8%" alt="question" />
 													</h:panelGroup> <p:tooltip id="toolTipContent2"
 														for="tooltips-contactDetails2" position="bottom">
-														<span> #{msg['help.coantDetails.message']} </span>
+														<span><label style="font: italic bold 14px/16px Georgia, serif"> #{msg['help.coantDetails.message']}</label> </span>
 													</p:tooltip>
 											</a></span>
 
@@ -834,7 +834,7 @@
 									<!-- Back FilterContact Page -->
 									<br /> <a href="ListOfUsers.xhtml"
 										style="font-size: 14px !important; width: 25%; margin-left: 5%;"
-										class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left">#{msg['UserRegForm.GoBackButton']}<b><span
+										class="btn btn-primary btn-xlg btn-block glyphicon glyphicon-chevron-left"><label style="font: italic bold 14px/16px Georgia, serif">#{msg['UserRegForm.GoBackButton']}</label><b><span
 											style="background-color: red; color: white" class="badge"></span></b>
 									</a>
 									<!-- End Back -->

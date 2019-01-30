@@ -12,9 +12,9 @@
 
 <ui:define name="content">
 
-<h4>#{loadUserInformationsController.users.userCategory.usercategoryName}  <span class="glyphicon glyphicon-dashboard"> #{msg['message.com.user.dashaboard']}</span> </h4>
+<h4 style="font: italic bold 13px/16px Georgia, serif;">#{loadUserInformationsController.users.userCategory.usercategoryName}  <span class="glyphicon glyphicon-dashboard"> <label style="font: italic 13px/18px Georgia, serif">#{msg['message.com.user.dashaboard']}</label></span> </h4>
 <div style="border-bottom:1.5px solid  #91DBFA;margin-bottom: 6px;width: 100%"></div>
-<div class="row" >
+<div class="row" style="font: italic bold 13px/16px Georgia, serif;">
 <ui:repeat value="#{loadUserInformationsController.menuAssignmentDetails}" var="menuAss">
              <div class="col-md-4 col-sm-6">
                         <div class="circle-tile2">

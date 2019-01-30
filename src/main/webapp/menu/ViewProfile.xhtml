@@ -54,7 +54,7 @@
 			<div class="panel panel-default">
 
 				<div class="panel-body"
-					style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+					style="border: 0px solid blue; margin-top: 4px; height: auto; font: italic 14px/18px Georgia, serif;">
 
 
 					<h:form>
@@ -105,7 +105,7 @@
 								<thead>
 									<tr>
 										<th colspan="2" bgcolor="#99b1bf"><center>
-												<label style="color: white;">Account Information</label>
+												<label style="color: white;font: italic bold 15px/20px Georgia, serif">Account Information</label>
 											</center></th>
 									</tr>
 								</thead>
@@ -132,7 +132,7 @@
 
 									</tr>
 									<tr>
-										<td><br />First name:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />First name:</td>
 										<td><h:inputText value="#{user.fname}" size="20"
 												required="true" rendered="#{user.editable}" id="fname"
 												requiredMessage="#{msg['requiered.fname.message']}"
@@ -149,7 +149,7 @@
 									</tr>
 									<tr>
 
-										<td><br />Last name:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />Last name:</td>
 										<td><h:inputText value="#{user.lname}" size="20"
 												id="lname" rendered="#{user.editable}" required="true"
 												requiredMessage="#{msg['requiered.lname.message']}"
@@ -164,7 +164,7 @@
 												rendered="#{not user.editable}" /></td>
 									</tr>
 									<tr>
-										<td><br />Address:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />Address:</td>
 										<td><h:inputText value="#{user.address}" size="20"
 												id="addr" rendered="#{user.editable}" required="true"
 												requiredMessage="#{msg['requiered.address.message']}"
@@ -181,13 +181,12 @@
 									</tr>
 									
 									<tr>
-									<td><br/> Board name:</td>
+									<td style="font: italic bold 14px/18px Georgia, serif"><br/> Board name:</td>
 									<td>
 									<h:selectOneMenu id="brd" styleClass="form-control"
 											rendered="#{user.renderBoard}"
 											style="font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-											required="true" value="#{userAccountController.boardId}"
-											requiredMessage="#{msg[required.boardName.message]}">
+											>
 											<f:selectItem
 												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 												itemValue="#{null}" escapeItem="true" itemDisabled="false" />
@@ -203,26 +202,26 @@
 									</td>
 									</tr>
 									<tr>
-										<td><br />Date of birth:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />Date of birth:</td>
 										<td><br />
 											<h:outputText value="#{userAccountController.getMyFormattedDate()}"/></td>
 
 									</tr>
 									<tr>
-										<td><br />Position:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />Position:</td>
 										<td><br />
 											<h:outputText value="#{user.userCategory.usercategoryName}"/></td>
 
 									</tr>
 									<tr>
-										<td><br />Gender:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />Gender:</td>
 										<td>
 											<br />
 											<h:outputText value="#{user.gender}"/></td>
 
 									</tr>
 									<tr>
-										<td><br />Login status:</td>
+										<td style="font: italic bold 14px/18px Georgia, serif"><br />Login status:</td>
 										<td>
 										<br />
 											<h:outputText value="#{user.loginStatus}"/></td>
@@ -233,7 +232,7 @@
 										rendered="#{userAccountController.renderForeignCountry}"
 										autoUpdate="true">
 										<tr>
-											<td><br />#{msg['PswdEdit.option']}</td>
+											<td style="font: italic bold 14px/18px Georgia, serif"><br />#{msg['PswdEdit.option']}</td>
 											<td><h:selectOneRadio style="margin-top:18px;"
 													value="#{userAccountController.option}">
 													<f:selectItem itemLabel="Yes &nbsp;&nbsp;" itemValue="yes" />
@@ -251,7 +250,7 @@
 										rendered="#{userAccountController.renderprofile}"
 										autoUpdate="true">
 										<tr>
-											<td><br />#{msg['profileEdit.option']}</td>
+											<td style="font: italic bold 14px/18px Georgia, serif"><br />#{msg['profileEdit.option']}</td>
 											<td><h:selectOneRadio style="margin-top:18px;"
 													value="#{userAccountController.redirect}">
 													<f:selectItem itemLabel="Yes &nbsp;&nbsp;" itemValue="next" />
@@ -268,7 +267,7 @@
 									<p:outputPanel id="changepswd"
 										rendered="#{userAccountController.rendered}" autoUpdate="true">
 										<tr>
-											<td><br />Change password:</td>
+											<td style="font: italic bold 14px/18px Georgia, serif"><br />Change password:</td>
 											<td><h:inputSecret size="20" id="pswds"
 													value="#{userAccountController.password}" maxlength="35">
 													<f:validateRegex
@@ -279,7 +278,7 @@
 
 										</tr>
 										<tr>
-											<td><br />Confirm password:</td>
+											<td style="font: italic bold 14px/18px Georgia, serif"><br />Confirm password:</td>
 											<td><h:inputSecret size="20" id="confpswds"
 													value="#{userAccountController.confirmPswd}" maxlength="35">
 													<f:validateRegex
@@ -300,9 +299,9 @@
 							<p:outputPanel id="toButton"
 								rendered="#{userAccountController.rendersaveButton}"
 								autoUpdate="true">
-								<h:commandButton value="Save Changes"
-									styleClass="btn btn-primary" style="margin-left:20px;"
-									action="#{userAccountController.saveAction(user)}">
+								<h:commandButton value="Save Changes" 
+									styleClass="btn btn-primary" style="margin-left:20px;font: italic bold 14px/18px Georgia, serif"
+									action="#{userAccountController.saveAction(user)}" >
 									<f:ajax render="@form" execute="@form" onevent="showProgress" />
 								</h:commandButton>
 							</p:outputPanel>
@@ -317,7 +316,7 @@
 												style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
 												<label for="todate"
 													class="col-md-2 col-sm-2 col-xs-2 control-label"
-													style="color: black">Change Your Image</label>
+													style="color: black;font: italic bold 14px/18px Georgia, serif">Change Your Image</label>
 												<div class="col-md-4">
 													<span class="tooltips-input-main"><a
 														class="tooltips-input"> <h:panelGroup
@@ -327,7 +326,7 @@
 																	style="width: 8%" alt="question" />
 															</h:panelGroup> <p:tooltip id="toolTipContent"
 																for="tooltips-contactDetails" position="bottom">
-																<span> #{msg['help.userImage.message']} </span>
+																<span> <label style="font: italic bold 14px/18px Georgia, serif;">#{msg['help.userImage.message']}</label> </span>
 															</p:tooltip>
 													</a></span>
 
@@ -340,7 +339,7 @@
 										<h:form>
 											<p:fileUpload accept="image/*"
 											oncomplete="window.location.reload();"
-											style="width:70%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+											style="width:70%;font: italic bold 14px/18px Georgia, serif;"
 											uploadLabel="Upload image" cancelLabel="Cancel"
 											fileUploadListener="#{formSampleController.uploadProfile}"
 											mode="advanced" dragDropSupport="true" multiple="true"
@@ -353,7 +352,7 @@
 											href="#{loadUserInformationsController.getContextPath()}/menu/ViewProfile.xhtml"
 											class="btn btn-primary glyphicon glyphicon-chevron-left"
 											style="font-size: 14px !important;">
-											#{msg['UserCatForm.BackBoardButtom']} </a>
+											<label style="font: italic bold 14px/18px Georgia, serif;">#{msg['UserCatForm.BackBoardButtom']}</label> </a>
 									</div>
 									</p:outputPanel>
 					</h:form>

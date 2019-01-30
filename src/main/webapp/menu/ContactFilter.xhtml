@@ -13,7 +13,7 @@
 
 			<h:form>
 				<div class="panel panel-info">
-					<div class="panel-heading">
+					<div class="panel-heading" style="font: italic bold 14px/18px Georgia, serif">
 						<table>
 							<tr>
 								<td>
@@ -66,10 +66,10 @@
 							autoUpdate="true">
 							<fieldset>
 								<legend
-									style="font-weight: bold; font-family: Open Sans sans-serif !important; font-size: 18px !important;">
+									style="font: italic bold 14px/20px Georgia, serif;">
 									#{msg['message.header.contactFilter.info']}</legend>
 
-								<div class="panel-body">
+								<div class="panel-body" style="font: italic 14px/18px Georgia, serif">
 
 									<div style="display: none">
 										<input id="lat" name="lat" type="text" /> <input id="long"
@@ -114,7 +114,7 @@
 															style="width: 15%" alt="question" />
 													</h:panelGroup> <p:tooltip id="toolTipContent"
 														for="tooltips-contactDetails" position="bottom">
-														<span> #{msg['help.contactFilter.message']} </span>
+														<span><label style="font: italic bold 13px/16px Georgia, serif"> #{msg['help.contactFilter.message']}</label> </span>
 													</p:tooltip>
 											</a></span>
 
@@ -159,7 +159,7 @@
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-6  control-label"></label>
 									<div class="col-sm-4">
-										<h:commandButton class="btn btn-info btn-sm btn-block"
+										<h:commandButton class="btn btn-info btn-sm btn-block" style="font: italic bold 13px/16px Georgia, serif;"
 											value="Submit"
 											action="#{userContactController.showContactFiltered()}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
@@ -175,7 +175,7 @@
 
 						
 							<h:dataTable id="userTable" binding="#{tabl}"
-								style="font-family: Open Sans sans-serif !important; font-size: 15px !important;box-sizing: border-box; width:95% !important;
+								style="font: italic  14px/20px Georgia, serif;box-sizing: border-box; width:95% !important;
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 20px 25px 0 !important;"
@@ -184,7 +184,7 @@
 								<f:facet name="header">
 
 									<label
-										style="font-family: Open Sans sans-serif !important; color: black; font-weight: bold; margin-top: 10px; margin-left: 35%; font-size: 18px;">
+										style="font: italic bold 13px/18px Georgia, serif; margin-top: 10px; margin-left: 35%;">
 										#{msg['message.header.completeUserContact.filter']}</label>
 								</f:facet>
 
@@ -292,9 +292,7 @@
 									</h:selectOneMenu>
 									
 								</f:facet>
-							</h:dataTable>
-						
-
+							</h:dataTable>	
 					</div>
 				</div>
 			</h:form>

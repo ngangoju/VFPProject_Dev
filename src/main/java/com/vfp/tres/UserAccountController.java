@@ -90,6 +90,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private UserDto userDto;
 	private List<Users> usersDetails = new ArrayList<Users>();
 	private List<Users> useravail = new ArrayList<Users>();
+	private List<Users> staffList = new ArrayList<Users>();
 	private List<UserCategory> catDetails = new ArrayList<UserCategory>();
 	private List<Province> provinceList = new ArrayList<Province>();
 	private List<District> districtList = new ArrayList<District>();
@@ -144,6 +145,7 @@ public class UserAccountController implements Serializable, DbConstant {
 	private boolean nextButoon;
 	private String redirect;
 	private String range;
+	private String searchKey;
 	private boolean renderBoard;
 	private boolean renderDatePanel;
 	private boolean renderEditedTableByDate;
@@ -210,8 +212,8 @@ public class UserAccountController implements Serializable, DbConstant {
 					new Object[] { ACTIVE }, "Board", "boardId desc");
 			// Profile Details for user logged in
 			userDtoDetails = showProfileDetails();
-			//Staff Position
-			staffPosition=staffPosition();
+			// Staff Position
+			staffPosition = staffPosition();
 			repDtosDetails = displayRepresentativeByDateBetween();
 			this.renderRepContactDash = true;
 			listrepSize = showAvailRep();
@@ -247,6 +249,9 @@ public class UserAccountController implements Serializable, DbConstant {
 			userDtosDetails = showUsersByPageRecords(useravail);
 			this.renderBoard = true;
 			this.renderDatePanel = true;
+			staffList = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE }, "Users", "userId desc");
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -256,20 +261,64 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	}
 
-	public List<UserCategory> staffPosition(){
+	public void searchStaff() {
+		LOGGER.info("Search Key value::::::"+searchKey);
+		if (null!=searchKey) {
+			userDtosDetails = new ArrayList<UserDto>();
+			for (Users users : staffList) {
+				LOGGER.info("users::::::::::::::::::::::::::::::::::::::::::::::::>>" + users.getUserId() + ":: "
+						+ users.getFname() + "");
+				if (users.getUserCategory().getUserCatid() != 1) {
+					UserDto userDtos = new UserDto();
+					userDtos.setEditable(false);
+					userDtos.setNotify(false);
+					if (users.getBoard() != null) {
+						if (users.getFname().equals(searchKey) || users.getLname().equals(searchKey)
+								|| users.getStatus().equals(searchKey)||users.getLoginStatus().equals(searchKey)
+								|| users.getBoard().getBoardName().equals(searchKey)
+								|| users.getUserCategory().getUsercategoryName().equals(searchKey)) {
+							userDtos.setUserId(users.getUserId());
+							userDtos.setFname(users.getFname());
+							userDtos.setLname(users.getLname());
+							userDtos.setViewId(users.getViewId());
+							userDtos.setLoginStatus(users.getLoginStatus());
+							userDtos.setUserCategory(users.getUserCategory());
+							userDtos.setStatus(users.getStatus());
+							userDtos.setBoard(users.getBoard());
+							if (users.getStatus().equals(ACTIVE)) {
+								userDtos.setAction(DESACTIVE);
+							} else {
+								userDtos.setAction(ACTIVE);
+							}
+							userDtosDetails.add(userDtos);
+						}
+					}
+				}
+			}
+		} else {
+			userDtosDetails = showUsersByPageRecords(useravail);
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.searcherror"));
+		}
+	}
+
+	public List<UserCategory> staffPosition() {
 		for (Object[] data : catImpl.reportList(
-				"select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'" + SUPER_ADMIN + "'")) {
+				"select cat.userCatid,cat.status,cat.usercategoryName from UserCategory cat where cat.usercategoryName<>'"
+						+ SUPER_ADMIN + "'")) {
 			UserCategory cat = new UserCategory();
 			cat.setUserCatid(Integer.parseInt(data[0] + ""));
 			cat.setStatus(data[1] + "");
 			cat.setUsercategoryName(data[2] + "");
 			staffPosition.add(cat);
 		}
-		return(staffPosition);
+		return (staffPosition);
 	}
+
 	public List<UserDto> showProfileDetails() {
 		Users user = usersImpl.gettUserById(usersSession.getUserId(), "userId");
-		List<UserDto>staffDto= new ArrayList<UserDto>();
+		List<UserDto> staffDto = new ArrayList<UserDto>();
 		if (null != user) {
 			UserDto userDto = new UserDto();
 			if (user.getUserCategory().getUserCatid() == 3) {
@@ -308,10 +357,12 @@ public class UserAccountController implements Serializable, DbConstant {
 			int endRecords = Integer.parseInt(range);
 			useravail = usersImpl.getListWithHQL("from Users", 0, endRecords);
 			userDtosDetails = showUsersByPageRecords(useravail);
-
+			LOGGER.info("RANGE VALUE:" + range + "::::::::::BOARD LIST RENDERED:::::::::::::::::");
 		} else {
 			this.renderBoardOption = true;
 			this.renderDatePanel = false;
+
+			LOGGER.info("RANGE VALUE:" + range + "::::::::::BOARD LIST RENDERED:::::::::::::::::");
 		}
 	}
 
@@ -736,7 +787,7 @@ public class UserAccountController implements Serializable, DbConstant {
 					usersImpl.UpdateUsers(us);
 					optionCombine();
 					userDtoDetails = new ArrayList<UserDto>();
-					 userDtoDetails = showProfileDetails();
+					userDtoDetails = showProfileDetails();
 					JSFMessagers.resetMessages();
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("pswd.changed.message"));
@@ -2447,6 +2498,22 @@ public class UserAccountController implements Serializable, DbConstant {
 
 	public void setStaffPosition(List<UserCategory> staffPosition) {
 		this.staffPosition = staffPosition;
+	}
+
+	public String getSearchKey() {
+		return searchKey;
+	}
+
+	public void setSearchKey(String searchKey) {
+		this.searchKey = searchKey;
+	}
+
+	public List<Users> getStaffList() {
+		return staffList;
+	}
+
+	public void setStaffList(List<Users> staffList) {
+		this.staffList = staffList;
 	}
 
 }

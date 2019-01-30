@@ -244,23 +244,23 @@
 					<div class=" col-md-12" style="height: 330px; overflow-y: scroll;">
 						<table
 							class="table table-striped table-hover table-bordered tableUpdated "
-							style="font-family: Time new roman !important; font-size: 15px !important; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
+							style="font: italic 14px/18px Georgia, serif; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
 
 							<thead>
 								<tr>
 
 									<th colspan="2" bgcolor="#99b1bf"><h:commandLink
-											value="New comment" style="font-size: 14px !important;"
+											value="New comment" style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 											class="btn btn-secondary btn-success   glyphicon glyphicon-edit"
 											action="#{activityController.newComment()}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink> <label style="color: white; margin-left: 15%;">Activity
+										</h:commandLink> <label style="color: white; margin-left: 15%;font: italic bold 16px/20px Georgia, serif;">Activity
 											related comment</label></th>
 								</tr>
 
 								<tr>
 
-									<th bgcolor="#99b1bf"><label style="color: white;">ActivityDescription:</label>
+									<th bgcolor="#99b1bf"><label style="color: white;font: italic bold 14px/18px Georgia, serif;">ActivityDescription:</label>
 									</th>
 									<th bgcolor="#99b1bf"><label style="color: white;"><h:outputText
 												value="#{activityController.activity.description}"></h:outputText></label></th>
@@ -270,25 +270,25 @@
 								value="#{activityController.commentDetail}">
 								<tbody class="details">
 									<tr>
-										<td style="width: 30%;"><label>Comment
+										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>Comment
 												description</label></td>
 										<td><h:outputText value="#{coment.comment.description}"></h:outputText></td>
 									</tr>
 									<tr>
-										<td style="width: 30%;"><label>comment date:</label></td>
+										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>comment date:</label></td>
 										<td><h:outputText value="#{coment.comment.crtdDtTime}">
 												<f:convertDateTime pattern="dd/MM/yyyy" />
 											</h:outputText></td>
 									</tr>
 									<tr>
-										<td style="width: 30%;"><label>Comment given by:</label></td>
+										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>Comment given by:</label></td>
 										<td><h:outputText value="#{coment.createdBy}"></h:outputText></td>
 									</tr>
 
 									<tr>
-										<td style="width: 30%;" colspan="2"><h:commandLink
+										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;" colspan="2"><h:commandLink
 												value="Reply this comment"
-												style="font-size: 14px !important;"
+												style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 												class="btn btn-info  glyphicon glyphicon-edit"
 												action="#{activityController.replyComment(coment)}">
 												<f:ajax render="@form" execute="@form"
@@ -310,7 +310,7 @@
 									<td colspan="2"></td>
 								</tr>
 								<tr>
-									<td style="width: 30%;"><label>Enter your comment:</label></td>
+									<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>Enter your comment:</label></td>
 									<td><h:inputTextarea style="width:55%;" id="coment"
 											value="#{activityController.commentDescription}"
 											maxlength="35">
@@ -325,7 +325,7 @@
 									<td style="width: 30%;"><p:outputPanel
 											rendered="#{activityController.renderUpload}" autoUpdate="true">
 											<h:commandLink value="Send comment"
-												style="font-size: 14px !important;"
+											style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 												class="btn btn-info  glyphicon glyphicon-edit"
 												action="#{activityController.saveComment()}">
 											</h:commandLink>
@@ -334,7 +334,7 @@
 										<p:outputPanel rendered="#{activityController.planBtn}"
 											autoUpdate="true">
 											<h:commandLink value="Save comment"
-												style="font-size: 14px !important;"
+												style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 												class="btn btn-info  glyphicon glyphicon-edit"
 												action="#{activityController.saveSupervisorComment()}">
 											</h:commandLink>
@@ -342,7 +342,7 @@
 									<td><h:commandLink
 											action="#{activityController.cancelComment()}"
 											value="#{msg['UserCategoryView.cancelButton']}"
-											style="font-size: 14px !important;"
+											style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 											class="btn btn-danger glyphicon glyphicon-remove">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink></td>
@@ -353,7 +353,7 @@
 									href="#{loadUserInformationsController.getContextPath()}/menu/ManageActivity.xhtml"
 									style="font-size: 14px !important;"
 									class="btn btn-primary glyphicon glyphicon-chevron-left">
-										Back </a></td>
+										<label style="font: italic bold 14px/18px Georgia, serif;">Back</label></a></td>
 							</tr>
 						</table>
 					</div>
