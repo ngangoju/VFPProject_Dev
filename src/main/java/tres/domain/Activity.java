@@ -44,9 +44,8 @@ public class Activity extends CommonDomain implements Serializable {
 	@Column(name = "type")
 	private String type;
 	
-	@Column(name="ActivityFailed")
+	@Column(name="ActivityFailed",nullable = false, columnDefinition ="int default 0")
 	private int countActivityFailed;
-	
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -166,7 +165,4 @@ public class Activity extends CommonDomain implements Serializable {
 	public void setCountActivityFailed(int countActivityFailed) {
 		this.countActivityFailed = countActivityFailed;
 	}
-	
-
-
 }
