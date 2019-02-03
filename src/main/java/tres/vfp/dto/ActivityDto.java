@@ -36,7 +36,7 @@ public class ActivityDto implements Serializable {
 
 	private Date createdDate;
 	private String type;
-
+	private int countActivityFailed;
 	private boolean editable;
 	private boolean action;
 	private boolean commmentAction;
@@ -292,6 +292,14 @@ public class ActivityDto implements Serializable {
 
 	public void setShowFailedStartedIcon(boolean showFailedStartedIcon) {
 		this.showFailedStartedIcon = showFailedStartedIcon;
+	}
+
+	public int getCountActivityFailed() {
+		return countActivityFailed;
+	}
+
+	public void setCountActivityFailed(int countActivityFailed) {
+		this.countActivityFailed = countActivityFailed;
 	}
 	
 }
