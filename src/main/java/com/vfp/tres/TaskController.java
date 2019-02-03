@@ -16,14 +16,22 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.common.UploadUtility;
+import tres.dao.impl.ContactImpl;
 import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
+import tres.dao.impl.UploadingActivityImpl;
+import tres.dao.impl.UploadingTaskImpl;
 import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Activity;
+import tres.domain.Contact;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
+import tres.domain.UploadingActivity;
+import tres.domain.UploadingTask;
 import tres.domain.Users;
 import tres.vfp.dto.TaskDto;
 
@@ -43,6 +51,7 @@ public class TaskController implements Serializable, DbConstant {
 	private Task task;
 	private TaskAssignment assignment;
 	private StrategicPlan plan;
+	private Contact contact;
 	private List<StrategicPlan> planDetails = new ArrayList<StrategicPlan>();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
 	private List<TaskAssignment> taskAssignDetail = new ArrayList<TaskAssignment>();
@@ -69,6 +78,8 @@ public class TaskController implements Serializable, DbConstant {
 	StrategicPlanImpl planImpl = new StrategicPlanImpl();
 	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	UserCategoryImpl categoryImpl = new UserCategoryImpl();
+	UploadingTaskImpl upimpl = new UploadingTaskImpl();
+	ContactImpl contactImpl = new ContactImpl();
 
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -106,10 +117,8 @@ public class TaskController implements Serializable, DbConstant {
 							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
 									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
 					"Task", "taskId asc");
-			taskDetails = taskImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "board" }, new Object[] { ACTIVE,
-							usersSession.getBoard() },
-					"Task", "taskId asc");
+			taskDetails = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "board" },
+					new Object[] { ACTIVE, usersSession.getBoard() }, "Task", "taskId asc");
 			listSize = taskDetails.size();
 			assignmentSize = taskAssignDetails.size();
 			for (Task task : taskDetails) {
@@ -138,6 +147,7 @@ public class TaskController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void saveTash() {
 		try {
 			task.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
@@ -151,30 +161,52 @@ public class TaskController implements Serializable, DbConstant {
 			task.setTaskStatus(ACTIVE);
 			plan = planImpl.getModelWithMyHQL(new String[] { "genericStatus" }, new Object[] { ACTIVE },
 					SELECT_STRATEGIC_PLAN);
-			if(plan==null) {
+			if (plan == null) {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
-			}else {
-			task.setStrategicPlan(plan);
+			} else {
+				task.setStrategicPlan(plan);
 //			if(task.getStartDate().getDay()<plan.getStartDate().getDay()) {
 //				 || task.getDueDate().getDay()>plan.getDueDate().getDay()
 //				JSFMessagers.resetMessages();
 //				setValid(false);
 //				JSFMessagers.addErrorMessage(getProvider().getValue("date.error.validation"));
 //			}else{
-			taskImpl.saveTask(task);
-			tasksDetail = taskImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
-							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
-									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
-					"Task", "taskId asc");
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
-			LOGGER.info(
-					CLASSNAME + ":::Task Details is saved" + plan.getStartDate() + "and.message" + plan.getDueDate());
-			 clearTaskFuileds();}
+				taskImpl.saveTask(task);
+				tasksDetail = taskImpl
+						.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy", "strategicPlan" },
+								new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(),
+										planImpl.getModelWithMyHQL(new String[] { "genericStatus" },
+												new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
+								"Task", "taskId asc");
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.task"));
+				LOGGER.info(CLASSNAME + ":::Task Details is saved" + plan.getStartDate() + "and message"
+						+ plan.getDueDate());
+				clearTaskFuileds();
+				SendSupportEmail email = new SendSupportEmail();
+				userDetails = usersImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "userCategory", "board" }, new Object[] { ACTIVE,
+								categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() },
+						"Users", "userId asc");
+				for (Users us : userDetails) {
+					contact = contactImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
+							new Object[] { ACTIVE, us }, "from Contact");
+					if (contact == null) {
+						LOGGER.info(CLASSNAME + ":::The user has no contact details");
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.user.contact.error"));
+					} else {
+						email.sendMailStrategicPlan("task", us.getFname(),
+								usersSession.getFname() + " " + usersSession.getLname(), contact.getEmail());
+						LOGGER.info(us.getFname() + " receives email from " + usersSession.getFname() + " "
+								+ usersSession.getLname() + " on this email ");
+					}
+				}
+			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
@@ -190,30 +222,30 @@ public class TaskController implements Serializable, DbConstant {
 	public void saveAssign(Task actS) {
 		try {
 			TaskAssignment assignm = new TaskAssignment();
-			assignm=taskAssignImpl.getModelWithMyHQL(new String[] { "task","user" }, new Object[] { actS,usersImpl.gettUserById(userId, "userId") },
-					"from TaskAssignment");
-			if(null==assignm) {
-			assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
-			LOGGER.info(assignment.getCreatedBy());
-			assignment.setCrtdDtTime(timestamp);
-			assignment.setGenericStatus(ACTIVE);
-			assignment.setUpDtTime(timestamp);
-			assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
-			assignment.setTask(actS);
-			assignment.setUser(usersImpl.gettUserById(userId, "userId"));
-			taskAssignImpl.saveTaskAssignment(assignment);
-			taskDetails = taskImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "createdBy", "strategicPlan" }, new Object[] { ACTIVE,
-							usersSession.getFname() + " " + usersSession.getLname(), planImpl.getModelWithMyHQL(
-									new String[] { "genericStatus" }, new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
-					"Task", "taskId asc");
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
-			LOGGER.info(CLASSNAME + ":::Task Assignment is saved");
+			assignm = taskAssignImpl.getModelWithMyHQL(new String[] { "task", "user" },
+					new Object[] { actS, usersImpl.gettUserById(userId, "userId") }, "from TaskAssignment");
+			if (null == assignm) {
+				assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				LOGGER.info(assignment.getCreatedBy());
+				assignment.setCrtdDtTime(timestamp);
+				assignment.setGenericStatus(ACTIVE);
+				assignment.setUpDtTime(timestamp);
+				assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				assignment.setTask(actS);
+				assignment.setUser(usersImpl.gettUserById(userId, "userId"));
+				taskAssignImpl.saveTaskAssignment(assignment);
+				taskDetails = taskImpl
+						.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy", "strategicPlan" },
+								new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(),
+										planImpl.getModelWithMyHQL(new String[] { "genericStatus" },
+												new Object[] { ACTIVE }, SELECT_STRATEGIC_PLAN) },
+								"Task", "taskId asc");
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
+				LOGGER.info(CLASSNAME + ":::Task Assignment is saved");
 //			clearTaskFuileds();
-			}
-			else {
+			} else {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.duplicate.taskAssignment"));
@@ -230,12 +262,45 @@ public class TaskController implements Serializable, DbConstant {
 		}
 
 	}
-	
-	public void assignAct(Task act) {
-			this.rendered = false;
-			this.renderTable = true;
-			task=act;
+
+	// returning files forms
+
+	@SuppressWarnings("unchecked")
+	public List<UploadingTask> showFiles() {
+		try {
+			List<UploadingTask> doc1 = new ArrayList<UploadingTask>();
+			Task act = new Task();
+			HttpSession ses = SessionUtils.getSession();
+			act = (Task) ses.getAttribute("activitySession");
+			if (act != null) {
+				doc1 = upimpl.getGenericListWithHQLParameter(new String[] { "task" }, new Object[] { act },
+						"UploadingTask", "task desc");
+				return doc1;
+			} else {
+				return null;
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	// download
+
+	public void downloadFile() {
+		UploadUtility ut = new UploadUtility();
+		try {
+			ut.downloadFileUtil();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void assignAct(Task act) {
+		this.rendered = false;
+		this.renderTable = true;
+		task = act;
+	}
 
 	public void taskApproval(Task act) {
 		try {
