@@ -54,6 +54,7 @@ public class ActivityDto implements Serializable {
 	private boolean planFailedAction;
 	private boolean editFailedAction;
 	private boolean showFailedStartedIcon;
+	private boolean failedActIcon;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -301,4 +302,13 @@ public class ActivityDto implements Serializable {
 	public void setActivityFailed(int activityFailed) {
 		ActivityFailed = activityFailed;
 	}
+
+	public boolean isFailedActIcon() {
+		return failedActIcon;
+	}
+
+	public void setFailedActIcon(boolean failedActIcon) {
+		this.failedActIcon = failedActIcon;
+	}
+	
 }

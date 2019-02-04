@@ -273,10 +273,10 @@ public class UserAccountController implements Serializable, DbConstant {
 					userDtos.setEditable(false);
 					userDtos.setNotify(false);
 					if (users.getBoard() != null) {
-						if (users.getFname().equals(searchKey) || users.getLname().equals(searchKey)
-								|| users.getStatus().equals(searchKey)||users.getLoginStatus().equals(searchKey)
-								|| users.getBoard().getBoardName().equals(searchKey)
-								|| users.getUserCategory().getUsercategoryName().equals(searchKey)) {
+						if (users.getFname().contains(searchKey) || users.getLname().contains(searchKey)
+								|| users.getStatus().contains(searchKey)||users.getLoginStatus().contains(searchKey)
+								|| users.getBoard().getBoardName().contains(searchKey)
+								|| users.getUserCategory().getUsercategoryName().contains(searchKey)) {
 							userDtos.setUserId(users.getUserId());
 							userDtos.setFname(users.getFname());
 							userDtos.setLname(users.getLname());
