@@ -485,7 +485,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 							+ selectedBoard + "'")) {
 
 				Row row = sheet.createRow(i);
-
 				Cell cell1 = row.createCell(0);
 				cell1.setCellValue(data[0] + "");
 
@@ -537,6 +536,8 @@ public class MdReportActivity implements Serializable, DbConstant {
 		} else if (myChoice.equalsIgnoreCase(taskchart)) {
 			renderedchart = true;
 			rendered = false;
+			ChartController chart= new ChartController();
+			chart.myClearance();
 			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
 			renderedx = false;

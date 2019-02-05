@@ -331,20 +331,12 @@
 												<div class="form-group">
 													<h:outputLabel class="col-lg-2"></h:outputLabel>
 													<div class="col-lg-8">
-														<h:inputText value="#{charController.statistics.rate}"
-															class="marks"></h:inputText>
+													
 														<h:inputText class="name" style="display:none;"
 															value="#{charController.name}"></h:inputText>
 													</div>
 												</div> 
-												<div class="form-group">
-                                                  
-													<div class="col-lg-8">
-														<h:commandButton class="btn btn-primary"
-															action="#{chartController.baba()}" value="Refresh">
-														</h:commandButton>
-													</div>
-												</div>
+												
 												<!-- This is another form -->
 											</h:form>
 										</div>
@@ -401,7 +393,7 @@
 															options : {
 																elements : {
 																	line : {
-																		tension : 0, // disables bezier curves
+																		tension :1, // disables bezier curves
 																	}
 																}
 															}

@@ -401,7 +401,7 @@ public class StaffReport implements Serializable, DbConstant {
 				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask,\r\n"
 						+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
 						+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
-						+ "sum(case when (status='pending' ) then 1 else 0 end),\r\n"
+						+ "sum(case when (status='Appoved') then 1 else 0 end),\r\n"
 						+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
 						+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
 						+ "from InstitutionReportView group by mytask")) {

@@ -632,8 +632,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 						 */
 					} else {
 						setValid(false);
-						JSFMessagers
-								.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorStaffDates"));
 					}
 
 				}
