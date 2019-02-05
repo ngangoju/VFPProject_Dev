@@ -36,7 +36,7 @@ public class ActivityDto implements Serializable {
 
 	private Date createdDate;
 	private String type;
-
+	private int ActivityFailed;
 	private boolean editable;
 	private boolean action;
 	private boolean commmentAction;
@@ -50,6 +50,11 @@ public class ActivityDto implements Serializable {
 	private boolean showPlanedIcon;
 	private boolean showNotStartedIcon;
 	private boolean approvedComment;
+	private boolean failedAction;
+	private boolean planFailedAction;
+	private boolean editFailedAction;
+	private boolean showFailedStartedIcon;
+	private boolean failedActIcon;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -256,6 +261,54 @@ public class ActivityDto implements Serializable {
 
 	public void setApprovedComment(boolean approvedComment) {
 		this.approvedComment = approvedComment;
+	}
+
+	public boolean isFailedAction() {
+		return failedAction;
+	}
+
+	public void setFailedAction(boolean failedAction) {
+		this.failedAction = failedAction;
+	}
+
+	public boolean isPlanFailedAction() {
+		return planFailedAction;
+	}
+
+	public void setPlanFailedAction(boolean planFailedAction) {
+		this.planFailedAction = planFailedAction;
+	}
+
+	public boolean isEditFailedAction() {
+		return editFailedAction;
+	}
+
+	public void setEditFailedAction(boolean editFailedAction) {
+		this.editFailedAction = editFailedAction;
+	}
+
+	public boolean isShowFailedStartedIcon() {
+		return showFailedStartedIcon;
+	}
+
+	public void setShowFailedStartedIcon(boolean showFailedStartedIcon) {
+		this.showFailedStartedIcon = showFailedStartedIcon;
+	}
+
+	public int getActivityFailed() {
+		return ActivityFailed;
+	}
+
+	public void setActivityFailed(int activityFailed) {
+		ActivityFailed = activityFailed;
+	}
+
+	public boolean isFailedActIcon() {
+		return failedActIcon;
+	}
+
+	public void setFailedActIcon(boolean failedActIcon) {
+		this.failedActIcon = failedActIcon;
 	}
 	
 }

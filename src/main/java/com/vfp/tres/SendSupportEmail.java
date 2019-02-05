@@ -88,22 +88,24 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 		LOGGER.info("::: notidficatio sent   ");
 	}
 
-	public boolean sendMailStrategicPlan(String fname,String senderName, String email) {
+	public boolean sendMailStrategicPlan(String type, String fname, String senderName, String email) {
 
-		boolean valid=false;
+		boolean valid = false;
 		if ((null != fname) && (null != email) && (null != senderName)) {
-			String msg = "<pre>"
-					+ "I hope this email finds you well."
-					+ "This is to notify you the new strategic plan created, "
-					+ "you can now check it out and find the attached document with full details."
-					+ "Regards,"
-					+ ""
-					+ senderName
-					+ "</pre>";
-			
+			String msg = null;
+			if (type.equals("plan")) {
+				msg = "<p>" + "I hope this email finds you well." + "<br/>"
+						+ "This is to notify you the new strategic plan created, " + "<br/>"
+						+ "you can now check it out and find the attached document with full details." + "<br/>"
+						+ "</p>";
+			} else if (type.equals("task")) {
+				msg = "<p>" + "I hope this email finds you well." + "<br/>"
+						+ "This is to notify you the new target created by your board superviser, " + "<br/>"
+						+ "you can now check it out and start to create weekly activities." + "<br/>" + "</p>";
+			}
 			/* End send content in table sample */
 			try {
-				
+
 				gen.sendEmailNotification(email, fname, "Strategic plan", msg);
 				valid = true;
 			} catch (AddressException e) {
@@ -114,11 +116,10 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
 				e.printStackTrace();
 				LOGGER.info("returing false2");
-				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::"
-						+ email + " on " + timestamp);
+				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::" + email
+						+ " on " + timestamp);
 			} catch (MessagingException e) {
-			LOGGER.info(
-						"This content" + msg + " was not send to ::" + email + " on " + timestamp);
+				LOGGER.info("This content" + msg + " was not send to ::" + email + " on " + timestamp);
 				valid = false;
 				setValid(false);
 				e.printStackTrace();
@@ -129,13 +130,13 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 		} else {
 			valid = false;
 		}
-		LOGGER.info("returing values"+valid);
+		LOGGER.info("returing values" + valid);
 		return (valid);
 	}
 
 	public boolean sendMailTestVersion(String fname, String lname, String email) {
 
-		boolean valid=false;
+		boolean valid = false;
 		if ((null != fname) && (null != lname) && (null != email)) {
 			String msg = "<p>Please take look on the bellow request.</p>" + "<table width=\"50%\" border=\"5px\">\n"
 					+ "  <tbody>\n" + "	<tr>" + "      <td class=\"labelbold\">Custome Names</td>\n" + "      <td>\n"
@@ -146,10 +147,10 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 					+ "<tr>" + "      <td class=\"labelbold\">Application URL</td>\n" + "      <td> <a href=" + LINK
 					+ "vfpProject_v1/default.xhtml>click here to acces the service</a>  </td></tr>" + "  </tbody>\n"
 					+ "</table>\n";
-			
+
 			/* End send content in table sample */
 			try {
-				
+
 				gen.sendEmailNotification(email, fname + " " + lname + "", "Support Team", msg);
 				valid = true;
 			} catch (AddressException e) {
@@ -160,11 +161,10 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
 				e.printStackTrace();
 				LOGGER.info("returing false2");
-				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::"
-						+ email + " on " + timestamp);
+				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::" + email
+						+ " on " + timestamp);
 			} catch (MessagingException e) {
-			LOGGER.info(
-						"This content" + msg + " was not send to ::" + email + " on " + timestamp);
+				LOGGER.info("This content" + msg + " was not send to ::" + email + " on " + timestamp);
 				valid = false;
 				setValid(false);
 				e.printStackTrace();
@@ -175,7 +175,7 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 		} else {
 			valid = false;
 		}
-		LOGGER.info("returing values"+valid);
+		LOGGER.info("returing values" + valid);
 		return (valid);
 	}
 

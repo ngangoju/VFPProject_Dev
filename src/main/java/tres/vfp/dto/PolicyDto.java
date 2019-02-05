@@ -26,6 +26,10 @@ public class PolicyDto implements Serializable{
 	private double shortMarks;
 	
 	private boolean editable;
+ 
+	private int planPeriod;
+ 
+	private int variation;
 
 	public boolean isEditable() {
 		return editable;
@@ -90,5 +94,23 @@ public class PolicyDto implements Serializable{
 	public void setShortMarks(double shortMarks) {
 		this.shortMarks = shortMarks;
 	}
+
+	public int getPlanPeriod() {
+		return planPeriod;
+	}
+
+	public void setPlanPeriod(int planPeriod) {
+		this.planPeriod = planPeriod;
+	}
+
+	public int getVariation() {
+		return variation;
+	}
+
+	public void setVariation(int variation) {
+		this.variation = variation;
+	}
+	
+	
 	
 }

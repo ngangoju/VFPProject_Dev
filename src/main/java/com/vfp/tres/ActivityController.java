@@ -156,13 +156,15 @@ public class ActivityController implements Serializable, DbConstant {
 			document = new Documents();
 		}
 		try {
-			if(usersSession.getUserCategory().getUsercategoryName().equalsIgnoreCase("supervisor")) {
+			if (usersSession.getUserCategory().getUsercategoryName().equalsIgnoreCase("supervisor")) {
 				activityDetail = activityImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "user", "status" },
-						new Object[] { ACTIVE, usersImpl.getModelWithMyHQL(new String[] { "genericStatus", "board" }, new Object[] { ACTIVE },
-								SELECT_USERS), NOTSTARTED },
+						new Object[] { ACTIVE,
+								usersImpl.getModelWithMyHQL(new String[] { "genericStatus", "board" },
+										new Object[] { ACTIVE }, SELECT_USERS),
+								NOTSTARTED },
 						"Activity", "activityId asc");
-				lSize=activityDetail.size();
+				lSize = activityDetail.size();
 			}
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
 					" from Users");
@@ -213,6 +215,9 @@ public class ActivityController implements Serializable, DbConstant {
 			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
 					new Object[] { ACTIVE, userassigned }, "TaskAssignment", "upDtTime desc");
 			this.renderTask = true;
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -222,9 +227,13 @@ public class ActivityController implements Serializable, DbConstant {
 
 	}
 
-	public List<ActivityDto> showActivity(List<Activity> list) {
-
+	public List<ActivityDto> showActivity(List<Activity> list) throws Exception {
+		HttpSession sessionfailedActiv = SessionUtils.getSession();
 		List<ActivityDto> ActivityDtoList = new ArrayList<ActivityDto>();
+		iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+				new Object[] { ACTIVE, usersSession.getBoard().getInstitution() }, " from InstitutionEscaletePolicy");
+
+		int FailedAct = 0;
 		for (Activity activity : list) {
 			ActivityDto activityDto = new ActivityDto();
 			activityDto.setActivityId(activity.getActivityId());
@@ -238,9 +247,44 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDto.setTask(activity.getTask());
 			activityDto.setType(activity.getType());
 			activityDto.setGenericstatus(activity.getGenericStatus());
+			if (activityDto.getStatus().equals(FAILED)) {
+				activityDto.setAction(false);
+				activityDto.setFailedAction(false);
+				// activityDto.setShowFailedStartedIcon(true);
+				/*
+				 * activityDto.setEditFailedAction(false);
+				 * activityDto.setPlanFailedAction(false);
+				 */
+
+				LOGGER.info(":FailedActivity:::" + activity.getCountActivityFailed() + "::Reschuled Time::"
+						+ iep.getReschduleTime());
+				if (activity.getCountActivityFailed() > iep.getReschduleTime()) {
+					activityDto.setEditFailedAction(true);
+					activityDto.setPlanFailedAction(true);
+					activityDto.setFailedActIcon(false);
+				} else {
+					activityDto.setFailedActIcon(true);
+					activityDto.setEditFailedAction(false);
+					activityDto.setPlanFailedAction(false);
+					FailedAct++;
+				}
+
+			} else {
+				activityDto.setAction(true);
+				activityDto.setFailedAction(true);
+				activityDto.setEditFailedAction(true);
+				activityDto.setPlanFailedAction(true);
+				activityDto.setFailedActIcon(true);
+				// activityDto.setShowFailedStartedIcon(false);
+			}
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
-				activityDto.setShowPlanedIcon(true);
+				if(activityDto.getStartDate()==null && activityDto.getDueDate()==null ) {
+					activityDto.setShowPlanedIcon(true);	
+				}else {
+					activityDto.setShowPlanedIcon(false);
+				}
+				
 			} else {
 				activityDto.setAction(true);
 				activityDto.setShowPlanedIcon(false);
@@ -256,17 +300,17 @@ public class ActivityController implements Serializable, DbConstant {
 			}
 			if (activityDto.getStatus().equals(APPROVED)) {
 				activityDto.setReportAction(false);
-				//activityDto.setCommmentAction(false);
+				// activityDto.setCommmentAction(false);
 				activityDto.setDoneAction(false);
 				activityDto.setApprovedComment(false);
 			} else {
 				activityDto.setReportAction(true);
-				//activityDto.setCommmentAction(true);
+				// activityDto.setCommmentAction(true);
 				activityDto.setDoneAction(true);
 				activityDto.setApprovedComment(true);
 			}
 
-			if (activityDto.getStatus().equals(REJECT)&&(activityDto.getDueDate()==null)) {
+			if (activityDto.getStatus().equals(REJECT) && (activityDto.getDueDate() == null)) {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
 				activityDto.setEditAction(false);
@@ -285,6 +329,7 @@ public class ActivityController implements Serializable, DbConstant {
 
 			ActivityDtoList.add(activityDto);
 		}
+		sessionfailedActiv.setAttribute("activfailed", FailedAct);
 		return ActivityDtoList;
 	}
 
@@ -329,6 +374,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setCrtdDtTime(timestamp);
 			activity.setGenericStatus(ACTIVE);
 			activity.setStatus(NOTSTARTED);
+			activity.setCountActivityFailed(defaultCount);
 			activity.setUpDtTime(timestamp);
 			activity.setEndDate(activity.getDueDate());
 			activity.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
@@ -369,23 +415,44 @@ public class ActivityController implements Serializable, DbConstant {
 			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
 					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
 					" from InstitutionEscaletePolicy");
-			act.setStatus(APPROVED);
-			// if(act.getGenericStatus().equals(DESACTIVE))
-			act.setGenericStatus(ACTIVE);
-			Calendar cal1 = new GregorianCalendar();
-			cal1.setTime(new Date());
-			cal1.add(Calendar.DATE, 7);
-			java.util.Date dDate = cal1.getTime();
-			act.setDueDate(dDate);
-			act.setStartDate(timestamp);
-			activityImpl.UpdateActivity(act);
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
-			LOGGER.info(CLASSNAME + ":::Activity Status is updated");
-			clearActivityFuileds();
+
+			if (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
+				act.setStatus(APPROVED);
+				// if(act.getGenericStatus().equals(DESACTIVE))
+				act.setGenericStatus(ACTIVE);
+				Calendar cal1 = new GregorianCalendar();
+				cal1.setTime(act.getDueDate());
+				cal1.add(Calendar.DATE, iep.getPlanPeriod());
+				java.util.Date dDate = cal1.getTime();
+				act.setDueDate(dDate);
+				act.setStartDate(act.getStartDate());
+				activityImpl.UpdateActivity(act);
+				// sendEmail(contact.getEmail(), "request rejected",
+				// "Your request have been rejected due to certain condition. try again later");
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
+				LOGGER.info(CLASSNAME + ":::Activity Status is updated");
+				clearActivityFuileds();
+			} else {
+				act.setStatus(APPROVED);
+				// if(act.getGenericStatus().equals(DESACTIVE))
+				act.setGenericStatus(ACTIVE);
+				Calendar cal1 = new GregorianCalendar();
+				cal1.setTime(new Date());
+				cal1.add(Calendar.DATE, iep.getPlanPeriod());
+				java.util.Date dDate = cal1.getTime();
+				act.setDueDate(dDate);
+				act.setStartDate(timestamp);
+				activityImpl.UpdateActivity(act);
+				// sendEmail(contact.getEmail(), "request rejected",
+				// "Your request have been rejected due to certain condition. try again later");
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.approve.form"));
+				LOGGER.info(CLASSNAME + ":::Activity Status is updated");
+				clearActivityFuileds();
+			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Activity Status is failling with HibernateException  error");
 			JSFMessagers.resetMessages();
@@ -401,7 +468,7 @@ public class ActivityController implements Serializable, DbConstant {
 			EvaluationController ec = new EvaluationController();
 			act.setStatus(COMPLETED);
 			act.setGenericStatus(ACTIVE);
-//			ec.evaluationMethod(act);
+			// ec.evaluationMethod(act);
 			activityImpl.UpdateActivity(act);
 			// sendEmail(contact.getEmail(), "request rejected",
 			// "Your request have been rejected due to certain condition. try again later");
@@ -576,13 +643,19 @@ public class ActivityController implements Serializable, DbConstant {
 				activity.setAction(false);
 				activity.setPlanAction(false);
 				activity.setChangeAction(false);
-			} else {
+			} else if (activity.getStatus().equals(REJECT)) {
 				activity.setEditable(false);
 				activity.setAction(false);
-				activity.setReplanAction(false);
 				activity.setCommmentAction(false);
+				activity.setReplanAction(false);
 				activity.setEditAction(false);
+			} else if (activity.getStatus().equals(FAILED)) {
+				activity.setEditable(false);
+				activity.setAction(false);
+				activity.setPlanFailedAction(false);
+				activity.setEditFailedAction(false);
 			}
+
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -622,6 +695,9 @@ public class ActivityController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public String planAction(ActivityDto activity) {
 		try {
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			int ActFailCount = (Integer) session.getAttribute("activfailed");
 			Activity act = new Activity();
 			act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
@@ -629,7 +705,52 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
+			if (ActFailCount == 0) {
+				if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(PLAN_ACTIVITY);
+				}
+				activityImpl.UpdateActivity(act);
+				activityDetails = activityImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "task", "user" },
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+				activityDtoDetails = showActivity(activityDetails);
+				JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			} else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.failed.form.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			}
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
+			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+		}
+
+		// return to current page
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String planFailedActivity(ActivityDto activity) {
+		try {
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			int ActFailCount = (Integer) session.getAttribute("activfailed");
+			Activity act = new Activity();
+			act = new Activity();
+			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+
+			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
+
+			if (activity.getStatus().equals(FAILED) && ActFailCount > 0) {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(PLAN_ACTIVITY);
@@ -649,8 +770,6 @@ public class ActivityController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
 			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 		}
-
-		// return to current page
 		return null;
 	}
 
@@ -721,13 +840,19 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setAction(false);
 			activity.setPlanAction(false);
 			activity.setChangeAction(false);
-		} else {
+		} else if (activity.getStatus().equals(REJECT)) {
 			activity.setEditable(false);
 			activity.setAction(false);
-			activity.setReplanAction(false);
 			activity.setCommmentAction(false);
+			activity.setReplanAction(false);
 			activity.setEditAction(false);
+		} else if (activity.getStatus().equals(FAILED)) {
+			activity.setEditable(false);
+			activity.setAction(false);
+			activity.setPlanFailedAction(false);
+			activity.setEditFailedAction(false);
 		}
+
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -739,19 +864,20 @@ public class ActivityController implements Serializable, DbConstant {
 			sessionuser.setAttribute("commentinfo", coment);
 			this.rendercomment = true;
 			this.rendered = false;
-			this.renderUpload=true;
-			this.planBtn=false;
+			this.renderUpload = true;
+			this.planBtn = false;
 		}
 		return null;
 	}
+
 	@SuppressWarnings("unchecked")
 	public String saveSupervisorComment() {
 		try {
 			HttpSession session = SessionUtils.getSession();
 			// Get the values from the session
 			activity = (Activity) session.getAttribute("selectedActivity");
-			if(null!=activity) {
-			LOGGER.info("selected act:::::::"+activity.getDescription()+"::::::"+activity.getStatus());
+			if (null != activity) {
+				LOGGER.info("selected act:::::::" + activity.getDescription() + "::::::" + activity.getStatus());
 			}
 			if (null != commentDescription) {
 				comments.setCreatedBy(usersSession.getViewId());
@@ -847,11 +973,11 @@ public class ActivityController implements Serializable, DbConstant {
 	public void newComment() {
 		HttpSession session = SessionUtils.getSession();
 		activity = (Activity) session.getAttribute("selectedActivity");
-		if(null!=activity) {
-		LOGGER.info("selected act:::::::"+activity.getDescription()+"::::::"+activity.getStatus());
-		this.rendercomment=true;
-		this.planBtn=true;
-		this.renderUpload=false;
+		if (null != activity) {
+			LOGGER.info("selected act:::::::" + activity.getDescription() + "::::::" + activity.getStatus());
+			this.rendercomment = true;
+			this.planBtn = true;
+			this.renderUpload = false;
 		}
 	}
 
@@ -874,7 +1000,7 @@ public class ActivityController implements Serializable, DbConstant {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.commentError.form.activity"));
 			} else {
-				this.renderTable=false;
+				this.renderTable = false;
 				this.renderCompleted = false;
 				this.renderCommentTable = true;
 				activity = act;
@@ -889,6 +1015,7 @@ public class ActivityController implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 		}
 	}
+
 	@SuppressWarnings("unchecked")
 	public String commentAction(ActivityDto activ) {
 		try {
@@ -965,22 +1092,36 @@ public class ActivityController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String editChangeAction(ActivityDto activity) {
-
-		activity.setEditable(true);
-		activity.setAction(true);
-		activity.setPlanAction(true);
-		activity.setCommmentAction(true);
-		activity.setReplanAction(true);
-		activity.setReportAction(true);
-		activity.setDoneAction(true);
-		activity.setEditAction(true);
-		// usersImpl.UpdateUsers(user);
+	public String editFailAction(ActivityDto activity) {
+		if (activity.getStatus().equals(FAILED)) {
+			activity.setEditable(true);
+			activity.setAction(true);
+			activity.setPlanFailedAction(true);
+			activity.setEditFailedAction(true);
+		}
 		return null;
 	}
+
+	public String editChangeAction(ActivityDto activity) {
+
+		if (activity.getStatus().equals(REJECT)) {
+			activity.setEditable(true);
+			activity.setAction(true);
+			// activity.setPlanAction(true);
+			activity.setCommmentAction(true);
+			activity.setReplanAction(true);
+			/*
+			 * activity.setReportAction(true); activity.setDoneAction(true);
+			 */
+			activity.setEditAction(true);
+		}
+		return null;
+	}
+
 	public String getMyFormattedDate(TaskAssignment statDate) {
 		return new SimpleDateFormat("dd-MM-yyyy").format(statDate.getCrtdDtTime());
 	}
+
 	public String deleteFile(UploadingActivity info) {
 		try {
 			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();

@@ -14,7 +14,7 @@
 			<h:form>
 				<div class="panel panel-info">
 					<!-- Default panel contents -->
-					<div class="panel-heading">
+					<div class="panel-heading" style="font: italic bold 14px/25px Georgia, serif;">
 						<table>
 							<tr>
 								<td>
@@ -31,7 +31,7 @@
 									</div>
 								</td>
 								<td>&nbsp;&nbsp;<span style="color: white; font-size: 10pt">#{msg['header.title.fieldmarked']}
-										<span style="color: red">#{msg['header.title.asteriks']}</span>
+										<span style="color: red;font: italic 13px/16px Georgia, serif;">#{msg['header.title.asteriks']}</span>
 										#{msg['header.title.mandatory']}
 								</span></td>
 
@@ -39,7 +39,7 @@
 						</table>
 					</div>
 					<div class="panel-body"
-						style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+						style="border: 0px solid blue; margin-top: 4px; height: auto; font: italic 14px/18px Georgia, serif;">
 
 
 						<h:form>
@@ -72,9 +72,9 @@
 							</h:panelGroup>
 							<fieldset>
 
-								<legend> #{msg['message.header.usersAccount.info']}</legend>
+								<legend><label style="font: italic bold 14px/18px Georgia, serif;"> #{msg['message.header.usersAccount.info']}</label></legend>
 								<h:panelGroup id="countryPanel" layout="block" rendered="true">
-									<div class="form-group row">
+									<div class="form-group row" style="font: italic 12px/15px Georgia, serif;">
 										<label for="todate"
 											class="col-md-2 col-sm-2 col-xs-2 control-label"
 											style="color: black">#{msg['institutionForm.message.country']}<span

@@ -41,7 +41,6 @@ public class InstitutionPolicyController implements Serializable, DbConstant {
 	private boolean valid;
 
 	private String nmbrTime;
-
 	private Institution institution;
 	private Evaluation evaluation;
 	private InstitutionEscaletePolicy policy;

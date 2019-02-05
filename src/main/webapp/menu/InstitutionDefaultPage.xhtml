@@ -65,97 +65,94 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 				<div class="panel-body">
-
-					<span style="color: #737373; font-size: 10pt">Fields marked
-						with an asterisk <span style="color: red">(*)</span> are
-						mandatory.
-					</span> <br /> <br />
-					<div class="form-group row"
-						style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-						<label for="todate"
-							class="col-md-2 col-sm-2 col-xs-2 control-label"
-							style="color: black">#{msg['label.message.Email']}<span
-							style="color: red">*</span></label>
-						<div class="col-md-4 col-sm-4 col-xs-4">
-							<h:inputText value="#{loadInstitutionProfile.contact.email}"
-								class="form-control input-sm" id="email" required="true"
-								validatorMessage="#{msg['error.enter.invalid.email']}"
-								converterMessage="#{msg['error.enter.invalid.email']}"
-								requiredMessage="#{msg['error.enter.required.email']}">
-								<f:validateRegex pattern="#{regex['regex.validation.email']}" />
-								<f:validateLength maximum="100" />
-							</h:inputText>
+					<h:form>
+						<span style="color: #737373; font-size: 10pt">Fields marked
+							with an asterisk <span style="color: red">(*)</span> are
+							mandatory.
+						</span>
+						<br />
+						<br />
+						<div class="form-group row"
+							style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+							<label for="todate"
+								class="col-md-2 col-sm-2 col-xs-2 control-label"
+								style="color: black">#{msg['label.message.Email']}<span
+								style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:inputText value="#{loadInstitutionProfile.useremail}"
+									class="form-control input-sm" id="email" required="true"
+									validatorMessage="#{msg['error.enter.invalid.email']}"
+									converterMessage="#{msg['error.enter.invalid.email']}"
+									requiredMessage="#{msg['error.enter.required.email']}">
+									<f:validateRegex pattern="#{regex['regex.validation.email']}" />
+									<f:validateLength maximum="100" />
+								</h:inputText>
+							</div>
+							<h:message errorClass="errorMsg1" for="email"></h:message>
 						</div>
-						<h:message errorClass="errorMsg1" for="email"></h:message>
-					</div>
-					<div class="form-group row"
-						style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-						<label for="todate"
-							class="col-md-2 col-sm-2 col-xs-2 control-label"
-							style="color: black">#{msg['label.message.Phone']}<span
-							style="color: red">*</span></label>
-						<div class="col-md-4 col-sm-4 col-xs-4">
-							<h:inputText value="#{loadInstitutionProfile.contact.phone}"
-								class="form-control input-sm" id="phone" required="true"
-								converterMessage="#{msg['error.enter.invalid.phone']}"
-								requiredMessage="#{msg['requiered.phone.message']}"
-								validatorMessage="#{msg['error.enter.invalid.phone']}">
-								<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-								<f:validateLength maximum="25" />
-							</h:inputText>
+						<div class="form-group row"
+							style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+							<label for="todate"
+								class="col-md-2 col-sm-2 col-xs-2 control-label"
+								style="color: black">#{msg['label.message.Phone']}<span
+								style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:inputText value="#{loadInstitutionProfile.tel}"
+									class="form-control input-sm" id="phone" required="true"
+									converterMessage="#{msg['error.enter.invalid.phone']}"
+									requiredMessage="#{msg['requiered.phone.message']}"
+									validatorMessage="#{msg['error.enter.invalid.phone']}">
+									<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+									<f:validateLength maximum="25" />
+								</h:inputText>
+							</div>
+							<h:message errorClass="errorMsg1" for="phone"></h:message>
 						</div>
-						<h:message errorClass="errorMsg1" for="phone"></h:message>
-					</div>
-					<div class="form-group row"
-						style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
-						<label for="todate"
-							class="col-md-2 col-sm-2 col-xs-2 control-label"
-							style="color: black">#{msg['label.message.pobox']}<span
-							style="color: red">*</span></label>
-						<div class="col-md-4 col-sm-4 col-xs-4">
-							<h:inputText value="#{loadInstitutionProfile.contact.pobox}"
-								class="form-control input-sm" id="pobox" required="true"
-								converterMessage="Invalid B.P box"
-								requiredMessage="#{msg['requiered.pobox.message']}"
-								validatorMessage="Invalid B.P box">
-								<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
-								<f:validateLength maximum="4" />
-							</h:inputText>
+						<div class="form-group row"
+							style="font-family: Open Sans sans-serif !important; font-size: 14px !important;">
+							<label for="todate"
+								class="col-md-2 col-sm-2 col-xs-2 control-label"
+								style="color: black">#{msg['label.message.pobox']}<span
+								style="color: red">*</span></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<h:inputText value="#{loadInstitutionProfile.pobx}"
+									class="form-control input-sm" id="pobox" required="true"
+									converterMessage="Invalid B.P box"
+									requiredMessage="#{msg['requiered.pobox.message']}"
+									validatorMessage="Invalid B.P box">
+									<f:validateRegex pattern="#{regex['regex.validation.phone']}" />
+									<f:validateLength maximum="4" />
+								</h:inputText>
+							</div>
+							<h:message errorClass="errorMsg1" for="pobox"></h:message>
 						</div>
-						<h:message errorClass="errorMsg1" for="pobox"></h:message>
-					</div>
-					<hr></hr>
-					<div class="form-group row">
+						<hr></hr>
+						<div class="form-group row">
 
-						<div class="col-sm-2 col-sm-2 col-xs-2 ">
-							<h:commandButton class="btn btn-info btn-sm btn-block"
-								value="Save" style="float:left;left;margin-left:1%"
-								action="#{loadInstitutionProfile.saveContact()}">
-								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-							</h:commandButton>
+							<div class="col-sm-2 col-sm-2 col-xs-2 ">
+								<h:commandButton class="btn btn-info btn-sm btn-block"
+									value="Save" style="float:left;left;margin-left:1%"
+									action="#{loadInstitutionProfile.saveContact()}">
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandButton>
 
+							</div>
+							<div class="col-sm-2 col-sm-2 col-xs-2 ">
+								<span><a
+									href="#{loadUserInformationsController.getContextPath()}/menu/ViewInstitutionProfile.xhtml"
+									class="btn btn-info glyphicon glyphicon-chevron-left"
+									style="font-size: 14px !important;">
+										#{msg['UserCatForm.BackBoardButtom']} </a> </span>
+							</div>
+							<div class="col-sm-7 col-sm-9 col-xs-9">
+								<h:outputText value="" style="text-align: font-weight: bold" />
+							</div>
+							<span class="text-danger" id="customeordererror"></span>
 						</div>
-						<div class="col-sm-2 col-sm-2 col-xs-2 ">
-							<span ><a
-						href="#{loadUserInformationsController.getContextPath()}/menu/ViewInstitutionProfile.xhtml"
-						class="btn btn-info glyphicon glyphicon-chevron-left"
-						style="font-size: 14px !important;">
-						#{msg['UserCatForm.BackBoardButtom']} </a>
-							</span>
-
-
-						</div>
-						<div class="col-sm-7 col-sm-9 col-xs-9">
-							<h:outputText value="" style="text-align: font-weight: bold" />
-						</div>
-
-						<span class="text-danger" id="customeordererror"></span>
-					</div>
-
-
+					</h:form>
 				</div>
 			</div>
 		</ui:define>
