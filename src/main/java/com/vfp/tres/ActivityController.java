@@ -156,7 +156,7 @@ public class ActivityController implements Serializable, DbConstant {
 			document = new Documents();
 		}
 		try {
-			if (usersSession.getUserCategory().getUsercategoryName().equalsIgnoreCase("superviser")) {
+			if (usersSession.getUserCategory().getUsercategoryName().equalsIgnoreCase("supervisor")) {
 				activityDetail = activityImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "user", "status" },
 						new Object[] { ACTIVE,
@@ -582,11 +582,6 @@ public class ActivityController implements Serializable, DbConstant {
 			if (selectedStatus != null) {
 				if (selectedStatus.equals(APPROVED) || selectedStatus.equals(REJECTED)) {
 					this.approveRender = false;
-					this.rejectRender = true;
-					this.completeRender = false;
-					this.commentRender = true;
-				}else if(selectedStatus.equals(REJECT)) {
-					this.approveRender = true;
 					this.rejectRender = false;
 					this.completeRender = false;
 					this.commentRender = true;
@@ -648,19 +643,19 @@ public class ActivityController implements Serializable, DbConstant {
 				activity.setAction(false);
 				activity.setPlanAction(false);
 				activity.setChangeAction(false);
-			} else if(activity.getStatus().equals(REJECT)) {
+			} else if (activity.getStatus().equals(REJECT)) {
 				activity.setEditable(false);
 				activity.setAction(false);
 				activity.setCommmentAction(false);
 				activity.setReplanAction(false);
 				activity.setEditAction(false);
-			}else if(activity.getStatus().equals(FAILED)) {
+			} else if (activity.getStatus().equals(FAILED)) {
 				activity.setEditable(false);
 				activity.setAction(false);
 				activity.setPlanFailedAction(false);
-				activity.setEditFailedAction(false);		
+				activity.setEditFailedAction(false);
 			}
-			
+
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
 			setValid(false);
@@ -710,7 +705,7 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if(ActFailCount==0) {
+			if (ActFailCount == 0) {
 				if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
 					act.setUpdatedBy(usersSession.getViewId());
 					act.setUpDtTime(timestamp);
@@ -725,7 +720,7 @@ public class ActivityController implements Serializable, DbConstant {
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-			}else {
+			} else {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.failed.form.activity"));
@@ -845,19 +840,19 @@ public class ActivityController implements Serializable, DbConstant {
 			activity.setAction(false);
 			activity.setPlanAction(false);
 			activity.setChangeAction(false);
-		} else if(activity.getStatus().equals(REJECT)) {
+		} else if (activity.getStatus().equals(REJECT)) {
 			activity.setEditable(false);
 			activity.setAction(false);
 			activity.setCommmentAction(false);
 			activity.setReplanAction(false);
 			activity.setEditAction(false);
-		}else if(activity.getStatus().equals(FAILED)) {
+		} else if (activity.getStatus().equals(FAILED)) {
 			activity.setEditable(false);
 			activity.setAction(false);
 			activity.setPlanFailedAction(false);
-			activity.setEditFailedAction(false);		
+			activity.setEditFailedAction(false);
 		}
-		
+
 		// usersImpl.UpdateUsers(user);
 		return null;
 
@@ -869,8 +864,8 @@ public class ActivityController implements Serializable, DbConstant {
 			sessionuser.setAttribute("commentinfo", coment);
 			this.rendercomment = true;
 			this.rendered = false;
-			this.renderUpload=true;
-			this.planBtn=false;
+			this.renderUpload = true;
+			this.planBtn = false;
 		}
 		return null;
 	}
@@ -881,8 +876,8 @@ public class ActivityController implements Serializable, DbConstant {
 			HttpSession session = SessionUtils.getSession();
 			// Get the values from the session
 			activity = (Activity) session.getAttribute("selectedActivity");
-			if(null!=activity) {
-			LOGGER.info("selected act:::::::"+activity.getDescription()+"::::::"+activity.getStatus());
+			if (null != activity) {
+				LOGGER.info("selected act:::::::" + activity.getDescription() + "::::::" + activity.getStatus());
 			}
 			if (null != commentDescription) {
 				comments.setCreatedBy(usersSession.getViewId());
@@ -978,11 +973,11 @@ public class ActivityController implements Serializable, DbConstant {
 	public void newComment() {
 		HttpSession session = SessionUtils.getSession();
 		activity = (Activity) session.getAttribute("selectedActivity");
-		if(null!=activity) {
-		LOGGER.info("selected act:::::::"+activity.getDescription()+"::::::"+activity.getStatus());
-		this.rendercomment=true;
-		this.planBtn=true;
-		this.renderUpload=false;
+		if (null != activity) {
+			LOGGER.info("selected act:::::::" + activity.getDescription() + "::::::" + activity.getStatus());
+			this.rendercomment = true;
+			this.planBtn = true;
+			this.renderUpload = false;
 		}
 	}
 
@@ -1005,7 +1000,7 @@ public class ActivityController implements Serializable, DbConstant {
 				setValid(false);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.commentError.form.activity"));
 			} else {
-				this.renderTable=false;
+				this.renderTable = false;
 				this.renderCompleted = false;
 				this.renderCommentTable = true;
 				activity = act;
@@ -1096,9 +1091,9 @@ public class ActivityController implements Serializable, DbConstant {
 		// usersImpl.UpdateUsers(user);
 		return null;
 	}
-	
+
 	public String editFailAction(ActivityDto activity) {
-		if(activity.getStatus().equals(FAILED)) {
+		if (activity.getStatus().equals(FAILED)) {
 			activity.setEditable(true);
 			activity.setAction(true);
 			activity.setPlanFailedAction(true);

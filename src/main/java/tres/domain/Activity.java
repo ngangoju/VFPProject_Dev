@@ -47,22 +47,6 @@ public class Activity extends CommonDomain implements Serializable {
 	@Column(name="ActivityFailed",nullable = false, columnDefinition ="int default 0")
 	private int countActivityFailed;
 	
-	@Column(name="ActivityCreated",nullable = false, columnDefinition ="int default 0")
-	private int countActivityCreated;
-
-	@Column(name="ActivityPlanned",nullable = false, columnDefinition ="int default 0")
-	private int countActivityPlanned;
-	
-	@Column(name="ActivityApproval",nullable = false, columnDefinition ="int default 0")
-	private int countActivityApproved;
-	@Column(name="ActivityCompletion",nullable = false, columnDefinition ="int default 0")
-	private int countActivityCompleted;
-
-	@Column(name="ReplanFailure",nullable = false, columnDefinition ="int default 0")
-	private int countReplanFailure;
-	@Column(name="ReplanRejection",nullable = false, columnDefinition ="int default 0")
-	private int countReplanRejection;
-	
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -181,56 +165,7 @@ public class Activity extends CommonDomain implements Serializable {
 
 	public void setCountActivityFailed(int countActivityFailed) {
 		this.countActivityFailed = countActivityFailed;
-	}
-
-	public int getCountActivityCreated() {
-		return countActivityCreated;
-	}
-
-	public void setCountActivityCreated(int countActivityCreated) {
-		this.countActivityCreated = countActivityCreated;
-	}
-
-	public int getCountActivityPlanned() {
-		return countActivityPlanned;
-	}
-
-	public void setCountActivityPlanned(int countActivityPlanned) {
-		this.countActivityPlanned = countActivityPlanned;
-	}
-
-	public int getCountActivityApproved() {
-		return countActivityApproved;
-	}
-
-	public void setCountActivityApproved(int countActivityApproved) {
-		this.countActivityApproved = countActivityApproved;
-	}
-
-	public int getCountActivityCompleted() {
-		return countActivityCompleted;
-	}
-
-	public void setCountActivityCompleted(int countActivityCompleted) {
-		this.countActivityCompleted = countActivityCompleted;
-	}
-
-	public int getCountReplanFailure() {
-		return countReplanFailure;
-	}
-
-	public void setCountReplanFailure(int countReplanFailure) {
-		this.countReplanFailure = countReplanFailure;
-	}
-
-	public int getCountReplanRejection() {
-		return countReplanRejection;
-	}
-
-	public void setCountReplanRejection(int countReplanRejection) {
-		this.countReplanRejection = countReplanRejection;
-	}
-	
+	}	
 	
 }
 
