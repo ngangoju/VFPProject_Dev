@@ -1,19 +1,21 @@
 package com.vfp.tres;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
@@ -32,17 +34,16 @@ import tres.domain.Contact;
 import tres.domain.Evaluation;
 import tres.domain.Institution;
 import tres.domain.InstitutionEscaletePolicy;
-import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
-import tres.vfp.dto.InstitutionDto;
 
 @ManagedBean
 @SessionScoped
-public class EvaluationController implements Serializable, DbConstant {
+public class EvaluationResultController implements Serializable, DbConstant {
 	private static final Logger LOGGER = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
-	private String CLASSNAME = "EvaluationController :: ";
+	private String CLASSNAME = "EvaluationResultController :: ";
 	private static final long serialVersionUID = 1L;
+
 	/* to manage validation messages */
 	private boolean isValid, viewStaffActiv, viewSpecfcStaff, dwnBtn, apDltBtn, viewAttached, rsbtn;
 	/* end manage validation messages */
@@ -89,8 +90,7 @@ public class EvaluationController implements Serializable, DbConstant {
 			institution = new Institution();
 		}
 		try {
-			staffs = getUserDetails();// staff with complete activities
-			//staffsComplete = getUserDetailsCompletedActivities(usersSession);
+			staffsComplete = getUserDetailsCompletedActivities();
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -156,6 +156,18 @@ public class EvaluationController implements Serializable, DbConstant {
 		viewStaffActiv = false;
 	}
 
+	// desplay name of user
+	public String getBothUserName() {
+		try {
+			HttpSession session = SessionUtils.getSession();
+			Users user1 = new Users();
+			user1 = (Users) session.getAttribute("usrSession");
+			return user1.getFname() + " " + user1.getLname();
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
 	// renderdownload
 
 	public void getDownoadPage(Activity activity) {
@@ -210,6 +222,11 @@ public class EvaluationController implements Serializable, DbConstant {
 			viewSpecfcStaff = true;
 			activities = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
 					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
+			HttpSession ses = SessionUtils.getSession();
+			ses.setAttribute("usrSession", user);
+			LoadUserInformationsController loadUserInformationsController = new LoadUserInformationsController();
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+					.getRequest();
 		} catch (Exception e) {
 		}
 	}
@@ -508,7 +525,7 @@ public class EvaluationController implements Serializable, DbConstant {
 				return "rsbtn";
 			} else {
 				return "not rsbtn";
-			}  
+			}
 		} catch (Exception e) {
 			return "rsbtn";
 		}
@@ -754,8 +771,6 @@ public class EvaluationController implements Serializable, DbConstant {
 	public void setRsbtn(boolean rsbtn) {
 		this.rsbtn = rsbtn;
 	}
-	
-	
 
 	/* Getter and setters ends */
 
