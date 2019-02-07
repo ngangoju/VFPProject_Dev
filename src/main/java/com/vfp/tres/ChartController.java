@@ -46,28 +46,29 @@ public class ChartController {
 		myClearance();
 	}
 	
+	//The following method is for generating the clearance report on chart for MdReport.
+	
 	public List<ClearanceDto> myClearance() {
 		try {		
 			ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 	        ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 					for (Object[] data : institutionReportViewImpl.reportList("SELECT mytask,\r\n" + 
-							"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n" + 
-							"sum(case when (status='Not Started' ) then 1 else 0 end),\r\n" + 
-							"sum(case when (status='pending' ) then 1 else 0 end),\r\n" + 
-							"sum(case when (status='Completed' ) then 1 else 0 end),\r\n" + 
-							"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n" + 
+							"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)) ,\r\n" + 
+							"sum(case when (status='rejected' ) then 1 else 0 end) ,\r\n" + 
+							"sum(case when (status='Approved' ) then 1 else 0 end) , \r\n" + 
+							"sum(case when (status='Completed' ) then 1 else 0 end) ,\r\n" + 
+							"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)))  \r\n" + 
 							"from InstitutionReportView group by mytask"
 			)) {
 				
 				ClearanceDto userDtos = new ClearanceDto();
-				
 				//userDtos.setStrategicplan(data[0] + "");
-				userDtos.setTaskName(data[1] + "");
-				/*userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
-				userDtos.setNotStarted(Integer.parseInt(data[3] + ""));
-				userDtos.setPending(Integer.parseInt(data[4] + ""));
-				userDtos.setCompleted(Integer.parseInt(data[5] + ""));*/
-				userDtos.setRate(Double.parseDouble(data[6]+""));
+				userDtos.setTaskName(data[0] + "");
+				userDtos.setNumberOfActivities(Integer.parseInt(data[1] + ""));
+				userDtos.setApproved(Integer.parseInt(data[3] + ""));
+				//userDtos.setPending(Integer.parseInt(data[4] + ""));*/
+				userDtos.setCompleted(Integer.parseInt(data[4] + ""));
+				//userDtos.setRate(Double.parseDouble(data[5]+""));
 				
 				ClearanceDtoDetails.add(userDtos);
 				this.name=new Gson().toJson(ClearanceDtoDetails);

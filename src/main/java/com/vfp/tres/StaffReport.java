@@ -238,12 +238,9 @@ public class StaffReport implements Serializable, DbConstant {
 			cell.setFixedHeight(60);
 			cell.setBorder(Rectangle.NO_BORDER);
 			return cell;
-
 		}
 		 //end of checking the operating system
 	}
-   
-	
 	// Codes for setting the footer and header.-->
 
 	class MyFooter extends PdfPageEventHelper {
@@ -361,7 +358,7 @@ public class StaffReport implements Serializable, DbConstant {
 				pc1.setRowspan(2);
 				table.addCell(pc1);
 
-				PdfPCell pc2 = new PdfPCell(new Paragraph(" Task", font1));
+				PdfPCell pc2 = new PdfPCell(new Paragraph(" Target", font1));
 				pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
 				pc2.setRowspan(2);
 				table.addCell(pc2);
@@ -379,7 +376,7 @@ public class StaffReport implements Serializable, DbConstant {
 				pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc3);
 
-				PdfPCell pc6 = new PdfPCell(new Paragraph(" Pending", font1));
+				PdfPCell pc6 = new PdfPCell(new Paragraph(" Approved", font1));
 				pc6.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc6);
 
@@ -734,8 +731,8 @@ public class StaffReport implements Serializable, DbConstant {
 				userDtos.setStrategicplan(data[0] + "");
 				userDtos.setTaskName(data[1] + "");
 				userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
-				userDtos.setNotStarted(Integer.parseInt(data[3] + ""));
-				userDtos.setPending(Integer.parseInt(data[4] + ""));
+				userDtos.setApproved(Integer.parseInt(data[3] + ""));
+				userDtos.setRejected(Integer.parseInt(data[4] + ""));
 				userDtos.setCompleted(Integer.parseInt(data[5] + ""));
 				userDtos.setRate(Double.parseDouble(data[6] + ""));
 

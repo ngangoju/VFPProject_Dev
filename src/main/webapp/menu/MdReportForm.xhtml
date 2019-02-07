@@ -359,14 +359,16 @@
 												console.log(req);
 
 												var value = [];
+												var p=[];
+												var comp=[];
 												var labels = [];
 												function recusive(n, testData,
 														n2) {
 													if (n2 >= n) {
-														value
-																.push(testData[n].rate);
-														labels
-																.push(testData[n].taskName);
+														value.push(testData[n].numberOfActivities);
+														p.push(testData[n].approved);
+														comp.push(testData[n].completed);
+														labels.push(testData[n].taskName);
 														recusive(n + 1,
 																testData, n2);
 													}
@@ -386,14 +388,26 @@
 															data : {
 																labels : labels,
 																datasets : [ {
-																	label : "RATE IN %",
+																	label : "Planned ",
 																	data : value,
-																} ]
+																	backgroundColor:'#0318CF',
+																},
+																{
+																	label : "Approved",
+																	data : p,
+																	backgroundColor:'#29C3BE',
+																},
+																{
+																	label : "Completed",
+																	data : comp,
+																	backgroundColor:'#c328a4',
+																}
+																]
 															},
 															options : {
 																elements : {
 																	line : {
-																		tension :1, // disables bezier curves
+																		tension :0, // disables bezier curves
 																	}
 																}
 															}

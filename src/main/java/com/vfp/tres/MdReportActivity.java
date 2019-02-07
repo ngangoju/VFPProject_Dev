@@ -534,14 +534,18 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderEditedTableByBoard = true;
 			renderedclear = false;
 		} else if (myChoice.equalsIgnoreCase(taskchart)) {
+			
 			renderedchart = true;
-			rendered = false;
+			
 			ChartController chart= new ChartController();
 			chart.myClearance();
+			
+			rendered = false;
 			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
 			renderedx = false;
 			renderedclear = false;
+			
 		} else if (myChoice.equalsIgnoreCase(clear)) {
 
 			rendered = false;

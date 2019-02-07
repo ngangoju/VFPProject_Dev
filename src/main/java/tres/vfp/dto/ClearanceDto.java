@@ -8,8 +8,8 @@ public class ClearanceDto implements Serializable {
 	private String strategicplan;
 	private String taskName;
 	private int numberOfActivities;
-	private int notStarted;
-	private int pending;
+	private int approved;
+	private int rejected;
 	private int completed;
 	private double rate;
 	private boolean editable;
@@ -33,18 +33,18 @@ public class ClearanceDto implements Serializable {
 		this.numberOfActivities = numberOfActivities;
 	}
 	
-	public int getNotStarted() {
-		return notStarted;
-	}
 	
-	public void setNotStarted(int notStarted) {
-		this.notStarted = notStarted;
+	public int getApproved() {
+		return approved;
 	}
-	public int getPending() {
-		return pending;
+	public void setApproved(int approved) {
+		this.approved = approved;
 	}
-	public void setPending(int pending) {
-		this.pending = pending;
+	public int getRejected() {
+		return rejected;
+	}
+	public void setRejected(int rejected) {
+		this.rejected = rejected;
 	}
 	public int getCompleted() {
 		return completed;
