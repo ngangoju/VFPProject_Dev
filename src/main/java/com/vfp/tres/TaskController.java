@@ -196,9 +196,6 @@ public class TaskController implements Serializable, DbConstant {
 							new Object[] { ACTIVE, us }, "from Contact");
 					if (contact == null) {
 						LOGGER.info(CLASSNAME + ":::The user has no contact details");
-						JSFMessagers.resetMessages();
-						setValid(false);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.user.contact.error"));
 					} else {
 						email.sendMailStrategicPlan("task", us.getFname(),
 								usersSession.getFname() + " " + usersSession.getLname(), contact.getEmail());
