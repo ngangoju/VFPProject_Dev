@@ -36,7 +36,14 @@ public class ActivityDto implements Serializable {
 
 	private Date createdDate;
 	private String type;
+	private String weeklyPlan;
 	private int ActivityFailed;
+	private int countActivityCreated;
+	private int countActivityPlanned;
+	private int countActivityApproved;
+	private int countActivityCompleted;
+	private int countReplanFailure;
+	private int countReplanRejection;
 	private boolean editable;
 	private boolean action;
 	private boolean commmentAction;
@@ -309,6 +316,62 @@ public class ActivityDto implements Serializable {
 
 	public void setFailedActIcon(boolean failedActIcon) {
 		this.failedActIcon = failedActIcon;
+	}
+
+	public String getWeeklyPlan() {
+		return weeklyPlan;
+	}
+
+	public void setWeeklyPlan(String weeklyPlan) {
+		this.weeklyPlan = weeklyPlan;
+	}
+
+	public int getCountActivityCreated() {
+		return countActivityCreated;
+	}
+
+	public void setCountActivityCreated(int countActivityCreated) {
+		this.countActivityCreated = countActivityCreated;
+	}
+
+	public int getCountActivityPlanned() {
+		return countActivityPlanned;
+	}
+
+	public void setCountActivityPlanned(int countActivityPlanned) {
+		this.countActivityPlanned = countActivityPlanned;
+	}
+
+	public int getCountActivityApproved() {
+		return countActivityApproved;
+	}
+
+	public void setCountActivityApproved(int countActivityApproved) {
+		this.countActivityApproved = countActivityApproved;
+	}
+
+	public int getCountActivityCompleted() {
+		return countActivityCompleted;
+	}
+
+	public void setCountActivityCompleted(int countActivityCompleted) {
+		this.countActivityCompleted = countActivityCompleted;
+	}
+
+	public int getCountReplanFailure() {
+		return countReplanFailure;
+	}
+
+	public void setCountReplanFailure(int countReplanFailure) {
+		this.countReplanFailure = countReplanFailure;
+	}
+
+	public int getCountReplanRejection() {
+		return countReplanRejection;
+	}
+
+	public void setCountReplanRejection(int countReplanRejection) {
+		this.countReplanRejection = countReplanRejection;
 	}
 	
 }

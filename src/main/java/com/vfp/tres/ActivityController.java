@@ -182,7 +182,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
 					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), NOTSTARTED },
-					"Activity", "activityId asc");
+					"Activity", "creationDate desc");
 
 			approvedActDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
@@ -339,7 +339,7 @@ public class ActivityController implements Serializable, DbConstant {
 			taskAssign = info;
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "task", "user" },
-					new Object[] { ACTIVE, info.getTask(), usersSession }, "Activity", "activityId asc");
+					new Object[] { ACTIVE, info.getTask(), usersSession }, "Activity", "creationDate desc");
 			activityDtoDetails = showActivity(activityDetails);
 			/*
 			 * for (Activity activity : activityDetails) { ActivityDto activityDto = new
@@ -714,7 +714,7 @@ public class ActivityController implements Serializable, DbConstant {
 				activityImpl.UpdateActivity(act);
 				activityDetails = activityImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "task", "user" },
-						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
 				activityDtoDetails = showActivity(activityDetails);
 				JSFMessagers.resetMessages();
 				setValid(true);
@@ -758,7 +758,7 @@ public class ActivityController implements Serializable, DbConstant {
 			activityImpl.UpdateActivity(act);
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "task", "user" },
-					new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+					new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
 			activityDtoDetails = showActivity(activityDetails);
 			JSFMessagers.resetMessages();
 			setValid(true);
@@ -795,7 +795,7 @@ public class ActivityController implements Serializable, DbConstant {
 					activityImpl.UpdateActivity(act);
 					activityDetails = activityImpl.getGenericListWithHQLParameter(
 							new String[] { "genericStatus", "task", "user" },
-							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
 					activityDtoDetails = showActivity(activityDetails);
 					JSFMessagers.resetMessages();
 					setValid(true);
@@ -815,7 +815,7 @@ public class ActivityController implements Serializable, DbConstant {
 				activityImpl.UpdateActivity(act);
 				activityDetails = activityImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "task", "user" },
-						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "activityId asc");
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
 				activityDtoDetails = showActivity(activityDetails);
 				JSFMessagers.resetMessages();
 				setValid(true);
