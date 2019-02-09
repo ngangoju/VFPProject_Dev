@@ -43,13 +43,12 @@
 
 				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
 
-				<h:panelGroup id="tables" autoUpdate="true"
-					rendered="#{activityController.rendered}">
+				<h:panelGroup id="tables" rendered="#{activityController.rendered}">
 					<h1>#{msg['planned.activity.staff']}</h1>
 
 					<p:dataTable id="example1" class="display" cellspacing="0"
 						value="#{activityController.usersDetail}" var="act">
-
+						<p:autoUpdate/>
 
 						<p:column headerText="#{msg['massages.cmn.common.first.fname']}"
 							sortBy="#{act.fname}">
@@ -110,8 +109,8 @@
 
 
 
-				<p:outputPanel id="table6" autoUpdate="true"
-					rendered="#{activityController.renderTable}">
+				<p:outputPanel id="table6" rendered="#{activityController.renderTable}">
+					<p:autoUpdate/>
 					<div class="nav">
 						<div class="div-action pull pull-left"
 							style="padding-bottom: 20px;">
@@ -298,8 +297,8 @@
 									</tr>
 								</tbody>
 							</ui:repeat>
-							<p:outputPanel rendered="#{activityController.rendercomment}"
-								autoUpdate="true">
+							<p:outputPanel rendered="#{activityController.rendercomment}">
+							<p:autoUpdate/>
 								<tr>
 									<td colspan="2"></td>
 								</tr>
@@ -323,20 +322,21 @@
 								<tr>
 
 									<td style="width: 30%;"><p:outputPanel
-											rendered="#{activityController.renderUpload}" autoUpdate="true">
+											rendered="#{activityController.renderUpload}">
 											<h:commandLink value="Send comment"
 											style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 												class="btn btn-info  glyphicon glyphicon-edit"
 												action="#{activityController.saveComment()}">
+												<p:autoUpdate/>
 											</h:commandLink>
 										</p:outputPanel> 
 										
-										<p:outputPanel rendered="#{activityController.planBtn}"
-											autoUpdate="true">
+										<p:outputPanel rendered="#{activityController.planBtn}">
 											<h:commandLink value="Save comment"
 												style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 												class="btn btn-info  glyphicon glyphicon-edit"
 												action="#{activityController.saveSupervisorComment()}">
+												<p:autoUpdate/>
 											</h:commandLink>
 										</p:outputPanel></td>
 									<td><h:commandLink

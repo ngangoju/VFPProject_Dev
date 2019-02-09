@@ -134,14 +134,14 @@
 									<div class="cols-sm-10">
 
 										<h:form>
-											<p:fileUpload oncomplete="window.location.reload();"
-												style="width:90%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
-												uploadLabel="Upload files" cancelLabel="Cancel"
-												fileUploadListener="#{formSampleController.activityFilesUpload}"
-												mode="advanced" dragDropSupport="true" multiple="true"
-												update="messages" sizeLimit="2000000" fileLimit="3"
-												allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
-											<p:growl id="messages" life="300000" />
+									<p:fileUpload oncomplete="window.location.reload();"
+										style="width:90%;font-family: Open Sans sans-serif !important; font-size: 14px !important;"
+										uploadLabel="Upload files" cancelLabel="Cancel"
+										fileUploadListener="#{formSampleController.activityFilesUpload}"
+										mode="advanced" dragDropSupport="true" multiple="true"
+										update="messages" sizeLimit="2000000" fileLimit="3"
+										allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf)$/" />
+									<p:growl id="messages" life="300000" />
 										</h:form>
 
 									</div>

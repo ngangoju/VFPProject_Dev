@@ -34,21 +34,26 @@ import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
 import tres.dao.impl.StrategicPlanImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UploadingFilesImpl;
 import tres.dao.impl.UploadingStrategicPlanImpl;
+import tres.dao.impl.UploadingTaskImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Documents;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
 import tres.domain.StrategicPlan;
+import tres.domain.Task;
 import tres.domain.UploadingActivity;
 import tres.domain.UploadingFiles;
 import tres.domain.UploadingStrategicPlan;
+import tres.domain.UploadingTask;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.StrategicPlanDto;
+import tres.vfp.dto.TaskDto;
 
 @ManagedBean
 @ViewScoped
@@ -84,10 +89,15 @@ public class FormSampleController implements Serializable, DbConstant {
 	private UploadingStrategicPlanImpl uploadingStrImpl = new UploadingStrategicPlanImpl();
 	private List<UploadingStrategicPlan> planList = new ArrayList<UploadingStrategicPlan>();
 	private ActivityDto actDto= new ActivityDto();
+	private TaskDto taskDto= new TaskDto();
 	private UploadingActivity uploadingAct;
 	private UploadingActivityImpl uploadActImpl= new UploadingActivityImpl();
+	private UploadingTask uploadingTask;
+	private UploadingTaskImpl uploadTaskImpl= new UploadingTaskImpl();
 	private Activity activity;
 	private ActivityImpl actImpl= new ActivityImpl();
+	private Task task;
+	private TaskImpl taskImpl= new TaskImpl();
 	private List<UploadingFiles>filesUploaded= new ArrayList<UploadingFiles>();
 	private DocumentsImpl docsImpl = new DocumentsImpl();
 	@SuppressWarnings("unchecked")
@@ -258,7 +268,7 @@ public class FormSampleController implements Serializable, DbConstant {
 					uploadingPlan.setGenericStatus(ACTIVE);
 					uploadingPlan.setCreatedBy(usersSession.getViewId());
 					uploadingPlan.setDocuments(documents);
-					uploadingStrImpl.saveIntable(uploadingPlan);
+					uploadingStrImpl.saveUploadedPlan(uploadingPlan);
 					LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
 					JSFMessagers.resetMessages();
 					setValid(true);
@@ -324,7 +334,53 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		return "";
 	}
+	
+	//Task Files Upload 
+	public String taskFilesUpload(FileUploadEvent event) {
 
+		try {
+			if (null != usersSession) {
+				
+				TaskController actControl= new TaskController();
+				taskDto=actControl.saveTaskFiles();
+				int taskId=taskDto.getTaskId();
+				LOGGER.info("TASK INFO :::::::::::::::"+taskDto.getTaskId());
+				task = taskImpl.getModelWithMyHQL(new String[] { "taskId" },
+						new Object[] { taskId }, "from Task");
+				if(null!=getTask()) {
+					UploadUtility ut = new UploadUtility();
+					String validationCode = "TaskFiles";
+					documents = ut.fileUploadUtil(event, validationCode);
+					
+						uploadingTask.setTask(task);
+						uploadingTask.setDocuments(documents);
+						uploadingTask.setCreatedBy(usersSession.getViewId());
+						uploadingTask.setGenericStatus(ACTIVE);
+						uploadingTask.setCrtdDtTime(timestamp);
+						uploadTaskImpl.saveUploadedTask(uploadingTask);
+						LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addInfoMessage(getProvider().getValue("com.server.side.activityfile.success"));
+						/*addErrorMessage(getProvider().getValue("upload.message.success"));*/
+				}
+					return null;
+				}else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorsession"));
+				}		
+		} catch (Exception e) {
+			LOGGER.info(CLASSNAME + "testing profile upload methode ");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.activityfile.error"));
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	
 	public void downloadFile() {
 		UploadUtility ut = new UploadUtility();
 		try {
@@ -427,6 +483,27 @@ public class FormSampleController implements Serializable, DbConstant {
 		}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+			public List<UploadingTask> taskFilesDetails(){
+
+				try {
+
+					TaskController actControl= new TaskController();
+					taskDto=actControl.saveTaskFiles();
+					int taskId=taskDto.getTaskId();
+					LOGGER.info("TASK INFO :::::::::::::::"+taskDto.getTaskId());
+					task = taskImpl.getModelWithMyHQL(new String[] { "taskId" },
+							new Object[] { taskId }, "from Task");
+					return uploadTaskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","task" },
+							new Object[] { ACTIVE,task }, "UploadingTask","crtdDtTime desc");
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
 
 
 	public void sendMailTest() throws AddressException, MessagingException {
@@ -705,6 +782,46 @@ public class FormSampleController implements Serializable, DbConstant {
 
 	public void setDocsImpl(DocumentsImpl docsImpl) {
 		this.docsImpl = docsImpl;
+	}
+
+	public TaskDto getTaskDto() {
+		return taskDto;
+	}
+
+	public void setTaskDto(TaskDto taskDto) {
+		this.taskDto = taskDto;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public TaskImpl getTaskImpl() {
+		return taskImpl;
+	}
+
+	public void setTaskImpl(TaskImpl taskImpl) {
+		this.taskImpl = taskImpl;
+	}
+
+	public UploadingTask getUploadingTask() {
+		return uploadingTask;
+	}
+
+	public void setUploadingTask(UploadingTask uploadingTask) {
+		this.uploadingTask = uploadingTask;
+	}
+
+	public UploadingTaskImpl getUploadTaskImpl() {
+		return uploadTaskImpl;
+	}
+
+	public void setUploadTaskImpl(UploadingTaskImpl uploadTaskImpl) {
+		this.uploadTaskImpl = uploadTaskImpl;
 	}
 
 }

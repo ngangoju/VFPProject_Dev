@@ -156,16 +156,10 @@ public class ActivityController implements Serializable, DbConstant {
 			document = new Documents();
 		}
 		try {
-			if (usersSession.getUserCategory().getUsercategoryName().equalsIgnoreCase("supervisor")) {
-				activityDetail = activityImpl.getGenericListWithHQLParameter(
-						new String[] { "genericStatus", "user", "status" },
-						new Object[] { ACTIVE,
-								usersImpl.getModelWithMyHQL(new String[] { "genericStatus", "board" },
-										new Object[] { ACTIVE }, SELECT_USERS),
-								NOTSTARTED },
-						"Activity", "activityId asc");
-				lSize = activityDetail.size();
-			}
+			activityDetail = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "user", "status" }, new Object[] { ACTIVE, usersSession, APPROVED },
+					"Activity", "activityId asc");
+			lSize = activityDetail.size();
 			users = usersImpl.getUsersWithQuery(new String[] { "board" }, new Object[] { usersSession.getBoard() },
 					" from Users");
 			for (Object[] data : usersImpl.reportList(
@@ -279,12 +273,12 @@ public class ActivityController implements Serializable, DbConstant {
 			}
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
-				if(activityDto.getStartDate()==null && activityDto.getDueDate()==null ) {
-					activityDto.setShowPlanedIcon(true);	
-				}else {
+				if (activityDto.getStartDate() == null && activityDto.getDueDate() == null) {
+					activityDto.setShowPlanedIcon(true);
+				} else {
 					activityDto.setShowPlanedIcon(false);
 				}
-				
+
 			} else {
 				activityDto.setAction(true);
 				activityDto.setShowPlanedIcon(false);

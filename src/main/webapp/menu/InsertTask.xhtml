@@ -63,7 +63,8 @@
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['com.plan.title']}</label>
-									<div class="col-md-6 col-sm-6 col-xs-6"><p style="font-size:25px; color:#033c73;">#{taskController.plan.details}</p>
+									<div class="col-md-6 col-sm-6 col-xs-6">
+										<p style="font-size: 25px; color: #033c73;">#{taskController.plan.details}</p>
 									</div>
 									<h:message for="categoryId" styleClass="help-block"></h:message>
 								</div>
@@ -105,8 +106,8 @@
 											validatorMessage="#{msg['error.enter.invalid.taskName']}"
 											converterMessage="#{msg['error.enter.invalid.taskName']}"
 											requiredMessage="#{msg['tname.required.message']}">
-<!-- 											<f:validateRegex -->
-<!-- 												pattern="#{regex['regex.string.Validation']}" /> -->
+											<!-- 											<f:validateRegex -->
+											<!-- 												pattern="#{regex['regex.string.Validation']}" /> -->
 											<f:validateLength maximum="350" />
 										</h:inputText>
 									</div>
@@ -234,7 +235,7 @@
 																	//maxDate: 0,
 																	minDate : 0,
 																	dateFormat : "dd/mm/yy",
-// 																	yearRange : "100:+0",
+																	// 																	yearRange : "100:+0",
 																	buttonImage : "/resources/image/calendar1.png"
 																});
 											});

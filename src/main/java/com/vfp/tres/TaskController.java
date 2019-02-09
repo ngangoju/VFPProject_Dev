@@ -1,6 +1,9 @@
 package com.vfp.tres;
 
+import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +13,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import tres.common.DbConstant;
@@ -18,6 +23,7 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.common.UploadUtility;
 import tres.dao.impl.ContactImpl;
+import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
@@ -27,12 +33,14 @@ import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Contact;
+import tres.domain.Documents;
 import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.UploadingActivity;
 import tres.domain.UploadingTask;
 import tres.domain.Users;
+import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.TaskDto;
 
 @ManagedBean
@@ -61,6 +69,10 @@ public class TaskController implements Serializable, DbConstant {
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
 	private List<TaskDto> taskDtoDetail = new ArrayList<TaskDto>();
 	private List<Users> userDetails = new ArrayList<Users>();
+	private Documents document;
+	private DocumentsImpl docImpl = new DocumentsImpl();
+	private UploadingTaskImpl uplTaskImpl = new UploadingTaskImpl();
+	private TaskDto taskDto = new TaskDto();
 	private int listSize;
 	private int assignmentSize;
 	private boolean renderTable;
@@ -293,6 +305,18 @@ public class TaskController implements Serializable, DbConstant {
 		}
 	}
 
+	public String uploadAction(TaskDto task) {
+		HttpSession sessionuser = SessionUtils.getSession();
+
+		if (null != task) {
+			// Session creation to get user info from dataTable row
+			sessionuser.setAttribute("taskFiles", task);
+			LOGGER.info("Info Founded are task:>>>>>>>>>>>>>>>>>>>>>>>:" + task.getDescription() + "ID:"
+					+ task.getTaskId());
+		}
+		return "/menu/TaskFilesUpload.xhtml?faces-redirect=true";
+	}
+
 	public void assignAct(Task act) {
 		this.rendered = false;
 		this.renderTable = true;
@@ -361,6 +385,51 @@ public class TaskController implements Serializable, DbConstant {
 		return "null";
 		/* return "/menu/ViewUsersList.xhtml?faces-redirect=true"; */
 
+	}
+
+	public String deleteFile(UploadingTask info) {
+		try {
+			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			String realPath = ctx.getRealPath("/");
+			LOGGER.info("Files Reals Path::::" + realPath);
+			Documents documents = new Documents();
+			documents = docImpl.getModelWithMyHQL(new String[] { "DocId" },
+					new Object[] { info.getDocuments().getDocId() }, " from Documents");
+
+			if (null != documents) {
+				final Path destination = Paths.get(realPath + FILELOCATION + documents.getSysFilename());
+				LOGGER.info("Path::" + destination);
+				File file = new File(destination.toString());
+				uplTaskImpl.deleteIntable(info);
+				docImpl.deleteIntable(documents);
+				LOGGER.info("Delete in db operation done!!!:");
+				if (file.delete()) {
+					System.out.println(file.getName() + " is deleted!");
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.success.files.delete"));
+				} else {
+					System.out.println("Delete operation is failed.");
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.error.files.delete"));
+				}
+
+			}
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+		}
+		return null;
+	}
+
+	public TaskDto saveTaskFiles() {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		taskDto = (TaskDto) session.getAttribute("taskFiles");
+		return (taskDto);
 	}
 
 	public void showTasks() {
@@ -667,6 +736,38 @@ public class TaskController implements Serializable, DbConstant {
 
 	public void setTasksDetail(List<Task> tasksDetail) {
 		this.tasksDetail = tasksDetail;
+	}
+
+	public TaskDto getTaskDto() {
+		return taskDto;
+	}
+
+	public void setTaskDto(TaskDto taskDto) {
+		this.taskDto = taskDto;
+	}
+
+	public Documents getDocument() {
+		return document;
+	}
+
+	public void setDocument(Documents document) {
+		this.document = document;
+	}
+
+	public DocumentsImpl getDocImpl() {
+		return docImpl;
+	}
+
+	public void setDocImpl(DocumentsImpl docImpl) {
+		this.docImpl = docImpl;
+	}
+
+	public UploadingTaskImpl getUplTaskImpl() {
+		return uplTaskImpl;
+	}
+
+	public void setUplTaskImpl(UploadingTaskImpl uplTaskImpl) {
+		this.uplTaskImpl = uplTaskImpl;
 	}
 
 }
