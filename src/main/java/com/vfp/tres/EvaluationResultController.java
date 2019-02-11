@@ -604,8 +604,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 					dt1.setFailedEvButton(true);
 				} else {
 					dt1.setFailedEvButton(true);
-				}
-				LOGGER.info("ACTIVITY ID IS :::"+dto.getActivityId());
+				} 
 				dt1.setActivityId(dto.getActivityId());
 				dt1.setEndDate(dto.getEndDate());
 				dt1.setDate(dto.getDate());
@@ -617,7 +616,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				dt1.setDueDate(dto.getDueDate());
 				dt1.setTask(dto.getTask());
 				dt1.setStatus(dto.getStatus());
-				activitiesDtos.add(dt1);
+				activitiesDtos.add(dt1);  
 			}
 			return activitiesDtos;
 		} catch (Exception e) {
