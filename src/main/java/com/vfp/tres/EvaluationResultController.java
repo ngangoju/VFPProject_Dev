@@ -36,6 +36,7 @@ import tres.domain.Institution;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
+import tres.vfp.dto.ActivityDto;
 
 @ManagedBean
 @SessionScoped
@@ -61,6 +62,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	private List<Users> staffs = new ArrayList<Users>();
 	private List<UploadingActivity> docmts = new ArrayList<UploadingActivity>();
 	private List<Users> staffsComplete = new ArrayList<Users>();
+	private List<ActivityDto> activitiesDtos = new ArrayList<ActivityDto>();
 
 	EvaluationImpl evaluationImpl = new EvaluationImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
@@ -220,8 +222,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		try {
 			viewStaffActiv = true;
 			viewSpecfcStaff = true;
-			activities = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
-					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
+			activitiesDtos = actDtos(user);
 			HttpSession ses = SessionUtils.getSession();
 			ses.setAttribute("usrSession", user);
 			LoadUserInformationsController loadUserInformationsController = new LoadUserInformationsController();
@@ -237,9 +238,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		try {
 			viewStaffActiv = true;
 			viewSpecfcStaff = true;
-			activities = activityImpl
-					.getListWithHQL("select f from Activity f where f.genericStatus='" + ACTIVE + "' and f.user="
-							+ user.getUserId() + " and f.status='" + COMPLETED + "' or f.status='" + FAILED + "'  ");
+			activitiesDtos = actDtos(user);
 		} catch (Exception e) {
 		}
 	}
@@ -304,8 +303,10 @@ public class EvaluationResultController implements Serializable, DbConstant {
 
 	/* Saving Evaluation */
 
-	public String savingEvaluationData(Activity activity) {
+	public String savingEvaluationData(ActivityDto act) {
 		try {
+			activity = new Activity();
+			activityImpl.getActivityById(act.getActivityId(), "activityId");
 			activity.setStatus(COMPLETED);
 			activity.setUpdatedBy(usersSession.getViewId());
 			activity.setUpDtTime(timestamp);
@@ -323,6 +324,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				evaluation.setUpDtTime(timestamp);
 				evaluationImpl.saveEvaluation(evaluation);
 				staffs = getUserDetails();// staff with complete activities
+				activitiesDtos = actDtos(activity.getUser());
 				LOGGER.info("Evaluation information saved:::::");
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
@@ -339,6 +341,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				evaluation.setUpDtTime(timestamp);
 				evaluationImpl.saveEvaluation(evaluation);
 				staffs = getUserDetails();// staff with complete activities
+				activitiesDtos = actDtos(activity.getUser());
 				setValid(true);
 				JSFMessagers
 						.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
@@ -352,6 +355,60 @@ public class EvaluationResultController implements Serializable, DbConstant {
 			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 			return "";
+		}
+	}
+
+	public void reconformActivity(ActivityDto act) {
+		try { 
+			activity = new Activity();
+			activityImpl.getActivityById(act.getActivityId(), "activityId");
+			activity.setStatus(COMPLETED);
+			activity.setUpdatedBy(usersSession.getViewId());
+			activity.setUpDtTime(timestamp);
+			activityImpl.UpdateActivity(activity);
+			if (addDay(activity).before(new Date())) {
+				evaluation = new Evaluation();
+				evaluation.setActivity(activity);
+				evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				evaluation.setCrtdDtTime(timestamp);
+				evaluation.setDecision(COMPLETED);
+				evaluation.setEvaluationDate(timestamp);
+				evaluation.setEvaluationMarks(getMarks(activity));
+				evaluation.setGenericStatus(ACTIVE);
+				evaluation.setUpdatedBy(usersSession.getViewId());
+				evaluation.setUpDtTime(timestamp);
+				evaluationImpl.saveEvaluation(evaluation);
+				staffs = getUserDetails();// staff with complete activities
+				activitiesDtos = actDtos(activity.getUser());
+				LOGGER.info("Evaluation information saved:::::");
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
+			} else {
+				evaluation = new Evaluation();
+				evaluation.setActivity(activity);
+				evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				evaluation.setCrtdDtTime(timestamp);
+				evaluation.setDecision(COMPLETED);
+				evaluation.setEvaluationDate(timestamp);
+				evaluation.setEvaluationMarks(0);
+				evaluation.setGenericStatus(ACTIVE);
+				evaluation.setUpdatedBy(usersSession.getViewId());
+				evaluation.setUpDtTime(timestamp);
+				evaluationImpl.saveEvaluation(evaluation);
+				staffs = getUserDetails();// staff with complete activities
+				activitiesDtos = actDtos(activity.getUser());
+				setValid(true);
+				JSFMessagers
+						.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
+			}
+
+		} catch (Exception e) {
+			LOGGER.info("DB ERROR:::");
+			setValid(false);
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -497,7 +554,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	}
 
 	/* activity rejection ends */
-	public int getMarksOfEvaluation(Activity act) {
+	public int getMarksOfEvaluation(ActivityDto act) {
 		try {
 			evaluation = new Evaluation();
 			evaluation = evaluationImpl.getModelWithMyHQL(new String[] { "activity", "genericStatus", "decision" },
@@ -528,6 +585,43 @@ public class EvaluationResultController implements Serializable, DbConstant {
 			}
 		} catch (Exception e) {
 			return "rsbtn";
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ActivityDto> actDtos(Users user) {
+		try {
+			activitiesDtos = new ArrayList<ActivityDto>();
+			activities = new ArrayList<Activity>();
+			activities = activityImpl
+					.getListWithHQL("select f from Activity f where f.genericStatus='" + ACTIVE + "' and f.user="
+							+ user.getUserId() + " and f.status='" + COMPLETED + "' or f.status='" + FAILED + "'  ");
+			for (Activity dto : activities) {
+				ActivityDto dt1 = new ActivityDto();
+				if (dto.getStatus().equals(COMPLETED)) {
+					dt1.setFailedEvButton(false);
+				} else if (dto.getStatus().equals(FAILED)) {
+					dt1.setFailedEvButton(true);
+				} else {
+					dt1.setFailedEvButton(true);
+				}
+				LOGGER.info("ACTIVITY ID IS :::"+dto.getActivityId());
+				dt1.setActivityId(dto.getActivityId());
+				dt1.setEndDate(dto.getEndDate());
+				dt1.setDate(dto.getDate());
+				dt1.setCreatedDate(dto.getCrtdDtTime());
+				dt1.setDescription(dto.getDescription());
+				dt1.setWeight(dto.getWeight());
+				dt1.setType(dto.getType());
+				dt1.setGenericstatus(dto.getGenericStatus());
+				dt1.setDueDate(dto.getDueDate());
+				dt1.setTask(dto.getTask());
+				dt1.setStatus(dto.getStatus());
+				activitiesDtos.add(dt1);
+			}
+			return activitiesDtos;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
@@ -770,6 +864,14 @@ public class EvaluationResultController implements Serializable, DbConstant {
 
 	public void setRsbtn(boolean rsbtn) {
 		this.rsbtn = rsbtn;
+	}
+
+	public List<ActivityDto> getActivitiesDtos() {
+		return activitiesDtos;
+	}
+
+	public void setActivitiesDtos(List<ActivityDto> activitiesDtos) {
+		this.activitiesDtos = activitiesDtos;
 	}
 
 	/* Getter and setters ends */

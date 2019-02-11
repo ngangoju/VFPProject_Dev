@@ -101,7 +101,7 @@
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 17px 25px 0 !important;"
-								value="#{evaluationResultController.activities}"
+								value="#{evaluationResultController.activitiesDtos}"
 								var="act"
 								class="table table-striped table-hover table-bordered tableUpdated ">
 								<h:column>
@@ -152,7 +152,7 @@
 									<f:facet name="header">
 										<label>Reported date</label>
 									</f:facet>
-									<h:outputText value="#{act.upDtTime}">
+									<h:outputText value="#{act.endDate}">
 										<f:convertDateTime pattern="dd MMM yyyy"></f:convertDateTime>
 									</h:outputText>
 								</h:column>
@@ -162,11 +162,11 @@
 									</f:facet>
 									<div class="btn-group">
 										<h:commandLink
-											rendered="#{evaluationResultController.rendeButton(act)}"
+											rendered="#{act.failedEvButton}"
 											style="color:white" data-toggle="tooltip"
 											data-placement="left" title="Confirm"
-											class="btn btn-info glyphicon glyphicon-ok"
-											action="#{evaluationController.savingEvaluationData(act)}">
+											class="btn btn-warning glyphicon glyphicon-refresh"
+											action="#{evaluationResultController.reconformActivity(act)}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
 										<!-- 	<a

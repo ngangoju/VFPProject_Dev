@@ -56,6 +56,7 @@ public class ActivityDto implements Serializable {
 	private boolean editFailedAction;
 	private boolean showFailedStartedIcon;
 	private boolean failedActIcon;
+	private boolean failedEvButton; 
 	public int getActivityId() {
 		return activityId;
 	}
@@ -318,6 +319,14 @@ public class ActivityDto implements Serializable {
 
 	public void setWeeklyPlan(String weeklyPlan) {
 		this.weeklyPlan = weeklyPlan;
+	}
+
+	public boolean isFailedEvButton() {
+		return failedEvButton;
+	}
+
+	public void setFailedEvButton(boolean failedEvButton) {
+		this.failedEvButton = failedEvButton;
 	}
 
 	
