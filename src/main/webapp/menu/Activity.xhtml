@@ -17,15 +17,14 @@
 				<div class="panel-heading">
 					<ui:repeat var="time" value="#">
 
-						<p:outputPanel rendered="#{activityController.rendered}"
-							autoUpdate="true">
+						<p:outputPanel rendered="#{activityController.rendered}">
 							<span style="color: white; font-size: 10pt"> <label
 								style="font: italic bold 14px/25px Georgia, serif; margin-left: 25%;">Activity
 									Management</label>
 							</span>
+							<p:autoUpdate/>
 						</p:outputPanel>
-						<p:outputPanel rendered="#{activityController.renderTaskForm}"
-							autoUpdate="true">
+						<p:outputPanel rendered="#{activityController.renderTaskForm}">
 
 							<a
 								href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
@@ -37,6 +36,7 @@
 								<span style="color: red">#{msg['header.title.asteriks']}</span>
 								#{msg['header.title.mandatory']}
 							</span>
+							<p:autoUpdate/>
 						</p:outputPanel>
 					</ui:repeat>
 				</div>
@@ -76,8 +76,8 @@
 
 
 						<!--  LIST OF TASK ASSIGNED START HERE -->
-						<p:outputPanel rendered="#{activityController.renderTaskForm}"
-							autoUpdate="true">
+						<p:outputPanel rendered="#{activityController.renderTaskForm}">
+						<p:autoUpdate/>
 							<fieldset style="width: 90%; margin-left: 3%;">
 								<legend>
 									<label style="font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.title']}</label>
@@ -703,8 +703,7 @@
 
 										</tbody>
 									</ui:repeat>
-									<p:outputPanel rendered="#{activityController.rendercomment}"
-										autoUpdate="true">
+									<p:outputPanel rendered="#{activityController.rendercomment}">
 										<tr>
 											<td colspan="2"></td>
 										</tr>
@@ -730,20 +729,19 @@
 										<tr>
 
 											<td
-												style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><p:outputPanel
-													rendered="#{activityController.renderUpload}"
-													autoUpdate="true">
+												style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><p:outputPanel>
 													<h:commandLink value="Send comment"
 														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 														class="btn btn-info  glyphicon glyphicon-edit"
 														action="#{activityController.saveComment()}">
+														<p:autoUpdate/>
 													</h:commandLink>
-												</p:outputPanel> <p:outputPanel rendered="#{activityController.planBtn}"
-													autoUpdate="true">
+												</p:outputPanel> <p:outputPanel rendered="#{activityController.planBtn}">
 													<h:commandLink value="Save comment"
 														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 														class="btn btn-info  glyphicon glyphicon-edit"
 														action="#{activityController.saveSupervisorComment()}">
+														<p:autoUpdate/>
 													</h:commandLink>
 												</p:outputPanel></td>
 											<td><h:commandLink
@@ -755,6 +753,7 @@
 														onevent="showProgress" />
 												</h:commandLink></td>
 										</tr>
+										<p:autoUpdate/>
 									</p:outputPanel>
 									<tr>
 										<td colspan="2"><a

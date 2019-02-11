@@ -1,6 +1,9 @@
 package com.vfp.tres;
 
+import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +13,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.hibernate.ejb.criteria.Renderable;
@@ -20,12 +25,18 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ContactImpl;
+import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.StrategicPlanImpl;
+import tres.dao.impl.UploadingActivityImpl;
+import tres.dao.impl.UploadingStrategicPlanImpl;
 import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Contact;
+import tres.domain.Documents;
 import tres.domain.StrategicPlan;
+import tres.domain.UploadingActivity;
+import tres.domain.UploadingStrategicPlan;
 import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
@@ -48,6 +59,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	private List<StrategicPlan> strategicPlanDetails = new ArrayList<StrategicPlan>();
 	private List<StrategicPlanDto> strategicPlanDtoDetails = new ArrayList<StrategicPlanDto>();
 	private List<Users> userDetails = new ArrayList<Users>();
+	private UploadingStrategicPlanImpl uplPlanImpl = new UploadingStrategicPlanImpl();
 	private boolean renderUpload;
 	private boolean renderStPlan = true;
 	private boolean renderTable = true;
@@ -60,6 +72,7 @@ public class StrategicPlanController implements Serializable, DbConstant {
 	StrategicPlanImpl strategicPlanImpl = new StrategicPlanImpl();
 	UserCategoryImpl categoryImpl = new UserCategoryImpl();
 	ContactImpl contactImpl = new ContactImpl();
+	private DocumentsImpl docsImpl = new DocumentsImpl();
 
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -148,6 +161,44 @@ public class StrategicPlanController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+
+	public String deleteFile(UploadingStrategicPlan info) {
+		try {
+			ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			String realPath = ctx.getRealPath("/");
+			LOGGER.info("Filse Reals Path::::" + realPath);
+			Documents documents = new Documents();
+			documents = docsImpl.getModelWithMyHQL(new String[] { "DocId" },
+					new Object[] { info.getDocuments().getDocId() }, " from Documents");
+
+			if (null != documents) {
+				final Path destination = Paths.get(realPath + FILELOCATION + documents.getSysFilename());
+				LOGGER.info("Path::" + destination);
+				File file = new File(destination.toString());
+				uplPlanImpl.deleteIntable(info);
+				docsImpl.deleteIntable(documents);
+				LOGGER.info("Delete in db operation done!!!:");
+				if (file.delete()) {
+					System.out.println(file.getName() + " is deleted!");
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.success.files.delete"));
+				} else {
+					System.out.println("Delete operation is failed.");
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.error.files.delete"));
+				}
+
+			}
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+		}
+		return null;
 	}
 
 	public void clearPlanFuileds() {
@@ -329,6 +380,14 @@ public class StrategicPlanController implements Serializable, DbConstant {
 
 	public void setRenderHideBtn(boolean renderHideBtn) {
 		this.renderHideBtn = renderHideBtn;
+	}
+
+	public UploadingStrategicPlanImpl getUplPlanImpl() {
+		return uplPlanImpl;
+	}
+
+	public void setUplPlanImpl(UploadingStrategicPlanImpl uplPlanImpl) {
+		this.uplPlanImpl = uplPlanImpl;
 	}
 
 }

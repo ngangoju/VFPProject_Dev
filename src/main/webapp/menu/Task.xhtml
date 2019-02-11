@@ -254,9 +254,19 @@
 
 							<h:commandLink style="color:white"
 								class="btn btn-success 	glyphicon glyphicon-edit"
-								value="#{msg['UserCategoryView.editButton']}"
+								data-toggle="tooltip" data-placement="bottom"
+								title="#{msg['UserCategoryView.editButton']}"
 								action="#{taskController.editAction(act)}"
 								rendered="#{not act.editable}" />
+							<h:commandLink style="color:white;margin-left:5px;"
+								data-toggle="tooltip" data-placement="bottom"
+								title="#{msg['upload.message.form']}"
+								class="btn btn-primary 	glyphicon glyphicon-upload"
+								rendered="#{not act.editable}"
+								action="#{taskController.uploadAction(act)}">
+							<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandLink>
+								
 							<h:commandLink style="margin-left:2px;color:white"
 								class="btn btn-danger 	glyphicon glyphicon-remove"
 								value="#{msg['UserCategoryView.cancelButton']}"

@@ -21,10 +21,12 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
 import tres.dao.impl.UserImpl;
+import tres.domain.Activity;
 import tres.domain.Institution;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
@@ -40,12 +42,15 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	/* to manage validation messages */
 	private boolean isValid;
 	/* end manage validation messages */
+	private int notifSize;
 	private Users users;
 	private UserCategory userCategory;
 	private MenuAssignment menuAssignment;
 	private MenuGroup menuGroup;
 	private List<MenuAssignment> menuAssignmentDetails = new ArrayList<MenuAssignment>();
 	private List<MenuGroup> menuGroupDetails = new ArrayList<MenuGroup>();
+	private List<Activity> approvedActDetails = new ArrayList<Activity>();
+	private List<Users> usersDetail = new ArrayList<Users>();
 
 	/* class injection */
 
@@ -53,10 +58,12 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	UserImpl usersImpl = new UserImpl();
 	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
+	ActivityImpl activityImpl = new ActivityImpl();
 	private String userCatName;
 	private String dob;
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -77,6 +84,24 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 
 		users = (Users) session.getAttribute("userSession");
 		if (null != users) {
+			try {
+				if (users.getUserCategory().getUsercategoryName().equalsIgnoreCase(SUPER_VISOR)) {
+					ActivityController actDao = new ActivityController();
+					usersDetail = actDao.getUsersDetail();
+					for (Users users : usersDetail) {
+						approvedActDetails = activityImpl.getGenericListWithHQLParameter(
+								new String[] { "genericStatus", "user", "status" },
+								new Object[] { ACTIVE, users, PLAN_ACTIVITY }, "Activity", "activityId asc");
+					}
+					notifSize = approvedActDetails.size();
+				} else if (users.getUserCategory().getUsercategoryName().equalsIgnoreCase("staff")) {
+					ActivityController actDao = new ActivityController();
+					approvedActDetails = actDao.getApprovedActDetails();
+					notifSize = actDao.getApprovedSize();
+				}
+			} catch (Exception e) {
+				LOGGER.info(CLASSNAME + "... " + e.getMessage());
+			}
 			LOGGER.info("HHH>>" + users.getUserCategory().getUsercategoryName());
 			userCategory = users.getUserCategory();
 			userCatName = users.getUserCategory().getUsercategoryName();
@@ -87,8 +112,8 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 				menuAssignmentDetails = menuAssignmentImpl.getGenericListWithHQLParameter(
 						new String[] { "userCategory", "genericStatus" },
 						new Object[] { users.getUserCategory(), ACTIVE }, "MenuAssignment", "menuAssgnId asc");
-				LOGGER.info("menu size ::>>" + menuAssignmentDetails.size());		
-				
+				LOGGER.info("menu size ::>>" + menuAssignmentDetails.size());
+
 			} catch (Exception e) {
 				LOGGER.info("error loading generic menu:::");
 				setValid(false);
@@ -255,6 +280,30 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 
 	public void setDob(String dob) {
 		this.dob = dob;
+	}
+
+	public int getNotifSize() {
+		return notifSize;
+	}
+
+	public void setNotifSize(int notifSize) {
+		this.notifSize = notifSize;
+	}
+
+	public List<Activity> getApprovedActDetails() {
+		return approvedActDetails;
+	}
+
+	public void setApprovedActDetails(List<Activity> approvedActDetails) {
+		this.approvedActDetails = approvedActDetails;
+	}
+
+	public List<Users> getUsersDetail() {
+		return usersDetail;
+	}
+
+	public void setUsersDetail(List<Users> usersDetail) {
+		this.usersDetail = usersDetail;
 	}
 
 }
