@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -20,11 +19,6 @@ import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.io.FilenameUtils;
-
-import com.itextpdf.text.pdf.PdfDocument.Destination;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
@@ -39,7 +33,6 @@ import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.TaskAssignmentImpl;
-import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
@@ -48,8 +41,6 @@ import tres.domain.Comment;
 import tres.domain.Documents;
 import tres.domain.Evaluation;
 import tres.domain.Institution;
-import tres.domain.InstitutionRegistrationRequest;
-import tres.domain.Statistics;
 import tres.domain.Board;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Task;
@@ -57,7 +48,6 @@ import tres.domain.TaskAssignment;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
-import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -579,7 +569,6 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void completeAction(Activity act) {
 		try {
-			EvaluationController ec = new EvaluationController();
 			act.setStatus(COMPLETED);
 			act.setGenericStatus(ACTIVE);
 			// ec.evaluationMethod(act);

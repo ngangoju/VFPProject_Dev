@@ -46,7 +46,12 @@ public class Activity extends CommonDomain implements Serializable {
 	
 	@Column(name="ActivityFailed",nullable = false, columnDefinition ="int default 0")
 	private int countActivityFailed;
-	
+	@Column(name="ActivityApproved",nullable = false, columnDefinition ="int default 0")
+	private int countApproved;
+	@Column(name="ActivityPlanned",nullable = false, columnDefinition ="int default 0")
+	private int countPlanned;
+	@Column(name="ActivityReported",nullable = false, columnDefinition ="int default 0")
+	private int countReported;
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -165,6 +170,30 @@ public class Activity extends CommonDomain implements Serializable {
 
 	public void setCountActivityFailed(int countActivityFailed) {
 		this.countActivityFailed = countActivityFailed;
+	}
+
+	public int getCountApproved() {
+		return countApproved;
+	}
+
+	public void setCountApproved(int countApproved) {
+		this.countApproved = countApproved;
+	}
+	
+	public int getCountPlanned() {
+		return countPlanned;
+	}
+
+	public void setCountPlanned(int countPlanned) {
+		this.countPlanned = countPlanned;
+	}
+
+	public int getCountReported() {
+		return countReported;
+	}
+
+	public void setCountReported(int countReported) {
+		this.countReported = countReported;
 	}	
 	
 }

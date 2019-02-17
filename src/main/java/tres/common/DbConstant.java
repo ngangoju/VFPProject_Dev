@@ -150,4 +150,7 @@ public interface DbConstant {
 	public static final String FILELOCATIONUNIX = "Vfp_Document//";
 	public static final int defaultCount=0;
 	public static final int incrementCount=1;
+	public static final String ACTIVITYAPROVAL="Activity approval statistics";
+	public static final String ACTIVITYPLANNED="Activity planned statistics";
+	public static final String ACTIVITYCOMPLETED="Activity completion within planned period";
 }
