@@ -1,6 +1,7 @@
 package tres.vfp.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ClearanceDto implements Serializable {	
 	private static final long serialVersionUID = 1L;
@@ -8,12 +9,39 @@ public class ClearanceDto implements Serializable {
 	private String strategicplan;
 	private String taskName;
 	private int numberOfActivities;
+	private int planned;
 	private int approved;
-	private int rejected;
+	private int reported;
 	private int completed;
+	private int failed;
+	private int done;
+	private int notStarted;
+	private int rejected;
+	private String activityname;
 	private double rate;
 	private boolean editable;
+	private String dueDate;
+	private Date startDate;
+	private Date dateDue;
 	
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getDateDue() {
+		return dateDue;
+	}
+	public void setDateDue(Date dateDue) {
+		this.dateDue = dateDue;
+	}
+	public String getDueDate() {
+		return dueDate;
+	}
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
 	public String getStrategicplan() {
 		return strategicplan;
 	}
@@ -32,19 +60,12 @@ public class ClearanceDto implements Serializable {
 	public void setNumberOfActivities(int numberOfActivities) {
 		this.numberOfActivities = numberOfActivities;
 	}
-	
-	
-	public int getApproved() {
-		return approved;
+
+	public int getPlanned() {
+		return planned;
 	}
-	public void setApproved(int approved) {
-		this.approved = approved;
-	}
-	public int getRejected() {
-		return rejected;
-	}
-	public void setRejected(int rejected) {
-		this.rejected = rejected;
+	public void setPlanned(int planned) {
+		this.planned = planned;
 	}
 	public int getCompleted() {
 		return completed;
@@ -63,6 +84,48 @@ public class ClearanceDto implements Serializable {
 	}
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+	public int getApproved() {
+		return approved;
+	}
+	public void setApproved(int approved) {
+		this.approved = approved;
+	}
+	public int getFailed() {
+		return failed;
+	}
+	public void setFailed(int failed) {
+		this.failed = failed;
+	}
+	public int getDone() {
+		return done;
+	}
+	public void setDone(int done) {
+		this.done = done;
+	}
+	public int getRejected() {
+		return rejected;
+	}
+	public void setRejected(int rejected) {
+		this.rejected = rejected;
+	}
+	public String getActivityname() {
+		return activityname;
+	}
+	public void setActivityname(String activityname) {
+		this.activityname = activityname;
+	}
+	public int getReported() {
+		return reported;
+	}
+	public void setReported(int reported) {
+		this.reported = reported;
+	}
+	public int getNotStarted() {
+		return notStarted;
+	}
+	public void setNotStarted(int notStarted) {
+		this.notStarted = notStarted;
 	}
 	
 }

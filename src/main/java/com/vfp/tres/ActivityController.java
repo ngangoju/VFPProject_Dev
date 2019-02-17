@@ -27,6 +27,7 @@ import org.apache.commons.io.FilenameUtils;
 import com.itextpdf.text.pdf.PdfDocument.Destination;
 
 import tres.common.DbConstant;
+import tres.common.Formating;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
@@ -34,7 +35,9 @@ import tres.dao.impl.ActivityCommentImpl;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.CommentImpl;
 import tres.dao.impl.DocumentsImpl;
+import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
+import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
@@ -43,6 +46,8 @@ import tres.domain.Activity;
 import tres.domain.ActivityComment;
 import tres.domain.Comment;
 import tres.domain.Documents;
+import tres.domain.Evaluation;
+import tres.domain.Institution;
 import tres.domain.InstitutionRegistrationRequest;
 import tres.domain.Statistics;
 import tres.domain.Board;
@@ -64,6 +69,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean isValid;
 	/* end manage validation messages */
 	private Users users;
+	int days;
 	private Users userassigned;
 	private Users usersSession;
 	private Activity activity;
@@ -121,7 +127,11 @@ public class ActivityController implements Serializable, DbConstant {
 	ActivityImpl activityImpl = new ActivityImpl();
 	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	InstitutionEscaletPolicyImpl iepImpl = new InstitutionEscaletPolicyImpl();
-
+	private Institution institution;
+	InstitutionImpl instImpl = new InstitutionImpl();
+	private InstitutionEscaletePolicy policy;
+	private Evaluation evaluation;
+	EvaluationImpl evaluationImpl = new EvaluationImpl();
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -154,6 +164,15 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 		if (document == null) {
 			document = new Documents();
+		}
+		if (institution == null) {
+			institution = new Institution();
+		}
+		if (policy == null) {
+			policy = new InstitutionEscaletePolicy();
+		}
+		if (evaluation == null) {
+			evaluation = new Evaluation();
 		}
 		try {
 			activityDetail = activityImpl.getGenericListWithHQLParameter(
@@ -221,7 +240,62 @@ public class ActivityController implements Serializable, DbConstant {
 
 	}
 
+	@SuppressWarnings({ "static-access", "unchecked" })
+	public boolean isdayActivityIsApproved(TaskAssignment info) {
+		try {
+			boolean validTransaction = false;
+			Formating fmt = new Formating();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+			Date today = fmt.getCurrentDateFormtNOTime();
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
+			activityDetails = activityImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "createdBy", "status","task" },
+					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), PLAN_ACTIVITY,info.getTask() },
+					"Activity", "creationDate desc");
+			if (activityDetails.size() > 0) {
+				for (Activity activity : activityDetails) {
+					Activity act = new Activity();
+					act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+					if (null != activity.getStartDate() && activity.getStatus().equals(PLAN_ACTIVITY)) {
+						simpleDateFormat.format(activity.getStartDate());
+						days = fmt.daysBetween(activity.getStartDate(), today);
+						if (days >= 2) {
+							act.setStatus(APPROVED);
+							act.setGenericStatus(ACTIVE);
+							Calendar cal1 = new GregorianCalendar();
+							cal1.setTime(new Date());
+							cal1.add(Calendar.DATE, iep.getPlanPeriod());
+							java.util.Date dDate = cal1.getTime();
+							act.setDueDate(dDate);
+							act.setStartDate(timestamp);
+							act.setCountApproved(incrementCount);
+							activityImpl.UpdateActivity(act);
+							validTransaction = true;
+							LOGGER.info(":::::Transaction Done!!!::::DAY FOUND::" + days);
+						} else {
+							LOGGER.info(":::::Transaction Failed!!!::::DAY FOUND::" + days);
+						}
+					} 
+				}
+			} else {
+				validTransaction = false;
+					LOGGER.info(":::::Transaction Failed!!!::::SIZE FOUND::"+activityDetails.size());
+				}
+
+			return (validTransaction);
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
 	public List<ActivityDto> showActivity(List<Activity> list) throws Exception {
+
 		HttpSession sessionfailedActiv = SessionUtils.getSession();
 		List<ActivityDto> ActivityDtoList = new ArrayList<ActivityDto>();
 		iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
@@ -273,12 +347,12 @@ public class ActivityController implements Serializable, DbConstant {
 			}
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
-				if (activityDto.getStartDate() == null && activityDto.getDueDate() == null) {
-					activityDto.setShowPlanedIcon(true);
-				} else {
-					activityDto.setShowPlanedIcon(false);
-				}
-
+				activityDto.setShowPlanedIcon(true);
+				/*
+				 * if (activityDto.getStartDate() == null && activityDto.getDueDate() == null) {
+				 * activityDto.setShowPlanedIcon(true); } else {
+				 * activityDto.setShowPlanedIcon(false); }
+				 */
 			} else {
 				activityDto.setAction(true);
 				activityDto.setShowPlanedIcon(false);
@@ -304,16 +378,20 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setApprovedComment(true);
 			}
 
-			if (activityDto.getStatus().equals(REJECT) && (activityDto.getDueDate() == null)) {
+			/*
+			 * if (activityDto.getStatus().equals(REJECT) && (activityDto.getDueDate() ==
+			 * null)) {
+			 */
+			if (activityDto.getStatus().equals(REJECT)) {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
 				activityDto.setEditAction(false);
-				activityDto.setShowAction(true);
+				// activityDto.setShowAction(true);
 			} else {
 				activityDto.setReplanAction(true);
 				activityDto.setCommmentAction(true);
 				activityDto.setEditAction(true);
-				activityDto.setShowAction(false);
+				// activityDto.setShowAction(false);
 			}
 			if (activityDto.getStatus().equals(DONE) || activityDto.getStatus().equals(COMPLETED)) {
 				activityDto.setAction(false);
@@ -331,9 +409,22 @@ public class ActivityController implements Serializable, DbConstant {
 	public void viewActivity(TaskAssignment info) {
 		try {
 			taskAssign = info;
+			boolean isTransactionValid = isdayActivityIsApproved(info);
+			if (isTransactionValid) {
+				/*JSFMessagers.resetMessages();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.transaction.actitityapproval.done"));*/
+				LOGGER.info(CLASSNAME + ":::Transaction done");
+			} else {
+				/*JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.transaction.actitityapproval.failed"));*/
+				LOGGER.info(CLASSNAME + ":::Transaction fail");
+			}
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "task", "user" },
 					new Object[] { ACTIVE, info.getTask(), usersSession }, "Activity", "creationDate desc");
+			
 			activityDtoDetails = showActivity(activityDetails);
 			/*
 			 * for (Activity activity : activityDetails) { ActivityDto activityDto = new
@@ -420,6 +511,11 @@ public class ActivityController implements Serializable, DbConstant {
 				java.util.Date dDate = cal1.getTime();
 				act.setDueDate(dDate);
 				act.setStartDate(act.getStartDate());
+				if (act.getCountApproved() < incrementCount) {
+					act.setCountApproved(act.getCountApproved() + incrementCount);
+				} else {
+					act.setCountApproved(act.getCountApproved() + defaultCount);
+				}
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
@@ -432,12 +528,18 @@ public class ActivityController implements Serializable, DbConstant {
 				act.setStatus(APPROVED);
 				// if(act.getGenericStatus().equals(DESACTIVE))
 				act.setGenericStatus(ACTIVE);
-				Calendar cal1 = new GregorianCalendar();
-				cal1.setTime(new Date());
-				cal1.add(Calendar.DATE, iep.getPlanPeriod());
-				java.util.Date dDate = cal1.getTime();
-				act.setDueDate(dDate);
-				act.setStartDate(timestamp);
+				/*
+				 * Calendar cal1 = new GregorianCalendar(); cal1.setTime(new Date());
+				 * cal1.add(Calendar.DATE, iep.getPlanPeriod()); java.util.Date dDate =
+				 * cal1.getTime();
+				 */
+				act.setDueDate(act.getDueDate());
+				act.setStartDate(act.getStartDate());
+				if (act.getCountApproved() < incrementCount) {
+					act.setCountApproved(act.getCountApproved() + incrementCount);
+				} else {
+					act.setCountApproved(act.getCountApproved() + defaultCount);
+				}
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
@@ -486,9 +588,12 @@ public class ActivityController implements Serializable, DbConstant {
 			if (act != null) {
 				LOGGER.info("IGIKORWA CYITWA: " + act.getDescription());
 				if (null != act.getStartDate() || null != act.getDueDate() || null != act.getEndDate()) {
-					act.setStartDate(null);
-					act.setDueDate(null);
-					act.setEndDate(null);
+					/*
+					 * act.setStartDate(null); act.setDueDate(null); act.setEndDate(null);
+					 */
+					act.setStartDate(act.getStartDate());
+					act.setDueDate(act.getDueDate());
+					act.setEndDate(act.getEndDate());
 				}
 				act.setStatus(REJECT);
 				act.setGenericStatus(ACTIVE);
@@ -693,17 +798,43 @@ public class ActivityController implements Serializable, DbConstant {
 			// Get the values from the session
 			int ActFailCount = (Integer) session.getAttribute("activfailed");
 			Activity act = new Activity();
-			act = new Activity();
+			// act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
 
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
 			if (ActFailCount == 0) {
 				if (activity.getStatus().equals(NOTSTARTED) || activity.getStatus().equals(REJECT)) {
-					act.setUpdatedBy(usersSession.getViewId());
-					act.setUpDtTime(timestamp);
-					act.setStatus(PLAN_ACTIVITY);
+					if (activity.getStatus().equals(NOTSTARTED)) {
+						act.setCountPlanned(incrementCount);
+						act.setUpdatedBy(usersSession.getViewId());
+						act.setUpDtTime(timestamp);
+						act.setStatus(PLAN_ACTIVITY);
+						act.setStartDate(timestamp);
+						Calendar cal1 = new GregorianCalendar();
+						cal1.setTime(new Date());
+						cal1.add(Calendar.DATE, iep.getPlanPeriod());
+						java.util.Date dDate = cal1.getTime();
+						act.setDueDate(dDate);
+						act.setStartDate(timestamp);
+					} else {
+						act.setCountPlanned(incrementCount);
+						act.setCountApproved(defaultCount);
+						act.setCountReported(defaultCount);
+						act.setUpdatedBy(usersSession.getViewId());
+						act.setUpDtTime(timestamp);
+						act.setStatus(PLAN_ACTIVITY);
+						Calendar cal1 = new GregorianCalendar();
+						cal1.setTime(new Date());
+						cal1.add(Calendar.DATE, iep.getPlanPeriod());
+						java.util.Date dDate = cal1.getTime();
+						act.setDueDate(dDate);
+						act.setStartDate(timestamp);
+					}
 				}
 				activityImpl.UpdateActivity(act);
 				activityDetails = activityImpl.getGenericListWithHQLParameter(
@@ -767,6 +898,26 @@ public class ActivityController implements Serializable, DbConstant {
 		return null;
 	}
 
+	public Date addDay(Activity activity) {
+		institution = activity.getUser().getBoard().getInstitution();
+		try {
+			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
+			policy = iepImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
+			Calendar cal1 = new GregorianCalendar();
+			cal1.setTime(activity.getDueDate());
+			cal1.add(Calendar.DATE, policy.getVariation());
+			java.util.Date dDate = cal1.getTime();
+			// cal1.add(Calendar.DATE, policy.getVariation());
+			String dt = smf.format(dDate);
+			LOGGER.info("Due date is ::" + smf.parse(dt));
+			return smf.parse(dt);
+		} catch (Exception e) {
+			LOGGER.info("Due date Failed");
+			return null;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public String reportAction(ActivityDto activity) {
 		try {
@@ -777,14 +928,43 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-			if (activity.getStatus().equals(APPROVED) && activity.getType().equals(MILESTONE)) {
-				uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(
-						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "UploadingActivity",
-						"crtdDtTime desc");
-				if (uploadingActivityDetails.size() > 0) {
+
+			// Checking the reporting period if not exceed due date plus variation period
+			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
+			String dt = smf.format(new Date());
+			if ((smf.parse(dt).before(addDay(act)))) {
+				LOGGER.info("TODAY DATE:::" + smf.parse(dt));
+				if (activity.getStatus().equals(APPROVED) && activity.getType().equals(MILESTONE)) {
+					uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act },
+							"UploadingActivity", "crtdDtTime desc");
+					if (uploadingActivityDetails.size() > 0) {
+						act.setUpdatedBy(usersSession.getViewId());
+						act.setUpDtTime(timestamp);
+						act.setStatus(DONE);
+						act.setCountReported(incrementCount);
+						act.setEndDate(timestamp);
+						activityImpl.UpdateActivity(act);
+						activityDetails = activityImpl.getGenericListWithHQLParameter(
+								new String[] { "genericStatus", "task", "user" },
+								new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity",
+								"creationDate desc");
+						activityDtoDetails = showActivity(activityDetails);
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+						LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+					} else {
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
+						LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
+					}
+				} else if (activity.getStatus().equals(APPROVED)) {
 					act.setUpdatedBy(usersSession.getViewId());
 					act.setUpDtTime(timestamp);
 					act.setStatus(DONE);
+					act.setCountReported(incrementCount);
 					act.setEndDate(timestamp);
 					activityImpl.UpdateActivity(act);
 					activityDetails = activityImpl.getGenericListWithHQLParameter(
@@ -795,26 +975,35 @@ public class ActivityController implements Serializable, DbConstant {
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-				} else {
+				}
+			} else {
+				if (activity.getStatus().equals(APPROVED)) {
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(FAILED);
+					act.setCountReported(incrementCount);
+					act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
+					act.setEndDate(timestamp);
+					activityImpl.UpdateActivity(act);
+					activityDetails = activityImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "task", "user" },
+							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
+					activityDtoDetails = showActivity(activityDetails);
+					evaluation.setActivity(act);
+					evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+					evaluation.setCrtdDtTime(timestamp);
+					evaluation.setDecision(FAILED);
+					evaluation.setEvaluationDate(timestamp);
+					evaluation.setEvaluationMarks(0);
+					evaluation.setGenericStatus(ACTIVE);
+					evaluation.setUpdatedBy(usersSession.getViewId());
+					evaluation.setUpDtTime(timestamp);
+					evaluationImpl.saveEvaluation(evaluation);
 					JSFMessagers.resetMessages();
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
-					LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity.reportingDate"));
+					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 				}
-			} else if (activity.getStatus().equals(APPROVED)) {
-				act.setUpdatedBy(usersSession.getViewId());
-				act.setUpDtTime(timestamp);
-				act.setStatus(DONE);
-				act.setEndDate(timestamp);
-				activityImpl.UpdateActivity(act);
-				activityDetails = activityImpl.getGenericListWithHQLParameter(
-						new String[] { "genericStatus", "task", "user" },
-						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
-				activityDtoDetails = showActivity(activityDetails);
-				JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 			}
 
 		} catch (Exception e) {
@@ -827,6 +1016,7 @@ public class ActivityController implements Serializable, DbConstant {
 		// return to current page
 		return null;
 	}
+
 
 	public String cancel(ActivityDto activity) {
 		if (activity.getStatus().equals(NOTSTARTED)) {
@@ -1114,6 +1304,10 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public String getMyFormattedDate(TaskAssignment statDate) {
 		return new SimpleDateFormat("dd-MM-yyyy").format(statDate.getCrtdDtTime());
+	}
+
+	public String getMyFormattedCreatedDate(ActivityDto createDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(createDate.getCreatedDate());
 	}
 
 	public String deleteFile(UploadingActivity info) {

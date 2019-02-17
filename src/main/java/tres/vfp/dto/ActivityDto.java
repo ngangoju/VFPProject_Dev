@@ -33,7 +33,7 @@ public class ActivityDto implements Serializable {
 	private Date endDate;
 
 	private String genericstatus;
-
+	private int countApproved;
 	private Date createdDate;
 	private String type;
 	private String weeklyPlan;
@@ -328,6 +328,12 @@ public class ActivityDto implements Serializable {
 	public void setFailedEvButton(boolean failedEvButton) {
 		this.failedEvButton = failedEvButton;
 	}
+public int getCountApproved() {
+		return countApproved;
+	}
 
+	public void setCountApproved(int countApproved) {
+		this.countApproved = countApproved;
 	
+}
 }

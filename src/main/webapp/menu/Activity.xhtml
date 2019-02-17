@@ -17,14 +17,16 @@
 				<div class="panel-heading">
 					<ui:repeat var="time" value="#">
 
-						<p:outputPanel rendered="#{activityController.rendered}">
+						<p:outputPanel rendered="#{activityController.rendered}"
+							autoUpdate="true">
 							<span style="color: white; font-size: 10pt"> <label
 								style="font: italic bold 14px/25px Georgia, serif; margin-left: 25%;">Activity
 									Management</label>
 							</span>
 							<p:autoUpdate/>
 						</p:outputPanel>
-						<p:outputPanel rendered="#{activityController.renderTaskForm}">
+						<p:outputPanel rendered="#{activityController.renderTaskForm}"
+							autoUpdate="true">
 
 							<a
 								href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
@@ -76,8 +78,8 @@
 
 
 						<!--  LIST OF TASK ASSIGNED START HERE -->
-						<p:outputPanel rendered="#{activityController.renderTaskForm}">
-						<p:autoUpdate/>
+						<p:outputPanel rendered="#{activityController.renderTaskForm}"
+							autoUpdate="true">
 							<fieldset style="width: 90%; margin-left: 3%;">
 								<legend>
 									<label style="font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.title']}</label>
@@ -304,11 +306,15 @@
 												title="#{msg['createactivity.editButton']}"
 												class="btn btn-sm btn-info glyphicon glyphicon-edit"
 												action="#{activityController.createActivity(info)}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
 											</h:commandLink>
 											<h:commandLink data-toggle="tooltip" data-placement="left"
 												title="#{msg['viewactivity.editButton']}"
 												class="btn btn-sm btn-primary glyphicon glyphicon-list"
 												action="#{activityController.viewActivity(info)}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
 											</h:commandLink>
 
 
@@ -434,8 +440,7 @@
 											<label>Creation date</label>
 										</f:facet>
 										<br />
-										<h:outputText value="#{act.createdDate}">
-											<f:convertDateTime pattern="dd/MM/yyyy" />
+										<h:outputText value="#{activityController.getMyFormattedCreatedDate(act)}">
 										</h:outputText>
 
 									</h:column>
@@ -444,18 +449,18 @@
 											<label>Start date</label>
 										</f:facet>
 										<br />
-										<h:commandLink
+										<!-- <h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
 											title="#{msg['UserCategoryView.iconsStartDateButton']}"
 											class="glyphicon glyphicon-info-sign fa-fw fa-1x"
-											rendered="#{act.showAction}"></h:commandLink>
-										<h:commandLink
+											rendered="#{act.showAction}"></h:commandLink> -->
+										<!-- <h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
 											title="#{msg['UserCategoryView.iconsStartDateButton']}"
 											class="glyphicon glyphicon-info-sign fa-fw fa-1x"
-											rendered="#{act.showPlanedIcon}"></h:commandLink>
+											rendered="#{act.showPlanedIcon}"></h:commandLink> -->
 										<h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
@@ -464,8 +469,7 @@
 											rendered="#{act.showNotStartedIcon}"></h:commandLink>
 
 										<h:outputText value="#{act.startDate}">
-											<f:convertDateTime pattern="dd/MM/yyyy" />
-										</h:outputText>
+											</h:outputText>
 
 									</h:column>
 									<h:column>
@@ -473,18 +477,18 @@
 											<label>Due date</label>
 										</f:facet>
 										<br />
-										<h:commandLink
+										<!-- <h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
 											title="#{msg['UserCategoryView.iconsDueDateButton']}"
 											class="glyphicon glyphicon-info-sign fa-fw fa-1x"
-											rendered="#{act.showAction}"></h:commandLink>
-										<h:commandLink
+											rendered="#{act.showAction}"></h:commandLink> -->
+										<!-- <h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
 											title="#{msg['UserCategoryView.iconsDueDateButton']}"
 											class="glyphicon glyphicon-info-sign fa-fw fa-1x"
-											rendered="#{act.showPlanedIcon}"></h:commandLink>
+											rendered="#{act.showPlanedIcon}"></h:commandLink> -->
 										<h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
@@ -494,7 +498,7 @@
 
 										<h:outputText value="#{act.dueDate}"
 											rendered="#{not act.editable}">
-											<f:convertDateTime pattern="dd/MM/yyyy" />
+											
 										</h:outputText>
 
 									</h:column>
@@ -614,6 +618,13 @@
 												</a>
 												<br />
 											</p:outputPanel>
+											
+											<h:commandLink
+											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
+											data-toggle="tooltip" data-placement="left"
+											title="#{msg['UserCategoryView.iconsDueDateButton']}"
+											class="glyphicon glyphicon-info-sign fa-fw fa-2x"
+											rendered="#{act.showPlanedIcon}"></h:commandLink>
 										</div>
 									</h:column>
 									<f:facet name="footer">
@@ -703,7 +714,8 @@
 
 										</tbody>
 									</ui:repeat>
-									<p:outputPanel rendered="#{activityController.rendercomment}">
+									<p:outputPanel rendered="#{activityController.rendercomment}"
+										autoUpdate="true">
 										<tr>
 											<td colspan="2"></td>
 										</tr>
@@ -729,14 +741,17 @@
 										<tr>
 
 											<td
-												style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><p:outputPanel>
+												style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><p:outputPanel
+													rendered="#{activityController.renderUpload}"
+													autoUpdate="true">
 													<h:commandLink value="Send comment"
 														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 														class="btn btn-info  glyphicon glyphicon-edit"
 														action="#{activityController.saveComment()}">
 														<p:autoUpdate/>
 													</h:commandLink>
-												</p:outputPanel> <p:outputPanel rendered="#{activityController.planBtn}">
+												</p:outputPanel> <p:outputPanel rendered="#{activityController.planBtn}"
+													autoUpdate="true">
 													<h:commandLink value="Save comment"
 														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 														class="btn btn-info  glyphicon glyphicon-edit"
