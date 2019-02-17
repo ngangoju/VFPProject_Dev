@@ -43,7 +43,75 @@
 
 				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
 
-				<h:panelGroup id="tables" rendered="#{activityController.rendered}">
+				<h:panelGroup id="tables1" rendered="#{activityController.rendered}">
+				<h1>#{msg['manage.task.form']}</h1>
+					<div class="col-md-4 col-sm-6">
+						<div class="circle-tile2 ">
+
+							<div class="circle-tile-heading2 green2 ">
+								<h1 style="color: white;">#{activityController.userSize}</h1>
+							</div>
+
+							<div class="circle-tile-content2 green2 ">
+								<div class="circle-tile-description text-faded2">
+									<label
+										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+										#{msg['user.activity.form']}</label>
+								</div>
+								<div class="circle-tile-number2 text-faded2">
+									<span class="glyphicon glyphicon-tasks"></span> <span
+										id="sparklineB"></span> <label
+										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+										&nbsp;#{msg['message.user.notcont']}</label>
+								</div>
+								<h:commandLink styleClass="circle-tile-footer"
+									actionListener="#{activityController.showAct()}"
+									value="More Info">
+									<i class="glyphicon glyphicon-chevron-right"></i>
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-md-4 col-sm-6">
+						<div class="circle-tile2">
+
+							<div class="circle-tile-heading2 blue2 text-white">
+								<h1 style="color: white;">#{activityController.escalateSize}</h1>
+							</div>
+
+							<div class="circle-tile-content2 blue2">
+								<div class="circle-tile-description text-faded2">
+									<label
+										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
+										#{msg['escalate.activity.form']}</label>
+								</div>
+								<div class="circle-tile-number2 text-faded2">
+									<span class="glyphicon glyphicon-user"></span> <span
+										id="sparklineB"></span><label
+										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+										&nbsp; #{msg['escalation.form.message']}</label>
+
+								</div>
+								<h:commandLink styleClass="circle-tile-footer"
+									actionListener="#{activityController.showEscalated()}"
+									value="More Info">
+									<i class="glyphicon glyphicon-chevron-right"></i>
+									<f:ajax render="@form" execute="@form" onevent="showProgress" />
+								</h:commandLink>
+
+							</div>
+						</div>
+
+					</div>
+				</h:panelGroup>
+				
+				<!-- 			END OF ACTIVITIES MANAGEMENT DASHBOARD			 -->
+
+				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
+
+				<h:panelGroup id="tables" rendered="#{activityController.rendered1}">
 					<h1>#{msg['planned.activity.staff']}</h1>
 
 					<p:dataTable id="example1" class="display" cellspacing="0"

@@ -93,8 +93,11 @@ public class ActivityController implements Serializable, DbConstant {
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
+	private int escalateSize=3;
+	private int userSize;
 	private boolean renderTable;
 	private boolean rendered = true;
+	private boolean rendered1;
 	private boolean renderTaskForm;
 	private boolean renderCompleted;
 	private boolean backBtn;
@@ -172,6 +175,7 @@ public class ActivityController implements Serializable, DbConstant {
 				user.setBoard((Board) data[3]);
 				usersDetail.add(user);
 			}
+			userSize=usersDetail.size();
 
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
@@ -327,6 +331,20 @@ public class ActivityController implements Serializable, DbConstant {
 		return ActivityDtoList;
 	}
 
+
+	public void showAct() {
+		this.rendered = false;
+		this.rendered1 = true;
+		this.renderTaskForm = false;
+		this.renderTable = false;
+		this.renderCompleted = false;
+		this.approveRender = false;
+		this.rejectRender = false;
+		this.completeRender = false;
+		this.commentRender = false;
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	public void viewActivity(TaskAssignment info) {
 		try {
@@ -523,6 +541,7 @@ public class ActivityController implements Serializable, DbConstant {
 					"Activity", "ACTIVITY_ID asc");
 			LOGGER.info(user.getFname() + " " + user.getLname() + " has planned activities");
 			this.rendered = false;
+			this.rendered1 = false;
 			this.renderTaskForm = false;
 			this.renderTable = true;
 			this.renderCompleted = false;
@@ -1608,6 +1627,30 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setlSize(int lSize) {
 		this.lSize = lSize;
+	}
+
+	public boolean isRendered1() {
+		return rendered1;
+	}
+
+	public void setRendered1(boolean rendered1) {
+		this.rendered1 = rendered1;
+	}
+
+	public int getEscalateSize() {
+		return escalateSize;
+	}
+
+	public void setEscalateSize(int escalateSize) {
+		this.escalateSize = escalateSize;
+	}
+
+	public int getUserSize() {
+		return userSize;
+	}
+
+	public void setUserSize(int userSize) {
+		this.userSize = userSize;
 	}
 
 }
