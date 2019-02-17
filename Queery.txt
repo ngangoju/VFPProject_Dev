@@ -241,3 +241,10 @@ taskName AS mytask,u.fname AS myName,a.description AS activityName,a.status AS s
  AS institutionName from task t ,board b ,institution i,users u ,strategicplan p,activity a where ((p.planId = t.strategicPlan) 
  and (i.institutionId = b.institution) and (b.boardId = u.board) and (u.userId = a.user) and (a.task = t.taskId))
  ==================by RICHARD===============================================================
+
+
+Create view StaffReportView as select a.ACTIVITY_ID AS activity,p.details AS stategicplan,t.
+taskName AS mytask,u.fname AS myName,a.description AS activityName,a.status AS status,a.dueDate as dueDate,a.startDate as startDate,a.ActivityApproved as ActivityApproved, a.ActivityPlanned as ActivityPlanned,a.ActivityReported as ActivityReported,a.ActivityFailed,b.boardName AS boardName,i.institutionName
+ AS institutionName from task t ,board b ,institution i,users u ,strategicplan p,activity a where ((p.planId = t.strategicPlan) 
+ and (i.institutionId = b.institution) and (b.boardId = u.board) and (u.userId = a.user) and (a.task = t.taskId));
+=========================Querry to create view in db ---By Emma---====================
