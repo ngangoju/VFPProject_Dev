@@ -1836,4 +1836,52 @@ public class ActivityController implements Serializable, DbConstant {
 		this.userSize = userSize;
 	}
 
+	public int getDays() {
+		return days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public InstitutionImpl getInstImpl() {
+		return instImpl;
+	}
+
+	public void setInstImpl(InstitutionImpl instImpl) {
+		this.instImpl = instImpl;
+	}
+
+	public InstitutionEscaletePolicy getPolicy() {
+		return policy;
+	}
+
+	public void setPolicy(InstitutionEscaletePolicy policy) {
+		this.policy = policy;
+	}
+
+	public Evaluation getEvaluation() {
+		return evaluation;
+	}
+
+	public void setEvaluation(Evaluation evaluation) {
+		this.evaluation = evaluation;
+	}
+
+	public EvaluationImpl getEvaluationImpl() {
+		return evaluationImpl;
+	}
+
+	public void setEvaluationImpl(EvaluationImpl evaluationImpl) {
+		this.evaluationImpl = evaluationImpl;
+	}
+
 }

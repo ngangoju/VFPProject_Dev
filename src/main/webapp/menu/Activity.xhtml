@@ -23,7 +23,6 @@
 								style="font: italic bold 14px/25px Georgia, serif; margin-left: 25%;">Activity
 									Management</label>
 							</span>
-							<p:autoUpdate/>
 						</p:outputPanel>
 						<p:outputPanel rendered="#{activityController.renderTaskForm}"
 							autoUpdate="true">
@@ -38,7 +37,7 @@
 								<span style="color: red">#{msg['header.title.asteriks']}</span>
 								#{msg['header.title.mandatory']}
 							</span>
-							<p:autoUpdate/>
+							
 						</p:outputPanel>
 					</ui:repeat>
 				</div>
@@ -306,14 +305,14 @@
 												title="#{msg['createactivity.editButton']}"
 												class="btn btn-sm btn-info glyphicon glyphicon-edit"
 												action="#{activityController.createActivity(info)}">
-												<f:ajax render="@form" execute="@form"
+												<f:ajax render="@all" execute="@all"
 													onevent="showProgress" />
 											</h:commandLink>
 											<h:commandLink data-toggle="tooltip" data-placement="left"
 												title="#{msg['viewactivity.editButton']}"
 												class="btn btn-sm btn-primary glyphicon glyphicon-list"
 												action="#{activityController.viewActivity(info)}">
-												<f:ajax render="@form" execute="@form"
+												<f:ajax render="@all" execute="@all"
 													onevent="showProgress" />
 											</h:commandLink>
 
