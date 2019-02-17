@@ -659,6 +659,15 @@ public class ActivityController implements Serializable, DbConstant {
 		renderTaskForm = false;
 		renderTable = false;
 		rendered = true;
+		rendered1 = false;
+		renderCompleted = false;
+	}
+
+	public void back1() {
+		renderTaskForm = false;
+		renderTable = false;
+		rendered1 = true;
+		rendered = false;
 		renderCompleted = false;
 	}
 

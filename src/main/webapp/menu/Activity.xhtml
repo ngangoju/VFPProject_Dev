@@ -23,9 +23,9 @@
 								style="font: italic bold 14px/25px Georgia, serif; margin-left: 25%;">Activity
 									Management</label>
 							</span>
+							<p:autoUpdate/>
 						</p:outputPanel>
-						<p:outputPanel rendered="#{activityController.renderTaskForm}"
-							autoUpdate="true">
+						<p:outputPanel rendered="#{activityController.renderTaskForm}">
 
 							<a
 								href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
@@ -37,7 +37,7 @@
 								<span style="color: red">#{msg['header.title.asteriks']}</span>
 								#{msg['header.title.mandatory']}
 							</span>
-							
+							<p:autoUpdate/>
 						</p:outputPanel>
 					</ui:repeat>
 				</div>

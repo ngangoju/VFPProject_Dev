@@ -44,7 +44,7 @@
 				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
 
 				<h:panelGroup id="tables1" rendered="#{activityController.rendered}">
-				<h1>#{msg['manage.task.form']}</h1>
+				<h1>#{msg['manage.activity.form']}</h1>
 					<div class="col-md-4 col-sm-6">
 						<div class="circle-tile2 ">
 
@@ -59,7 +59,7 @@
 										#{msg['user.activity.form']}</label>
 								</div>
 								<div class="circle-tile-number2 text-faded2">
-									<span class="glyphicon glyphicon-tasks"></span> <span
+									<span class="glyphicon glyphicon-user"></span> <span
 										id="sparklineB"></span> <label
 										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
 										&nbsp;#{msg['message.user.notcont']}</label>
@@ -88,7 +88,7 @@
 										#{msg['escalate.activity.form']}</label>
 								</div>
 								<div class="circle-tile-number2 text-faded2">
-									<span class="glyphicon glyphicon-user"></span> <span
+									<span class="glyphicon glyphicon-tasks"></span> <span
 										id="sparklineB"></span><label
 										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
 										&nbsp; #{msg['escalation.form.message']}</label>
@@ -112,8 +112,22 @@
 				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
 
 				<h:panelGroup id="tables" rendered="#{activityController.rendered1}">
+					<div class="nav">
+						<div class="div-action pull pull-left"
+							style="padding-bottom: 20px;">
 					<h1>#{msg['planned.activity.staff']}</h1>
-
+						</div>
+						<div class="div-action pull pull-right"
+							style="padding-bottom: 20px;">
+							<h:commandLink
+								class="btn btn-primary glyphicon glyphicon-chevron-left"
+								actionListener="#{activityController.back()}"
+								action="#{activityController.back()}"
+								value="#{msg['UserRegForm.BackButton']}">
+								<f:ajax render="@form" execute="@form" onevent="showProgress" />
+							</h:commandLink>
+						</div>
+						</div>
 					<p:dataTable id="example1" class="display" cellspacing="0"
 						value="#{activityController.usersDetail}" var="act">
 						<p:autoUpdate/>
@@ -189,7 +203,7 @@
 							<h:commandLink
 								class="btn btn-primary glyphicon glyphicon-chevron-left"
 								actionListener="#{activityController.back()}"
-								action="#{activityController.back()}"
+								action="#{activityController.back1()}"
 								value="#{msg['UserRegForm.BackButton']}">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
 							</h:commandLink>
