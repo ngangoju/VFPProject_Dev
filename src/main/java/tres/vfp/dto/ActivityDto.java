@@ -8,6 +8,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import tres.domain.Task;
+import tres.domain.Users;
 
 public class ActivityDto implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -23,7 +24,7 @@ public class ActivityDto implements Serializable {
 	private Date date;
 
 	private Task task;
-
+	private Users user;
 	private String createdBy;
 
 	private Date startDate;
@@ -37,6 +38,7 @@ public class ActivityDto implements Serializable {
 	private Date createdDate;
 	private String type;
 	private String weeklyPlan;
+	private String taskName;
 	private int ActivityFailed;
 	private boolean editable;
 	private boolean action;
@@ -56,7 +58,8 @@ public class ActivityDto implements Serializable {
 	private boolean editFailedAction;
 	private boolean showFailedStartedIcon;
 	private boolean failedActIcon;
-	private boolean failedEvButton; 
+	private boolean failedEvButton;
+
 	public int getActivityId() {
 		return activityId;
 	}
@@ -328,12 +331,30 @@ public class ActivityDto implements Serializable {
 	public void setFailedEvButton(boolean failedEvButton) {
 		this.failedEvButton = failedEvButton;
 	}
-public int getCountApproved() {
+
+	public int getCountApproved() {
 		return countApproved;
 	}
 
 	public void setCountApproved(int countApproved) {
 		this.countApproved = countApproved;
+
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
 	
-}
 }

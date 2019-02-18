@@ -289,7 +289,7 @@ public class StatisticsController implements Serializable, DbConstant {
 							+ "((sum(case when (status='Rejected') then 1 else 0 end)*100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end))) as RejectedActivity,((sum(case when (ActivityReported>0) then 1 else 0 end)*100)/(sum(case when (ActivityApproved>0) then 1 else 0 end))) as ReportedActivity,((sum(case when (status='Completed') then 1 else 0 end)*100)/(sum(case when (ActivityReported>0) then 1 else 0 end))) as CompletedActivity,\r\n"
 							+ "((sum(case when (status='Failed') then 1 else 0 end)*100)/(sum(case when (ActivityReported>0) then 1 else 0 end))) as FailedActivity\r\n"
 							+ "from StaffReportView  where dueDate is not null and  mytask='" + taskAssign.getTask().getTaskName()
-							 + "' group by DATE_FORMAT(dueDate,'%d/%m/%Y') ")) {
+							 + "' group by DATE_FORMAT(dueDate,'%d/%m/%Y') order by Month(dueDate),Day(dueDate)")) {
 
 				LOGGER.info("::::::::Planned:::::::" + data[2] + ":::Approved:::::" + data[8] + "::::Rejected::::"
 						+ data[4] + ":::Reported::::::" + data[5] + "::::::::Completed::::::" + data[6]);

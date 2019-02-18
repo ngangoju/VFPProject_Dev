@@ -48,6 +48,7 @@ import tres.domain.TaskAssignment;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.ClearanceDto;
 
 @ManagedBean
 @ViewScoped
@@ -89,7 +90,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
-	private int escalateSize=3;
+	private int escalateSize;
 	private int userSize;
 	private boolean renderTable;
 	private boolean rendered = true;
@@ -225,6 +226,7 @@ public class ActivityController implements Serializable, DbConstant {
 			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
 					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
 					" from InstitutionEscaletePolicy");
+			escalateSize=ActivityEscalation().size();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -288,6 +290,40 @@ public class ActivityController implements Serializable, DbConstant {
 			return false;
 		}
 	}
+	public List<ActivityDto>ActivityEscalation(){
+		List<ActivityDto> ActivityDtoList = new ArrayList<ActivityDto>();
+		try {
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() }, " from InstitutionEscaletePolicy");
+			for (Object[] data :activityImpl.reportList("SELECT ac.activityId,ac.description,ac.status,ac.weight,ac.type,ac.countActivityFailed,ac.startDate,ac.dueDate,ac.endDate,ac.user,tsk.taskName from Activity ac,Task tsk where ac.task=tsk.taskId and ActivityFailed>"+iep.getReschduleTime()+"")) {
+				ActivityDto activityDto = new ActivityDto();
+				LOGGER.info("::::Info Found"+data[0]+":::"+data[1]+"");
+				activityDto.setActivityId(Integer.parseInt(data[0]+""));
+				activityDto.setDescription(data[1]+"");
+				activityDto.setStatus(data[2]+"");
+				activityDto.setWeight(data[3]+"");
+				activityDto.setType(data[4]+"");
+				activityDto.setActivityFailed(Integer.parseInt(data[5]+""));
+				activityDto.setStartDate((Date)data[6]);
+				activityDto.setDueDate((Date)data[7]);
+				activityDto.setEndDate((Date)data[8]);
+				activityDto.setUser((Users)data[9]);
+				activityDto.setTaskName(data[10]+"");
+				ActivityDtoList.add(activityDto);
+			}
+		
+			return (ActivityDtoList);
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+		}
+
+		
+		return null;
+	}
+	
 	public List<ActivityDto> showActivity(List<Activity> list) throws Exception {
 
 		HttpSession sessionfailedActiv = SessionUtils.getSession();
@@ -524,6 +560,7 @@ public class ActivityController implements Serializable, DbConstant {
 				} else {
 					act.setCountApproved(act.getCountApproved() + defaultCount);
 				}
+				act.setCountReported(defaultCount);
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
@@ -548,6 +585,7 @@ public class ActivityController implements Serializable, DbConstant {
 				} else {
 					act.setCountApproved(act.getCountApproved() + defaultCount);
 				}
+				act.setCountReported(defaultCount);
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
