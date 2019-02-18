@@ -295,9 +295,24 @@ public class StatisticsController implements Serializable, DbConstant {
 						+ data[4] + ":::Reported::::::" + data[5] + "::::::::Completed::::::" + data[6]);
 				ClearanceDto userDtos = new ClearanceDto();
 				// userDtos.setPlanned(Integer.parseInt(data[2] + ""));
-				userDtos.setApproved(Integer.parseInt(data[4] + ""));
-				userDtos.setRejected(Integer.parseInt(data[5] + ""));
-				userDtos.setReported(Integer.parseInt(data[6] + ""));
+				if (null == data[4]) {
+					userDtos.setApproved(0);
+
+				} else {
+					userDtos.setApproved(Integer.parseInt(data[4] + ""));
+				}
+				if (null == data[5]) {
+					userDtos.setRejected(0);
+
+				} else {
+					userDtos.setRejected(Integer.parseInt(data[5] + ""));
+				}
+				if (null == data[6]) {
+					userDtos.setReported(0);
+
+				} else {
+					userDtos.setReported(Integer.parseInt(data[6] + ""));
+				}
 				userDtos.setDueDate(data[0] + "" +"[Week "+i+"]");
 				LOGGER.info("::::::::Due Date:::::::" +userDtos.getDueDate());
 				if (null == data[7]) {
