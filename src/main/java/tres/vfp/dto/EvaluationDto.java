@@ -3,8 +3,10 @@ package tres.vfp.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import tres.domain.Activity;
 import tres.domain.Evaluation;
 import tres.domain.Task;
+import tres.domain.Users;
 
 public class EvaluationDto implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -13,19 +15,21 @@ public class EvaluationDto implements Serializable {
 
 	private String evaluationType;
 
-	private String description;
+	private String decision;
 
-	private Evaluation evauation;
+	private Activity activity;
 
-	private String status;
-
-	private Task task;
+	private int evaluationMarks;
 
 	private String genericstatus;
 
 	private Date createdDate;
 
 	private boolean editable;
+
+	private boolean failedBtn;
+
+	private Users user;
 
 	public int getEvaluationId() {
 		return evaluationId;
@@ -43,36 +47,20 @@ public class EvaluationDto implements Serializable {
 		this.evaluationType = evaluationType;
 	}
 
-	public String getDescription() {
-		return description;
+	public Activity getActivity() {
+		return activity;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 
-	public Evaluation getEvauation() {
-		return evauation;
+	public boolean isFailedBtn() {
+		return failedBtn;
 	}
 
-	public void setEvauation(Evaluation evauation) {
-		this.evauation = evauation;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public Task getTask() {
-		return task;
-	}
-
-	public void setTask(Task task) {
-		this.task = task;
+	public void setFailedBtn(boolean failedBtn) {
+		this.failedBtn = failedBtn;
 	}
 
 	public String getGenericstatus() {
@@ -101,6 +89,30 @@ public class EvaluationDto implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getDecision() {
+		return decision;
+	}
+
+	public void setDecision(String decision) {
+		this.decision = decision;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public int getEvaluationMarks() {
+		return evaluationMarks;
+	}
+
+	public void setEvaluationMarks(int evaluationMarks) {
+		this.evaluationMarks = evaluationMarks;
 	}
 
 }

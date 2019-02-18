@@ -118,7 +118,7 @@
 							</h:dataTable>
 						</p:outputPanel>
 						<!-- Second for activities by tasks -->
-						<p:outputPanel rendered="#{evaluationController.viewSpecfcStaff}"
+						<p:outputPanel rendered="#{evaluationController.viewStaffActiv}"
 							style="height:330px;overflow-y: scroll;">
 							<div class="container"></div>
 							<h:dataTable id="activity" binding="#{tabl1}"
@@ -136,19 +136,19 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">
-										<label>Activity name</label>
+										<label>Target</label>
 									</f:facet>
 									<h:outputText value="#{act.description}" />
 								</h:column>
 								<h:column>
 									<f:facet name="header">
-										<label>Activity type</label>
+										<label>type</label>
 									</f:facet>
 									<h:outputText value="#{act.type}" />
 								</h:column>
 								<h:column>
 									<f:facet name="header">
-										<label>Activity weight</label>
+										<label>Weight</label>
 									</f:facet>
 									<h:outputText value="#{act.weight}" />
 								</h:column>
@@ -176,7 +176,7 @@
 									<f:facet name="header">
 										<label>Reported date</label>
 									</f:facet>
-									<h:outputText value="#{act.upDtTime}">
+									<h:outputText value="#{act.endDate}">
 										<f:convertDateTime pattern="dd MMM yyyy"></f:convertDateTime>
 									</h:outputText>
 								</h:column>

@@ -19,8 +19,8 @@ public class Evaluation extends CommonDomain implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
-	@Column(name = "EavaluationId")
-	private int EavaluationId;
+	@Column(name = "evaluationId")
+	private int evaluationId;
 
 	@Column(name = "EvaluationType")
 	private String EvaluationType;
@@ -38,6 +38,11 @@ public class Evaluation extends CommonDomain implements Serializable {
 	@JoinColumn(name = "activity")
 	private Activity activity; 
 
+	@ManyToOne
+	@JoinColumn(name = "supervisor")
+	private Users supervisor; 
+
+	
 	public int getEvaluationMarks() {
 		return EvaluationMarks;
 	}
@@ -46,12 +51,14 @@ public class Evaluation extends CommonDomain implements Serializable {
 		EvaluationMarks = evaluationMarks;
 	}
 
-	public int getEavaluationId() {
-		return EavaluationId;
+	 
+
+	public int getEvaluationId() {
+		return evaluationId;
 	}
 
-	public void setEavaluationId(int eavaluationId) {
-		EavaluationId = eavaluationId;
+	public void setEvaluationId(int evaluationId) {
+		this.evaluationId = evaluationId;
 	}
 
 	public String getEvaluationType() {
@@ -86,5 +93,14 @@ public class Evaluation extends CommonDomain implements Serializable {
 		this.decision = decision;
 	}
 
+	public Users getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSupervisor(Users supervisor) {
+		this.supervisor = supervisor;
+	}
+
+	
 
 }

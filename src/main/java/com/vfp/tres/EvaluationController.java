@@ -90,7 +90,7 @@ public class EvaluationController implements Serializable, DbConstant {
 		}
 		try {
 			staffs = getUserDetails();// staff with complete activities
-			//staffsComplete = getUserDetailsCompletedActivities(usersSession);
+			// staffsComplete = getUserDetailsCompletedActivities(usersSession);
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -131,7 +131,8 @@ public class EvaluationController implements Serializable, DbConstant {
 			staffs = new ArrayList<Users>();
 			for (Object[] object : usersImpl.reportList(
 					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co where co.user=us.userId and us.board="
-							+ usersSession.getBoard().getBoardId() + " and co.status='" + COMPLETED + "'")) {
+							+ usersSession.getBoard().getBoardId() + " and co.status='" + COMPLETED + "' or co.status='"
+							+ FAILED + "' ")) {
 				Users user = new Users();
 				user.setUserId((Integer) object[0]);
 				user.setFname(object[1] + "");
@@ -152,7 +153,7 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	// backtohome
 	public void backHome() {
-		viewSpecfcStaff = false;
+		//viewSpecfcStaff = false;
 		viewStaffActiv = false;
 	}
 
@@ -208,24 +209,22 @@ public class EvaluationController implements Serializable, DbConstant {
 		try {
 			viewStaffActiv = true;
 			viewSpecfcStaff = true;
+			System.out.println("viewSpecfcStaff::" + viewSpecfcStaff);
 			activities = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
 					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
 		} catch (Exception e) {
 		}
 	}
 
-	// list of complete ativities by staff
-	@SuppressWarnings("unchecked")
-	public void staffComplAct(Users user) {
-		try {
-			viewStaffActiv = true;
-			viewSpecfcStaff = true;
-			activities = activityImpl
-					.getListWithHQL("select f from Activity f where f.genericStatus='" + ACTIVE + "' and f.user="
-							+ user.getUserId() + " and f.status='" + COMPLETED + "' or f.status='" + FAILED + "'  ");
-		} catch (Exception e) {
-		}
-	}
+	/*
+	 * // list of complete ativities by staff
+	 * 
+	 * @SuppressWarnings("unchecked") public void staffComplAct(Users user) { try {
+	 * viewStaffActiv = true; viewSpecfcStaff = true; activities = activityImpl
+	 * .getListWithHQL("select f from Activity f where f.genericStatus='" + ACTIVE +
+	 * "' and f.user=" + user.getUserId() + " and f.status='" + COMPLETED +
+	 * "' or f.status='" + FAILED + "'  "); } catch (Exception e) { } }
+	 */
 
 	/* Evaluation Method For Completed task */
 
@@ -289,12 +288,14 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	public String savingEvaluationData(Activity activity) {
 		try {
-			activity.setStatus(COMPLETED);
-			activity.setUpdatedBy(usersSession.getViewId());
-			activity.setUpDtTime(timestamp);
-			activityImpl.UpdateActivity(activity);
-			if (addDay(activity).before(new Date())) {
+
+			if (addDay(activity).after(activity.getEndDate())) {
+				activity.setStatus(COMPLETED);
+				activity.setUpdatedBy(usersSession.getViewId());
+				activity.setUpDtTime(timestamp);
+				activityImpl.UpdateActivity(activity);
 				evaluation = new Evaluation();
+				evaluation.setSupervisor(usersSession);
 				evaluation.setActivity(activity);
 				evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 				evaluation.setCrtdDtTime(timestamp);
@@ -305,13 +306,17 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluation.setUpdatedBy(usersSession.getViewId());
 				evaluation.setUpDtTime(timestamp);
 				evaluationImpl.saveEvaluation(evaluation);
-				staffs = getUserDetails();// staff with complete activities
 				LOGGER.info("Evaluation information saved:::::");
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
 			} else {
+				activity.setStatus(COMPLETED);
+				activity.setUpdatedBy(usersSession.getViewId());
+				activity.setUpDtTime(timestamp);
+				activityImpl.UpdateActivity(activity);
 				evaluation = new Evaluation();
 				evaluation.setActivity(activity);
+				evaluation.setSupervisor(usersSession);
 				evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 				evaluation.setCrtdDtTime(timestamp);
 				evaluation.setDecision(COMPLETED);
@@ -321,11 +326,12 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluation.setUpdatedBy(usersSession.getViewId());
 				evaluation.setUpDtTime(timestamp);
 				evaluationImpl.saveEvaluation(evaluation);
-				staffs = getUserDetails();// staff with complete activities
 				setValid(true);
 				JSFMessagers
 						.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
 			}
+			staffs = getUserDetails();// staff with complete activities
+			staffCompl(activity.getUser());
 			return "";
 		} catch (Exception e) {
 			LOGGER.info("DB ERROR:::");
@@ -508,7 +514,7 @@ public class EvaluationController implements Serializable, DbConstant {
 				return "rsbtn";
 			} else {
 				return "not rsbtn";
-			}  
+			}
 		} catch (Exception e) {
 			return "rsbtn";
 		}
@@ -754,8 +760,6 @@ public class EvaluationController implements Serializable, DbConstant {
 	public void setRsbtn(boolean rsbtn) {
 		this.rsbtn = rsbtn;
 	}
-	
-	
 
 	/* Getter and setters ends */
 
