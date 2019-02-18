@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -20,11 +19,6 @@ import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.io.FilenameUtils;
-
-import com.itextpdf.text.pdf.PdfDocument.Destination;
 
 import tres.common.DbConstant;
 import tres.common.Formating;
@@ -39,7 +33,6 @@ import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.TaskAssignmentImpl;
-import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
@@ -48,8 +41,6 @@ import tres.domain.Comment;
 import tres.domain.Documents;
 import tres.domain.Evaluation;
 import tres.domain.Institution;
-import tres.domain.InstitutionRegistrationRequest;
-import tres.domain.Statistics;
 import tres.domain.Board;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.Task;
@@ -57,7 +48,6 @@ import tres.domain.TaskAssignment;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
-import tres.vfp.dto.UserDto;
 
 @ManagedBean
 @ViewScoped
@@ -99,8 +89,11 @@ public class ActivityController implements Serializable, DbConstant {
 	private int listSize;
 	private int completedSize;
 	private int approvedSize;
+	private int escalateSize=3;
+	private int userSize;
 	private boolean renderTable;
 	private boolean rendered = true;
+	private boolean rendered1;
 	private boolean renderTaskForm;
 	private boolean renderCompleted;
 	private boolean backBtn;
@@ -191,6 +184,7 @@ public class ActivityController implements Serializable, DbConstant {
 				user.setBoard((Board) data[3]);
 				usersDetail.add(user);
 			}
+			userSize=usersDetail.size();
 
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
@@ -405,6 +399,20 @@ public class ActivityController implements Serializable, DbConstant {
 		return ActivityDtoList;
 	}
 
+
+	public void showAct() {
+		this.rendered = false;
+		this.rendered1 = true;
+		this.renderTaskForm = false;
+		this.renderTable = false;
+		this.renderCompleted = false;
+		this.approveRender = false;
+		this.rejectRender = false;
+		this.completeRender = false;
+		this.commentRender = false;
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	public void viewActivity(TaskAssignment info) {
 		try {
@@ -561,7 +569,6 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void completeAction(Activity act) {
 		try {
-			EvaluationController ec = new EvaluationController();
 			act.setStatus(COMPLETED);
 			act.setGenericStatus(ACTIVE);
 			// ec.evaluationMethod(act);
@@ -628,6 +635,7 @@ public class ActivityController implements Serializable, DbConstant {
 					"Activity", "ACTIVITY_ID asc");
 			LOGGER.info(user.getFname() + " " + user.getLname() + " has planned activities");
 			this.rendered = false;
+			this.rendered1 = false;
 			this.renderTaskForm = false;
 			this.renderTable = true;
 			this.renderCompleted = false;
@@ -651,6 +659,15 @@ public class ActivityController implements Serializable, DbConstant {
 		renderTaskForm = false;
 		renderTable = false;
 		rendered = true;
+		rendered1 = false;
+		renderCompleted = false;
+	}
+
+	public void back1() {
+		renderTaskForm = false;
+		renderTable = false;
+		rendered1 = true;
+		rendered = false;
 		renderCompleted = false;
 	}
 
@@ -1802,6 +1819,78 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setlSize(int lSize) {
 		this.lSize = lSize;
+	}
+
+	public boolean isRendered1() {
+		return rendered1;
+	}
+
+	public void setRendered1(boolean rendered1) {
+		this.rendered1 = rendered1;
+	}
+
+	public int getEscalateSize() {
+		return escalateSize;
+	}
+
+	public void setEscalateSize(int escalateSize) {
+		this.escalateSize = escalateSize;
+	}
+
+	public int getUserSize() {
+		return userSize;
+	}
+
+	public void setUserSize(int userSize) {
+		this.userSize = userSize;
+	}
+
+	public int getDays() {
+		return days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public InstitutionImpl getInstImpl() {
+		return instImpl;
+	}
+
+	public void setInstImpl(InstitutionImpl instImpl) {
+		this.instImpl = instImpl;
+	}
+
+	public InstitutionEscaletePolicy getPolicy() {
+		return policy;
+	}
+
+	public void setPolicy(InstitutionEscaletePolicy policy) {
+		this.policy = policy;
+	}
+
+	public Evaluation getEvaluation() {
+		return evaluation;
+	}
+
+	public void setEvaluation(Evaluation evaluation) {
+		this.evaluation = evaluation;
+	}
+
+	public EvaluationImpl getEvaluationImpl() {
+		return evaluationImpl;
+	}
+
+	public void setEvaluationImpl(EvaluationImpl evaluationImpl) {
+		this.evaluationImpl = evaluationImpl;
 	}
 
 }

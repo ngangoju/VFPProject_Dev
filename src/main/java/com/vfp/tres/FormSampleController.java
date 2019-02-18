@@ -347,17 +347,23 @@ public class FormSampleController implements Serializable, DbConstant {
 				LOGGER.info("TASK INFO :::::::::::::::"+taskDto.getTaskId());
 				task = taskImpl.getModelWithMyHQL(new String[] { "taskId" },
 						new Object[] { taskId }, "from Task");
-				if(null!=getTask()) {
+				if(null!=task) {
 					UploadUtility ut = new UploadUtility();
 					String validationCode = "TaskFiles";
 					documents = ut.fileUploadUtil(event, validationCode);
 					
 						uploadingTask.setTask(task);
+						LOGGER.info("RIMWE!!");
 						uploadingTask.setDocuments(documents);
+						LOGGER.info("KABIRI!!");
 						uploadingTask.setCreatedBy(usersSession.getViewId());
+						LOGGER.info("GATATU!!");
 						uploadingTask.setGenericStatus(ACTIVE);
+						LOGGER.info("KANE!!");
 						uploadingTask.setCrtdDtTime(timestamp);
+						LOGGER.info("GATANU!!");
 						uploadTaskImpl.saveUploadedTask(uploadingTask);
+						LOGGER.info("GATANDA!!");
 						LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
 						JSFMessagers.resetMessages();
 						setValid(true);

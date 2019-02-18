@@ -25,6 +25,7 @@ import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
+import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Institution;
@@ -59,8 +60,11 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
+	UserCategoryImpl categoryImpl = new UserCategoryImpl();
 	private String userCatName;
 	private String dob;
+	@SuppressWarnings("unused")
+	private String notifName;
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -86,18 +90,32 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 		if (null != users) {
 			try {
 				if (users.getUserCategory().getUsercategoryName().equalsIgnoreCase(SUPER_VISOR)) {
-					ActivityController actDao = new ActivityController();
-					usersDetail = actDao.getUsersDetail();
-					for (Users users : usersDetail) {
+					usersDetail = usersImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "board", "userCategory" }, new Object[] { ACTIVE,
+									users.getBoard().getBoardId(), categoryImpl.getUserCategoryById(2, "userCatid") },
+							"Users", "userId asc");
+					for (Users usrs : usersDetail) {
 						approvedActDetails = activityImpl.getGenericListWithHQLParameter(
 								new String[] { "genericStatus", "user", "status" },
-								new Object[] { ACTIVE, users, PLAN_ACTIVITY }, "Activity", "activityId asc");
+								new Object[] { ACTIVE, usrs, PLAN_ACTIVITY }, "Activity", "activityId asc");
 					}
 					notifSize = approvedActDetails.size();
+					if(notifSize==0) {
+						notifName="You have no notifications";
+					}else {
+						notifName="You have "+notifSize+" planned activities";
+					}
 				} else if (users.getUserCategory().getUsercategoryName().equalsIgnoreCase("staff")) {
-					ActivityController actDao = new ActivityController();
-					approvedActDetails = actDao.getApprovedActDetails();
-					notifSize = actDao.getApprovedSize();
+					approvedActDetails = activityImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "createdBy", "status" },
+							new Object[] { ACTIVE, users.getFname() + " " + users.getLname(), APPROVED },
+							"Activity", "activityId asc");
+					notifSize = approvedActDetails.size();
+					if(notifSize==0) {
+						notifName="You have no notifications";
+					}else {
+					notifName="You have "+notifSize+" approved activities";
+					}
 				}
 			} catch (Exception e) {
 				LOGGER.info(CLASSNAME + "... " + e.getMessage());
@@ -304,6 +322,30 @@ public class LoadUserInformationsController implements Serializable, DbConstant 
 
 	public void setUsersDetail(List<Users> usersDetail) {
 		this.usersDetail = usersDetail;
+	}
+
+	public ActivityImpl getActivityImpl() {
+		return activityImpl;
+	}
+
+	public void setActivityImpl(ActivityImpl activityImpl) {
+		this.activityImpl = activityImpl;
+	}
+
+	public UserCategoryImpl getCategoryImpl() {
+		return categoryImpl;
+	}
+
+	public void setCategoryImpl(UserCategoryImpl categoryImpl) {
+		this.categoryImpl = categoryImpl;
+	}
+
+	public String getNotifName() {
+		return notifName;
+	}
+
+	public void setNotifName(String notifName) {
+		this.notifName = notifName;
 	}
 
 }

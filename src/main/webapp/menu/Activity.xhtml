@@ -25,8 +25,7 @@
 							</span>
 							<p:autoUpdate/>
 						</p:outputPanel>
-						<p:outputPanel rendered="#{activityController.renderTaskForm}"
-							autoUpdate="true">
+						<p:outputPanel rendered="#{activityController.renderTaskForm}">
 
 							<a
 								href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
@@ -306,14 +305,14 @@
 												title="#{msg['createactivity.editButton']}"
 												class="btn btn-sm btn-info glyphicon glyphicon-edit"
 												action="#{activityController.createActivity(info)}">
-												<f:ajax render="@form" execute="@form"
+												<f:ajax render="@all" execute="@all"
 													onevent="showProgress" />
 											</h:commandLink>
 											<h:commandLink data-toggle="tooltip" data-placement="left"
 												title="#{msg['viewactivity.editButton']}"
 												class="btn btn-sm btn-primary glyphicon glyphicon-list"
 												action="#{activityController.viewActivity(info)}">
-												<f:ajax render="@form" execute="@form"
+												<f:ajax render="@all" execute="@all"
 													onevent="showProgress" />
 											</h:commandLink>
 
