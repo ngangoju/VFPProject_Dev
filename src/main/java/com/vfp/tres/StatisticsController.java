@@ -86,6 +86,8 @@ public class StatisticsController implements Serializable, DbConstant {
 	TaskImpl taskImpl = new TaskImpl();
 	UserImpl usersImpl = new UserImpl();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
+	
+	private List<TaskAssignment> supervisorStaffAssignTask = new ArrayList<TaskAssignment>();
 	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	private boolean renderTaskForm;
 	private boolean renderTask;
@@ -150,7 +152,7 @@ public class StatisticsController implements Serializable, DbConstant {
 
 		try {
 			convertdata();
-			Clearance();
+			//Clearance();
 			// testCompletedAcitivity();
 			institutionOverallPerformance();
 			this.renderformgraph = true;
@@ -183,6 +185,7 @@ public class StatisticsController implements Serializable, DbConstant {
 			 * LOGGER.info("List without duplicates:" + al);
 			 */
 
+			supervisorStaffAssignTask=superVisorStaffTask();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -190,6 +193,19 @@ public class StatisticsController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+	public List<TaskAssignment>superVisorStaffTask(){
+		List<TaskAssignment> staffAssignTask = new ArrayList<TaskAssignment>();
+		for (Object[] data :taskAssignImpl.reportList("Select ass.taskAssignmentId ,ass.task, ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us,Board b where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and us.board="+usersSession.getBoard().getBoardId()+" and ass.genericStatus='"+ACTIVE+"'")) {
+			TaskAssignment taskAssign= new TaskAssignment();
+			taskAssign.setTaskAssignmentId(Integer.parseInt(data[0]+""));
+			taskAssign.setTask((Task)data[1]);
+			taskAssign.setUser((Users)data[2]);
+			taskAssign.setCrtdDtTime((Timestamp)data[3]);
+			staffAssignTask.add(taskAssign);
+		}
+		return(staffAssignTask);
+		
 	}
 
 	public String getMyFormattedDate(Statistics statDate) {
@@ -737,6 +753,14 @@ public class StatisticsController implements Serializable, DbConstant {
 
 	public void setOverallPerformance(String overallPerformance) {
 		this.overallPerformance = overallPerformance;
+	}
+
+	public List<TaskAssignment> getSupervisorStaffAssignTask() {
+		return supervisorStaffAssignTask;
+	}
+
+	public void setSupervisorStaffAssignTask(List<TaskAssignment> supervisorStaffAssignTask) {
+		this.supervisorStaffAssignTask = supervisorStaffAssignTask;
 	}
 
 }

@@ -28,21 +28,27 @@ import tres.common.SessionUtils;
 import tres.dao.impl.ActivityCommentImpl;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.CommentImpl;
+import tres.dao.impl.ContactImpl;
 import tres.dao.impl.DocumentsImpl;
 import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
+import tres.dao.impl.StrategicPlanImpl;
 import tres.dao.impl.TaskAssignmentImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
+import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
 import tres.domain.Comment;
+import tres.domain.Contact;
 import tres.domain.Documents;
 import tres.domain.Evaluation;
 import tres.domain.Institution;
 import tres.domain.Board;
 import tres.domain.InstitutionEscaletePolicy;
+import tres.domain.StrategicPlan;
 import tres.domain.Task;
 import tres.domain.TaskAssignment;
 import tres.domain.UploadingActivity;
@@ -61,11 +67,15 @@ public class ActivityController implements Serializable, DbConstant {
 	/* end manage validation messages */
 	private Users users;
 	int days;
+	private int userId;
 	private Users userassigned;
 	private Users usersSession;
 	private Activity activity;
 	private Task task;
 	TaskAssignment taskAssign;
+	private TaskAssignment assignment;
+	private StrategicPlan plan;
+	private Contact contact;
 	private Comment comments = new Comment();
 	private InstitutionEscaletePolicy iep;
 	private List<Activity> activityDetail = new ArrayList<Activity>();
@@ -74,18 +84,23 @@ public class ActivityController implements Serializable, DbConstant {
 	private List<Activity> approvedActDetails = new ArrayList<Activity>();
 	private List<Users> usersDetail = new ArrayList<Users>();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
+	private List<TaskAssignment> taskAssignList = new ArrayList<TaskAssignment>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> approvedActDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
+	private List<ActivityDto> activityEscalationDetails = new ArrayList<ActivityDto>();
 	private List<ActivityComment> commentDetail = new ArrayList<ActivityComment>();
 	private List<UploadingActivity> uploadingActivityDetails = new ArrayList<UploadingActivity>();
+	private List<Users> userDetails = new ArrayList<Users>();
 	private ActivityComment actComment = new ActivityComment();
 	private ActivityCommentImpl actcommentImpl = new ActivityCommentImpl();
+	UserCategoryImpl categoryImpl = new UserCategoryImpl();
 	private CommentImpl commentImpl = new CommentImpl();
 	private ActivityDto actDto = new ActivityDto();
 	private Documents document;
 	private DocumentsImpl docsImpl = new DocumentsImpl();
 	private UploadingActivityImpl uplActImpl = new UploadingActivityImpl();
+	private List<TaskAssignment> taskEscaltedAssignDetails = new ArrayList<TaskAssignment>();
 	private int lSize;
 	private int listSize;
 	private int completedSize;
@@ -109,6 +124,8 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean rejectRender;
 	private boolean approveRender;
 	private boolean commentRender;
+	private boolean renderEscalated;
+	private boolean renderAssignedEscalation;
 	private String[] status = { APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
@@ -126,6 +143,9 @@ public class ActivityController implements Serializable, DbConstant {
 	private InstitutionEscaletePolicy policy;
 	private Evaluation evaluation;
 	EvaluationImpl evaluationImpl = new EvaluationImpl();
+	TaskImpl taskImpl = new TaskImpl();
+	StrategicPlanImpl planImpl = new StrategicPlanImpl();
+	ContactImpl contactImpl = new ContactImpl();
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -168,6 +188,18 @@ public class ActivityController implements Serializable, DbConstant {
 		if (evaluation == null) {
 			evaluation = new Evaluation();
 		}
+		if (task == null) {
+			task = new Task();
+		}
+		if (plan == null) {
+			plan = new StrategicPlan();
+		}
+		if (assignment == null) {
+			assignment = new TaskAssignment();
+		}
+		if(contact==null) {
+			contact= new Contact();
+		}
 		try {
 			activityDetail = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "user", "status" }, new Object[] { ACTIVE, usersSession, APPROVED },
@@ -185,7 +217,7 @@ public class ActivityController implements Serializable, DbConstant {
 				user.setBoard((Board) data[3]);
 				usersDetail.add(user);
 			}
-			userSize=usersDetail.size();
+			userSize = usersDetail.size();
 
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status" },
@@ -226,7 +258,16 @@ public class ActivityController implements Serializable, DbConstant {
 			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
 					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
 					" from InstitutionEscaletePolicy");
-			escalateSize=ActivityEscalation().size();
+			escalateSize = ActivityEscalation().size();
+			userDetails = usersImpl.getGenericListWithHQLParameter(
+					new String[] { "genericStatus", "userCategory", "board" },
+					new Object[] { ACTIVE, categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() },
+					"Users", "userId asc");
+			taskEscaltedAssignDetails = listAssignedEscalatedActivity();
+			if (taskEscaltedAssignDetails.size() > 0) {
+				this.renderAssignedEscalation = true;
+			}
+			taskAssignList=listAssignedTarget();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -234,6 +275,187 @@ public class ActivityController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+
+	public List<TaskAssignment> listAssignedEscalatedActivity() {
+		try {
+			taskEscaltedAssignDetails = new ArrayList<TaskAssignment>();
+			for (Object[] data : taskAssignImpl.reportList("select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="+userassigned.getUserId()+" and tsk.taskStatus='"+ESCALATED+"'")) {
+				TaskAssignment ass= new TaskAssignment();
+				ass.setTaskAssignmentId(Integer.parseInt(data[0]+""));
+				ass.setTask((Task)data[1]);
+				ass.setUser((Users)data[2]);
+				ass.setCrtdDtTime((Timestamp)data[3]);
+				taskEscaltedAssignDetails.add(ass);
+			}
+			return(taskEscaltedAssignDetails);
+			
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public List<TaskAssignment> listAssignedTarget() {
+		try {
+			taskAssignList = new ArrayList<TaskAssignment>();
+			for (Object[] data : taskAssignImpl.reportList("select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="+userassigned.getUserId()+" and tsk.taskStatus='"+ACTIVE+"'")) {
+				TaskAssignment ass= new TaskAssignment();
+				ass.setTaskAssignmentId(Integer.parseInt(data[0]+""));
+				ass.setTask((Task)data[1]);
+				ass.setUser((Users)data[2]);
+				ass.setCrtdDtTime((Timestamp)data[3]);
+				taskAssignList.add(ass);
+			}
+			return( taskAssignList);
+			
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public void backAct() {
+		this.renderEscalated = false;
+		this.rendered = true;
+		// this.renderTaskForm=true;
+		this.backBtn = false;
+		activityEscalationDetails = ActivityEscalation();
+		escalateSize = activityEscalationDetails.size();
+	}
+
+	public void showEscalateActivity(ActivityDto info) {
+		HttpSession sessionuser = SessionUtils.getSession();
+		if (null != info) {
+			sessionuser.setAttribute("escalate", info);
+			LOGGER.info("Info Founded are ActivId:>>>>>>>>>>>>>>>>>>>>>>>:" + info.getActivityId());
+
+			activity = showEscalatedActivity();
+			this.renderEscalated = false;
+			// this.renderTaskForm = true;
+			this.backBtn = true;
+			this.renderTaskForm = false;
+		}
+	}
+
+	public void backListEscaleAct() {
+		this.backBtn = false;
+		this.renderEscalated = true;
+		this.renderTaskForm = true;
+	}
+
+	public void escalateActivity() {
+
+		try {
+			Users users = new Users();
+			Activity act = new Activity();
+			users = usersImpl.getModelWithMyHQL(new String[] { "status", "userId" }, new Object[] { ACTIVE, userId },
+					"from Users");
+			activity = showEscalatedActivity();
+			/*
+			 * act.setCrtdDtTime(timestamp); act.setGenericStatus(ACTIVE);
+			 * act.setStatus(ESCALATED); act.setCountActivityFailed(defaultCount);
+			 * act.setUpDtTime(timestamp); act.setUpdatedBy(usersSession.getFname() + " " +
+			 * usersSession.getLname()); act.setDate(timestamp);
+			 * if(activity.getActivityEscalated()>0) {
+			 * act.setActivityEscalated(activity.getActivityEscalated()+incrementCount);
+			 * }else { act.setActivityEscalated(incrementCount); } act.setUser(users);
+			 * act.setDescription(activity.getDescription());
+			 * act.setCreatedBy(activity.getCreatedBy()); act.setType(activity.getType());
+			 * act.setWeight(activity.getWeight()); act.setTask(activity.getTask());
+			 * act.setDate(activity.getDate()); activityImpl.saveActivity(act);
+			 */
+
+			task.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+			task.setCrtdDtTime(timestamp);
+			task.setGenericStatus(ACTIVE);
+			task.setUpDtTime(timestamp);
+			task.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
+			task.setParentTask(activity.getTask());
+			task.setEndDate(task.getDueDate());
+			task.setBoard(usersSession.getBoard());
+			task.setTaskStatus(ESCALATED);
+			task.setTaskName(activity.getDescription());
+			task.setDescription(activity.getDescription());
+
+			plan = planImpl.getModelWithMyHQL(new String[] { "genericStatus" }, new Object[] { ACTIVE },
+					SELECT_STRATEGIC_PLAN);
+			if (plan == null) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
+			} else {
+				task.setStrategicPlan(plan);
+				taskImpl.saveTask(task);
+			}
+			TaskAssignment assignm = new TaskAssignment();
+			assignm = taskAssignImpl.getModelWithMyHQL(new String[] { "task", "user" },
+					new Object[] { task, users }, "from TaskAssignment");
+			if (null == assignm) {
+				assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				LOGGER.info(assignment.getCreatedBy());
+				assignment.setCrtdDtTime(timestamp);
+				assignment.setGenericStatus(ACTIVE);
+				assignment.setUpDtTime(timestamp);
+				assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				assignment.setTask(task);
+				assignment.setUser(users);
+				taskAssignImpl.saveTaskAssignment(assignment);
+				SendSupportEmail email = new SendSupportEmail();
+				contact = contactImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
+						new Object[] { ACTIVE, users }, "from Contact");
+				if (contact == null) {
+					LOGGER.info(CLASSNAME + ":::The user has no contact details");
+				} else {
+					email.sendMailStrategicPlan("task", users.getFname(),
+							usersSession.getFname() + " " + usersSession.getLname(), contact.getEmail());
+					LOGGER.info(users.getFname() + " receives email from " + usersSession.getFname() + " "
+							+ usersSession.getLname() + " on this email ");
+				}
+				
+			}
+			activity.setGenericStatus(DESACTIVE);
+			activity.setActivityEscalated(incrementCount);
+			activityImpl.UpdateActivity(activity);
+			activityEscalationDetails = ActivityEscalation();
+			escalateSize = activityEscalationDetails.size();
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.Escalation"));
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.Escalation.error"));
+			e.printStackTrace();
+		}
+	}
+
+	public Activity showEscalatedActivity() {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		actDto = (ActivityDto) session.getAttribute("escalate");
+		activity = activityImpl.getActivityById(actDto.getActivityId(), "activityId");
+		if (null != activity) {
+			return activity;
+		}
+		return null;
+	}
+
+	public void showEscalated() {
+		this.rendered = false;
+		this.renderTable = false;
+		this.renderCompleted = false;
+		this.approveRender = false;
+		this.rejectRender = false;
+		this.completeRender = false;
+		this.commentRender = false;
+		this.renderEscalated = true;
+		this.renderTaskForm = true;
+		activityEscalationDetails = ActivityEscalation();
 	}
 
 	@SuppressWarnings({ "static-access", "unchecked" })
@@ -248,8 +470,8 @@ public class ActivityController implements Serializable, DbConstant {
 					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
 					" from InstitutionEscaletePolicy");
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
-					new String[] { "genericStatus", "createdBy", "status","task" },
-					new Object[] { ACTIVE, usersSession.getFname() + " " + usersSession.getLname(), PLAN_ACTIVITY,info.getTask() },
+					new String[] { "genericStatus", "createdBy", "status", "task" }, new Object[] { ACTIVE,
+							usersSession.getFname() + " " + usersSession.getLname(), PLAN_ACTIVITY, info.getTask() },
 					"Activity", "creationDate desc");
 			if (activityDetails.size() > 0) {
 				for (Activity activity : activityDetails) {
@@ -274,12 +496,12 @@ public class ActivityController implements Serializable, DbConstant {
 						} else {
 							LOGGER.info(":::::Transaction Failed!!!::::DAY FOUND::" + days);
 						}
-					} 
+					}
 				}
 			} else {
 				validTransaction = false;
-					LOGGER.info(":::::Transaction Failed!!!::::SIZE FOUND::"+activityDetails.size());
-				}
+				LOGGER.info(":::::Transaction Failed!!!::::SIZE FOUND::" + activityDetails.size());
+			}
 
 			return (validTransaction);
 		} catch (Exception e) {
@@ -290,28 +512,32 @@ public class ActivityController implements Serializable, DbConstant {
 			return false;
 		}
 	}
-	public List<ActivityDto>ActivityEscalation(){
+
+	public List<ActivityDto> ActivityEscalation() {
 		List<ActivityDto> ActivityDtoList = new ArrayList<ActivityDto>();
 		try {
 			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
-					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() }, " from InstitutionEscaletePolicy");
-			for (Object[] data :activityImpl.reportList("SELECT ac.activityId,ac.description,ac.status,ac.weight,ac.type,ac.countActivityFailed,ac.startDate,ac.dueDate,ac.endDate,ac.user,tsk.taskName from Activity ac,Task tsk where ac.task=tsk.taskId and ActivityFailed>"+iep.getReschduleTime()+"")) {
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
+			for (Object[] data : activityImpl.reportList(
+					"SELECT ac.activityId,ac.description,ac.status,ac.weight,ac.type,ac.countActivityFailed,ac.startDate,ac.dueDate,ac.endDate,ac.user,tsk.taskName from Activity ac,Task tsk where ac.task=tsk.taskId and ActivityFailed>"
+							+ iep.getReschduleTime() + " and ac.genericStatus='" + ACTIVE + "'")) {
 				ActivityDto activityDto = new ActivityDto();
-				LOGGER.info("::::Info Found"+data[0]+":::"+data[1]+"");
-				activityDto.setActivityId(Integer.parseInt(data[0]+""));
-				activityDto.setDescription(data[1]+"");
-				activityDto.setStatus(data[2]+"");
-				activityDto.setWeight(data[3]+"");
-				activityDto.setType(data[4]+"");
-				activityDto.setActivityFailed(Integer.parseInt(data[5]+""));
-				activityDto.setStartDate((Date)data[6]);
-				activityDto.setDueDate((Date)data[7]);
-				activityDto.setEndDate((Date)data[8]);
-				activityDto.setUser((Users)data[9]);
-				activityDto.setTaskName(data[10]+"");
+				LOGGER.info("::::Info Found" + data[0] + ":::" + data[1] + "");
+				activityDto.setActivityId(Integer.parseInt(data[0] + ""));
+				activityDto.setDescription(data[1] + "");
+				activityDto.setStatus(data[2] + "");
+				activityDto.setWeight(data[3] + "");
+				activityDto.setType(data[4] + "");
+				activityDto.setActivityFailed(Integer.parseInt(data[5] + ""));
+				activityDto.setStartDate((Date) data[6]);
+				activityDto.setDueDate((Date) data[7]);
+				activityDto.setEndDate((Date) data[8]);
+				activityDto.setUser((Users) data[9]);
+				activityDto.setTaskName(data[10] + "");
 				ActivityDtoList.add(activityDto);
 			}
-		
+
 			return (ActivityDtoList);
 		} catch (Exception e) {
 			setValid(false);
@@ -320,10 +546,9 @@ public class ActivityController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
-		
 		return null;
 	}
-	
+
 	public List<ActivityDto> showActivity(List<Activity> list) throws Exception {
 
 		HttpSession sessionfailedActiv = SessionUtils.getSession();
@@ -435,7 +660,6 @@ public class ActivityController implements Serializable, DbConstant {
 		return ActivityDtoList;
 	}
 
-
 	public void showAct() {
 		this.rendered = false;
 		this.rendered1 = true;
@@ -448,45 +672,36 @@ public class ActivityController implements Serializable, DbConstant {
 		this.commentRender = false;
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public void viewActivity(TaskAssignment info) {
 		try {
 			taskAssign = info;
 			boolean isTransactionValid = isdayActivityIsApproved(info);
 			if (isTransactionValid) {
-				/*JSFMessagers.resetMessages();
-				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.transaction.actitityapproval.done"));*/
+				/*
+				 * JSFMessagers.resetMessages(); setValid(true);
+				 * JSFMessagers.addErrorMessage(getProvider().getValue(
+				 * "com.transaction.actitityapproval.done"));
+				 */
 				LOGGER.info(CLASSNAME + ":::Transaction done");
 			} else {
-				/*JSFMessagers.resetMessages();
-				setValid(false);
-				JSFMessagers.addErrorMessage(getProvider().getValue("com.transaction.actitityapproval.failed"));*/
+				/*
+				 * JSFMessagers.resetMessages(); setValid(false);
+				 * JSFMessagers.addErrorMessage(getProvider().getValue(
+				 * "com.transaction.actitityapproval.failed"));
+				 */
 				LOGGER.info(CLASSNAME + ":::Transaction fail");
 			}
+
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "task", "user" },
 					new Object[] { ACTIVE, info.getTask(), usersSession }, "Activity", "creationDate desc");
-			
+
 			activityDtoDetails = showActivity(activityDetails);
-			/*
-			 * for (Activity activity : activityDetails) { ActivityDto activityDto = new
-			 * ActivityDto(); activityDto.setActivityId(activity.getActivityId());
-			 * activityDto.setEditable(false);
-			 * activityDto.setDescription(activity.getDescription());
-			 * activityDto.setStatus(activity.getStatus());
-			 * activityDto.setWeight(activity.getWeight());
-			 * activityDto.setCreatedDate(activity.getCrtdDtTime());
-			 * activityDto.setStartDate(activity.getStartDate());
-			 * activityDto.setDueDate(activity.getDueDate());
-			 * activityDto.setTask(activity.getTask());
-			 * activityDto.setGenericstatus(activity.getGenericStatus());
-			 * activityDtoDetails.add(activityDto); }
-			 */
 			this.renderTask = false;
 			this.renderCompleted = true;
 			this.backBtn = true;
+			this.renderAssignedEscalation=false;
 
 		} catch (Exception e) {
 			setValid(false);
@@ -699,6 +914,7 @@ public class ActivityController implements Serializable, DbConstant {
 		rendered = true;
 		rendered1 = false;
 		renderCompleted = false;
+		backBtn = false;
 	}
 
 	public void back1() {
@@ -846,6 +1062,64 @@ public class ActivityController implements Serializable, DbConstant {
 		this.renderUpload = true;
 	}
 
+	public String planEscatedActivity(ActivityDto activity) {
+		try {
+			HttpSession session = SessionUtils.getSession();
+			// Get the values from the session
+			/* int ActFailCount = (Integer) session.getAttribute("activfailed"); */
+			Activity act = new Activity();
+			// act = new Activity();
+			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
+			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
+			if (activity.getStatus().equals(ESCALATED) || activity.getStatus().equals(REJECT)) {
+				if (activity.getStatus().equals(ESCALATED)) {
+					act.setCountPlanned(incrementCount);
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(PLAN_ACTIVITY);
+					act.setStartDate(timestamp);
+					Calendar cal1 = new GregorianCalendar();
+					cal1.setTime(new Date());
+					cal1.add(Calendar.DATE, iep.getPlanPeriod());
+					java.util.Date dDate = cal1.getTime();
+					act.setDueDate(dDate);
+					act.setStartDate(timestamp);
+				} else {
+					act.setCountPlanned(incrementCount);
+					act.setCountApproved(defaultCount);
+					act.setCountReported(defaultCount);
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(PLAN_ACTIVITY);
+					Calendar cal1 = new GregorianCalendar();
+					cal1.setTime(new Date());
+					cal1.add(Calendar.DATE, iep.getPlanPeriod());
+					java.util.Date dDate = cal1.getTime();
+					act.setDueDate(dDate);
+					act.setStartDate(timestamp);
+				}
+			}
+			activityImpl.UpdateActivity(act);
+			
+			JSFMessagers.resetMessages();
+			setValid(true);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
+			LOGGER.info(CLASSNAME + ":::Activity Details is failed");
+		}
+
+		// return to current page
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public String planAction(ActivityDto activity) {
 		try {
@@ -934,6 +1208,7 @@ public class ActivityController implements Serializable, DbConstant {
 				act.setUpdatedBy(usersSession.getViewId());
 				act.setUpDtTime(timestamp);
 				act.setStatus(PLAN_ACTIVITY);
+				act.setCountPlanned(act.getCountPlanned() + incrementCount);
 			}
 			activityImpl.UpdateActivity(act);
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
@@ -1071,7 +1346,6 @@ public class ActivityController implements Serializable, DbConstant {
 		// return to current page
 		return null;
 	}
-
 
 	public String cancel(ActivityDto activity) {
 		if (activity.getStatus().equals(NOTSTARTED)) {
@@ -1276,6 +1550,8 @@ public class ActivityController implements Serializable, DbConstant {
 			} else {
 				this.renderCompleted = false;
 				this.renderCommentTable = true;
+				this.renderTask = false;
+				this.renderAssignedEscalation = false;
 				activity = act;
 				commentDetail = actcommentImpl.getGenericListWithHQLParameter(
 						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "ActivityComment",
@@ -1307,6 +1583,7 @@ public class ActivityController implements Serializable, DbConstant {
 			this.renderTaskForm = true;
 			this.rendered = false;
 			this.backBtn = true;
+			this.renderAssignedEscalation=false;
 		}
 	}
 
@@ -1357,8 +1634,16 @@ public class ActivityController implements Serializable, DbConstant {
 		return null;
 	}
 
-	public String getMyFormattedDate(TaskAssignment statDate) {
-		return new SimpleDateFormat("dd-MM-yyyy").format(statDate.getCrtdDtTime());
+	public String getMyFormattedStartDate(ActivityDto startDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(startDate.getStartDate());
+	}
+
+	public String getMyFormattedDueDate(ActivityDto dueDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(dueDate.getDueDate());
+	}
+
+	public String getMyFormattedReportDate(ActivityDto endDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(endDate.getEndDate());
 	}
 
 	public String getMyFormattedCreatedDate(ActivityDto createDate) {
@@ -1929,6 +2214,95 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setEvaluationImpl(EvaluationImpl evaluationImpl) {
 		this.evaluationImpl = evaluationImpl;
+	}
+
+	public boolean isRenderEscalated() {
+		return renderEscalated;
+	}
+
+	public void setRenderEscalated(boolean renderEscalated) {
+		this.renderEscalated = renderEscalated;
+	}
+
+	public List<ActivityDto> getActivityEscalationDetails() {
+		return activityEscalationDetails;
+	}
+
+	public void setActivityEscalationDetails(List<ActivityDto> activityEscalationDetails) {
+		this.activityEscalationDetails = activityEscalationDetails;
+	}
+
+	public List<Users> getUserDetails() {
+		return userDetails;
+	}
+
+	public void setUserDetails(List<Users> userDetails) {
+		this.userDetails = userDetails;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public UserCategoryImpl getCategoryImpl() {
+		return categoryImpl;
+	}
+
+	public void setCategoryImpl(UserCategoryImpl categoryImpl) {
+		this.categoryImpl = categoryImpl;
+	}
+
+
+	public boolean isRenderAssignedEscalation() {
+		return renderAssignedEscalation;
+	}
+
+	public void setRenderAssignedEscalation(boolean renderAssignedEscalation) {
+		this.renderAssignedEscalation = renderAssignedEscalation;
+	}
+
+	public TaskAssignment getAssignment() {
+		return assignment;
+	}
+
+	public void setAssignment(TaskAssignment assignment) {
+		this.assignment = assignment;
+	}
+
+	public StrategicPlan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(StrategicPlan plan) {
+		this.plan = plan;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	public List<TaskAssignment> getTaskEscaltedAssignDetails() {
+		return taskEscaltedAssignDetails;
+	}
+
+	public void setTaskEscaltedAssignDetails(List<TaskAssignment> taskEscaltedAssignDetails) {
+		this.taskEscaltedAssignDetails = taskEscaltedAssignDetails;
+	}
+
+	public List<TaskAssignment> getTaskAssignList() {
+		return taskAssignList;
+	}
+
+	public void setTaskAssignList(List<TaskAssignment> taskAssignList) {
+		this.taskAssignList = taskAssignList;
 	}
 
 }

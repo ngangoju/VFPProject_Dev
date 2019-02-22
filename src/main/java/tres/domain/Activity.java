@@ -46,6 +46,8 @@ public class Activity extends CommonDomain implements Serializable {
 	
 	@Column(name="ActivityFailed",nullable = false, columnDefinition ="int default 0")
 	private int countActivityFailed;
+	@Column(name="ActivityEscalated",nullable = false, columnDefinition ="int default 0")
+	private int ActivityEscalated;
 	@Column(name="ActivityApproved",nullable = false, columnDefinition ="int default 0")
 	private int countApproved;
 	@Column(name="ActivityPlanned",nullable = false, columnDefinition ="int default 0")
@@ -194,6 +196,14 @@ public class Activity extends CommonDomain implements Serializable {
 
 	public void setCountReported(int countReported) {
 		this.countReported = countReported;
+	}
+
+	public int getActivityEscalated() {
+		return ActivityEscalated;
+	}
+
+	public void setActivityEscalated(int activityEscalated) {
+		ActivityEscalated = activityEscalated;
 	}	
 	
 }

@@ -23,7 +23,7 @@
 								style="font: italic bold 14px/25px Georgia, serif; margin-left: 25%;">Activity
 									Management</label>
 							</span>
-							<p:autoUpdate/>
+							<p:autoUpdate />
 						</p:outputPanel>
 						<p:outputPanel rendered="#{activityController.renderTaskForm}">
 
@@ -37,7 +37,7 @@
 								<span style="color: red">#{msg['header.title.asteriks']}</span>
 								#{msg['header.title.mandatory']}
 							</span>
-							<p:autoUpdate/>
+							<p:autoUpdate />
 						</p:outputPanel>
 					</ui:repeat>
 				</div>
@@ -239,6 +239,94 @@
 						</p:outputPanel>
 						<!-- END OF ASSIGNMENT -->
 
+						<!-- LIST OF ASSIGNED ESCALATED ACTIVITIES -->
+						<p:outputPanel
+							rendered="#{activityController.renderAssignedEscalation}">
+							<fieldset style="width: 100%;">
+								<legend>
+									<label style="font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.Escalated.Assigned']}[#{activityController.usersSession.fname}&nbsp;#{activityController.usersSession.lname}]</label>
+								</legend>
+								<div class=" col-md-12"
+								style="height: 330px; overflow-y: scroll;">
+								<h:dataTable id="taskAssignTable2" binding="#{table3}"
+									style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:100% !important;
+       						 -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 5px 0 !important;"
+									value="#{activityController.taskEscaltedAssignDetails}" var="esca"
+									class="table table-striped table-hover table-bordered tableUpdated ">
+									<f:facet name="header">
+										<label
+											style="margin-left: 35%; font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.table.title']}</label>
+
+									</f:facet>
+
+									<h:column>
+										<f:facet name="header">
+											<label>No</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{table3.rowIndex + 1}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Target name</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{esca.task.taskName}">
+										</h:outputText>
+
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Target weight</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{esca.task.taskWeight}">
+										</h:outputText>
+
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Description</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{esca.task.description}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Assigned date</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{esca.crtdDtTime}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Action</label>
+										</f:facet>
+										<div class="btn-group btn btn-sm" role="group"
+											aria-label="Basic example" style="margin-top: 5%;">
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="#{msg['createactivity.editButton']}"
+												class="btn btn-sm btn-info glyphicon glyphicon-edit"
+												action="#{activityController.createActivity(esca)}">
+												<f:ajax render="@all" execute="@all" onevent="showProgress" />
+											</h:commandLink>
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="#{msg['viewactivity.editButton']}"
+												class="btn btn-sm btn-primary glyphicon glyphicon-list"
+												action="#{activityController.viewActivity(esca)}">
+												<f:ajax render="@all" execute="@all" onevent="showProgress" />
+											</h:commandLink>
+
+
+										</div>
+									</h:column>
+								</h:dataTable>
+							</div>
+							</fieldset>
+							<br/>
+							<hr/>
+						</p:outputPanel>
+						<!-- END OF ASSIGNED ESCALATED ACTIVITIES -->
 
 						<!-- LIST OF ASSIGNED TASK  TABLE VIEW -->
 						<p:outputPanel rendered="#{activityController.renderTask}">
@@ -247,7 +335,7 @@
 								<h:dataTable id="taskAssignTable" binding="#{table}"
 									style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:100% !important;
        						 -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 5px 0 !important;"
-									value="#{activityController.taskAssignDetails}" var="info"
+									value="#{activityController.taskAssignList}" var="info"
 									class="table table-striped table-hover table-bordered tableUpdated ">
 									<f:facet name="header">
 										<label
@@ -292,8 +380,7 @@
 											<label>Assigned date</label>
 										</f:facet>
 										<br />
-										<h:outputText
-											value="#{activityController.getMyFormattedDate(info)}" />
+										<h:outputText value="#{info.crtdDtTime}" />
 									</h:column>
 									<h:column>
 										<f:facet name="header">
@@ -305,15 +392,13 @@
 												title="#{msg['createactivity.editButton']}"
 												class="btn btn-sm btn-info glyphicon glyphicon-edit"
 												action="#{activityController.createActivity(info)}">
-												<f:ajax render="@all" execute="@all"
-													onevent="showProgress" />
+												<f:ajax render="@all" execute="@all" onevent="showProgress" />
 											</h:commandLink>
 											<h:commandLink data-toggle="tooltip" data-placement="left"
 												title="#{msg['viewactivity.editButton']}"
 												class="btn btn-sm btn-primary glyphicon glyphicon-list"
 												action="#{activityController.viewActivity(info)}">
-												<f:ajax render="@all" execute="@all"
-													onevent="showProgress" />
+												<f:ajax render="@all" execute="@all" onevent="showProgress" />
 											</h:commandLink>
 
 
@@ -321,8 +406,8 @@
 									</h:column>
 								</h:dataTable>
 							</div>
-							<p:autoUpdate />
 						</p:outputPanel>
+
 						<!-- END OF TASK VIEW -->
 
 						<!-- LIST OF CREATED ACTIVITIES ON THE TASK  TABLE VIEW -->
@@ -439,7 +524,8 @@
 											<label>Creation date</label>
 										</f:facet>
 										<br />
-										<h:outputText value="#{activityController.getMyFormattedCreatedDate(act)}">
+										<h:outputText
+											value="#{activityController.getMyFormattedCreatedDate(act)}">
 										</h:outputText>
 
 									</h:column>
@@ -468,7 +554,7 @@
 											rendered="#{act.showNotStartedIcon}"></h:commandLink>
 
 										<h:outputText value="#{act.startDate}">
-											</h:outputText>
+										</h:outputText>
 
 									</h:column>
 									<h:column>
@@ -497,7 +583,7 @@
 
 										<h:outputText value="#{act.dueDate}"
 											rendered="#{not act.editable}">
-											
+
 										</h:outputText>
 
 									</h:column>
@@ -617,13 +703,13 @@
 												</a>
 												<br />
 											</p:outputPanel>
-											
+
 											<h:commandLink
-											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
-											data-toggle="tooltip" data-placement="left"
-											title="#{msg['UserCategoryView.iconsDueDateButton']}"
-											class="glyphicon glyphicon-info-sign fa-fw fa-2x"
-											rendered="#{act.showPlanedIcon}"></h:commandLink>
+												style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
+												data-toggle="tooltip" data-placement="left"
+												title="#{msg['UserCategoryView.iconsDueDateButton']}"
+												class="glyphicon glyphicon-info-sign fa-fw fa-2x"
+												rendered="#{act.showPlanedIcon}"></h:commandLink>
 										</div>
 									</h:column>
 									<f:facet name="footer">
@@ -747,7 +833,7 @@
 														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 														class="btn btn-info  glyphicon glyphicon-edit"
 														action="#{activityController.saveComment()}">
-														<p:autoUpdate/>
+														<p:autoUpdate />
 													</h:commandLink>
 												</p:outputPanel> <p:outputPanel rendered="#{activityController.planBtn}"
 													autoUpdate="true">
@@ -755,7 +841,7 @@
 														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
 														class="btn btn-info  glyphicon glyphicon-edit"
 														action="#{activityController.saveSupervisorComment()}">
-														<p:autoUpdate/>
+														<p:autoUpdate />
 													</h:commandLink>
 												</p:outputPanel></td>
 											<td><h:commandLink
@@ -767,7 +853,7 @@
 														onevent="showProgress" />
 												</h:commandLink></td>
 										</tr>
-										<p:autoUpdate/>
+										<p:autoUpdate />
 									</p:outputPanel>
 									<tr>
 										<td colspan="2"><a

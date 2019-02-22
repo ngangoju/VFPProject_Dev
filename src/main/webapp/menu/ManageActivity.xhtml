@@ -13,434 +13,839 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<h:panelGroup layout="block"
-				rendered="#{activityController.valid and  not facesContext.validationFailed}">
-				<ul>
-					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
-						<li
-							style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
-							class="alert alert-success"><h:outputText
-								value="#{facesMessage.summary}" escape="false" /></li>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<ui:repeat var="time" value="#">
+
+						<p:outputPanel rendered="#{activityController.renderTask}"
+							autoUpdate="true">
+							<span style="color: white; font-size: 10pt"> <label
+								style="font: italic bold 14px/25px Georgia, serif; margin-left: 25%;">#{msg['EscalateForm.activity']}</label>
+							</span>
+
+						</p:outputPanel>
+
 					</ui:repeat>
-				</ul>
-			</h:panelGroup>
-			<h:panelGroup layout="block"
-				rendered="#{not activityController.valid and not facesContext.validationFailed}">
-				<ul>
-					<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
-						<li class="alert alert-danger"
-							style="list-style: none; background-color: #FF2400; color: white">
-							<center>
-								<h:outputText value="#{facesMessage.summary}" escape="false" />
-							</center>
-						</li>
-					</ui:repeat>
-				</ul>
-			</h:panelGroup>
+				</div>
+				<div class="panel-body"
+					style="border: 0px solid blue; margin-top: 4px; height: auto; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
+					<h:form>
+						<h:panelGroup layout="block"
+							rendered="#{not activityController.valid and not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li class="alert alert-danger"
+										style="list-style: none; background-color: #FF2400; color: white">
+										<center>
+											<h:outputText value="#{facesMessage.summary}" escape="false" />
+										</center>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
 
-			<h:form>
+						<h:panelGroup layout="block"
+							rendered="#{activityController.valid and  not facesContext.validationFailed}">
+							<ul>
+								<ui:repeat value="#{facesContext.messageList}"
+									var="facesMessage">
+									<li
+										style="list-style: none; background-color: #32CD32; color: white; margin-left: -4.9%"
+										class="alert alert-success"><h:outputText
+											value="#{facesMessage.summary}" escape="false" /></li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+					
+						<p:outputPanel rendered="#{activityController.renderEscalated}">
 
-
-				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
-
-				<h:panelGroup id="tables1" rendered="#{activityController.rendered}">
-				<h1>#{msg['manage.activity.form']}</h1>
-					<div class="col-md-4 col-sm-6">
-						<div class="circle-tile2 ">
-
-							<div class="circle-tile-heading2 green2 ">
-								<h1 style="color: white;">#{activityController.userSize}</h1>
-							</div>
-
-							<div class="circle-tile-content2 green2 ">
-								<div class="circle-tile-description text-faded2">
-									<label
-										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
-										#{msg['user.activity.form']}</label>
-								</div>
-								<div class="circle-tile-number2 text-faded2">
-									<span class="glyphicon glyphicon-user"></span> <span
-										id="sparklineB"></span> <label
-										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
-										&nbsp;#{msg['message.user.notcont']}</label>
-								</div>
-								<h:commandLink styleClass="circle-tile-footer"
-									actionListener="#{activityController.showAct()}"
-									value="More Info">
-									<i class="glyphicon glyphicon-chevron-right"></i>
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-							</div>
-						</div>
-
-					</div>
-					<div class="col-md-4 col-sm-6">
-						<div class="circle-tile2">
-
-							<div class="circle-tile-heading2 blue2 text-white">
-								<h1 style="color: white;">#{activityController.escalateSize}</h1>
-							</div>
-
-							<div class="circle-tile-content2 blue2">
-								<div class="circle-tile-description text-faded2">
-									<label
-										style="font-family: Open Sans sans-serif !important; font-size: 28px !important; color: white;">
-										#{msg['escalate.activity.form']}</label>
-								</div>
-								<div class="circle-tile-number2 text-faded2">
-									<span class="glyphicon glyphicon-tasks"></span> <span
-										id="sparklineB"></span><label
-										style="color: white; font-family: Open Sans sans-serif !important; font-size: 15px !important;">
-										&nbsp; #{msg['escalation.form.message']}</label>
-
-								</div>
-								<h:commandLink styleClass="circle-tile-footer"
-									actionListener="#{activityController.showEscalated()}"
-									value="More Info">
-									<i class="glyphicon glyphicon-chevron-right"></i>
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-
-							</div>
-						</div>
-
-					</div>
-				</h:panelGroup>
-				
-				<!-- 			END OF ACTIVITIES MANAGEMENT DASHBOARD			 -->
-
-				<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
-
-				<h:panelGroup id="tables" rendered="#{activityController.rendered1}">
-					<div class="nav">
-						<div class="div-action pull pull-left"
-							style="padding-bottom: 20px;">
-					<h1>#{msg['planned.activity.staff']}</h1>
-						</div>
-						<div class="div-action pull pull-right"
-							style="padding-bottom: 20px;">
 							<h:commandLink
-								class="btn btn-primary glyphicon glyphicon-chevron-left"
-								actionListener="#{activityController.back()}"
-								action="#{activityController.back()}"
-								value="#{msg['UserRegForm.BackButton']}">
+								styleClass="btn btn-primary glyphicon glyphicon-chevron-left"
+								actionListener="#{activityController.backAct()}"
+								value="#{msg['UserCatForm.BackBoardButtom']}">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
 							</h:commandLink>
-						</div>
-						</div>
-					<p:dataTable id="example1" class="display" cellspacing="0"
-						value="#{activityController.usersDetail}" var="act">
-						<p:autoUpdate/>
-
-						<p:column headerText="#{msg['massages.cmn.common.first.fname']}"
-							sortBy="#{act.fname}">
-
-							<h:outputText value="#{act.fname}" />
-						</p:column>
 
 
-						<p:column headerText="#{msg['massages.cmn.common.last.lname']}"
-							sortBy="#{act.lname}">
+						</p:outputPanel>
+							<p:outputPanel rendered="#{activityController.backBtn}">
 
-							<h:outputText value="#{act.lname}" />
-
-						</p:column>
-
-						<p:column headerText="#{msg['form.board.board']}"
-							sortBy="#{act.board}">
-
-							<h:outputText value="#{act.board.boardName}" />
-
-						</p:column>
-
-						<!-- 					<p:column headerText="#{msg['form.groupmenu.creationdate']}" -->
-						<!-- 						sortBy="#{act.crtdDtTime}"> -->
-
-						<!-- 						<h:outputText value="#{act.crtdDtTime}" /> -->
-
-						<!-- 					</p:column> -->
-
-						<!-- 					<p:column headerText="#{msg['task.form']}" -->
-						<!-- 						sortBy="#{act.task}"> -->
-						<!-- 						<a href="#"> -->
-						<!-- 						<h:outputText value="#{act.task}" /></a> -->
-
-						<!-- 					</p:column> -->
-
-						<!-- 					<p:column headerText="#{msg['form.strategicPlan.users']}" -->
-						<!-- 						sortBy="#{act.createdBy}"> -->
-
-						<!-- 						<h:outputText value="#{act.createdBy}" /> -->
-
-						<!-- 					</p:column> -->
-
-						<p:column headerText="Action">
-
-							<h:commandButton style="margin-left:2px;color:white"
-								class="btn btn-secondary btn-primary 	glyphicon glyphicon-info-sign"
-								action="#{activityController.showTasks(act)}"
-								value="#{msg['details.activity.message']}"></h:commandButton>
-
-						</p:column>
-
-					</p:dataTable>
-				</h:panelGroup>
-
-				<!-- 			CLOSE OF ALL STAFF IN THE SAME BOARD TABLE			 -->
-
-
-
-
-				<p:outputPanel id="table6" rendered="#{activityController.renderTable}">
-					<p:autoUpdate/>
-					<div class="nav">
-						<div class="div-action pull pull-left"
-							style="padding-bottom: 20px;">
-							<h1>#{msg['form.activity.table']}</h1>
-						</div>
-						<div class="div-action pull pull-right"
-							style="padding-bottom: 20px;">
 							<h:commandLink
-								class="btn btn-primary glyphicon glyphicon-chevron-left"
-								actionListener="#{activityController.back()}"
-								action="#{activityController.back1()}"
-								value="#{msg['UserRegForm.BackButton']}">
+								styleClass="btn btn-primary glyphicon glyphicon-chevron-left"
+								actionListener="#{activityController.backListEscaleAct()}"
+								value="#{msg['UserCatForm.BackBoardButtom']}">
 								<f:ajax render="@form" execute="@form" onevent="showProgress" />
 							</h:commandLink>
-						</div>
-					</div>
-					<p:dataTable id="example7" class="display" cellspacing="0"
-						rows="5" paginator="true"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15"
-						value="#{activityController.activityDetail}" var="info">
-						<p:autoUpdate /> 
-						<f:facet name="header">
 
-							<div class="form-group row">
-								<label for="todate"
-									class="col-md-4 col-sm-4 col-xs-5 control-label"
-									style="color: black">#{msg['select.status.activity.form']}</label>
-								<div class="col-md-3 col-sm-3 col-xs-4">
-									<h:selectOneMenu id="categoryId6" styleClass="form-control"
-										required="false" value="#{activityController.selectedStatus}"
-										requiredMessage="#{msg['listofmenu.status.required']}">
-										<f:selectItem
-											itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
-											itemValue="#{null}" escapeItem="true" />
-										<f:selectItems value="#{activityController.status}"
-											itemLabelEscaped="true" />
-										<f:ajax render="@form" event="change" execute="@this"
-											listener="#{activityController.changeSelectStatus()}"
-											onevent="showProgress" />
-									</h:selectOneMenu>
+
+						</p:outputPanel>
+					
+						<!--  LIST OF TASK ASSIGNED START HERE -->
+						<p:outputPanel rendered="#{activityController.backBtn}"
+							autoUpdate="true">
+							<fieldset style="width: 90%; margin-left: 3%;">
+								<legend>
+									<label style="font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.transform.target']}</label>
+								</legend>
+								<!-- Task assigned details -->
+
+								<h:panelGroup id="ReasonPanel" layout="block">
+									<div class="form-group row"
+										style="font: italic 14px/18px Georgia, serif;">
+										<label for="todate"
+											class="col-md-4 col-sm-4 col-xs-4 control-label"
+											style="color: black">#{msg['form.activity.description']}<span
+											style="color: red">*</span>
+										</label>
+										<div class="col-md-6 col-sm-6 col-xs-7">
+											<h:inputTextarea id="descriptionId" styleClass="form-control"
+												disabled="true"
+												value="#{activityController.activity.description}"
+												maxlength="150" required="true"
+												requiredMessage="#{msg['description.required.message']}"
+												validatorMessage="#{msg['error.address.maxlength']}">
+												<f:validateLength maximum="150" />
+											</h:inputTextarea>
+										</div>
+										<div class="col-md-1 col-sm-1 col-xs-1"></div>
+
+										<h:message for="descriptionId" styleClass="help-block"></h:message>
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup id="ReasonPanel2" layout="block">
+									<div class="form-group row"
+										style="font: italic 14px/18px Georgia, serif;">
+										<label for="todate"
+											class="col-md-4 col-sm-4 col-xs-4 control-label"
+											style="color: black">#{msg['form.activity.weight']}<span
+											style="color: red">*</span>
+										</label>
+										<div class="col-md-6 col-sm-6 col-xs-7">
+											<h:inputTextarea id="actweight" styleClass="form-control"
+												disabled="true"
+												value="#{activityController.activity.weight}"
+												maxlength="100" required="true"
+												requiredMessage="#{msg['description.required.message']}"
+												validatorMessage="#{msg['error.address.maxlength']}">
+												<f:validateLength maximum="150" />
+											</h:inputTextarea>
+										</div>
+										<div class="col-md-1 col-sm-1 col-xs-1"></div>
+
+										<h:message for="descriptionId" styleClass="help-block"></h:message>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup id="categoryPane" layout="block">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black">#{msg['form.target.weight']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:selectOneMenu id="weightId" styleClass="form-control"
+											required="true" value="#{activityController.task.taskWeight}"
+											requiredMessage="#{msg['weight.required.message']}">
+											<f:selectItem
+												itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+												itemValue="#{null}" escapeItem="true" />
+											<f:selectItems value="#{activityController.weight}"
+												var="option" itemValue="#{option}" itemLabelEscaped="true" />
+											<f:ajax event="change" execute="@this"
+												listener="#{activityController.changeSelectBox('Junior')}"
+												render="ReasonPanel" />
+										</h:selectOneMenu>
+									</div>
+									<div class="col-md-1 col-sm-1 col-xs-1"></div>
+									<h:message for="weightId" styleClass="help-block"></h:message>
 								</div>
-								<h:message for="categoryId6" styleClass="help-block"></h:message>
-							</div>
-						</f:facet>
+							</h:panelGroup>
+							
+							<h:panelGroup id="fromDatePanel" layout="block">
 
-						<p:column headerText="#{msg['form.activity.description']}"
-							sortBy="#{info.description}">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black">#{msg['form.task.startDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_start_date_id"
+											binding="#{from_dob_date_id}" class="form-control"
+											escape="true" value="#{activityController.task.startDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['startDate.required.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_start_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	yearRange : "-100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<h:message for="from_start_date_id" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
 
-							<h:outputText value="#{info.description}" />
-						</p:column>
 
+							<h:panelGroup id="fromDatePane" layout="block">
 
-						<p:column headerText="#{msg['form.activity.status']}"
-							sortBy="#{info.status}">
+								<div class="form-group row">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black">#{msg['form.task.dueDate']}<span
+										style="color: red">*</span></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:inputText locale="#{facesContext.viewRoot.locale}"
+											autocomplete="off" id="from_due_date_id"
+											binding="#{from_due_date_id}" class="form-control"
+											escape="true" value="#{activityController.task.dueDate}"
+											maxlength="35" required="true"
+											converterMessage="#{msg['validation.message.DATE_FORMAT']}"
+											requiredMessage="#{msg['dueDate.required.message']}">
+											<f:convertDateTime type="date" dateType="short"
+												pattern="dd/MM/yyyy" />
+											<f:validateLength maximum="35" />
+										</h:inputText>
+										<script>
+											$(function() {
+												$(
+														'input[id*="from_due_date_id"]')
+														.datepicker(
+																{
+																	changeMonth : true,
+																	changeYear : true,
+																	//maxDate: 0,
+																	minDate : 0,
+																	dateFormat : "dd/mm/yy",
+																	// 																	yearRange : "100:+0",
+																	buttonImage : "/resources/image/calendar1.png"
+																});
+											});
+										</script>
+									</div>
+									<h:message for="from_due_date_id" styleClass="help-block"></h:message>
+								</div>
+							</h:panelGroup>
 
-							<h:outputText value="#{info.status}" />
+							
+								<!-- End of task details -->
+								
+								<h:panelGroup id="typePane" layout="block">
+									<div class="form-group row"
+										style="font: italic 14px/18px Georgia, serif;">
+										<label for="todate"
+											class="col-md-4 col-sm-4 col-xs-4 control-label"
+											style="color: black">#{msg['message.liststaff.escalate']}<span
+											style="color: red">*</span></label>
+										<div class="col-md-6 col-sm-6 col-xs-7" style="">
+											<h:selectOneMenu id="categoryId" styleClass="form-control"
+												required="false" value="#{activityController.userId}"
+												requiredMessage="#{msg['staff.required.form']}">
+												<f:selectItem
+													itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" />
+												<f:selectItems value="#{activityController.userDetails}"
+													var="option" itemValue="#{option.userId}"
+													itemLabel="#{option.fname} #{option.lname}"
+													itemLabelEscaped="true" />
+												
+											</h:selectOneMenu>
+										</div>
 
-						</p:column>
+										<h:message for="typeId" styleClass="help-block"></h:message>
+									</div>
+								</h:panelGroup>
 
-						<p:column headerText="#{msg['form.activity.weight']}"
-							sortBy="#{info.weight}">
-
-							<h:outputText value="#{info.weight}" />
-
-						</p:column>
-
-						<p:column headerText="#{msg['form.groupmenu.creationdate']}"
-							sortBy="#{info.crtdDtTime}">
-
-							<h:outputText value="#{info.crtdDtTime}" />
-
-						</p:column>
-
-						<p:column headerText="#{msg['task.form']}"
-							sortBy="#{info.task.taskName}">
-							<h:outputText value="#{info.task.taskName}" />
-
-						</p:column>
-
-						<p:column headerText="Action">
-
-							<div class="btn-group" role="group" aria-label="Basic example">
-
-								<!-- 								APPROVE BUTTON 		-->
-
-								<h:commandLink style="color:white" data-toggle="tooltip"
-									data-placement="left" title="#{msg['activity.approveButton']}"
-									class="btn btn-secondary btn-success  glyphicon glyphicon-ok"
-									action="#{activityController.activityApproval(info)}"
-									rendered="#{activityController.approveRender}">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-
-								<!-- 								END OF APPROVE BUTTON 		-->
-
-								<!-- 								REJECT BUTTON 		-->
-
-								<h:commandLink style="margin-left:2px;color:white"
-									data-toggle="tooltip" data-placement="left"
-									title="#{msg['activity.rejectButton']}"
-									class="btn btn-secondary btn-danger 	glyphicon glyphicon-remove"
-									action="#{activityController.activityRejection(info)}"
-									rendered="#{activityController.rejectRender}">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-
-								<!-- 								END OF REJECT BUTTON 		-->
-
-								<!-- 								COMMENT BUTTON		 -->
-
-								<h:commandLink style="color:white" data-toggle="tooltip"
-									data-placement="left"
-									title="#{msg['UserCategoryView.commentButton']}"
-									class="btn btn-primary glyphicon glyphicon-envelope"
-									action="#{activityController.AddRejectedComment(info)}"
-									rendered="#{ activityController.commentRender}">
-									<f:ajax render="@form" execute="@form" onevent="showProgress" />
-								</h:commandLink>
-
-								<!-- 								END OF COMMENT BUTTON		 -->
-
-							</div>
-						</p:column>
-					</p:dataTable>
-				</p:outputPanel>
-
-				<!-- COMMENT AREA -->
-				<p:outputPanel rendered="#{activityController.renderCommentTable}">
-					<div class=" col-md-12" style="height: 330px; overflow-y: scroll;">
-						<table
-							class="table table-striped table-hover table-bordered tableUpdated "
-							style="font: italic 14px/18px Georgia, serif; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
-
-							<thead>
-								<tr>
-
-									<th colspan="2" bgcolor="#99b1bf"><h:commandLink
-											value="New comment" style="font-size: 14px !important;font-style:italic;font-weight:bold;"
-											class="btn btn-secondary btn-success   glyphicon glyphicon-edit"
-											action="#{activityController.newComment()}">
+								<div class="form-group row"
+									style="font: italic 14px/18px Georgia, serif;">
+									<label for="todate"
+										class="col-md-4 col-sm-4 col-xs-4 control-label"
+										style="color: black"></label>
+									<div class="col-md-6 col-sm-6 col-xs-7">
+										<h:commandButton class="btn btn-info btn-xlg btn-block"
+											action="#{activityController.escalateActivity()}"
+											value="#{msg['label.submit.message.assign']}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink> <label style="color: white; margin-left: 15%;font: italic bold 16px/20px Georgia, serif;">Activity
-											related comment</label></th>
-								</tr>
+										</h:commandButton>
 
-								<tr>
+									</div>
+									<span class="text-danger" id="err"></span>
+								</div>
+							</fieldset>
+						</p:outputPanel>
+						<!-- END OF ASSIGNMENT -->
 
-									<th bgcolor="#99b1bf"><label style="color: white;font: italic bold 14px/18px Georgia, serif;">ActivityDescription:</label>
-									</th>
-									<th bgcolor="#99b1bf"><label style="color: white;"><h:outputText
-												value="#{activityController.activity.description}"></h:outputText></label></th>
-								</tr>
-							</thead>
-							<ui:repeat var="coment"
-								value="#{activityController.commentDetail}">
-								<tbody class="details">
-									<tr>
-										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>Comment
-												description</label></td>
-										<td><h:outputText value="#{coment.comment.description}"></h:outputText></td>
-									</tr>
-									<tr>
-										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>comment date:</label></td>
-										<td><h:outputText value="#{coment.comment.crtdDtTime}">
-												<f:convertDateTime pattern="dd/MM/yyyy" />
-											</h:outputText></td>
-									</tr>
-									<tr>
-										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>Comment given by:</label></td>
-										<td><h:outputText value="#{coment.createdBy}"></h:outputText></td>
-									</tr>
 
+
+
+
+
+						<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
+
+						<h:panelGroup id="tables1"
+							rendered="#{activityController.rendered}">
+							<h1 style="font: italic 14px/18px Georgia, serif; color: white;">#{msg['manage.activity.form']}</h1>
+							<div class="col-md-4 col-sm-6">
+								<div class="circle-tile2 ">
+
+									<div class="circle-tile-heading2 green2 ">
+										<h1
+											style="font: italic 15px/20px Georgia, serif; color: white;">#{activityController.userSize}</h1>
+									</div>
+
+									<div class="circle-tile-content2 green2 ">
+										<div class="circle-tile-description text-faded2">
+											<label
+												style="font: italic 15px/20px Georgia, serif; color: white;">
+												#{msg['user.activity.form']}</label>
+										</div>
+										<div class="circle-tile-number2 text-faded2">
+											<span class="glyphicon glyphicon-user"></span> <span
+												id="sparklineB"></span> <label
+												style="font: italic 15px/20px Georgia, serif;">
+												&nbsp;#{msg['message.user.notcont']}</label>
+										</div>
+										<h:commandLink styleClass="circle-tile-footer"
+											actionListener="#{activityController.showAct()}"
+											value="More Info">
+											<i class="glyphicon glyphicon-chevron-right"></i>
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+									</div>
+								</div>
+
+							</div>
+							<div class="col-md-4 col-sm-6">
+								<div class="circle-tile2">
+
+									<div class="circle-tile-heading2 blue2 text-white">
+										<h1
+											style="font: italic 15px/20px Georgia, serif; color: white;">#{activityController.escalateSize}</h1>
+									</div>
+
+									<div class="circle-tile-content2 blue2">
+										<div class="circle-tile-description text-faded2">
+											<label
+												style="font: italic 15px/20px Georgia, serif; color: white;">
+												#{msg['escalate.activity.form']}</label>
+										</div>
+										<div class="circle-tile-number2 text-faded2">
+											<span class="glyphicon glyphicon-tasks"></span> <span
+												id="sparklineB"></span><label
+												style="font: italic 15px/20px Georgia, serif;">
+												&nbsp; #{msg['escalation.form.message']}</label>
+
+										</div>
+										<h:commandLink styleClass="circle-tile-footer"
+											actionListener="#{activityController.showEscalated()}"
+											value="More Info">
+											<i class="glyphicon glyphicon-chevron-right"></i>
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+
+									</div>
+								</div>
+
+							</div>
+						</h:panelGroup>
+
+						<!-- 			END OF ACTIVITIES MANAGEMENT DASHBOARD			 -->
+
+						<!-- 			VIEW ALL STAFF IN THE SAME BOARD			 -->
+
+						<h:panelGroup id="tables"
+							rendered="#{activityController.rendered1}">
+							<div class="nav">
+								<div class="div-action pull pull-left"
+									style="padding-bottom: 20px;">
+									<h1>#{msg['planned.activity.staff']}</h1>
+								</div>
+								<div class="div-action pull pull-right"
+									style="padding-bottom: 20px;">
+									<h:commandLink
+										class="btn btn-primary glyphicon glyphicon-chevron-left"
+										actionListener="#{activityController.back()}"
+										action="#{activityController.back()}"
+										value="#{msg['UserRegForm.BackButton']}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</div>
+							</div>
+							<p:dataTable id="example1" class="display" cellspacing="0"
+								value="#{activityController.usersDetail}" var="act">
+								<p:autoUpdate />
+
+								<p:column headerText="#{msg['massages.cmn.common.first.fname']}"
+									sortBy="#{act.fname}">
+
+									<h:outputText value="#{act.fname}" />
+								</p:column>
+
+
+								<p:column headerText="#{msg['massages.cmn.common.last.lname']}"
+									sortBy="#{act.lname}">
+
+									<h:outputText value="#{act.lname}" />
+
+								</p:column>
+
+								<p:column headerText="#{msg['form.board.board']}"
+									sortBy="#{act.board}">
+
+									<h:outputText value="#{act.board.boardName}" />
+
+								</p:column>
+
+								<!-- 					<p:column headerText="#{msg['form.groupmenu.creationdate']}" -->
+								<!-- 						sortBy="#{act.crtdDtTime}"> -->
+
+								<!-- 						<h:outputText value="#{act.crtdDtTime}" /> -->
+
+								<!-- 					</p:column> -->
+
+								<!-- 					<p:column headerText="#{msg['task.form']}" -->
+								<!-- 						sortBy="#{act.task}"> -->
+								<!-- 						<a href="#"> -->
+								<!-- 						<h:outputText value="#{act.task}" /></a> -->
+
+								<!-- 					</p:column> -->
+
+								<!-- 					<p:column headerText="#{msg['form.strategicPlan.users']}" -->
+								<!-- 						sortBy="#{act.createdBy}"> -->
+
+								<!-- 						<h:outputText value="#{act.createdBy}" /> -->
+
+								<!-- 					</p:column> -->
+
+								<p:column headerText="Action">
+
+									<h:commandButton style="margin-left:2px;color:white"
+										class="btn btn-secondary btn-primary 	glyphicon glyphicon-info-sign"
+										action="#{activityController.showTasks(act)}"
+										value="#{msg['details.activity.message']}"></h:commandButton>
+
+								</p:column>
+
+							</p:dataTable>
+						</h:panelGroup>
+
+						<!-- 			CLOSE OF ALL STAFF IN THE SAME BOARD TABLE			 -->
+
+
+
+
+						<p:outputPanel id="table6"
+							rendered="#{activityController.renderTable}">
+							<p:autoUpdate />
+							<div class="nav">
+								<div class="div-action pull pull-left"
+									style="padding-bottom: 20px;">
+									<h1>#{msg['form.activity.table']}</h1>
+								</div>
+								<div class="div-action pull pull-right"
+									style="padding-bottom: 20px;">
+									<h:commandLink
+										class="btn btn-primary glyphicon glyphicon-chevron-left"
+										actionListener="#{activityController.back()}"
+										action="#{activityController.back1()}"
+										value="#{msg['UserRegForm.BackButton']}">
+										<f:ajax render="@form" execute="@form" onevent="showProgress" />
+									</h:commandLink>
+								</div>
+							</div>
+							<p:dataTable id="example7" class="display" cellspacing="0"
+								rows="5" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15"
+								value="#{activityController.activityDetail}" var="info">
+								<p:autoUpdate />
+								<f:facet name="header">
+
+									<div class="form-group row">
+										<label for="todate"
+											class="col-md-4 col-sm-4 col-xs-5 control-label"
+											style="color: black">#{msg['select.status.activity.form']}</label>
+										<div class="col-md-3 col-sm-3 col-xs-4">
+											<h:selectOneMenu id="categoryId6" styleClass="form-control"
+												required="false"
+												value="#{activityController.selectedStatus}"
+												requiredMessage="#{msg['listofmenu.status.required']}">
+												<f:selectItem
+													itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
+													itemValue="#{null}" escapeItem="true" />
+												<f:selectItems value="#{activityController.status}"
+													itemLabelEscaped="true" />
+												<f:ajax render="@form" event="change" execute="@this"
+													listener="#{activityController.changeSelectStatus()}"
+													onevent="showProgress" />
+											</h:selectOneMenu>
+										</div>
+										<h:message for="categoryId6" styleClass="help-block"></h:message>
+									</div>
+								</f:facet>
+
+								<p:column headerText="#{msg['form.activity.description']}"
+									sortBy="#{info.description}">
+
+									<h:outputText value="#{info.description}" />
+								</p:column>
+
+
+								<p:column headerText="#{msg['form.activity.status']}"
+									sortBy="#{info.status}">
+
+									<h:outputText value="#{info.status}" />
+
+								</p:column>
+
+								<p:column headerText="#{msg['form.activity.weight']}"
+									sortBy="#{info.weight}">
+
+									<h:outputText value="#{info.weight}" />
+
+								</p:column>
+
+								<p:column headerText="#{msg['form.groupmenu.creationdate']}"
+									sortBy="#{info.crtdDtTime}">
+
+									<h:outputText value="#{info.crtdDtTime}" />
+
+								</p:column>
+
+								<p:column headerText="#{msg['task.form']}"
+									sortBy="#{info.task.taskName}">
+									<h:outputText value="#{info.task.taskName}" />
+
+								</p:column>
+
+								<p:column headerText="Action">
+
+									<div class="btn-group" role="group" aria-label="Basic example">
+
+										<!-- 								APPROVE BUTTON 		-->
+
+										<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['activity.approveButton']}"
+											class="btn btn-secondary btn-success  glyphicon glyphicon-ok"
+											action="#{activityController.activityApproval(info)}"
+											rendered="#{activityController.approveRender}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+
+										<!-- 								END OF APPROVE BUTTON 		-->
+
+										<!-- 								REJECT BUTTON 		-->
+
+										<h:commandLink style="margin-left:2px;color:white"
+											data-toggle="tooltip" data-placement="left"
+											title="#{msg['activity.rejectButton']}"
+											class="btn btn-secondary btn-danger 	glyphicon glyphicon-remove"
+											action="#{activityController.activityRejection(info)}"
+											rendered="#{activityController.rejectRender}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+
+										<!-- 								END OF REJECT BUTTON 		-->
+
+										<!-- 								COMMENT BUTTON		 -->
+
+										<h:commandLink style="color:white" data-toggle="tooltip"
+											data-placement="left"
+											title="#{msg['UserCategoryView.commentButton']}"
+											class="btn btn-primary glyphicon glyphicon-envelope"
+											action="#{activityController.AddRejectedComment(info)}"
+											rendered="#{ activityController.commentRender}">
+											<f:ajax render="@form" execute="@form" onevent="showProgress" />
+										</h:commandLink>
+
+										<!-- 								END OF COMMENT BUTTON		 -->
+
+									</div>
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+
+						<!-- COMMENT AREA -->
+						<p:outputPanel rendered="#{activityController.renderCommentTable}">
+							<div class=" col-md-12"
+								style="height: 330px; overflow-y: scroll;">
+								<table
+									class="table table-striped table-hover table-bordered tableUpdated "
+									style="font: italic 14px/18px Georgia, serif; box-sizing: border-box; width: 82% !important; -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 58px 0 !important;">
+
+									<thead>
+										<tr>
+
+											<th colspan="2" bgcolor="#99b1bf"><h:commandLink
+													value="New comment"
+													style="font-size: 14px !important;font-style:italic;font-weight:bold;"
+													class="btn btn-secondary btn-success   glyphicon glyphicon-edit"
+													action="#{activityController.newComment()}">
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink> <label
+												style="color: white; margin-left: 15%; font: italic bold 16px/20px Georgia, serif;">Activity
+													related comment</label></th>
+										</tr>
+
+										<tr>
+
+											<th bgcolor="#99b1bf"><label
+												style="color: white; font: italic bold 14px/18px Georgia, serif;">ActivityDescription:</label>
+											</th>
+											<th bgcolor="#99b1bf"><label style="color: white;"><h:outputText
+														value="#{activityController.activity.description}"></h:outputText></label></th>
+										</tr>
+									</thead>
+									<ui:repeat var="coment"
+										value="#{activityController.commentDetail}">
+										<tbody class="details">
+											<tr>
+												<td
+													style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><label>Comment
+														description</label></td>
+												<td><h:outputText value="#{coment.comment.description}"></h:outputText></td>
+											</tr>
+											<tr>
+												<td
+													style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><label>comment
+														date:</label></td>
+												<td><h:outputText value="#{coment.comment.crtdDtTime}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputText></td>
+											</tr>
+											<tr>
+												<td
+													style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><label>Comment
+														given by:</label></td>
+												<td><h:outputText value="#{coment.createdBy}"></h:outputText></td>
+											</tr>
+
+											<tr>
+												<td
+													style="width: 30%; font: italic bold 14px/18px Georgia, serif;"
+													colspan="2"><h:commandLink value="Reply this comment"
+														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
+														class="btn btn-info  glyphicon glyphicon-edit"
+														action="#{activityController.replyComment(coment)}">
+														<f:ajax render="@form" execute="@form"
+															onevent="showProgress" />
+													</h:commandLink></td>
+
+											</tr>
+										</tbody>
+									</ui:repeat>
+									<p:outputPanel rendered="#{activityController.rendercomment}">
+										<p:autoUpdate />
+										<tr>
+											<td colspan="2"></td>
+										</tr>
+										<tr>
+											<td colspan="2"></td>
+										</tr>
+										<tr>
+											<td colspan="2"></td>
+										</tr>
+										<tr>
+											<td
+												style="width: 30%; font: italic bold 14px/18px Georgia, serif;"><label>Enter
+													your comment:</label></td>
+											<td><h:inputTextarea style="width:55%;" id="coment"
+													value="#{activityController.commentDescription}"
+													maxlength="35">
+													<f:validateRegex
+														pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
+												</h:inputTextarea><br /> <h:message errorClass="errorMsg1" for="coment"
+													style="font-size:12px;font-family:Time New Roman;"></h:message>
+											</td>
+										</tr>
+										<tr>
+
+											<td style="width: 30%;"><p:outputPanel
+													rendered="#{activityController.renderUpload}">
+													<h:commandLink value="Send comment"
+														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
+														class="btn btn-info  glyphicon glyphicon-edit"
+														action="#{activityController.saveComment()}">
+														<p:autoUpdate />
+													</h:commandLink>
+												</p:outputPanel> <p:outputPanel rendered="#{activityController.planBtn}">
+													<h:commandLink value="Save comment"
+														style="font-size: 14px !important;font-style:italic;font-weight:bold;"
+														class="btn btn-info  glyphicon glyphicon-edit"
+														action="#{activityController.saveSupervisorComment()}">
+														<p:autoUpdate />
+													</h:commandLink>
+												</p:outputPanel></td>
+											<td><h:commandLink
+													action="#{activityController.cancelComment()}"
+													value="#{msg['UserCategoryView.cancelButton']}"
+													style="font-size: 14px !important;font-style:italic;font-weight:bold;"
+													class="btn btn-danger glyphicon glyphicon-remove">
+													<f:ajax render="@form" execute="@form"
+														onevent="showProgress" />
+												</h:commandLink></td>
+										</tr>
+									</p:outputPanel>
 									<tr>
-										<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;" colspan="2"><h:commandLink
-												value="Reply this comment"
-												style="font-size: 14px !important;font-style:italic;font-weight:bold;"
-												class="btn btn-info  glyphicon glyphicon-edit"
-												action="#{activityController.replyComment(coment)}">
+										<td colspan="2"><a
+											href="#{loadUserInformationsController.getContextPath()}/menu/ManageActivity.xhtml"
+											style="font-size: 14px !important;"
+											class="btn btn-primary glyphicon glyphicon-chevron-left">
+												<label style="font: italic bold 14px/18px Georgia, serif;">Back</label>
+										</a></td>
+									</tr>
+								</table>
+							</div>
+						</p:outputPanel>
+
+
+
+						<!-- LIST OF ACTIVITY TO BE ESCALATED  TABLE VIEW -->
+						<p:outputPanel rendered="#{activityController.renderEscalated}">
+							<div class=" col-md-12"
+								style="height: 330px; overflow-y: scroll;">
+								<h:dataTable id="taskAssignTable" binding="#{table}"
+									style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:100% !important;
+       						 -webkit-box-shadow: none; box-shadow: none !important; margin: 18px 5px 0 !important;"
+									value="#{activityController.activityEscalationDetails}"
+									var="data"
+									class="table table-striped table-hover table-bordered tableUpdated ">
+									<f:facet name="header">
+										<label
+											style="margin-left: 35%; font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.escalated.title']}</label>
+
+									</f:facet>
+
+									<h:column>
+										<f:facet name="header">
+											<label>No</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{table.rowIndex + 1}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Description</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{data.description}">
+										</h:outputText>
+
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Status</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{data.status}">
+										</h:outputText>
+
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Weight</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{data.weight}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Type</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{data.type}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Failure times</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{data.activityFailed}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Start date</label>
+										</f:facet>
+										<br />
+										<h:outputText
+											value="#{activityController.getMyFormattedStartDate(data)}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Due date</label>
+										</f:facet>
+										<br />
+										<h:outputText
+											value="#{activityController.getMyFormattedDueDate(data)}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Report date</label>
+										</f:facet>
+										<br />
+										<h:outputText
+											value="#{activityController.getMyFormattedReportDate(data)}" />
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+											<label>Staff names</label>
+										</f:facet>
+										<br />
+										<h:outputText
+											value="#{data.user.fname} &nbsp;#{data.user.lname}">
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Target assigned</label>
+										</f:facet>
+										<br />
+										<h:outputText value="#{data.taskName}">
+										</h:outputText>
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+											<label>Action</label>
+										</f:facet>
+										<div class="btn-group btn btn-sm" role="group"
+											aria-label="Basic example" style="margin-top: 5%;">
+											<h:commandLink data-toggle="tooltip" data-placement="left"
+												title="#{msg['createactivity.escalateButton']}"
+												class="btn btn-sm btn-primary glyphicon glyphicon-align-center"
+												action="#{activityController.showEscalateActivity(data)}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
-										</h:commandLink></td>
-
-									</tr>
-								</tbody>
-							</ui:repeat>
-							<p:outputPanel rendered="#{activityController.rendercomment}">
-							<p:autoUpdate/>
-								<tr>
-									<td colspan="2"></td>
-								</tr>
-								<tr>
-									<td colspan="2"></td>
-								</tr>
-								<tr>
-									<td colspan="2"></td>
-								</tr>
-								<tr>
-									<td style="width: 30%;font: italic bold 14px/18px Georgia, serif;"><label>Enter your comment:</label></td>
-									<td><h:inputTextarea style="width:55%;" id="coment"
-											value="#{activityController.commentDescription}"
-											maxlength="35">
-											<f:validateRegex
-												pattern="#{regex['regex.validation.message.VALID.FIRST_NAME']}"></f:validateRegex>
-										</h:inputTextarea><br /> <h:message errorClass="errorMsg1" for="coment"
-											style="font-size:12px;font-family:Time New Roman;"></h:message>
-									</td>
-								</tr>
-								<tr>
-
-									<td style="width: 30%;"><p:outputPanel
-											rendered="#{activityController.renderUpload}">
-											<h:commandLink value="Send comment"
-											style="font-size: 14px !important;font-style:italic;font-weight:bold;"
-												class="btn btn-info  glyphicon glyphicon-edit"
-												action="#{activityController.saveComment()}">
-												<p:autoUpdate/>
 											</h:commandLink>
-										</p:outputPanel> 
-										
-										<p:outputPanel rendered="#{activityController.planBtn}">
-											<h:commandLink value="Save comment"
-												style="font-size: 14px !important;font-style:italic;font-weight:bold;"
-												class="btn btn-info  glyphicon glyphicon-edit"
-												action="#{activityController.saveSupervisorComment()}">
-												<p:autoUpdate/>
-											</h:commandLink>
-										</p:outputPanel></td>
-									<td><h:commandLink
-											action="#{activityController.cancelComment()}"
-											value="#{msg['UserCategoryView.cancelButton']}"
-											style="font-size: 14px !important;font-style:italic;font-weight:bold;"
-											class="btn btn-danger glyphicon glyphicon-remove">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink></td>
-								</tr>
-							</p:outputPanel>
-							<tr>
-								<td colspan="2"><a
-									href="#{loadUserInformationsController.getContextPath()}/menu/ManageActivity.xhtml"
-									style="font-size: 14px !important;"
-									class="btn btn-primary glyphicon glyphicon-chevron-left">
-										<label style="font: italic bold 14px/18px Georgia, serif;">Back</label></a></td>
-							</tr>
-						</table>
-					</div>
-				</p:outputPanel>
-			</h:form>
+										</div>
+									</h:column>
+								</h:dataTable>
+							</div>
+							
+						</p:outputPanel>
+						<!-- END OF ACTIVITY ESCALATION -->
+					</h:form>
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </h:body>

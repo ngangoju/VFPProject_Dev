@@ -33,8 +33,11 @@ public class ActivityDto implements Serializable {
 
 	private Date endDate;
 
+	private Date assignedDate;
+
 	private String genericstatus;
 	private int countApproved;
+	private int ActivityEscalated;
 	private Date createdDate;
 	private String type;
 	private String weeklyPlan;
@@ -356,5 +359,21 @@ public class ActivityDto implements Serializable {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+
+	public Date getAssignedDate() {
+		return assignedDate;
+	}
+
+	public void setAssignedDate(Date assignedDate) {
+		this.assignedDate = assignedDate;
+	}
+
+	public int getActivityEscalated() {
+		return ActivityEscalated;
+	}
+
+	public void setActivityEscalated(int activityEscalated) {
+		ActivityEscalated = activityEscalated;
+	}	
 	
 }

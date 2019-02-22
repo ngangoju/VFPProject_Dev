@@ -153,4 +153,5 @@ public interface DbConstant {
 	public static final String ACTIVITYAPROVAL="Activity approval statistics";
 	public static final String ACTIVITYPLANNED="Activity planned statistics";
 	public static final String ACTIVITYCOMPLETED="Activity completion within planned period";
+	public static final String ESCALATED="Escalated";
 }
