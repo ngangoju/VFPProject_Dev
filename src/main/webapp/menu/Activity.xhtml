@@ -406,6 +406,7 @@
 									</h:column>
 								</h:dataTable>
 							</div>
+							<p:autoUpdate />
 						</p:outputPanel>
 
 						<!-- END OF TASK VIEW -->
@@ -618,7 +619,7 @@
 											<h:commandLink style="color:white" data-toggle="tooltip"
 												data-placement="left"
 												title="#{msg['UserCategoryView.commentButton']}"
-												class="btn btn-sm btn-primary glyphicon glyphicon-info-sign"
+												class="btn btn-sm btn-primary  glyphicon glyphicon-comment"
 												action="#{activityController.commentAction(act)}"
 												rendered="#{ not act.commmentAction}">
 												<f:ajax render="@form" execute="@form"
@@ -627,7 +628,7 @@
 											<h:commandLink style="color:white" data-toggle="tooltip"
 												data-placement="left"
 												title="#{msg['UserCategoryView.commentButton']}"
-												class="btn btn-sm btn-primary glyphicon glyphicon-info-sign"
+												class="btn btn-sm btn-primary glyphicon glyphicon-comment"
 												action="#{activityController.commentAction(act)}"
 												rendered="#{ not act.approvedComment}">
 												<f:ajax render="@form" execute="@form"

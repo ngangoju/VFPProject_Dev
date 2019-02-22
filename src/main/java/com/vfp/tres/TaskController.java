@@ -179,12 +179,17 @@ public class TaskController implements Serializable, DbConstant {
 				JSFMessagers.addErrorMessage(getProvider().getValue("plan.required.message"));
 			} else {
 				task.setStrategicPlan(plan);
-//			if(task.getStartDate().getDay()<plan.getStartDate().getDay()) {
-//				 || task.getDueDate().getDay()>plan.getDueDate().getDay()
-//				JSFMessagers.resetMessages();
-//				setValid(false);
-//				JSFMessagers.addErrorMessage(getProvider().getValue("date.error.validation"));
-//			}else{
+			if(task.getStartDate().before(plan.getStartDate())) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("start.date.error.validation"));
+			}
+			else if(task.getDueDate().after(plan.getDueDate())) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("due.date.error.validation"));
+			}
+			else{
 				taskImpl.saveTask(task);
 				tasksDetail = taskImpl
 						.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy", "strategicPlan" },
@@ -215,6 +220,7 @@ public class TaskController implements Serializable, DbConstant {
 								+ usersSession.getLname() + " on this email ");
 					}
 				}
+			}
 			}
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + ":::Task Details is failling with HibernateException  error");

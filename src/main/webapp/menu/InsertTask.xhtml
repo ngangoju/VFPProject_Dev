@@ -74,7 +74,7 @@
 									<label for="todate"
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.parent']}</label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
+									<div class="col-md-5 col-sm-6 col-xs-7">
 										<h:selectOneMenu id="categoryId" styleClass="form-control"
 											required="false" value="#{taskController.taskID}"
 											requiredMessage="#{msg['parent.task.required']}">
@@ -98,7 +98,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.name']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
+									<div class="col-md-5 col-sm-6 col-xs-7">
 										<h:inputText id="tasknameId" binding="#{surnameId}"
 											styleClass="form-control"
 											value="#{taskController.task.taskName}" maxlength="500"
@@ -122,7 +122,7 @@
 										style="color: black">#{msg['form.task.description']}<span
 										style="color: red">*</span>
 									</label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
+									<div class="col-md-5 col-sm-6 col-xs-7">
 										<h:inputTextarea id="descriptionId" styleClass="form-control"
 											value="#{taskController.task.description}" maxlength="1500"
 											required="true"
@@ -144,7 +144,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.target.weight']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
+									<div class="col-md-5 col-sm-6 col-xs-7">
 										<h:selectOneMenu id="weightId" styleClass="form-control"
 											required="true" value="#{taskController.task.taskWeight}"
 											requiredMessage="#{msg['weight.required.message']}">
@@ -171,7 +171,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.startDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
+									<div class="col-md-5 col-sm-6 col-xs-7">
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_start_date_id"
 											binding="#{from_dob_date_id}" class="form-control"
@@ -200,6 +200,20 @@
 											});
 										</script>
 									</div>
+										<div class="col-md-3">
+													<span class="tooltips-input-main"><a
+														class="tooltips-input"> <h:panelGroup
+																id="tooltips-contactDetails1" layout="block">
+																<img
+																	src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+																	style="width: 8%" alt="question" />
+															</h:panelGroup> <p:tooltip id="toolTipContent1"
+																for="tooltips-contactDetails1" position="bottom">
+																<span> #{msg['start.date.error.validation']} </span>
+															</p:tooltip>
+													</a></span>
+
+												</div>
 									<h:message for="from_start_date_id" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>
@@ -212,7 +226,7 @@
 										class="col-md-2 col-sm-2 col-xs-2 control-label"
 										style="color: black">#{msg['form.task.dueDate']}<span
 										style="color: red">*</span></label>
-									<div class="col-md-6 col-sm-6 col-xs-7">
+									<div class="col-md-5 col-sm-6 col-xs-7">
 										<h:inputText locale="#{facesContext.viewRoot.locale}"
 											autocomplete="off" id="from_due_date_id"
 											binding="#{from_due_date_id}" class="form-control"
@@ -235,12 +249,26 @@
 																	//maxDate: 0,
 																	minDate : 0,
 																	dateFormat : "dd/mm/yy",
-																	// 																	yearRange : "100:+0",
+																	//yearRange : "100:+0",
 																	buttonImage : "/resources/image/calendar1.png"
 																});
 											});
 										</script>
 									</div>
+										<div class="col-md-3">
+													<span class="tooltips-input-main"><a
+														class="tooltips-input"> <h:panelGroup
+																id="tooltips-contactDetails2" layout="block">
+																<img
+																	src="#{loadUserInformationsController.getContextPath()}/resources/image/question.jpg"
+																	style="width: 8%" alt="question" />
+															</h:panelGroup> <p:tooltip id="toolTipContent2"
+																for="tooltips-contactDetails2" position="bottom">
+																<span> #{msg['due.date.error.validation']} </span>
+															</p:tooltip>
+													</a></span>
+
+												</div>
 									<h:message for="from_due_date_id" styleClass="help-block"></h:message>
 								</div>
 							</h:panelGroup>

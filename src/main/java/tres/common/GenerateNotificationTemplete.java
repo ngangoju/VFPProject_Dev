@@ -28,7 +28,7 @@ public class GenerateNotificationTemplete {
 
 		content = "<b>" + notificationMassage + "</b>";
 
-		footer = "<br/>" + "<b>Regards, </b><br/><br/>" + "This email was generated automatically. Please do not respond. "
+		footer = "<br/>" + "<b>Regards, </b><br/>http://vfp.tres.rw/vfpProject_v1<br/>" + "This email was generated automatically. Please do not respond. "
 				+ "<br/>"
 				+ "DISCLAIMER<br/><p style=\"font-family: 'Courier New',Courier,mono;font-size: 10pt;\">The information contained in this email is intended to inform the recipient(s) and represents private, confidential or privileged content. This information should not be reproduced , redistributed or shared directly or indirectly in any form to any other person.\n"
 				+ "</p>\n" + "\n" + "</body>\n" + "</html>";
