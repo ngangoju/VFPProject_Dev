@@ -348,15 +348,15 @@ public class StaffReport implements Serializable, DbConstant {
 
 				document.add(new Paragraph("                                              "));
 
-				PdfPTable table = new PdfPTable(7);
+				PdfPTable table = new PdfPTable(6);
 				// table.setWidths(new int[]{3, 2, 1, 1, 1, 1 ,1});
 				table.setTotalWidth(PageSize.A4.getWidth());
 				table.setLockedWidth(true);
-
+/*
 				PdfPCell pc1 = new PdfPCell(new Paragraph(" Strategic plan", font1));
 				pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				pc1.setRowspan(2);
-				table.addCell(pc1);
+				table.addCell(pc1);*/
 
 				PdfPCell pc2 = new PdfPCell(new Paragraph(" Target", font1));
 				pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -395,16 +395,16 @@ public class StaffReport implements Serializable, DbConstant {
 				 * table.setFooterRows(1);
 				 */
 
-				for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask,\r\n"
+				for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytask,\r\n"
 						+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
 						+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
 						+ "sum(case when (status='Appoved') then 1 else 0 end),\r\n"
 						+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
 						+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
 						+ "from InstitutionReportView group by mytask")) {
-					PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + "", ffont5));
+					/*PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + "", ffont5));
 					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(pcel1);
+					table.addCell(pcel1);*/
 
 					PdfPCell pcel2 = new PdfPCell(new Paragraph(data[1] + "", ffont5));
 					pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -718,17 +718,17 @@ public class StaffReport implements Serializable, DbConstant {
 			ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 
 			ClearanceDtoDetails = new ArrayList<ClearanceDto>();
-			for (Object[] data : institutionReportViewImpl.reportList("SELECT stategicplan,mytask,\r\n"
+			for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,\r\n"
 					+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
 					+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
 					+ "sum(case when (status='pending' ) then 1 else 0 end),\r\n"
 					+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
 					+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
-					+ "from InstitutionReportView group by mytask")) {
+					+ "from InstitutionReportView group by mytaskName")) {
 
 				ClearanceDto userDtos = new ClearanceDto();
 
-				userDtos.setStrategicplan(data[0] + "");
+				//userDtos.setStrategicplan(data[0] + "");
 				userDtos.setTaskName(data[1] + "");
 				userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
 				userDtos.setApproved(Integer.parseInt(data[3] + ""));

@@ -11,7 +11,7 @@
 	<ui:composition template="/template/common/commonLayout.xhtml">
 
 		<ui:define name="content">
-			<!-- Default panel contents -->
+			
 			<div class="panel-heading">
 				<center>
 					<span class="glyphicon glyphicon-user"></span>#{msg['message.header.report4.info']}
@@ -53,7 +53,7 @@
 								</ui:repeat>
 							</ul>
 						</h:panelGroup>
-                       <!--  -->
+						<!--  -->
 						<h:panelGroup id="countryPanel" layout="block" rendered="true">
 							<div class="form-group row">
 								<label for="todate"
@@ -74,7 +74,7 @@
 													value="#{mdReportActivity.myChoice}">
 													<p:ajax listener="#{mdReportActivity.updateTable()}"
 														update="forpdf,firstpanel,secondpanel,forexcel,seventhpanel,forcleareTable
-																			chartpanel,forchart,psdfViewpanel,pdfView,exelViewpanel,exelView" />
+																			chartpanel,forchart,psdfViewpanel,chartpanelboard,forchartboard" />
 													<f:ajax onevent="showProgress" />
 													<f:selectItem
 														itemLabel="&nbsp;PDF &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -117,6 +117,8 @@
 													<h:selectOneMenu id="cate" styleClass="form-control"
 														required="true" value="#{mdReportActivity.selectedBoard}"
 														requiredMessage="#{msg['parent.task.required']}">
+														<p:ajax listener="#{mdReportActivity.repfoboard()}"
+															update="psdfViewpanel" />
 
 														<f:selectItem
 															itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
@@ -128,17 +130,11 @@
 													</h:selectOneMenu>
 
 												</div>
-												<div class="form-group row">
-
-													<div class="col-md-2 col-sm-2 col-xs-2">
-														<h:commandButton class="btn btn-success btn-md btn-block"
-															action="#{mdReportActivity.repfoboard}" value="Submit">
-															<f:ajax render="@form" execute="@form"
-																onevent="showProgress" />
-														</h:commandButton>
-
-													</div>
-													<span class="text-danger" id="customeordererror"></span>
+												<div class="col-md-2 col-sm-2 col-xs-2"
+													style="margin-left: 20px">
+													<h:commandButton class="btn btn-success btn-md btn-block"
+														action="#{mdReportActivity.createPdf}"
+														value="#{msg['label.submit.message.printPdfr']}" />
 												</div>
 											</div>
 										</div>
@@ -164,6 +160,8 @@
 													<h:selectOneMenu id="cates" styleClass="form-control"
 														required="true" value="#{mdReportActivity.selectedBoard}"
 														requiredMessage="#{msg['parent.task.required']}">
+														<p:ajax listener="#{mdReportActivity.repfoboard()}"
+															update="psdfViewpanel" />
 														<f:selectItem
 															itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 															itemValue="#{null}" escapeItem="true" />
@@ -172,15 +170,13 @@
 															itemLabel="#{option.boardName}" itemLabelEscaped="true" />
 													</h:selectOneMenu>
 												</div>
-												<div class="form-group row">
-													<div class="col-md-2 col-sm-2 col-xs-2">
-														<h:commandButton class="btn btn-success btn-md btn-block"
-															action="#{mdReportActivity.repfoboard}" value="Submit">
-															<f:ajax render="@form" execute="@form"
-																onevent="showProgress" />
-														</h:commandButton>
-													</div>
+												<div class="col-md-2 col-sm-2 col-xs-2"
+													style="margin-left: 20px">
+													<h:commandButton class="btn btn-success btn-md btn-block"
+														action="#{mdReportActivity.printXLS}"
+														value="#{msg['label.submit.message.printPdfx']}" />
 												</div>
+
 											</div>
 
 										</div>
@@ -190,139 +186,116 @@
 						</h:panelGroup>
 
 						<!-- CODES FOR TABLE PDF PANEL -->
-						
+
 						<h:panelGroup id="psdfViewpanel" layout="block">
-							<p:outputPanel id="toUp" autoUpdate="true"
+							<p:outputPanel
 								rendered="#{mdReportActivity.renderEditedTableByBoard}">
-								<h:panelGroup id="pdfView" layout="block">
-									<div class="form-group row">
-										<div class="col-md-8 col-sm-8 col-xs-8"></div>
-										<div class="panel-body">
-											<div class="form-group row">
-												<p:dataTable id="tableId" var="a"
-													style="width:600px;height:400px;margin-left:80px"
-													value="#{mdReportActivity.activityMddtodetails}"
-													scrollable="true" scrollHeight="300">
-													<f:facet name="header">List of tasks</f:facet>
-													<!-- <p:columnGroup type="header" >
-																			<p:row >
-
-																				<p:column colspan="4" height="100" headerText="Sales" />
-																			</p:row>
-
-																		</p:columnGroup> -->
-
-													<p:column> #{a.taskName}<f:facet name="header">Task name</f:facet>
-													</p:column>
-													<p:column> #{a.endDate}<f:facet name="header">Execution period</f:facet>
-													</p:column>
-													<p:column> #{a.genericStatus}<f:facet
-															name="header">Status</f:facet>
-													</p:column>
-													<p:column> #{a.boarName}<f:facet name="header">Department</f:facet>
-													</p:column>
-												</p:dataTable>
-												<div class="col-md-2 col-sm-2 col-xs-2"
-													style="margin-left: 80px">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{mdReportActivity.createPdf}"
-														value="#{msg['label.submit.message.printPdf']}" />
-												</div>
+								<div class=" col-md-12"
+									style="height: 330px; overflow-y: scroll;">
+									<h:dataTable id="taskAssignTable" binding="#{table}"
+										style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:100% !important;
+       						 -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 5px 0 !important;"
+										value="#{mdReportActivity.activityMddtodetails}" var="info"
+										class="table table-striped table-hover table-bordered tableUpdated ">
+										<f:facet name="header">
+											<label
+												style="margin-left: 35%; font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.task.performance']}</label>
+											<div aria-label="Basic example">
+												<h:commandLink data-toggle="tooltip" data-placement="left"
+													title="#{msg['viewactivity.statisButton']}"
+													class="btn btn-md btn-primary glyphicon glyphicon-stats"
+													action="#{mdReportActivity.showStatistics}">
+												</h:commandLink>
 											</div>
-										</div>
-									</div>
-								</h:panelGroup>
+
+										</f:facet>
+
+										<h:column>
+											<f:facet name="header">
+												<label>No</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{table.rowIndex + 1}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Target name</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{info.taskName}">
+											</h:outputText>
+
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Target weight</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{info.taskWeight}">
+											</h:outputText>
+
+										</h:column>
+
+										<h:column>
+											<f:facet name="header">
+												<label>Assigned date</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{info.startDate}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Due date</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{info.dueDate}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>End date</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{info.endDate}" />
+										</h:column>
+
+									</h:dataTable>
+								</div>
+								<p:autoUpdate />
+
 							</p:outputPanel>
 						</h:panelGroup>
 						<!-- END -->
 
-						<!-- CODES FOR TABLE EXEL PANEL -->
-						<h:panelGroup id="exelViewpanel" layout="block">
-							<p:outputPanel id="toUpa" autoUpdate="true"
-								rendered="#{mdReportActivity.renderTableByBoard}">
-								<h:panelGroup id="exelView" layout="block">
-									<div class="form-group row">
-										<div class="col-md-8 col-sm-8 col-xs-8"></div>
-										<div class="panel-body">
-											<div class="form-group row">
-												<div>
-													<p:dataTable id="tableI" var="a"
-														style="width:600px;height:400px;margin-left:80px"
-														value="#{mdReportActivity.activityMddtodetails}"
-														scrollable="true" scrollHeight="300">
 
-														<f:facet name="header">List of tasks</f:facet>
-
-														<p:column> #{a.taskName}<f:facet name="header">Task name</f:facet>
-														</p:column>
-														<p:column> #{a.endDate}<f:facet name="header">Execution period</f:facet>
-														</p:column>
-														<p:column> #{a.genericStatus}<f:facet
-																name="header">Status</f:facet>
-														</p:column>
-														<p:column> #{a.boarName}<f:facet name="header">Department</f:facet>
-														</p:column>
-
-													</p:dataTable>
-												</div>
-												<div class="col-md-2 col-sm-2 col-xs-2"
-													style="margin-left: 80px">
-													<h:commandButton class="btn btn-success btn-md btn-block"
-														action="#{mdReportActivity.printXLS}"
-														value="#{msg['label.submit.message.printExel']}" />
-												</div>
-											</div>
-
-										</div>
-
-									</div>
-								</h:panelGroup>
-							</p:outputPanel>
-						</h:panelGroup>
-						<!-- END -->
 
 						<h:panelGroup id="chartpanel" layout="block">
 							<p:outputPanel id="toUpdates" autoUpdate="true"
 								rendered="#{mdReportActivity.renderedchart}">
 								<h:panelGroup id="forchart" layout="block">
-									<!-- <div class="form-group row">
-										<div class="col-md-6 col-sm-6 col-xs-6"></div>
-										<div class="panel-body">
-											<div>
-												<center>
-													<div style="border-bottom: 2px solid blue; width: 100px">Chat
-														for Activities in terms of Tasks</div>
-												</center>
-												<h:panelGrid columns="3" columnClasses="left,right"
-													style="width:100%">
-													<p:chart type="bar"
-														model="#{mdReportActivity.animatedModel2}"
-														style="width:100%;height:50%" />
-													
-																		<p:chart type="pie" model="#{mdReportActivity.pieModel2}"
-												                         style="width:350px;height:300px" /> 
-												</h:panelGrid>
-											</div>
-										</div>
-									</div> -->
+
 
 									<!-- CODES TO GENERATE THE CHART FOR THE OVERALL -->
 									<h:body>
 										<script
 											src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js">
-
+											
 										</script>
 										<meta http-equiv="Content-Type"
 											content="text/html; charset=utf-8" />
 										<style type="text/css">
-                                         @media ( max-width :960) {.myChartDiv {width: 100%;}}
-                                         </style>
+@media ( max-width :960) {
+	.myChartDiv {
+		width: 100%;
+	}
+}
+</style>
 										<!-- <h1 style="margin-top: 150px;">Reporting Graph</h1> -->
 										<div id="orgChartContainer">
 											<div id="orgChart"></div>
 										</div>
 										<div id="consoleOutput">
-											<h1 style=" margin-left: 200PX">The clearance report on graph</h1>
+											<h1 style="margin-left: 200PX">The clearance report on
+												graph</h1>
 											<div class="myChartDiv" style="width: 900px;">
 												<canvas id="myChart"> </canvas>
 											</div>
@@ -331,12 +304,12 @@
 												<div class="form-group">
 													<h:outputLabel class="col-lg-2"></h:outputLabel>
 													<div class="col-lg-8">
-													
+
 														<h:inputText class="name" style="display:none;"
 															value="#{charController.name}"></h:inputText>
 													</div>
-												</div> 
-												
+												</div>
+
 												<!-- This is another form -->
 											</h:form>
 										</div>
@@ -359,24 +332,29 @@
 												console.log(req);
 
 												var value = [];
-												var p=[];
-												var comp=[];
+												var p = [];
+												var comp = [];
 												var labels = [];
 												function recusive(n, testData,
 														n2) {
 													if (n2 >= n) {
-														value.push(testData[n].numberOfActivities);
-														p.push(testData[n].approved);
-														comp.push(testData[n].completed);
-														labels.push(testData[n].taskName);
+														value
+																.push(testData[n].numberOfActivities);
+														p
+																.push(testData[n].approved);
+														comp
+																.push(testData[n].completed);
+														labels
+																.push(testData[n].taskName);
 														recusive(n + 1,
 																testData, n2);
 													}
 												}
-												
+
 												var testData = JSON.parse($(
 														".name").val());
-												console.log(testData[0].taskName);
+												console
+														.log(testData[0].taskName);
 												recusive(0, testData,
 														testData.length - 1);
 												console.log(value);
@@ -387,27 +365,27 @@
 															type : 'bar',
 															data : {
 																labels : labels,
-																datasets : [ {
-																	label : "Planned ",
-																	data : value,
-																	backgroundColor:'#0318CF',
-																},
-																{
-																	label : "Approved",
-																	data : p,
-																	backgroundColor:'#29C3BE',
-																},
-																{
-																	label : "Completed",
-																	data : comp,
-																	backgroundColor:'#c328a4',
-																}
-																]
+																datasets : [
+																		{
+																			label : "Planned ",
+																			data : value,
+																			backgroundColor : '#0318CF',
+																		},
+																		{
+																			label : "Approved",
+																			data : p,
+																			backgroundColor : '#29C3BE',
+																		},
+																		{
+																			label : "Completed",
+																			data : comp,
+																			backgroundColor : '#c328a4',
+																		} ]
 															},
 															options : {
 																elements : {
 																	line : {
-																		tension :0, // disables bezier curves
+																		tension : 0, // disables bezier curves
 																	}
 																}
 															}
@@ -436,9 +414,9 @@
 												<f:facet name="header">
 												
 												Clearance for planned and completed activities </f:facet>
-												<p:column width="50"> #{a.strategicplan}<f:facet
+												<!-- <p:column width="50"> #{a.strategicplan}<f:facet
 														name="header">Strategic plan</f:facet>
-												</p:column>
+												</p:column> -->
 												<p:column width="50"> #{a.taskName}<f:facet
 														name="header">Task</f:facet>
 												</p:column>
@@ -448,9 +426,10 @@
 												<p:column width="50"> #{a.notStarted}<f:facet
 														name="header">Not started</f:facet>
 												</p:column>
-												<p:column width="50"> #{a.pending}<f:facet
+												
+												<!-- <p:column width="50"> #{a.pending}<f:facet
 														name="header">Pending</f:facet>
-												</p:column>
+												</p:column> -->
 
 												<p:column width="50"> #{a.completed}<f:facet
 														name="header">Completed</f:facet>
@@ -481,8 +460,141 @@
 								</h:panelGroup>
 							</p:outputPanel>
 						</h:panelGroup>
-					</div>
 
+
+
+
+						<!--  CODES TO GENEARATE THE THE CHART FOR  SELECTED BOARD-->
+
+						<h:panelGroup id="chartpanelboard" layout="block">
+							<p:outputPanel id="toUpdatesbaord" autoUpdate="true"
+								rendered="#{mdReportActivity.renderSelectedBoard}">
+								<h:panelGroup id="forchartboard" layout="block">
+									<h:body>
+										<script
+											src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js">
+											
+										</script>
+										<meta http-equiv="Content-Type"
+											content="text/html; charset=utf-8" />
+										<style type="text/css">
+@media ( max-width :960) {
+	.myChartDiv {
+		width: 100%;
+	}
+}
+</style>
+										<!-- <h1 style="margin-top: 150px;">Reporting Graph</h1> -->
+										<div id="orgChartContainer">
+											<div id="orgChart"></div>
+										</div>
+										<div id="consoleOutput">
+											<!-- <h1 style="margin-left: 200PX">The clearance report on
+												graph</h1> -->
+											<div class="myChartDiv" style="width: 900px;">
+												<canvas id="myChart"> </canvas>
+											</div>
+
+											<h:form class="form-horizontal">
+												<div class="form-group">
+													<h:outputLabel class="col-lg-2"></h:outputLabel>
+													<div class="col-lg-8">
+
+														<h:inputText class="name" style="display:none;"
+															value="#{mdReportActivity.name}"></h:inputText>
+													</div>
+												</div>
+
+												<!-- This is another form -->
+											</h:form>
+										</div>
+										<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+										<script
+											src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+										<script>
+											$(function() {
+
+												var j;
+												var ctx = document
+														.getElementById(
+																'myChart')
+														.getContext('2d');
+												var replacedData = $(".name")
+														.val();
+												var req = replacedData.replace(
+														"id", "x");
+												req.replace("Rate", "y");
+												console.log(req);
+
+												var value = [];
+												var p = [];
+												var comp = [];
+												var labels = [];
+												function recusive(n, testData,
+														n2) {
+													if (n2 >= n) {
+														value
+																.push(testData[n].numberOfActivities);
+														p
+																.push(testData[n].approved);
+														comp
+																.push(testData[n].completed);
+														labels
+																.push(testData[n].taskName);
+														recusive(n + 1,
+																testData, n2);
+													}
+												}
+
+												var testData = JSON.parse($(
+														".name").val());
+												console
+														.log(testData[0].taskName);
+												recusive(0, testData,
+														testData.length - 1);
+												console.log(value);
+
+												var myLineChart = new Chart(
+														ctx,
+														{
+															type : 'bar',
+															data : {
+																labels : labels,
+																datasets : [
+																		{
+																			label : "Planned ",
+																			data : value,
+																			backgroundColor : '#0318CF',
+																		},
+																		{
+																			label : "Approved",
+																			data : p,
+																			backgroundColor : '#29C3BE',
+																		},
+																		{
+																			label : "Completed",
+																			data : comp,
+																			backgroundColor : '#c328a4',
+																		} ]
+															},
+															options : {
+																elements : {
+																	line : {
+																		tension : 0, // disables bezier curves
+																	}
+																}
+															}
+														});
+											});
+										</script>
+									</h:body>
+
+								</h:panelGroup>
+							</p:outputPanel>
+						</h:panelGroup>
+
+						<!--  END OF CODES TO GENEARATE THE THE CHART FOR  SELECTED BOARD-->
+					</div>
 				</div>
 			</h:form>
 		</ui:define>

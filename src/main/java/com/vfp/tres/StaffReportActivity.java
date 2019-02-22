@@ -36,6 +36,7 @@ import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
+import com.google.gson.Gson;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -58,14 +59,18 @@ import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.BoardImpl;
+import tres.dao.impl.StaffReportViewImpl;
+import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.Board;
 import tres.domain.Task;
+import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
+import tres.vfp.dto.ClearanceDto;
 
 @ManagedBean
 @ViewScoped
@@ -81,6 +86,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private Task tasks;
 	private Board board;
 	private int myTask;
+	private String performance;
 	private boolean rendered;
 	private boolean renderedx;
 	private boolean renderForexcel;
@@ -91,6 +97,9 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private boolean renderedtpdf;
 	private boolean renderedsxl;
 	private boolean renderedtxl;
+	private boolean renderchart;
+	private boolean renderchartforStaff;
+	private int selectedStaff;
 	private int myName;
 	private Date first = null;
 	private Activity activity;
@@ -98,7 +107,10 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	private List<Activity> activityDetailz = new ArrayList<Activity>();
 	private List<Activity> activityDetailss = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
+	private List<TaskAssignment> taskAssignDetailsst = new ArrayList<TaskAssignment>();
+	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	private List<Users> usersDetails = new ArrayList<Users>();
+	BoardImpl boardImpl = new BoardImpl();
 	private List<Task> taskDetail = new ArrayList<Task>();
 	private String[] status = { NOTSTARTED, APPROVED, REJECT, INPROGRESS, COMPLETED };
 	private String[] weight = { SHORT, MEDIUM, LONG };
@@ -109,7 +121,9 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	Task tc = new Task();
 	TaskImpl taskImpl = new TaskImpl();
 	UserCategoryImpl usercatgoryImpl = new UserCategoryImpl();
-	BoardImpl boardImpl = new BoardImpl();
+	TaskAssignment taskAssign;
+	private boolean renderTaskForm;
+	private boolean renderTask;
 	/* class injection */
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserImpl usersImpl = new UserImpl();
@@ -122,7 +136,10 @@ public class StaffReportActivity implements Serializable, DbConstant {
 	Font ffont3 = new Font(Font.FontFamily.UNDEFINED, 12, Font.BOLDITALIC, BaseColor.BLUE);
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-
+	StaffReportViewImpl staffReportViewImpl = new StaffReportViewImpl();
+	private List<ClearanceDto> staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
+	private boolean backBtn;
+	private String overallPerformance;
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -147,19 +164,51 @@ public class StaffReportActivity implements Serializable, DbConstant {
 
 			taskDetail = taskImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
 					new Object[] { ACTIVE }, "Task", "taskId asc");
+			
+			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","board" },
+					new Object[] { ACTIVE,boardImpl.getBoardById(usersSession.getBoard().getBoardId(), "boardId")}, "Users", "userId asc");
 
-			usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
-					new Object[] { ACTIVE }, "Users", "userId asc");
+			
+			/*taskAssignDetailsst = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus" },
+					new Object[] { ACTIVE}, "TaskAssignment", "upDtTime desc");*/
+			
 
+			
 			/*
 			 * usersDetails = usersImpl.getGenericListWithHQLParameter(new String[] {
 			 * "genericStatus", "board" }, new Object[] { ACTIVE,
 			 * boardImpl.getBoardById(usersSession.getBoard().getBoardId(), "boardId") },
 			 * "Users", "userId asc");
 			 */
+			this.renderTask = true;
+			this.rendered = true;
+			Clearance();
+			institutionOverallPerformance();
 
 		} catch (Exception e) {
 			e.getMessage();
+		}
+	}
+
+	public void institutionOverallPerformance() {
+		try {
+			staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
+			for (Object[] data : staffReportViewImpl.reportList("SELECT ((sum(case when (ac.countPlanned>0) then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as Totalplanned,((sum(case when (ac.countApproved>0) then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalApproved,((sum(case when (ac.status='Rejected') then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalRejected, ((sum(case when (ac.countReported>0) then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalReported, ((sum(case when (ac.status='Completed') then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalCompleted,((sum(case when (ac.status='Failed') then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalFailed ,tsk.taskName from Activity ac,Task tsk,StrategicPlan plan where ac.status<>'Not Started' and tsk.taskId=ac.task and tsk.strategicPlan=plan.planId and plan.genericStatus ='active' group by ac.task")) {
+				ClearanceDto userDtos = new ClearanceDto();
+				userDtos.setPlanned(Integer.parseInt(data[0]+""));;
+				userDtos.setApproved(Integer.parseInt(data[1]+""));
+				userDtos.setRejected(Integer.parseInt(data[2]+""));
+				userDtos.setReported(Integer.parseInt(data[3]+""));
+				userDtos.setCompleted(Integer.parseInt(data[4]+""));
+				userDtos.setFailed(Integer.parseInt(data[5]+""));	
+				userDtos.setTaskName(data[6]+"");
+				staffPerformanceDtoDetails.add(userDtos);
+
+			}
+			this.overallPerformance = new Gson().toJson(staffPerformanceDtoDetails);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -830,13 +879,24 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			renderedspdf = false;
 			renderedtxl = false;
 			renderedsxl = false;
-		} else {
+			renderchart=false;
+		} else if (myChoice.equalsIgnoreCase(exelformat)) {
 			rendered = false;
 			renderedx = true;
 			renderedtpdf = false;
 			renderedspdf = false;
 			renderedtxl = false;
 			renderedsxl = false;
+			renderchart= false;
+		}
+		else if (myChoice.equalsIgnoreCase(viewchart)) {
+			rendered = false;
+			renderedx = false;
+			renderedtpdf = false;
+			renderedspdf = false;
+			renderedtxl = false;
+			renderedsxl = false;
+			renderchart=true;
 		}
 
 	}
@@ -848,6 +908,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			renderedtpdf = false;
 			renderedtxl = false;
 			renderedsxl = false;
+			 renderchartforStaff=false;
 
 		} else {
 
@@ -855,6 +916,7 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			renderedspdf = false;
 			renderedtxl = false;
 			renderedsxl = false;
+			 renderchartforStaff=false;
 		}
 
 	}
@@ -866,17 +928,144 @@ public class StaffReportActivity implements Serializable, DbConstant {
 			renderedtxl = false;
 			renderedtpdf = false;
 			renderedspdf = false;
+			 renderchartforStaff=false;
 
 		} else {
 			renderedtxl = true;
 			renderedsxl = false;
 			renderedtpdf = false;
 			renderedspdf = false;
+			 renderchartforStaff=false;
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
+	public void updateReportForViewChart() throws Exception {
+		//if (excelchoice.equalsIgnoreCase(taskchart)) {
+		    renderchartforStaff=true;
+			renderedsxl = false;
+			renderedtxl = false;
+			renderedtpdf = false;
+			renderedspdf = false;
 
+		//} else {
+			//renderchartforStaff=true;
+			renderedtxl = false;
+			renderedsxl = false;
+			renderedtpdf = false;
+			renderedspdf = false;
+		//}
+			Users user= new Users();
+			user=usersImpl.gettUserById(selectedStaff, "userId");
+			taskAssignDetailsst = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus","user" },
+					new Object[] { ACTIVE,user}, "TaskAssignment", "upDtTime desc");
+	}
+	public String getMyFormattedEndDate(TaskAssignment endDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(endDate.getTask().getEndDate());
+	}
+
+	public String getMyFormattedDueDate(TaskAssignment dueDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(dueDate.getTask().getDueDate());
+	}
+
+	public String getMyFormattedDate(TaskAssignment statDate) {
+		return new SimpleDateFormat("dd-MM-yyyy").format(statDate.getCrtdDtTime());
+	}
+	public void showStatistics(TaskAssignment info) {
+		HttpSession sessionuser = SessionUtils.getSession();
+		if (null != info) {
+			sessionuser.setAttribute("taskstatistics", info);
+			LOGGER.info("Info Founded are TaskAssId:>>>>>>>>>>>>>>>>>>>>>>>:" + info.getTaskAssignmentId()
+					+ "taskname:::" + info.getTask().getTaskName() + "Task desc::" + info.getTask().getDescription()
+					+ "USERINFO::" + info.getUser().getUserId());
+			taskAssign = showAssignedTask();
+			staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
+			staffPerformanceDtoDetails=Clearance();
+			if(staffPerformanceDtoDetails.size()>0) {
+				this.renderTask = false;
+				this.renderTaskForm = true;
+				//this.rendered = false;
+				this.backBtn = true;
+				Clearance();
+			}else {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.staff.statistics"));
+				LOGGER.info(CLASSNAME + ":::There is no statistics to display on this target ,it does not have any activity planned");
+			}
+			
+			
+		}
+	}
+	public List<ClearanceDto> Clearance() {
+		try {
+			HttpSession session = SessionUtils.getSession();
+			taskAssign = (TaskAssignment) session.getAttribute("taskstatistics");
+			staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
+			int i = 1;
+			for (Object[] data : staffReportViewImpl.reportList(
+					"SELECT DATE_FORMAT(dueDate,'%d/%m/%Y') as dueDate, mytask as MyTask,(sum(case when (ActivityPlanned>0) then 1 else 0 end) *100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end)) as TotalPlannedActivity,sum(case when (ActivityApproved>0) then 1 else 0 end) as TotalApprovedActivity,((sum(case when (ActivityApproved>0) then 1 else 0 end)*100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end))) as ApprovedActivity,\r\n"
+							+ "((sum(case when (status='Rejected') then 1 else 0 end)*100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end))) as RejectedActivity,((sum(case when (ActivityReported>0) then 1 else 0 end)*100)/(sum(case when (ActivityApproved>0) then 1 else 0 end))) as ReportedActivity,((sum(case when (status='Completed') then 1 else 0 end)*100)/(sum(case when (ActivityReported>0) then 1 else 0 end))) as CompletedActivity,\r\n"
+							+ "((sum(case when (status='Failed') then 1 else 0 end)*100)/(sum(case when (ActivityReported>0) then 1 else 0 end))) as FailedActivity\r\n"
+							+ "from StaffReportView  where dueDate is not null and  mytask='" + taskAssign.getTask().getTaskName()
+							 + "' group by DATE_FORMAT(dueDate,'%d/%m/%Y') ")) {
+
+				LOGGER.info("::::::::Planned:::::::" + data[2] + ":::Approved:::::" + data[8] + "::::Rejected::::"
+						+ data[4] + ":::Reported::::::" + data[5] + "::::::::Completed::::::" + data[6]);
+				ClearanceDto userDtos = new ClearanceDto();
+				// userDtos.setPlanned(Integer.parseInt(data[2] + ""));
+				if (null == data[4]) {
+					userDtos.setApproved(0);
+
+				} else {
+					userDtos.setApproved(Integer.parseInt(data[4] + ""));
+				}
+				if (null == data[5]) {
+					userDtos.setRejected(0);
+
+				} else {
+					userDtos.setRejected(Integer.parseInt(data[5] + ""));
+				}
+				if (null == data[6]) {
+					userDtos.setReported(0);
+
+				} else {
+					userDtos.setReported(Integer.parseInt(data[6] + ""));
+				}
+				userDtos.setDueDate(data[0] + "" +"[Week "+i+"]");
+				LOGGER.info("::::::::Due Date:::::::" +userDtos.getDueDate());
+				if (null == data[7]) {
+					userDtos.setCompleted(0);
+
+				} else {
+					userDtos.setCompleted(Integer.parseInt(data[7] + ""));
+				}
+				if (null == data[8]) {
+					userDtos.setFailed(0);
+					LOGGER.info("::::::::FAILED:::::::" + data[8]);
+				} else {
+					userDtos.setFailed(Integer.parseInt(data[8] + ""));
+					LOGGER.info("::::::::FAILED:::::::" + data[8]);
+				}
+				i++;
+				staffPerformanceDtoDetails.add(userDtos);
+			}
+
+			this.performance = new Gson().toJson(staffPerformanceDtoDetails);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return (staffPerformanceDtoDetails);
+	}
+	public TaskAssignment showAssignedTask() {
+		HttpSession session = SessionUtils.getSession();
+		// Get the values from the session
+		taskAssign = (TaskAssignment) session.getAttribute("taskstatistics");
+		return taskAssign;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Activity> activitiesFprStaff() throws Exception {
 		try {
 			activityDetailss = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
@@ -1228,4 +1417,116 @@ public class StaffReportActivity implements Serializable, DbConstant {
 		this.activityDetailz = activityDetailz;
 	}
 
+	public boolean isRenderchart() {
+		return renderchart;
+	}
+
+	public void setRenderchart(boolean renderchart) {
+		this.renderchart = renderchart;
+	}
+
+	public boolean isRenderchartforStaff() {
+		return renderchartforStaff;
+	}
+
+	public void setRenderchartforStaff(boolean renderchartforStaff) {
+		this.renderchartforStaff = renderchartforStaff;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	public int getSelectedStaff() {
+		return selectedStaff;
+	}
+
+	public void setSelectedStaff(int selectedStaff) {
+		this.selectedStaff = selectedStaff;
+	}
+
+	public List<TaskAssignment> getTaskAssignDetailsst() {
+		return taskAssignDetailsst;
+	}
+
+	public void setTaskAssignDetailsst(List<TaskAssignment> taskAssignDetailsst) {
+		this.taskAssignDetailsst = taskAssignDetailsst;
+	}
+
+	public TaskAssignmentImpl getTaskAssignImpl() {
+		return taskAssignImpl;
+	}
+
+	public void setTaskAssignImpl(TaskAssignmentImpl taskAssignImpl) {
+		this.taskAssignImpl = taskAssignImpl;
+	}
+
+	public BoardImpl getBoardImpl() {
+		return boardImpl;
+	}
+
+	public void setBoardImpl(BoardImpl boardImpl) {
+		this.boardImpl = boardImpl;
+	}
+
+	public TaskAssignment getTaskAssign() {
+		return taskAssign;
+	}
+
+	public void setTaskAssign(TaskAssignment taskAssign) {
+		this.taskAssign = taskAssign;
+	}
+
+	public StaffReportViewImpl getStaffReportViewImpl() {
+		return staffReportViewImpl;
+	}
+
+	public void setStaffReportViewImpl(StaffReportViewImpl staffReportViewImpl) {
+		this.staffReportViewImpl = staffReportViewImpl;
+	}
+
+	public List<ClearanceDto> getStaffPerformanceDtoDetails() {
+		return staffPerformanceDtoDetails;
+	}
+
+	public void setStaffPerformanceDtoDetails(List<ClearanceDto> staffPerformanceDtoDetails) {
+		this.staffPerformanceDtoDetails = staffPerformanceDtoDetails;
+	}
+
+	public String getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
+
+	public boolean isRenderTaskForm() {
+		return renderTaskForm;
+	}
+
+	public void setRenderTaskForm(boolean renderTaskForm) {
+		this.renderTaskForm = renderTaskForm;
+	}
+
+	public boolean isRenderTask() {
+		return renderTask;
+	}
+
+	public void setRenderTask(boolean renderTask) {
+		this.renderTask = renderTask;
+	}
+
+	public String getOverallPerformance() {
+		return overallPerformance;
+	}
+
+	public void setOverallPerformance(String overallPerformance) {
+		this.overallPerformance = overallPerformance;
+	}
+	
 }

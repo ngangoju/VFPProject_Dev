@@ -21,13 +21,18 @@ public class ClearanceDto implements Serializable {
 	private double rate;
 	private boolean editable;
 	private String dueDate;
-	private Date startDate;
+	private String startDate;
 	private Date dateDue;
+	private String endDate;
+	private String genericStatus;
+	private String boarName;
+	private String taskWeight;
 	
-	public Date getStartDate() {
+	
+	public String getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 	public Date getDateDue() {
@@ -127,5 +132,30 @@ public class ClearanceDto implements Serializable {
 	public void setNotStarted(int notStarted) {
 		this.notStarted = notStarted;
 	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getGenericStatus() {
+		return genericStatus;
+	}
+	public void setGenericStatus(String genericStatus) {
+		this.genericStatus = genericStatus;
+	}
+	public String getBoarName() {
+		return boarName;
+	}
+	public void setBoarName(String boarName) {
+		this.boarName = boarName;
+	}
+	public String getTaskWeight() {
+		return taskWeight;
+	}
+	public void setTaskWeight(String taskWeight) {
+		this.taskWeight = taskWeight;
+	}
+	
 	
 }

@@ -18,6 +18,7 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityImpl;
+import tres.dao.impl.BoardImpl;
 import tres.dao.impl.InstitutionReportViewImpl;
 import tres.dao.impl.StaffReportViewImpl;
 import tres.dao.impl.StatGraphsImpl;
@@ -93,6 +94,8 @@ public class StatisticsController implements Serializable, DbConstant {
 	private boolean renderTask;
 	private boolean rendered;
 	private boolean backBtn;
+	private boolean rendersuperchart;
+	private int selectedStaff;
 
 	@SuppressWarnings("unchecked")
 	public String create() {

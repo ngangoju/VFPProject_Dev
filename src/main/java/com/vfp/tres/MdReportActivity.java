@@ -39,6 +39,8 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.PieChartModel;
+
+import com.google.gson.Gson;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -63,6 +65,7 @@ import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.BoardImpl;
 import tres.dao.impl.ClearanceImpl;
 import tres.dao.impl.InstitutionReportViewImpl;
+import tres.dao.impl.StaffReportViewImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
@@ -71,10 +74,11 @@ import tres.domain.Clearance;
 import tres.domain.Documents;
 import tres.domain.InstitutionReportView;
 import tres.domain.Task;
+import tres.domain.TaskAssignment;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.ClearanceDto;
-import tres.vfp.dto.MdrepDto;
+import tres.vfp.dto.ClearanceDto;
 import tres.vfp.dto.TaskDto;
 
 @ManagedBean
@@ -92,6 +96,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private List<Task> taskDetails = new ArrayList<Task>();
 	private Task task;
 	private String myChoice;
+	private String performance;
 	private Board board;
 	private boolean rendered;
 	private boolean renderedx;
@@ -107,12 +112,30 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private PieChartModel pieModel2;
 	private List<TaskDto> taskDtoDetails = new ArrayList<TaskDto>();
 	private Activity activity;
+	private List<ClearanceDto> staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
 	private List<Activity> activityDetails = new ArrayList<Activity>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
-	private List<MdrepDto> activityMddtodetails = new ArrayList<MdrepDto>();
+	private List<ClearanceDto> activityMddtodetails = new ArrayList<ClearanceDto>();
 	private List<Board> boardDetails = new ArrayList<Board>();
 	private List<ClearanceDto> ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 	private ClearanceDto clearanceDto;
+	private TaskAssignment taskAssign;
+	private String overallPerformance;
+	StaffReportViewImpl staffReportViewImpl = new StaffReportViewImpl();
+	private String[] timespan = { DAILY, WEEKLY, MONTHLY, YEARLY };
+	private String[] graphType = { ACTIVITYAPROVAL, ACTIVITYPLANNED, ACTIVITYCOMPLETED };
+	SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss");
+	SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy");
+	private String[] type;
+	private boolean renderTask;
+	private boolean renderedd;
+	private boolean backBtn;
+	private boolean renderTaskForm;
+	private boolean renderSelectedBoard;
+	private String name;
+	private String convertedData="test";
+	private String[] number;
+	private String[] values;
 	/* class injection */
 
 	JSFBoundleProvider provider = new JSFBoundleProvider();
@@ -307,11 +330,12 @@ public class MdReportActivity implements Serializable, DbConstant {
 	// Codes for creating the table and its contents
 
 	public void createPdf() throws IOException, DocumentException {
-		Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLDITALIC, BaseColor.BLUE);
+		Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 13, Font.BOLDITALIC, BaseColor.BLUE);
 		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+		Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11,Font.BOLDITALIC);
 		Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD,BaseColor.BLACK);
 		Date date = new Date();
-		SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss");
+		
 		String xdate = dt.format(date);
 		FacesContext context = FacesContext.getCurrentInstance();
 		Document document = new Document();
@@ -371,55 +395,68 @@ public class MdReportActivity implements Serializable, DbConstant {
 		
 		document.add(new Paragraph("                                              "));
 		
-		PdfPTable table = new PdfPTable(5);
+		PdfPTable table = new PdfPTable(6);
 		table.setTotalWidth(PageSize.A4.getWidth());
-		table.setWidths(new int[] {1,5,5,5,5});
+		table.setWidths(new int[] {1,5,5,5,5,5});
 	
 		table.setLockedWidth(true);
 		
-		PdfPCell pc0 = new PdfPCell(new Paragraph("#", font0));
+		PdfPCell pc0 = new PdfPCell(new Paragraph("#", font18));
 		pc0.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc0);
 		
-		PdfPCell pc1 = new PdfPCell(new Paragraph("TASK NAME", font0));
+		PdfPCell pc1 = new PdfPCell(new Paragraph("TASK NAME", font18));
 		pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc1);
 
-		PdfPCell pc2 = new PdfPCell(new Paragraph("EXECUTION PERIOD", font0));
+		PdfPCell pc2 = new PdfPCell(new Paragraph("WEIGHT", font18));
 		pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc2);
 
-		PdfPCell pc3 = new PdfPCell(new Paragraph("STATUS", font0));
+		PdfPCell pc3 = new PdfPCell(new Paragraph("START DATE", font18));
 		pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc3);
 		
-		PdfPCell pc5 = new PdfPCell(new Paragraph(" PROGRESS", font0));
+		PdfPCell pcS = new PdfPCell(new Paragraph("DUE DATE", font18));
+		pcS.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(pcS);
+		
+		PdfPCell pc5 = new PdfPCell(new Paragraph("END DATE", font18));
 		pc5.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(pc5);
+		
+		
 		table.setHeaderRows(1);
 		try {
 			int number=1;
 			for (Object[] data : taskImpl.reportList(
-					"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b  where t.board=b.boardId and t.board='"+ selectedBoard + "'")) {
-				PdfPCell p = new PdfPCell(new Paragraph(number + ""));
+					"select t.taskName,t.endDate,t.dueDate,t.startDate,t.taskWeight,t.genericStatus,b.boardName from Task t,Board b \r\n" + 
+					"where b.boardId=t.board and b.boardId='"+selectedBoard+"' order by t.startDate" )) {
+				
+				PdfPCell p = new PdfPCell(new Paragraph(number + "",font8));
 				p.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(p);
 				
-				PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + ""));
+				PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + "",font8));
 				pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pcel1);
 				
-				PdfPCell pcel2 = new PdfPCell(new Paragraph(data[1] + ""));
+				PdfPCell pcel2 = new PdfPCell(new Paragraph(data[4] + "",font8));
 				pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pcel2);
-				PdfPCell pcel3 = new PdfPCell(new Paragraph(data[2] + ""));
+				
+				PdfPCell pcel3 = new PdfPCell(new Paragraph(dtf.format(data[3]),font8));
 				pcel3.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pcel3);
-				/*PdfPCell pcel4 = new PdfPCell(new Paragraph(data[3] + ""));
-				pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(pcel4);*/
 				
-				table.addCell("");
+				PdfPCell pcel4 = new PdfPCell(new Paragraph(dtf.format(data[2]),font8));
+				pcel4.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pcel4);
+				
+				PdfPCell pcele = new PdfPCell(new Paragraph(dtf.format(data[1]),font8));
+				pcele.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(pcele);
+				
 				number++;
 			}
 			document.add(table);
@@ -533,6 +570,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderTableByBoard = false;
 			renderEditedTableByBoard = true;
 			renderedclear = false;
+			renderSelectedBoard=false;
 		} else if (myChoice.equalsIgnoreCase(taskchart)) {
 			
 			renderedchart = true;
@@ -545,6 +583,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderEditedTableByBoard = false;
 			renderedx = false;
 			renderedclear = false;
+			renderSelectedBoard=false;
 			
 		} else if (myChoice.equalsIgnoreCase(clear)) {
 
@@ -554,13 +593,15 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
 			renderedclear = true;
+			renderSelectedBoard=false;
 		} else {
 			rendered = false;
 			renderedx = true;
-			renderTableByBoard = true;
-			renderEditedTableByBoard = false;
+			//renderTableByBoard = true;
+			renderEditedTableByBoard = true;
 			renderedchart = false;
 			renderedclear = false;
+			renderSelectedBoard=false;
 		}
 	}
 
@@ -571,11 +612,11 @@ public class MdReportActivity implements Serializable, DbConstant {
 				renderEditedTableByBoard = true;
 				ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 				for (Object[] data : institutionReportViewImpl
-						.reportList("SELECT stategicplan,mytask, sum(case  when  boardName in ('" + selectedBoard
-								+ "')  then 1 else 0 end),\r\n" + "sum(case when (boardName in ('" + selectedBoard
-								+ "') and status='done' ) then 1 else 0 end),\r\n" + "(sum(case when (boardName in ('"
+						.reportList("SELECT stategicplan,mytaskName, sum(case  when  board in ('" + selectedBoard
+								+ "')  then 1 else 0 end),\r\n" + "sum(case when (board in ('" + selectedBoard
+								+ "') and status='done' ) then 1 else 0 end),\r\n" + "(sum(case when (board in ('"
 								+ selectedBoard
-								+ "') and status='done' ) then 1 else 0 end) /sum(case  when boardName in ('"
+								+ "') and status='done' ) then 1 else 0 end) /sum(case  when board in ('"
 								+ selectedBoard + "')\r\n"
 								+ "then 1 else 0 end))*100 from InstitutionReportView group by stategicplan,mytask")) {
 
@@ -606,25 +647,65 @@ public class MdReportActivity implements Serializable, DbConstant {
 
 		return null;
 	}
-
-	public List<MdrepDto> repfoboard() {
+	//The following method is for generating the clearance report on chart for the selected Board.
+	
+		public List<ClearanceDto> createdClearanceForSelecetedBoard() {
+			try {		
+				ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+		        ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+						for (Object[] data : institutionReportViewImpl.reportList("SELECT mytaskName,\r\n" + 
+								"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)) ,\r\n" + 
+								"sum(case when (status='rejected' ) then 1 else 0 end) ,\r\n" + 
+								"sum(case when (status='Approved' ) then 1 else 0 end) , \r\n" + 
+								"sum(case when (status='Completed' ) then 1 else 0 end) ,\r\n" + 
+								"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)))  \r\n" + 
+								"from InstitutionReportView where board='"+selectedBoard+"'   group by mytaskName"
+				)) {
+					
+					ClearanceDto userDtos = new ClearanceDto();
+					//userDtos.setStrategicplan(data[0] + "");
+					userDtos.setTaskName(data[0] + "");
+					//userDtos.setNumberOfActivities(Integer.parseInt(data[1] + ""));
+					userDtos.setApproved(Integer.parseInt(data[3] + ""));
+					//userDtos.setPending(Integer.parseInt(data[4] + ""));*/
+					userDtos.setCompleted(Integer.parseInt(data[4] + ""));
+					//userDtos.setRate(Double.parseDouble(data[5]+""));
+					ClearanceDtoDetails.add(userDtos);
+					this.name=new Gson().toJson(ClearanceDtoDetails);
+					LOGGER.info("tes1 1::::::::::::::::the selectesd board is" +selectedBoard);
+					
+				}	
+				return(ClearanceDtoDetails);
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			return null;
+		}
+	
+	
+	public List<ClearanceDto> repfoboard() {
 		try {
-
+			renderEditedTableByBoard=true;
 			if (selectedBoard != 0) {
 
-				activityMddtodetails = new ArrayList<MdrepDto>();
-				for (Object[] data : taskImpl.reportList(
-						"select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
-								+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"
-								+ selectedBoard + "'")) {
-					LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana");
+				activityMddtodetails = new ArrayList<ClearanceDto>();
+				for (Object[] data : taskImpl.reportList("select t.taskName,t.endDate,t.dueDate,t.startDate,t.taskWeight,t.genericStatus,b.boardName from Task t,Board b \r\n" + 
+						"where b.boardId=t.board and b.boardId='"+selectedBoard+"' order by t.startDate")) {
+					LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana"+data[0] + "");
 
-					MdrepDto userDtos = new MdrepDto();
-
-					userDtos.setBoarName(data[3] + "");
+					ClearanceDto userDtos = new ClearanceDto();
 					userDtos.setTaskName(data[0] + "");
-					userDtos.setGenericStatus(data[2] + "");
 					userDtos.setEndDate(sdf.format(data[1]));
+					userDtos.setDueDate(sdf.format(data[2]));
+					userDtos.setStartDate(sdf.format(data[3]));
+					userDtos.setTaskWeight(data[4]+"");
+					userDtos.setGenericStatus(data[5] + "");
+					userDtos.setBoarName(data[3] + "");
+					
 
 					activityMddtodetails.add(userDtos);
 				}
@@ -641,12 +722,40 @@ public class MdReportActivity implements Serializable, DbConstant {
 
 		return null;
 	}
+	
+	
+	//CODES TO GENERATE THE TASK ASSIGNED ON A BOARD.
+	
+	public void showStatistics() {
 
-	public List<MdrepDto> getActivityMddtodetails() {
+		rendered = false;
+		renderedx = false;
+		renderedchart = false;
+		renderTableByBoard = false;
+		renderEditedTableByBoard = false;
+		renderedclear = false;
+		renderSelectedBoard=true;
+		createdClearanceForSelecetedBoard();
+			
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
+	public void showGraph() {
+		if (type.equals(ACTIVITYAPROVAL)) {
+
+		} else if (type.equals(ACTIVITYCOMPLETED)) {
+
+		} else if (type.equals(ACTIVITYPLANNED)) {
+
+		}
+	}
+	
+	//END OF CODES TO GENRATE THE ASSIGNED BOARD CHART 
+	public List<ClearanceDto> getActivityMddtodetails() {
 		return activityMddtodetails;
 	}
 
-	public void setActivityMddtodetails(List<MdrepDto> activityMddtodetails) {
+	public void setActivityMddtodetails(List<ClearanceDto> activityMddtodetails) {
 		this.activityMddtodetails = activityMddtodetails;
 	}
 
@@ -983,5 +1092,142 @@ public class MdReportActivity implements Serializable, DbConstant {
 	public void setRenderedclear(boolean renderedclear) {
 		this.renderedclear = renderedclear;
 	}
+
+	public TaskAssignment getTaskAssign() {
+		return taskAssign;
+	}
+
+	public void setTaskAssign(TaskAssignment taskAssign) {
+		this.taskAssign = taskAssign;
+	}
+
+	public String getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
+
+	public List<ClearanceDto> getStaffPerformanceDtoDetails() {
+		return staffPerformanceDtoDetails;
+	}
+
+	public void setStaffPerformanceDtoDetails(List<ClearanceDto> staffPerformanceDtoDetails) {
+		this.staffPerformanceDtoDetails = staffPerformanceDtoDetails;
+	}
+
+	public String getOverallPerformance() {
+		return overallPerformance;
+	}
+
+	public void setOverallPerformance(String overallPerformance) {
+		this.overallPerformance = overallPerformance;
+	}
+
+	public StaffReportViewImpl getStaffReportViewImpl() {
+		return staffReportViewImpl;
+	}
+
+	public void setStaffReportViewImpl(StaffReportViewImpl staffReportViewImpl) {
+		this.staffReportViewImpl = staffReportViewImpl;
+	}
+
+	public String[] getTimespan() {
+		return timespan;
+	}
+
+	public void setTimespan(String[] timespan) {
+		this.timespan = timespan;
+	}
+
+	public String[] getGraphType() {
+		return graphType;
+	}
+
+	public void setGraphType(String[] graphType) {
+		this.graphType = graphType;
+	}
+
+	public String[] getType() {
+		return type;
+	}
+
+	public void setType(String[] type) {
+		this.type = type;
+	}
+
+	public boolean isRenderTask() {
+		return renderTask;
+	}
+
+	public void setRenderTask(boolean renderTask) {
+		this.renderTask = renderTask;
+	}
+
+	public boolean isRenderedd() {
+		return renderedd;
+	}
+
+	public void setRenderedd(boolean renderedd) {
+		this.renderedd = renderedd;
+	}
+
+	public boolean isBackBtn() {
+		return backBtn;
+	}
+
+	public void setBackBtn(boolean backBtn) {
+		this.backBtn = backBtn;
+	}
+
+	public boolean isRenderTaskForm() {
+		return renderTaskForm;
+	}
+
+	public void setRenderTaskForm(boolean renderTaskForm) {
+		this.renderTaskForm = renderTaskForm;
+	}
+
+	public boolean isRenderSelectedBoard() {
+		return renderSelectedBoard;
+	}
+
+	public void setRenderSelectedBoard(boolean renderSelectedBoard) {
+		this.renderSelectedBoard = renderSelectedBoard;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getConvertedData() {
+		return convertedData;
+	}
+
+	public void setConvertedData(String convertedData) {
+		this.convertedData = convertedData;
+	}
+
+	public String[] getNumber() {
+		return number;
+	}
+
+	public void setNumber(String[] number) {
+		this.number = number;
+	}
+
+	public String[] getValues() {
+		return values;
+	}
+
+	public void setValues(String[] values) {
+		this.values = values;
+	}
+	
 
 }

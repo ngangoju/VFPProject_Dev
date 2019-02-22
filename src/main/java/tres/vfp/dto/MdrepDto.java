@@ -9,8 +9,18 @@ public class MdrepDto implements Serializable {
 	private String endDate;
 	private String genericStatus;
 	private String boarName;
+	private int task;
 	private int marks;
 	
+	
+	public int getTask() {
+		return task;
+	}
+
+	public void setTask(int task) {
+		this.task = task;
+	}
+
 	public int getMarks() {
 		return marks;
 	}

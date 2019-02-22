@@ -36,9 +36,7 @@ public class ChartController {
 	
 	//private ClearanceDto clearanceDto;
 	//list of elements to be graphed
-	
-	private List<InstitutionReportView> elementsList = new InstitutionReportViewImpl().getInstitutionReportviews();
-	
+	//private List<InstitutionReportView> elementsList = new InstitutionReportViewImpl().getInstitutionReportviews();
 	
 	@PostConstruct
 	public void init() {
@@ -52,13 +50,13 @@ public class ChartController {
 		try {		
 			ClearanceDtoDetails = new ArrayList<ClearanceDto>();
 	        ClearanceDtoDetails = new ArrayList<ClearanceDto>();
-					for (Object[] data : institutionReportViewImpl.reportList("SELECT mytask,\r\n" + 
+					for (Object[] data : institutionReportViewImpl.reportList("SELECT mytaskName,\r\n" + 
 							"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)) ,\r\n" + 
 							"sum(case when (status='rejected' ) then 1 else 0 end) ,\r\n" + 
 							"sum(case when (status='Approved' ) then 1 else 0 end) , \r\n" + 
 							"sum(case when (status='Completed' ) then 1 else 0 end) ,\r\n" + 
 							"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)))  \r\n" + 
-							"from InstitutionReportView group by mytask"
+							"from InstitutionReportView group by mytaskName"
 			)) {
 				
 				ClearanceDto userDtos = new ClearanceDto();
@@ -142,13 +140,13 @@ public class ChartController {
 		GraphDtoDetails = graphDtoDetails;
 	}
 
-	public List<InstitutionReportView> getElementsList() {
+	/*public List<InstitutionReportView> getElementsList() {
 		return elementsList;
 	}
 
 	public void setElementsList(List<InstitutionReportView> elementsList) {
 		this.elementsList = elementsList;
-	}
+	}*/
 
 	public int getSelectedBoard() {
 		return selectedBoard;
