@@ -100,7 +100,7 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 						+ "</p>";
 			} else if (type.equals("task")) {
 				msg = "<p>" + "I hope this email finds you well." + "<br/>"
-						+ "This is to notify you the new target created by your board superviser, " + "<br/>"
+						+ "This is to notify you that you've been assigned a new target by your board superviser, " + "<br/>"
 						+ "you can now check it out and start to create weekly activities." + "<br/>" + "</p>";
 			}
 			/* End send content in table sample */

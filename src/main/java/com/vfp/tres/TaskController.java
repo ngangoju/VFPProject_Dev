@@ -203,23 +203,6 @@ public class TaskController implements Serializable, DbConstant {
 				LOGGER.info(CLASSNAME + ":::Task Details is saved" + plan.getStartDate() + "and message"
 						+ plan.getDueDate());
 				clearTaskFuileds();
-				SendSupportEmail email = new SendSupportEmail();
-				userDetails = usersImpl.getGenericListWithHQLParameter(
-						new String[] { "genericStatus", "userCategory", "board" }, new Object[] { ACTIVE,
-								categoryImpl.getUserCategoryById(2, "userCatid"), usersSession.getBoard() },
-						"Users", "userId asc");
-				for (Users us : userDetails) {
-					contact = contactImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
-							new Object[] { ACTIVE, us }, "from Contact");
-					if (contact == null) {
-						LOGGER.info(CLASSNAME + ":::The user has no contact details");
-					} else {
-						email.sendMailStrategicPlan("task", us.getFname(),
-								usersSession.getFname() + " " + usersSession.getLname(), contact.getEmail());
-						LOGGER.info(us.getFname() + " receives email from " + usersSession.getFname() + " "
-								+ usersSession.getLname() + " on this email ");
-					}
-				}
 			}
 			}
 		} catch (Exception e) {
@@ -236,9 +219,11 @@ public class TaskController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public void saveAssign(Task actS) {
 		try {
+			Users usr = new Users();
+			usr=usersImpl.gettUserById(userId, "userId");
 			TaskAssignment assignm = new TaskAssignment();
 			assignm = taskAssignImpl.getModelWithMyHQL(new String[] { "task", "user" },
-					new Object[] { actS, usersImpl.gettUserById(userId, "userId") }, "from TaskAssignment");
+					new Object[] { actS, usr }, "from TaskAssignment");
 			if (null == assignm) {
 				assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 				LOGGER.info(assignment.getCreatedBy());
@@ -247,7 +232,7 @@ public class TaskController implements Serializable, DbConstant {
 				assignment.setUpDtTime(timestamp);
 				assignment.setUpdatedBy(usersSession.getFname() + " " + usersSession.getLname());
 				assignment.setTask(actS);
-				assignment.setUser(usersImpl.gettUserById(userId, "userId"));
+				assignment.setUser(usr);
 				taskAssignImpl.saveTaskAssignment(assignment);
 				taskDetails = taskImpl
 						.getGenericListWithHQLParameter(new String[] { "genericStatus", "createdBy", "strategicPlan" },
@@ -259,6 +244,17 @@ public class TaskController implements Serializable, DbConstant {
 				setValid(true);
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.assignment"));
 				LOGGER.info(CLASSNAME + ":::Task Assignment is saved");
+				SendSupportEmail email = new SendSupportEmail();
+					contact = contactImpl.getModelWithMyHQL(new String[] { "genericStatus", "user" },
+							new Object[] { ACTIVE, usr }, "from Contact");
+					if (contact == null) {
+						LOGGER.info(CLASSNAME + ":::The user has no contact details");
+					} else {
+						email.sendMailStrategicPlan("task", usr.getFname(),
+								usersSession.getFname() + " " + usersSession.getLname(), contact.getEmail());
+						LOGGER.info(usr.getFname() + " receives email from " + usersSession.getFname() + " "
+								+ usersSession.getLname() + " on this email ");
+					}
 //			clearTaskFuileds();
 			} else {
 				JSFMessagers.resetMessages();
