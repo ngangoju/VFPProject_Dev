@@ -71,12 +71,11 @@
 						</p:outputPanel>
 							<p:outputPanel rendered="#{activityController.backBtn}">
 
-							<h:commandLink
-								styleClass="btn btn-primary glyphicon glyphicon-chevron-left"
-								actionListener="#{activityController.backListEscaleAct()}"
-								value="#{msg['UserCatForm.BackBoardButtom']}">
-								<f:ajax render="@form" execute="@form" onevent="showProgress" />
-							</h:commandLink>
+						<a href="#{loadUserInformationsController.getContextPath()}/menu/ManageActivity.xhtml"
+							class="btn btn-primary glyphicon glyphicon-chevron-left"
+								>
+								#{msg['UserCatForm.BackBoardButtom']}
+							</a>
 
 
 						</p:outputPanel>

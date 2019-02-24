@@ -107,6 +107,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private int approvedSize;
 	private int escalateSize;
 	private int userSize;
+	private String planperiod;
 	private boolean renderTable;
 	private boolean rendered = true;
 	private boolean rendered1;
@@ -126,6 +127,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private boolean commentRender;
 	private boolean renderEscalated;
 	private boolean renderAssignedEscalation;
+	private boolean renderPeriod;
 	private String[] status = { APPROVED, PLAN_ACTIVITY, REJECT, DONE, COMPLETED };
 
 	private String[] weight = { SHORT, MEDIUM, LONG };
@@ -626,11 +628,13 @@ public class ActivityController implements Serializable, DbConstant {
 				// activityDto.setCommmentAction(false);
 				activityDto.setDoneAction(false);
 				activityDto.setApprovedComment(false);
+				activityDto.setFailedEvButton(false);
 			} else {
 				activityDto.setReportAction(true);
 				// activityDto.setCommmentAction(true);
 				activityDto.setDoneAction(true);
 				activityDto.setApprovedComment(true);
+				activityDto.setFailedEvButton(true);
 			}
 
 			/*
@@ -1240,6 +1244,7 @@ public class ActivityController implements Serializable, DbConstant {
 			java.util.Date dDate = cal1.getTime();
 			// cal1.add(Calendar.DATE, policy.getVariation());
 			String dt = smf.format(dDate);
+			planperiod = smf.format(dDate);
 			LOGGER.info("Due date is ::" + smf.parse(dt));
 			return smf.parse(dt);
 		} catch (Exception e) {
@@ -1248,6 +1253,66 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public String reportFailure(ActivityDto activity) {
+		try {
+			Activity act = new Activity();
+			act = new Activity();
+			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+
+			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
+
+			/* activity.setEditable(false); */
+
+			// Checking the reporting period if not exceed due date plus variation period
+			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
+			String dt = smf.format(new Date());
+			if ((smf.parse(dt).before(addDay(act)))) {
+				JSFMessagers.resetMessages();
+				setValid(false);
+				this.renderPeriod = true;
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.failes.report.activity"));
+				LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
+			} else {
+				if (activity.getStatus().equals(APPROVED)) {
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(FAILED);
+					act.setCountReported(incrementCount);
+					act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
+					act.setEndDate(timestamp);
+					activityImpl.UpdateActivity(act);
+					activityDetails = activityImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "task", "user" },
+							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
+					activityDtoDetails = showActivity(activityDetails);
+					evaluation.setActivity(act);
+					evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+					evaluation.setCrtdDtTime(timestamp);
+					evaluation.setDecision(FAILED);
+					evaluation.setEvaluationDate(timestamp);
+					evaluation.setEvaluationMarks(0);
+					evaluation.setGenericStatus(ACTIVE);
+					evaluation.setUpdatedBy(usersSession.getViewId());
+					evaluation.setUpDtTime(timestamp);
+					evaluationImpl.saveEvaluation(evaluation);
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity.reportingDate"));
+					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+				}
+			}
+
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
+			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+		}
+
+		// return to current page
+		return null;
+	}
 	@SuppressWarnings("unchecked")
 	public String reportAction(ActivityDto activity) {
 		try {
@@ -2303,6 +2368,21 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setTaskAssignList(List<TaskAssignment> taskAssignList) {
 		this.taskAssignList = taskAssignList;
+	}
+	public String getPlanperiod() {
+		return planperiod;
+	}
+
+	public void setPlanperiod(String planperiod) {
+		this.planperiod = planperiod;
+	}
+
+	public boolean isRenderPeriod() {
+		return renderPeriod;
+	}
+
+	public void setRenderPeriod(boolean renderPeriod) {
+		this.renderPeriod = renderPeriod;
 	}
 
 }

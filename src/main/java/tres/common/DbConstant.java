@@ -155,4 +155,5 @@ public interface DbConstant {
 	public static final String ACTIVITYCOMPLETED="Activity completion within planned period";
 	public static final String exelformat = "Excel";
 	public static final String viewchart= "ViewChart";
+	public static final String ESCALATED="Escalated";
 }
