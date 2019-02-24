@@ -194,7 +194,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 							dto = dtoObject(institution);
 							policyDtos = displayPolicy(institution);
 							try {
-								contact = instContactImpl.getModelWithMyHQL(new String[] { "institution" },
+								contact = instContactImpl.getModelWithMyHQL(new String[] { "institution", },
 										new Object[] { institution }, "from InstitutionContact");
 							} catch (Exception e) {
 								LOGGER.info("Contact Message::" + e.getMessage());
@@ -338,10 +338,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			logoImpl.saveInstitutionLogo(logoPic);
 			profileEditable = false;
 			frstDiv = false;
-			LOGGER.info(CLASSNAME + event.getFile().getFileName() + "uploaded successfully ... ");
-			JSFMessagers.resetMessages();
 			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("uploaded successfully"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("institution.logo.form"));
 		} catch (Exception e) {
 			LOGGER.info(CLASSNAME + "testing save methode ");
 			JSFMessagers.resetMessages();
@@ -357,36 +355,62 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 	/* Contact method starts */
 	public void saveContact() throws Exception {
 		try {
-			institution = institutionImpl.getModelWithMyHQL(new String[] { "request" },
-					new Object[] { requestImpl.getModelWithMyHQL(
-							new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
-							new Object[] { usersSession, "HeadQuoter", ACTIVE },
-							"from InstitutionRegistrationRequest") },
-					"from Institution");
-			contact = new InstitutionContact();
-			contact.setCreatedBy(usersSession.getViewId());
-			contact.setPhone(tel);
-			contact.setPobox(pobx);
-			contact.setCrtdDtTime(timestamp);
-			contact.setGenericStatus(ACTIVE);
-			contact.setUpDtTime(timestamp);
-			contact.setInstitution(institution);
-			contact.setEmail(useremail);
-			contact.setUpdatedBy(usersSession.getViewId());
-			instContactImpl.saveContact(contact);
-			saveInstitutionContact();
-			JSFMessagers.resetMessages();
-			setValid(true);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
-			LOGGER.info(CLASSNAME + ":::Contact Details is saved");
-			JSFMessagers.resetMessages();
+
+			if (contact != null) {
+				contact.setGenericStatus(DESACTIVE);
+				contact.setUpdatedBy(usersSession.getViewId());
+				contact.setUpDtTime(timestamp);
+				instContactImpl.UpdateContact(contact);
+				institution = institutionImpl.getModelWithMyHQL(new String[] { "request" },
+						new Object[] { requestImpl.getModelWithMyHQL(
+								new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
+								new Object[] { usersSession, "HeadQuoter", ACTIVE },
+								"from InstitutionRegistrationRequest") },
+						"from Institution");
+				contact = new InstitutionContact();
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setPhone(tel);
+				contact.setPobox(pobx);
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				contact.setInstitution(institution);
+				contact.setEmail(useremail);
+				contact.setUpdatedBy(usersSession.getViewId());
+				instContactImpl.saveContact(contact);
+				saveInstitutionContact();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
+			} else {
+				institution = institutionImpl.getModelWithMyHQL(new String[] { "request" },
+						new Object[] { requestImpl.getModelWithMyHQL(
+								new String[] { "institutionRepresenative", "instRegReqstType", "genericStatus" },
+								new Object[] { usersSession, "HeadQuoter", ACTIVE },
+								"from InstitutionRegistrationRequest") },
+						"from Institution");
+				contact = new InstitutionContact();
+				contact.setCreatedBy(usersSession.getViewId());
+				contact.setPhone(tel);
+				contact.setPobox(pobx);
+				contact.setCrtdDtTime(timestamp);
+				contact.setGenericStatus(ACTIVE);
+				contact.setUpDtTime(timestamp);
+				contact.setInstitution(institution);
+				contact.setEmail(useremail);
+				contact.setUpdatedBy(usersSession.getViewId());
+				instContactImpl.saveContact(contact);
+				saveInstitutionContact();
+				setValid(true);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.contact"));
+			}
+
 		} catch (HibernateException e) {
 			div2 = true;
-			LOGGER.info(CLASSNAME + ":::Contact Details is fail with HibernateException  error");
-			JSFMessagers.resetMessages();
+			LOGGER.info("DB ERROR:::");
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error" + e.getMessage()));
-			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			e.printStackTrace();
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -628,15 +652,12 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 						&& (Double.parseDouble(mdumActivityMark) < Double.parseDouble(lngActivityMark))) {
 					policyImpl.UpdateInstEscalPolicy(policy);
 					policyImpl.saveInstEscalPolicy(policy1);
-					JSFMessagers.resetMessages();
 					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.Policy"));
-					LOGGER.info(CLASSNAME + ":::Policy");
+					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.form"));
 					displayPolicy(institution);
 				} else {
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("Invarid marks"));
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.form"));
 				}
 			} else {
 				policy = new InstitutionEscaletePolicy();
@@ -654,24 +675,18 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 				if ((Double.parseDouble(mdumActivityMark) > Double.parseDouble(shrtActivityMark))
 						&& (Double.parseDouble(mdumActivityMark) < Double.parseDouble(lngActivityMark))) {
 					policyImpl.saveInstEscalPolicy(policy);
-					JSFMessagers.resetMessages();
 					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("institutionController.saving.Policy"));
-					LOGGER.info(CLASSNAME + ":::Policy");
+					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.Negform"));
 					displayPolicy(institution);
 				} else {
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("Invarid marks"));
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.Negform"));
 				}
 			}
 		} catch (Exception e) {
 			div3 = true;
 			setValid(false);
-			LOGGER.info(CLASSNAME + ":::Policy Details is fail with HibernateException  error");
-			JSFMessagers.resetMessages();
-			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error" + e.getMessage()));
-			LOGGER.info(CLASSNAME + "" + e.getMessage());
+			JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.form"));
 			e.printStackTrace();
 		}
 	}

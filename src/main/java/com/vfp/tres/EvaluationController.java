@@ -153,7 +153,7 @@ public class EvaluationController implements Serializable, DbConstant {
 
 	// backtohome
 	public void backHome() {
-		//viewSpecfcStaff = false;
+		// viewSpecfcStaff = false;
 		viewStaffActiv = false;
 	}
 
@@ -305,10 +305,12 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluation.setGenericStatus(ACTIVE);
 				evaluation.setUpdatedBy(usersSession.getViewId());
 				evaluation.setUpDtTime(timestamp);
-				evaluationImpl.saveEvaluation(evaluation);
-				LOGGER.info("Evaluation information saved:::::");
+				evaluationImpl.saveEvaluation(evaluation); 
 				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue("Activity completed."));
+				JSFMessagers.addErrorMessage(getProvider().getValue( 
+						"evaluation.complete.Negform"));
+				staffs = getUserDetails();// staff with complete activities
+				staffCompl(activity.getUser());
 			} else {
 				activity.setStatus(COMPLETED);
 				activity.setUpdatedBy(usersSession.getViewId());
@@ -328,10 +330,11 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluationImpl.saveEvaluation(evaluation);
 				setValid(true);
 				JSFMessagers
-						.addErrorMessage(getProvider().getValue("Activity completed with Due date rules violetion."));
+						.addErrorMessage(getProvider().getValue("Evaluation.complete.withduedate"));
+				staffs = getUserDetails();// staff with complete activities
+				staffCompl(activity.getUser());
 			}
-			staffs = getUserDetails();// staff with complete activities
-			staffCompl(activity.getUser());
+
 			return "";
 		} catch (Exception e) {
 			LOGGER.info("DB ERROR:::");
