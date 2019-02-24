@@ -427,6 +427,11 @@
 
 						<!-- LIST OF CREATED ACTIVITIES ON THE TASK  TABLE VIEW -->
 						<p:outputPanel rendered="#{activityController.renderCompleted}">
+							<a
+								href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
+								class="btn btn-primary glyphicon glyphicon-chevron-left"
+								style="font-size: 14px !important;">
+								#{msg['UserCatForm.BackBoardButtom']} </a>
 							<div class=" col-md-12"
 								style="height: 330px; overflow-y: scroll;">
 								<h:dataTable id="activityTable" binding="#{tabl}"
@@ -738,13 +743,10 @@
 									</h:column>
 									<f:facet name="footer">
 
-										<a
-											href="#{loadUserInformationsController.getContextPath()}/menu/Activity.xhtml"
-											class="btn btn-primary glyphicon glyphicon-chevron-left"
-											style="font-size: 14px !important;">
-											#{msg['UserCatForm.BackBoardButtom']} </a>
 									</f:facet>
 								</h:dataTable>
+
+
 							</div>
 							<p:autoUpdate />
 						</p:outputPanel>

@@ -157,6 +157,7 @@ public class StatisticsController implements Serializable, DbConstant {
 			convertdata();
 			//Clearance();
 			// testCompletedAcitivity();
+			
 			institutionOverallPerformance();
 			this.renderformgraph = true;
 
@@ -304,9 +305,9 @@ public class StatisticsController implements Serializable, DbConstant {
 			staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
 			int i = 1;
 			for (Object[] data : staffReportViewImpl.reportList(
-					"SELECT DATE_FORMAT(dueDate,'%d/%m/%Y') as dueDate, mytask as MyTask,(sum(case when (ActivityPlanned>0) then 1 else 0 end) *100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end)) as TotalPlannedActivity,sum(case when (ActivityApproved>0) then 1 else 0 end) as TotalApprovedActivity,((sum(case when (ActivityApproved>0) then 1 else 0 end)*100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end))) as ApprovedActivity,\r\n"
-							+ "((sum(case when (status='Rejected') then 1 else 0 end)*100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end))) as RejectedActivity,((sum(case when (ActivityReported>0) then 1 else 0 end)*100)/(sum(case when (ActivityApproved>0) then 1 else 0 end))) as ReportedActivity,((sum(case when (status='Completed') then 1 else 0 end)*100)/(sum(case when (ActivityReported>0) then 1 else 0 end))) as CompletedActivity,\r\n"
-							+ "((sum(case when (status='Failed') then 1 else 0 end)*100)/(sum(case when (ActivityReported>0) then 1 else 0 end))) as FailedActivity\r\n"
+					"SELECT DATE_FORMAT(dueDate,'%d/%m/%Y') as dueDate, mytask as MyTask,((sum(ActivityPlanned)*100)/(sum(ActivityPlanned))) as TotalPlannedActivity,sum(case when (ActivityApproved>0) then 1 else 0 end) as TotalApprovedActivity,((sum(ActivityApproved)*100)/(sum(ActivityPlanned))) as ApprovedActivity,\r\n"
+							+ "((sum(case when (status='Rejected') then 1 else 0 end)*100)/(sum(case when (ActivityPlanned>0) then 1 else 0 end))) as RejectedActivity,((sum(ActivityReported)*100)/(sum(ActivityApproved))) as ReportedActivity,((sum(case when (status='Completed') then 1 else 0 end)*100)/(sum(ActivityReported))) as CompletedActivity,\r\n"
+							+ "((sum(case when (status='Failed') then 1 else 0 end)*100)/(sum(ActivityReported))) as FailedActivity\r\n"
 							+ "from StaffReportView  where dueDate is not null and  mytask='" + taskAssign.getTask().getTaskName()
 							 + "' group by DATE_FORMAT(dueDate,'%d/%m/%Y') order by Month(dueDate),Day(dueDate)")) {
 
@@ -315,19 +316,19 @@ public class StatisticsController implements Serializable, DbConstant {
 				ClearanceDto userDtos = new ClearanceDto();
 				// userDtos.setPlanned(Integer.parseInt(data[2] + ""));
 				if (null == data[4]) {
-					userDtos.setApproved(0);
+					userDtos.setApproved(defaultCount);
 
 				} else {
 					userDtos.setApproved(Integer.parseInt(data[4] + ""));
 				}
 				if (null == data[5]) {
-					userDtos.setRejected(0);
+					userDtos.setRejected(defaultCount);
 
 				} else {
 					userDtos.setRejected(Integer.parseInt(data[5] + ""));
 				}
 				if (null == data[6]) {
-					userDtos.setReported(0);
+					userDtos.setReported(defaultCount);
 
 				} else {
 					userDtos.setReported(Integer.parseInt(data[6] + ""));
@@ -335,13 +336,13 @@ public class StatisticsController implements Serializable, DbConstant {
 				userDtos.setDueDate(data[0] + "" +"[Week "+i+"]");
 				LOGGER.info("::::::::Due Date:::::::" +userDtos.getDueDate());
 				if (null == data[7]) {
-					userDtos.setCompleted(0);
+					userDtos.setCompleted(defaultCount);
 
 				} else {
 					userDtos.setCompleted(Integer.parseInt(data[7] + ""));
 				}
 				if (null == data[8]) {
-					userDtos.setFailed(0);
+					userDtos.setFailed(defaultCount);
 					LOGGER.info("::::::::FAILED:::::::" + data[8]);
 				} else {
 					userDtos.setFailed(Integer.parseInt(data[8] + ""));
@@ -362,14 +363,38 @@ public class StatisticsController implements Serializable, DbConstant {
 	public void institutionOverallPerformance() {
 		try {
 			staffPerformanceDtoDetails = new ArrayList<ClearanceDto>();
-			for (Object[] data : staffReportViewImpl.reportList("SELECT ((sum(case when (ac.countPlanned>0) then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as Totalplanned,((sum(case when (ac.countApproved>0) then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalApproved,((sum(case when (ac.status='Rejected') then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalRejected, ((sum(case when (ac.countReported>0) then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalReported, ((sum(case when (ac.status='Completed') then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalCompleted,((sum(case when (ac.status='Failed') then 1 else 0 end)*100)/(sum(case when (ac.status<>'Not started') then 1 else 0 end))) as TotalFailed ,tsk.taskName from Activity ac,Task tsk,StrategicPlan plan where ac.status<>'Not Started' and tsk.taskId=ac.task and tsk.strategicPlan=plan.planId and plan.genericStatus ='active' group by ac.task")) {
+			for (Object[] data : staffReportViewImpl.reportList("SELECT((sum(ac.countPlanned)*100)/(sum(ac.countPlanned))),((sum(ac.countApproved)*100)/(sum(ac.countPlanned))),((sum(case when (ac.status='Rejected') then 1 else 0 end)*100)/(sum(ac.countPlanned))), ((sum(ac.countReported)*100)/(sum(ac.countPlanned))),((sum(case when (ac.status='Completed') then 1 else 0 end)*100)/(sum(ac.countPlanned))),((sum(case when (ac.status='Failed') then 1 else 0 end)*100)/(sum(ac.countPlanned))),tsk.taskName from Activity ac,Task tsk,StrategicPlan plan where tsk.taskId=ac.task and tsk.strategicPlan=plan.planId and plan.genericStatus ='active' group by ac.task")) {
 				ClearanceDto userDtos = new ClearanceDto();
-				userDtos.setPlanned(Integer.parseInt(data[0]+""));;
-				userDtos.setApproved(Integer.parseInt(data[1]+""));
-				userDtos.setRejected(Integer.parseInt(data[2]+""));
-				userDtos.setReported(Integer.parseInt(data[3]+""));
-				userDtos.setCompleted(Integer.parseInt(data[4]+""));
-				userDtos.setFailed(Integer.parseInt(data[5]+""));	
+				if(null==data[0]) {
+					userDtos.setPlanned(defaultCount);	
+				}else {
+					userDtos.setPlanned(Integer.parseInt(data[0]+""));		
+				}
+				if(null==data[1]) {
+					userDtos.setApproved(defaultCount);
+				}else {
+					userDtos.setApproved(Integer.parseInt(data[1]+""));		
+				}
+				if(null==data[2]) {
+					userDtos.setRejected(defaultCount);
+				}else {
+					userDtos.setRejected(Integer.parseInt(data[2]+""));	
+				}
+				if(null==data[3]) {
+					userDtos.setReported(defaultCount);
+				}else {
+					userDtos.setReported(Integer.parseInt(data[3]+""));
+				}
+				if(null==data[4]) {
+					userDtos.setCompleted(defaultCount);
+				}else {
+					userDtos.setCompleted(Integer.parseInt(data[4]+""));
+				}
+				if(null==data[5]) {
+					userDtos.setFailed(defaultCount);	
+				}else {
+					userDtos.setFailed(Integer.parseInt(data[5]+""));	
+				}
 				userDtos.setTaskName(data[6]+"");
 				staffPerformanceDtoDetails.add(userDtos);
 

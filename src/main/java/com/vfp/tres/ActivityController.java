@@ -774,12 +774,7 @@ public class ActivityController implements Serializable, DbConstant {
 				java.util.Date dDate = cal1.getTime();
 				act.setDueDate(dDate);
 				act.setStartDate(act.getStartDate());
-				if (act.getCountApproved() < incrementCount) {
-					act.setCountApproved(act.getCountApproved() + incrementCount);
-				} else {
-					act.setCountApproved(act.getCountApproved() + defaultCount);
-				}
-				act.setCountReported(defaultCount);
+				act.setCountApproved(act.getCountApproved() + incrementCount);
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
@@ -790,13 +785,7 @@ public class ActivityController implements Serializable, DbConstant {
 				clearActivityFuileds();
 			} else {
 				act.setStatus(APPROVED);
-				// if(act.getGenericStatus().equals(DESACTIVE))
 				act.setGenericStatus(ACTIVE);
-				/*
-				 * Calendar cal1 = new GregorianCalendar(); cal1.setTime(new Date());
-				 * cal1.add(Calendar.DATE, iep.getPlanPeriod()); java.util.Date dDate =
-				 * cal1.getTime();
-				 */
 				act.setDueDate(act.getDueDate());
 				act.setStartDate(act.getStartDate());
 				if (act.getCountApproved() < incrementCount) {
@@ -804,7 +793,7 @@ public class ActivityController implements Serializable, DbConstant {
 				} else {
 					act.setCountApproved(act.getCountApproved() + defaultCount);
 				}
-				act.setCountReported(defaultCount);
+				//act.setCountReported(defaultCount);
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
@@ -1278,7 +1267,7 @@ public class ActivityController implements Serializable, DbConstant {
 					act.setUpdatedBy(usersSession.getViewId());
 					act.setUpDtTime(timestamp);
 					act.setStatus(FAILED);
-					act.setCountReported(incrementCount);
+					act.setCountReported(act.getCountReported()+incrementCount);
 					act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
 					act.setEndDate(timestamp);
 					activityImpl.UpdateActivity(act);
@@ -1323,7 +1312,9 @@ public class ActivityController implements Serializable, DbConstant {
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
 
 			/* activity.setEditable(false); */
-
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
 			// Checking the reporting period if not exceed due date plus variation period
 			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
 			String dt = smf.format(new Date());
@@ -1334,6 +1325,64 @@ public class ActivityController implements Serializable, DbConstant {
 							new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act },
 							"UploadingActivity", "crtdDtTime desc");
 					if (uploadingActivityDetails.size() > 0) {
+						if (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
+							act.setUpdatedBy(usersSession.getViewId());
+							act.setUpDtTime(timestamp);
+							act.setStatus(DONE);
+							act.setCountReported(act.getCountReported()+incrementCount);
+							act.setEndDate(timestamp);
+							activityImpl.UpdateActivity(act);
+							activityDetails = activityImpl.getGenericListWithHQLParameter(
+									new String[] { "genericStatus", "task", "user" },
+									new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity",
+									"creationDate desc");
+							activityDtoDetails = showActivity(activityDetails);
+							JSFMessagers.resetMessages();
+							setValid(true);
+							JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+							LOGGER.info(CLASSNAME + ":::Activity Details is saved");	
+						}else {
+							act.setUpdatedBy(usersSession.getViewId());
+							act.setUpDtTime(timestamp);
+							act.setStatus(DONE);
+							act.setCountReported(incrementCount);
+							act.setEndDate(timestamp);
+							activityImpl.UpdateActivity(act);
+							activityDetails = activityImpl.getGenericListWithHQLParameter(
+									new String[] { "genericStatus", "task", "user" },
+									new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity",
+									"creationDate desc");
+							activityDtoDetails = showActivity(activityDetails);
+							JSFMessagers.resetMessages();
+							setValid(true);
+							JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+							LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+						}
+						
+					} else {
+						JSFMessagers.resetMessages();
+						setValid(false);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
+						LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
+					}
+				} else if (activity.getStatus().equals(APPROVED)) {
+					if (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
+						act.setUpdatedBy(usersSession.getViewId());
+						act.setUpDtTime(timestamp);
+						act.setStatus(DONE);
+						act.setCountReported(act.getCountReported()+incrementCount);
+						act.setEndDate(timestamp);
+						activityImpl.UpdateActivity(act);
+						activityDetails = activityImpl.getGenericListWithHQLParameter(
+								new String[] { "genericStatus", "task", "user" },
+								new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity",
+								"creationDate desc");
+						activityDtoDetails = showActivity(activityDetails);
+						JSFMessagers.resetMessages();
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+						LOGGER.info(CLASSNAME + ":::Activity Details is saved");	
+					}else {
 						act.setUpdatedBy(usersSession.getViewId());
 						act.setUpDtTime(timestamp);
 						act.setStatus(DONE);
@@ -1349,27 +1398,7 @@ public class ActivityController implements Serializable, DbConstant {
 						setValid(true);
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 						LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-					} else {
-						JSFMessagers.resetMessages();
-						setValid(false);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
-						LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
 					}
-				} else if (activity.getStatus().equals(APPROVED)) {
-					act.setUpdatedBy(usersSession.getViewId());
-					act.setUpDtTime(timestamp);
-					act.setStatus(DONE);
-					act.setCountReported(incrementCount);
-					act.setEndDate(timestamp);
-					activityImpl.UpdateActivity(act);
-					activityDetails = activityImpl.getGenericListWithHQLParameter(
-							new String[] { "genericStatus", "task", "user" },
-							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
-					activityDtoDetails = showActivity(activityDetails);
-					JSFMessagers.resetMessages();
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 				}
 			} else {
 				if (activity.getStatus().equals(APPROVED)) {
