@@ -395,13 +395,13 @@ public class StaffReport implements Serializable, DbConstant {
 				 * table.setFooterRows(1);
 				 */
 
-				for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytask,\r\n"
+				for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,\r\n"
 						+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
 						+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
 						+ "sum(case when (status='Appoved') then 1 else 0 end),\r\n"
 						+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
 						+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
-						+ "from InstitutionReportView group by mytask")) {
+						+ "from InstitutionReportView group by mytaskName")) {
 					/*PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + "", ffont5));
 					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel1);*/

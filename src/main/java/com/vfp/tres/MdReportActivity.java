@@ -118,6 +118,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private List<ClearanceDto> activityMddtodetails = new ArrayList<ClearanceDto>();
 	private List<Board> boardDetails = new ArrayList<Board>();
 	private List<ClearanceDto> ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+	private List<ClearanceDto> ClearanceDtoDetailsy = new ArrayList<ClearanceDto>();
 	private ClearanceDto clearanceDto;
 	private TaskAssignment taskAssign;
 	private String overallPerformance;
@@ -133,6 +134,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	private boolean renderTaskForm;
 	private boolean renderSelectedBoard;
 	private String name;
+	private String namess;
 	private String convertedData="test";
 	private String[] number;
 	private String[] values;
@@ -159,6 +161,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
+		myClearances();
 
 		createAnimatedModels();
 		createPieModels();
@@ -265,7 +268,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 		public void onEndPage(PdfWriter writer, Document document) {
 			PdfContentByte cb = writer.getDirectContent();
 			Phrase header = new Phrase("");
-			Phrase footer = new Phrase("@Copyright ITEME...!\n", ffont2);
+			Phrase footer = new Phrase("                                   @Copyright ITEME...!\n", ffont2);
 			ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, header,
 					(document.right() - document.left()) / 2 + document.leftMargin(), document.top() + 10, 0);
 			ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, footer,
@@ -330,6 +333,10 @@ public class MdReportActivity implements Serializable, DbConstant {
 	// Codes for creating the table and its contents
 
 	public void createPdf() throws IOException, DocumentException {
+		
+		//if(selectedBoard!=0) {
+			//setValid(true);
+			
 		Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 13, Font.BOLDITALIC, BaseColor.BLUE);
 		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
 		Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11,Font.BOLDITALIC);
@@ -428,6 +435,8 @@ public class MdReportActivity implements Serializable, DbConstant {
 		
 		table.setHeaderRows(1);
 		try {
+			if(selectedBoard!=0) {
+				setValid(true);
 			int number=1;
 			for (Object[] data : taskImpl.reportList(
 					"select t.taskName,t.endDate,t.dueDate,t.startDate,t.taskWeight,t.genericStatus,b.boardName from Task t,Board b \r\n" + 
@@ -466,10 +475,15 @@ public class MdReportActivity implements Serializable, DbConstant {
 			writePDFToResponse(context.getExternalContext(), baos, "MD_report"+xdate);
 
 			context.responseComplete();
+			}else {
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.errorSelectedBoard"));
+			}
 
 		} catch (Exception e) {
 
 		}
+		
 	}
 
 	public void writePDFToResponse(ExternalContext externalContext, ByteArrayOutputStream baos, String fileName) {
@@ -572,12 +586,9 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderedclear = false;
 			renderSelectedBoard=false;
 		} else if (myChoice.equalsIgnoreCase(taskchart)) {
-			
 			renderedchart = true;
-			
 			ChartController chart= new ChartController();
 			chart.myClearance();
-			
 			rendered = false;
 			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
@@ -594,6 +605,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderEditedTableByBoard = false;
 			renderedclear = true;
 			renderSelectedBoard=false;
+			myClearances();
 		} else {
 			rendered = false;
 			renderedx = true;
@@ -685,7 +697,44 @@ public class MdReportActivity implements Serializable, DbConstant {
 			
 			return null;
 		}
-	
+		//The following method is for generating the clearance report on chart for MdReport.
+		
+		public List<ClearanceDto> CrearanceClearanceForTheOverAll() {
+			try {		
+				ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+		        ClearanceDtoDetails = new ArrayList<ClearanceDto>();
+						for (Object[] data : institutionReportViewImpl.reportList("SELECT mytaskName,\r\n" + 
+								"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)) ,\r\n" + 
+								"sum(case when (status='rejected' ) then 1 else 0 end) ,\r\n" + 
+								"sum(case when (status='Approved' ) then 1 else 0 end) , \r\n" + 
+								"sum(case when (status='Completed' ) then 1 else 0 end) ,\r\n" + 
+								"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)))  \r\n" + 
+								"from InstitutionReportView group by mytaskName"
+				)) {
+					
+					ClearanceDto userDtos = new ClearanceDto();
+					//userDtos.setStrategicplan(data[0] + "");
+					userDtos.setTaskName(data[0] + "");
+					userDtos.setNumberOfActivities(Integer.parseInt(data[1] + ""));
+					userDtos.setApproved(Integer.parseInt(data[3] + ""));
+					//userDtos.setPending(Integer.parseInt(data[4] + ""));*/
+					userDtos.setCompleted(Integer.parseInt(data[4] + ""));
+					//userDtos.setRate(Double.parseDouble(data[5]+""));
+					
+					ClearanceDtoDetails.add(userDtos);
+					this.namess=new Gson().toJson(ClearanceDtoDetails);
+					
+				}	
+				return(ClearanceDtoDetails);
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			return null;
+		}
 	
 	public List<ClearanceDto> repfoboard() {
 		try {
@@ -748,6 +797,41 @@ public class MdReportActivity implements Serializable, DbConstant {
 		} else if (type.equals(ACTIVITYPLANNED)) {
 
 		}
+	}
+	
+	
+	public List<ClearanceDto> myClearances() {
+		try {
+			ClearanceDtoDetailsy = new ArrayList<ClearanceDto>();
+
+			ClearanceDtoDetailsy = new ArrayList<ClearanceDto>();
+			for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,\r\n"
+					+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
+					+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
+					+ "sum(case when (status='pending' ) then 1 else 0 end),\r\n"
+					+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
+					+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
+					+ "from InstitutionReportView group by mytaskName")) {
+                 
+				ClearanceDto userDtos = new ClearanceDto();
+
+				//userDtos.setStrategicplan(data[0] + "");
+				userDtos.setTaskName(data[1] + "");
+				userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
+				userDtos.setApproved(Integer.parseInt(data[3] + ""));
+				userDtos.setRejected(Integer.parseInt(data[4] + ""));
+				userDtos.setCompleted(Integer.parseInt(data[5] + ""));
+				userDtos.setRate(Double.parseDouble(data[6] + ""));
+				ClearanceDtoDetailsy.add(userDtos);
+
+			}
+			return (ClearanceDtoDetailsy);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 	
 	//END OF CODES TO GENRATE THE ASSIGNED BOARD CHART 
@@ -1227,6 +1311,22 @@ public class MdReportActivity implements Serializable, DbConstant {
 
 	public void setValues(String[] values) {
 		this.values = values;
+	}
+
+	public List<ClearanceDto> getClearanceDtoDetailsy() {
+		return ClearanceDtoDetailsy;
+	}
+
+	public void setClearanceDtoDetailsy(List<ClearanceDto> clearanceDtoDetailsy) {
+		ClearanceDtoDetailsy = clearanceDtoDetailsy;
+	}
+
+	public String getNamess() {
+		return namess;
+	}
+
+	public void setNamess(String namess) {
+		this.namess = namess;
 	}
 	
 

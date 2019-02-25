@@ -73,7 +73,7 @@
 													style="font-family: Open Sans sans-serif !important; font-size: 15px !important;margin-top:18px; margin-left:0%;"
 													value="#{mdReportActivity.myChoice}">
 													<p:ajax listener="#{mdReportActivity.updateTable()}"
-														update="forpdf,firstpanel,secondpanel,forexcel,seventhpanel,forcleareTable
+														update="forpdf,firstpanel,secondpanel,forexcel,seventhpanel,
 																			chartpanel,forchart,psdfViewpanel,chartpanelboard,forchartboard" />
 													<f:ajax onevent="showProgress" />
 													<f:selectItem
@@ -192,7 +192,7 @@
 								rendered="#{mdReportActivity.renderEditedTableByBoard}">
 								<div class=" col-md-12"
 									style="height: 330px; overflow-y: scroll;">
-									<h:dataTable id="taskAssignTable" binding="#{table}"
+									<h:dataTable id="taskAssignTable" binding="#{table1}"
 										style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:100% !important;
        						 -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 5px 0 !important;"
 										value="#{mdReportActivity.activityMddtodetails}" var="info"
@@ -215,7 +215,7 @@
 												<label>No</label>
 											</f:facet>
 											<br />
-											<h:outputText value="#{table.rowIndex + 1}" />
+											<h:outputText value="#{table1.rowIndex + 1}" />
 										</h:column>
 										<h:column>
 											<f:facet name="header">
@@ -399,68 +399,87 @@
 						</h:panelGroup>
 
 						<!-- END OF THE GRAPH PRESENTATION -->
-
-						<h:panelGroup id="seventhpanel" layout="block">
-							<p:outputPanel id="toUpdetcltable" autoUpdate="true"
+						
+                        <h:panelGroup id="seventhpanel" layout="block">
+							<p:outputPanel
 								rendered="#{mdReportActivity.renderedclear}">
-								<h:panelGroup id="forcleareTable" layout="block">
-									<div class="form-group row">
-
-										<div class="col-md-6 col-sm-6 col-xs-6"></div>
-										<div class="panel-body">
-											<p:dataTable id="tabl" var="a"
-												value="#{staffReport.clearanceDtoDetails}" scrollable="true"
-												scrollHeight="200" sortOrder="descending">
-												<f:facet name="header">
-												
-												Clearance for planned and completed activities </f:facet>
-												<!-- <p:column width="50"> #{a.strategicplan}<f:facet
-														name="header">Strategic plan</f:facet>
-												</p:column> -->
-												<p:column width="50"> #{a.taskName}<f:facet
-														name="header">Task</f:facet>
-												</p:column>
-												<p:column width="50"> #{a.numberOfActivities}<f:facet
-														name="header">Planned</f:facet>
-												</p:column>
-												<p:column width="50"> #{a.notStarted}<f:facet
-														name="header">Not started</f:facet>
-												</p:column>
-												
-												<!-- <p:column width="50"> #{a.pending}<f:facet
-														name="header">Pending</f:facet>
-												</p:column> -->
-
-												<p:column width="50"> #{a.completed}<f:facet
-														name="header">Completed</f:facet>
-												</p:column>
-
-												<p:column width="50"> #{a.rate}%<f:facet
-														name="header">Rate</f:facet>
-												</p:column>
-
-											</p:dataTable>
-											<div class="col-md-2 col-sm-2 col-xs-2">
-												<h:commandButton class="btn btn-success btn-md btn-block"
-													action="#{staffReport.myClearance}" value="View in table">
-													<f:ajax render="@form" execute="@form"
-														onevent="showProgress" />
-												</h:commandButton>
-											</div>
-											<h:form>
+								<div class=" col-md-12"
+									style="height: 330px; overflow-y: scroll;">
+									<h:dataTable id="taskAssignTabl" binding="#{table}"
+										style="font: italic 14px/18px Georgia, serif;box-sizing: border-box; width:100% !important;
+       						            -webkit-box-shadow: none; box-shadow: none !important; margin: 17px 5px 0 !important;"
+										value="#{mdReportActivity.clearanceDtoDetailsy}" var="a"
+										class="table table-striped table-hover table-bordered tableUpdated ">
+										<f:facet name="header">
+											<label
+												style="margin-left: 20%; font: italic bold 16px/20px Georgia, serif;">#{msg['form.activity.task.performanceClear']}</label>
+											
 												<div class="col-md-2 col-sm-2 col-xs-2"
-													style="margin-left: 80px">
+													style="margin-top: 10px">
 													<h:commandButton class="btn btn-success btn-md btn-block"
 														action="#{staffReport.createPDFfoClearance}"
-														value="#{msg['label.submit.message.printPdf']}" />
+														value="#{msg['label.submit.message.printPdf']}" >
+														</h:commandButton>
 												</div>
-											</h:form>
-										</div>
-									</div>
-								</h:panelGroup>
+											
+										</f:facet>
+
+										<h:column>
+											<f:facet name="header">
+												<label>No</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{table.rowIndex + 1}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Target name</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{a.taskName}">
+											</h:outputText>
+
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Planned</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{a.numberOfActivities}">
+											</h:outputText>
+
+										</h:column>
+
+										<h:column>
+											<f:facet name="header">
+												<label>Approved</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{a.approved}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Completed</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{a.completed}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<label>Rate</label>
+											</f:facet>
+											<br />
+											<h:outputText value="#{a.rate}" />
+										</h:column>
+
+									</h:dataTable>
+								</div>
+								<p:autoUpdate />
+
 							</p:outputPanel>
 						</h:panelGroup>
-
+						<!-- END -->
+                        
 
 
 
@@ -478,12 +497,12 @@
 										<meta http-equiv="Content-Type"
 											content="text/html; charset=utf-8" />
 										<style type="text/css">
-@media ( max-width :960) {
-	.myChartDiv {
-		width: 100%;
-	}
-}
-</style>
+		@media ( max-width :960) {
+			.myChartDiv {
+				width: 100%;
+			}
+		}
+		</style>
 										<!-- <h1 style="margin-top: 150px;">Reporting Graph</h1> -->
 										<div id="orgChartContainer">
 											<div id="orgChart"></div>
