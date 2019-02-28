@@ -30,6 +30,18 @@ public class PolicyDto implements Serializable{
 	private int planPeriod;
  
 	private int variation;
+	
+	private boolean shwBtn;
+	
+	
+
+	public boolean isShwBtn() {
+		return shwBtn;
+	}
+
+	public void setShwBtn(boolean shwBtn) {
+		this.shwBtn = shwBtn;
+	}
 
 	public boolean isEditable() {
 		return editable;

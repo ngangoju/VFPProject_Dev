@@ -192,7 +192,9 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 							chngDiv = true;
 							instDtos = display(institution);
 							dto = dtoObject(institution);
-							policyDtos = displayPolicy(institution);
+							HttpSession session1 = SessionUtils.getSession();
+							session1.setAttribute("InstitutionS", institution);
+							// policyDtos = displayPolicy(institution);
 							try {
 								contact = instContactImpl.getModelWithMyHQL(new String[] { "institution", },
 										new Object[] { institution }, "from InstitutionContact");
@@ -527,13 +529,16 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 
 	/* dto methods starts for Policy */
 	@SuppressWarnings("unchecked")
-	public List<PolicyDto> displayPolicy(Institution institution) {
+	public List<PolicyDto> displayPolicy() {
 
 		try
 
 		{
-			Policies = policyImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "institution" },
-					new Object[] { ACTIVE, institution }, "InstitutionEscaletePolicy", "crtdDtTime desc");
+			institution = null;
+			HttpSession session1 = SessionUtils.getSession();
+			institution = (Institution) session1.getAttribute("InstitutionS");
+			Policies = policyImpl.getGenericListWithHQLParameter(new String[] { "institution" },
+					new Object[] { institution }, "InstitutionEscaletePolicy", "crtdDtTime desc");
 			List<PolicyDto> dtos = new ArrayList<PolicyDto>();
 			for (InstitutionEscaletePolicy inst : Policies) {
 
@@ -547,7 +552,12 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 				poldto.setPolicyId(inst.getPolicyId());
 				poldto.setVariation(inst.getVariation());
 				poldto.setPlanPeriod(inst.getPlanPeriod());
-				poldto.setEditable(false);
+				poldto.setEditable(true);
+				if (inst.getStatus().equals(DESACTIVE)) {
+					poldto.setShwBtn(true);
+				} else {
+					poldto.setShwBtn(false);
+				}
 				dtos.add(poldto);
 			}
 			return dtos;
@@ -556,6 +566,81 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
 			return null;
+		}
+	}
+
+	// Activating policy
+	public void activateEscaletePolicy(PolicyDto dto) {
+		try {
+			policy = new InstitutionEscaletePolicy();
+			policy = policyImpl.getInstEscalPolicyById(dto.getPolicyId(), "policyId");
+			if (policy.getGenericStatus().equals(DESACTIVE)) {
+				InstitutionEscaletePolicy pol = new InstitutionEscaletePolicy();
+				pol = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+						new Object[] { policy.getInstitution(), ACTIVE }, "from InstitutionEscaletePolicy");
+				if (pol.getGenericStatus().equals(ACTIVE)) {
+					pol.setGenericStatus(DESACTIVE);
+					pol.setUpdatedBy(usersSession.getViewId());
+					pol.setUpDtTime(timestamp);
+					policyImpl.UpdateInstEscalPolicy(pol);
+
+					policy.setGenericStatus(ACTIVE);
+					policy.setUpdatedBy(usersSession.getViewId());
+					policy.setUpDtTime(timestamp);
+					policyImpl.UpdateInstEscalPolicy(policy);
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
+					displayPolicy();
+				} else {
+					policy.setGenericStatus(ACTIVE);
+					policy.setUpdatedBy(usersSession.getViewId());
+					policy.setUpDtTime(timestamp);
+					policyImpl.UpdateInstEscalPolicy(policy);
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
+					displayPolicy();
+				}
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			e.printStackTrace();
+		}
+	}
+
+	// Deactivating policy
+	public void deactiveEscaletePolicy(PolicyDto dto) {
+		try {
+			policy = new InstitutionEscaletePolicy();
+			policy = policyImpl.getInstEscalPolicyById(dto.getPolicyId(), "policyId");
+			if (policy.getGenericStatus().equals(ACTIVE)) {
+				InstitutionEscaletePolicy pol = new InstitutionEscaletePolicy();
+				pol = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+						new Object[] { policy.getInstitution(), ACTIVE }, "from InstitutionEscaletePolicy");
+				if (pol == null) {
+					policy.setGenericStatus(DESACTIVE);
+					policy.setUpdatedBy(usersSession.getViewId());
+					policy.setUpDtTime(timestamp);
+					policyImpl.UpdateInstEscalPolicy(policy);
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
+					displayPolicy();
+				} else {
+					policy.setGenericStatus(DESACTIVE);
+					policy.setUpdatedBy(usersSession.getViewId());
+					policy.setUpDtTime(timestamp);
+					policyImpl.UpdateInstEscalPolicy(policy);
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
+					displayPolicy();
+				}
+			}
+
+		} catch (Exception e) {
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			e.printStackTrace();
 		}
 	}
 
@@ -654,7 +739,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					policyImpl.saveInstEscalPolicy(policy1);
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.form"));
-					displayPolicy(institution);
+					displayPolicy();
 				} else {
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.form"));
@@ -677,7 +762,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					policyImpl.saveInstEscalPolicy(policy);
 					setValid(true);
 					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.Negform"));
-					displayPolicy(institution);
+					displayPolicy();
 				} else {
 					setValid(false);
 					JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.Negform"));
@@ -686,7 +771,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 		} catch (Exception e) {
 			div3 = true;
 			setValid(false);
-			JSFMessagers.addErrorMessage(getProvider().getValue("institution.policy.form"));
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			e.printStackTrace();
 		}
 	}

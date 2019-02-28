@@ -1,6 +1,7 @@
 package com.vfp.tres;
 
 import java.io.Serializable;
+import java.security.Policy;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -305,10 +306,9 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluation.setGenericStatus(ACTIVE);
 				evaluation.setUpdatedBy(usersSession.getViewId());
 				evaluation.setUpDtTime(timestamp);
-				evaluationImpl.saveEvaluation(evaluation); 
+				evaluationImpl.saveEvaluation(evaluation);
 				setValid(true);
-				JSFMessagers.addErrorMessage(getProvider().getValue( 
-						"evaluation.complete.Negform"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("evaluation.complete.Negform"));
 				staffs = getUserDetails();// staff with complete activities
 				staffCompl(activity.getUser());
 			} else {
@@ -329,8 +329,7 @@ public class EvaluationController implements Serializable, DbConstant {
 				evaluation.setUpDtTime(timestamp);
 				evaluationImpl.saveEvaluation(evaluation);
 				setValid(true);
-				JSFMessagers
-						.addErrorMessage(getProvider().getValue("Evaluation.complete.withduedate"));
+				JSFMessagers.addErrorMessage(getProvider().getValue("Evaluation.complete.withduedate"));
 				staffs = getUserDetails();// staff with complete activities
 				staffCompl(activity.getUser());
 			}
@@ -474,14 +473,17 @@ public class EvaluationController implements Serializable, DbConstant {
 	public int getMarks(Activity act) {
 		try {
 			institution = act.getUser().getBoard().getInstitution();
+			policy = null;
 			policy = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
 					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
 			if (act.getWeight().equals(LONG))
 				return (int) policy.getLongMarks();
-			else if ((act.getWeight().equals(MEDIUM)))
+			else if (act.getWeight().equals(MEDIUM))
 				return (int) policy.getMediumgMarks();
-			else {
+			else if (act.getWeight().equals(SHORT)) {
 				return (int) policy.getShortMarks();
+			} else {
+				return 0;
 			}
 		} catch (Exception e) {
 			return 0;

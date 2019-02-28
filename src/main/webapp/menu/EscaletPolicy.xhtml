@@ -75,7 +75,7 @@
 								</h:commandLink>
 							</h:form>
 							<h:form>
-								<p:dataTable value="#{loadInstitutionProfile.policyDtos}"
+								<p:dataTable value="#{loadInstitutionProfile.displayPolicy()}"
 									var="ls" rowIndexVar="index" class="table" paginator="true"
 									rows="4"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -178,22 +178,16 @@
 									<p:column headerText="Action">
 										<h:commandLink style="color:white"
 											class="btn btn-success 	glyphicon glyphicon-edit" value=""
-											action="#{loadInstitutionProfile.editActionPolicy(ls)}"
-											rendered="#{not ls.editable}">
+											action="#{loadInstitutionProfile.deactiveEscaletePolicy(ls)}"
+											rendered="#{not ls.shwBtn}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
 										</h:commandLink>
 										<h:commandLink style="margin-left:2px;color:white"
 											class="btn btn-danger 	glyphicon glyphicon-remove" value=""
-											action="#{loadInstitutionProfile.cancelPolicy(ls)}"
-											rendered="#{ls.editable}">
+											action="#{loadInstitutionProfile.activateEscaletePolicy(ls)}"
+											rendered="#{ls.shwBtn}">
 											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
-										<h:commandLink value=""
-											class="btn btn-success glyphicon glyphicon-headphones	"
-											action="#{loadInstitutionProfile.saveActionPolicy(ls)}"
-											rendered="#{ls.editable}" ajax="false">
-											<f:ajax render="@form" execute="@form" onevent="showProgress" />
-										</h:commandLink>
+										</h:commandLink> 
 
 									</p:column>
 								</p:dataTable>

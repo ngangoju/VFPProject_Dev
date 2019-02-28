@@ -1,5 +1,7 @@
 package tres.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Country")
 @NamedQuery(name = "Country.findAll", query = "SELECT r FROM Country r order by boardId desc")
-public class Country {
+public class Country implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
