@@ -193,11 +193,11 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 							instDtos = display(institution);
 							dto = dtoObject(institution);
 							HttpSession session1 = SessionUtils.getSession();
-							session1.setAttribute("InstitutionS", institution);
-							// policyDtos = displayPolicy(institution);
+							session1.setAttribute("InstitutionS", institution); 
 							try {
-								contact = instContactImpl.getModelWithMyHQL(new String[] { "institution", },
-										new Object[] { institution }, "from InstitutionContact");
+								contact = instContactImpl.getModelWithMyHQL(
+										new String[] { "institution", "genericStatus" },
+										new Object[] { institution, ACTIVE }, "from InstitutionContact");
 							} catch (Exception e) {
 								LOGGER.info("Contact Message::" + e.getMessage());
 							}
@@ -540,8 +540,8 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 			Policies = policyImpl.getGenericListWithHQLParameter(new String[] { "institution" },
 					new Object[] { institution }, "InstitutionEscaletePolicy", "crtdDtTime desc");
 			List<PolicyDto> dtos = new ArrayList<PolicyDto>();
-			for (InstitutionEscaletePolicy inst : Policies) {
 
+			for (InstitutionEscaletePolicy inst : Policies) {
 				PolicyDto poldto = new PolicyDto();
 				poldto.setInstitution(inst.getInstitution());
 				poldto.setLongMarks(inst.getLongMarks());
@@ -552,19 +552,22 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 				poldto.setPolicyId(inst.getPolicyId());
 				poldto.setVariation(inst.getVariation());
 				poldto.setPlanPeriod(inst.getPlanPeriod());
-				poldto.setEditable(true);
-				if (inst.getStatus().equals(DESACTIVE)) {
+				poldto.setStatus(inst.getGenericStatus());
+				poldto.setEditable(false);
+				if (inst.getGenericStatus().equals(DESACTIVE)) {
 					poldto.setShwBtn(true);
-				} else {
+				} else if (inst.getGenericStatus().equals(ACTIVE)) {
 					poldto.setShwBtn(false);
 				}
 				dtos.add(poldto);
+				LOGGER.info("Instition:::::" + poldto.getPolicyId());
 			}
 			return dtos;
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -578,12 +581,7 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 				InstitutionEscaletePolicy pol = new InstitutionEscaletePolicy();
 				pol = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
 						new Object[] { policy.getInstitution(), ACTIVE }, "from InstitutionEscaletePolicy");
-				if (pol.getGenericStatus().equals(ACTIVE)) {
-					pol.setGenericStatus(DESACTIVE);
-					pol.setUpdatedBy(usersSession.getViewId());
-					pol.setUpDtTime(timestamp);
-					policyImpl.UpdateInstEscalPolicy(pol);
-
+				if (pol == null) {
 					policy.setGenericStatus(ACTIVE);
 					policy.setUpdatedBy(usersSession.getViewId());
 					policy.setUpDtTime(timestamp);
@@ -592,13 +590,28 @@ public class LoadInstitutionProfile implements Serializable, DbConstant {
 					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
 					displayPolicy();
 				} else {
-					policy.setGenericStatus(ACTIVE);
-					policy.setUpdatedBy(usersSession.getViewId());
-					policy.setUpDtTime(timestamp);
-					policyImpl.UpdateInstEscalPolicy(policy);
-					setValid(true);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
-					displayPolicy();
+					if (pol.getGenericStatus().equals(ACTIVE)) {
+						pol.setGenericStatus(DESACTIVE);
+						pol.setUpdatedBy(usersSession.getViewId());
+						pol.setUpDtTime(timestamp);
+						policyImpl.UpdateInstEscalPolicy(pol);
+
+						policy.setGenericStatus(ACTIVE);
+						policy.setUpdatedBy(usersSession.getViewId());
+						policy.setUpDtTime(timestamp);
+						policyImpl.UpdateInstEscalPolicy(policy);
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
+						displayPolicy();
+					} else {
+						policy.setGenericStatus(ACTIVE);
+						policy.setUpdatedBy(usersSession.getViewId());
+						policy.setUpDtTime(timestamp);
+						policyImpl.UpdateInstEscalPolicy(policy);
+						setValid(true);
+						JSFMessagers.addErrorMessage(getProvider().getValue("com.save.form.policUpdate"));
+						displayPolicy();
+					}
 				}
 			}
 

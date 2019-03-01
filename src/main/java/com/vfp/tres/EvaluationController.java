@@ -408,13 +408,6 @@ public class EvaluationController implements Serializable, DbConstant {
 	/* Activity completion starts */
 	public void completeAction(Activity act) {
 		try {
-			/*
-			 * act.setStatus(COMPLETED); act.setGenericStatus(ACTIVE);
-			 * activityImpl.UpdateActivity(act);
-			 */
-			// evaluationMethod(act);
-			// sendEmail(contact.getEmail(), "request rejected",
-			// "Your request have been rejected due to certain condition. try again later");
 			staffCompl(act.getUser());
 			JSFMessagers.resetMessages();
 			setValid(true);
