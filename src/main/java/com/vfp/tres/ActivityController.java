@@ -26,6 +26,7 @@ import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
 import tres.dao.impl.ActivityCommentImpl;
+import tres.dao.impl.ActivityEvaluationImpl;
 import tres.dao.impl.ActivityImpl;
 import tres.dao.impl.CommentImpl;
 import tres.dao.impl.ContactImpl;
@@ -41,6 +42,7 @@ import tres.dao.impl.UserCategoryImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
 import tres.domain.ActivityComment;
+import tres.domain.ActivityEvaluation;
 import tres.domain.Comment;
 import tres.domain.Contact;
 import tres.domain.Documents;
@@ -143,8 +145,8 @@ public class ActivityController implements Serializable, DbConstant {
 	private Institution institution;
 	InstitutionImpl instImpl = new InstitutionImpl();
 	private InstitutionEscaletePolicy policy;
-	private Evaluation evaluation;
-	EvaluationImpl evaluationImpl = new EvaluationImpl();
+	private ActivityEvaluation evaluation;
+	ActivityEvaluationImpl evaluationImpl = new ActivityEvaluationImpl();
 	TaskImpl taskImpl = new TaskImpl();
 	StrategicPlanImpl planImpl = new StrategicPlanImpl();
 	ContactImpl contactImpl = new ContactImpl();
@@ -188,7 +190,7 @@ public class ActivityController implements Serializable, DbConstant {
 			policy = new InstitutionEscaletePolicy();
 		}
 		if (evaluation == null) {
-			evaluation = new Evaluation();
+			evaluation = new ActivityEvaluation();
 		}
 		if (task == null) {
 			task = new Task();
@@ -199,8 +201,8 @@ public class ActivityController implements Serializable, DbConstant {
 		if (assignment == null) {
 			assignment = new TaskAssignment();
 		}
-		if(contact==null) {
-			contact= new Contact();
+		if (contact == null) {
+			contact = new Contact();
 		}
 		try {
 			activityDetail = activityImpl.getGenericListWithHQLParameter(
@@ -269,7 +271,7 @@ public class ActivityController implements Serializable, DbConstant {
 			if (taskEscaltedAssignDetails.size() > 0) {
 				this.renderAssignedEscalation = true;
 			}
-			taskAssignList=listAssignedTarget();
+			taskAssignList = listAssignedTarget();
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -282,16 +284,18 @@ public class ActivityController implements Serializable, DbConstant {
 	public List<TaskAssignment> listAssignedEscalatedActivity() {
 		try {
 			taskEscaltedAssignDetails = new ArrayList<TaskAssignment>();
-			for (Object[] data : taskAssignImpl.reportList("select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="+userassigned.getUserId()+" and tsk.taskStatus='"+ESCALATED+"'")) {
-				TaskAssignment ass= new TaskAssignment();
-				ass.setTaskAssignmentId(Integer.parseInt(data[0]+""));
-				ass.setTask((Task)data[1]);
-				ass.setUser((Users)data[2]);
-				ass.setCrtdDtTime((Timestamp)data[3]);
+			for (Object[] data : taskAssignImpl.reportList(
+					"select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="
+							+ userassigned.getUserId() + " and tsk.taskStatus='" + ESCALATED + "'")) {
+				TaskAssignment ass = new TaskAssignment();
+				ass.setTaskAssignmentId(Integer.parseInt(data[0] + ""));
+				ass.setTask((Task) data[1]);
+				ass.setUser((Users) data[2]);
+				ass.setCrtdDtTime((Timestamp) data[3]);
 				taskEscaltedAssignDetails.add(ass);
 			}
-			return(taskEscaltedAssignDetails);
-			
+			return (taskEscaltedAssignDetails);
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -300,19 +304,22 @@ public class ActivityController implements Serializable, DbConstant {
 			return null;
 		}
 	}
+
 	public List<TaskAssignment> listAssignedTarget() {
 		try {
 			taskAssignList = new ArrayList<TaskAssignment>();
-			for (Object[] data : taskAssignImpl.reportList("select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="+userassigned.getUserId()+" and tsk.taskStatus='"+ACTIVE+"'")) {
-				TaskAssignment ass= new TaskAssignment();
-				ass.setTaskAssignmentId(Integer.parseInt(data[0]+""));
-				ass.setTask((Task)data[1]);
-				ass.setUser((Users)data[2]);
-				ass.setCrtdDtTime((Timestamp)data[3]);
+			for (Object[] data : taskAssignImpl.reportList(
+					"select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="
+							+ userassigned.getUserId() + " and tsk.taskStatus='" + ACTIVE + "'")) {
+				TaskAssignment ass = new TaskAssignment();
+				ass.setTaskAssignmentId(Integer.parseInt(data[0] + ""));
+				ass.setTask((Task) data[1]);
+				ass.setUser((Users) data[2]);
+				ass.setCrtdDtTime((Timestamp) data[3]);
 				taskAssignList.add(ass);
 			}
-			return( taskAssignList);
-			
+			return (taskAssignList);
+
 		} catch (Exception e) {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
@@ -321,6 +328,7 @@ public class ActivityController implements Serializable, DbConstant {
 			return null;
 		}
 	}
+
 	public void backAct() {
 		this.renderEscalated = false;
 		this.rendered = true;
@@ -395,8 +403,8 @@ public class ActivityController implements Serializable, DbConstant {
 				taskImpl.saveTask(task);
 			}
 			TaskAssignment assignm = new TaskAssignment();
-			assignm = taskAssignImpl.getModelWithMyHQL(new String[] { "task", "user" },
-					new Object[] { task, users }, "from TaskAssignment");
+			assignm = taskAssignImpl.getModelWithMyHQL(new String[] { "task", "user" }, new Object[] { task, users },
+					"from TaskAssignment");
 			if (null == assignm) {
 				assignment.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
 				LOGGER.info(assignment.getCreatedBy());
@@ -418,7 +426,7 @@ public class ActivityController implements Serializable, DbConstant {
 					LOGGER.info(users.getFname() + " receives email from " + usersSession.getFname() + " "
 							+ usersSession.getLname() + " on this email ");
 				}
-				
+
 			}
 			activity.setGenericStatus(DESACTIVE);
 			activity.setActivityEscalated(incrementCount);
@@ -521,9 +529,10 @@ public class ActivityController implements Serializable, DbConstant {
 			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
 					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
 					" from InstitutionEscaletePolicy");
+			LOGGER.info("Reschedule Time::::::::::" + iep.getReschduleTime());
 			for (Object[] data : activityImpl.reportList(
-					"SELECT ac.activityId,ac.description,ac.status,ac.weight,ac.type,ac.countActivityFailed,ac.startDate,ac.dueDate,ac.endDate,ac.user,tsk.taskName from Activity ac,Task tsk where ac.task=tsk.taskId and ActivityFailed>"
-							+ iep.getReschduleTime() + " and ac.genericStatus='" + ACTIVE + "'")) {
+					"SELECT ac.activityId,ac.description,ac.status,ac.weight,ac.type,ac.countActivityFailed,ac.startDate,ac.dueDate,ac.endDate,ac.user,tsk.taskName,ac.genericStatus from Activity ac,Task tsk where ac.task=tsk.taskId and ActivityFailed>"
+							+ iep.getReschduleTime() + "")) {
 				ActivityDto activityDto = new ActivityDto();
 				LOGGER.info("::::Info Found" + data[0] + ":::" + data[1] + "");
 				activityDto.setActivityId(Integer.parseInt(data[0] + ""));
@@ -537,6 +546,12 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setEndDate((Date) data[8]);
 				activityDto.setUser((Users) data[9]);
 				activityDto.setTaskName(data[10] + "");
+				activityDto.setGenericstatus(data[11] + "");
+				if (activityDto.getGenericstatus().equals(ACTIVE)) {
+					activityDto.setPlanAction(false);
+				} else {
+					activityDto.setPlanAction(true);
+				}
 				ActivityDtoList.add(activityDto);
 			}
 
@@ -705,7 +720,7 @@ public class ActivityController implements Serializable, DbConstant {
 			this.renderTask = false;
 			this.renderCompleted = true;
 			this.backBtn = true;
-			this.renderAssignedEscalation=false;
+			this.renderAssignedEscalation = false;
 
 		} catch (Exception e) {
 			setValid(false);
@@ -793,7 +808,7 @@ public class ActivityController implements Serializable, DbConstant {
 				} else {
 					act.setCountApproved(act.getCountApproved() + defaultCount);
 				}
-				//act.setCountReported(defaultCount);
+				// act.setCountReported(defaultCount);
 				activityImpl.UpdateActivity(act);
 				// sendEmail(contact.getEmail(), "request rejected",
 				// "Your request have been rejected due to certain condition. try again later");
@@ -1096,7 +1111,7 @@ public class ActivityController implements Serializable, DbConstant {
 				}
 			}
 			activityImpl.UpdateActivity(act);
-			
+
 			JSFMessagers.resetMessages();
 			setValid(true);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
@@ -1224,7 +1239,7 @@ public class ActivityController implements Serializable, DbConstant {
 	public Date addDay(Activity activity) {
 		institution = activity.getUser().getBoard().getInstitution();
 		try {
-			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat smf = new SimpleDateFormat("yyyy-MM-dd");
 			policy = iepImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
 					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
 			Calendar cal1 = new GregorianCalendar();
@@ -1250,47 +1265,57 @@ public class ActivityController implements Serializable, DbConstant {
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
 
 			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
-
-			/* activity.setEditable(false); */
-
-			// Checking the reporting period if not exceed due date plus variation period
-			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat smf = new SimpleDateFormat("yyyy-MM-dd");
 			String dt = smf.format(new Date());
-			if ((smf.parse(dt).before(addDay(act)))) {
+			Date date1 = smf.parse(dt);
+			Date date2 = addDay(act);
+			if (date1.compareTo(date2) > 0) {
+				LOGGER.info("Date1 is after Date2");
+				checkActReportedAfterPeriod(activity);
+			} else {
 				JSFMessagers.resetMessages();
 				setValid(false);
 				this.renderPeriod = true;
 				JSFMessagers.addErrorMessage(getProvider().getValue("com.failes.report.activity"));
 				LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
-			} else {
-				if (activity.getStatus().equals(APPROVED)) {
-					act.setUpdatedBy(usersSession.getViewId());
-					act.setUpDtTime(timestamp);
-					act.setStatus(FAILED);
-					act.setCountReported(act.getCountReported()+incrementCount);
-					act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
-					act.setEndDate(timestamp);
-					activityImpl.UpdateActivity(act);
-					activityDetails = activityImpl.getGenericListWithHQLParameter(
-							new String[] { "genericStatus", "task", "user" },
-							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
-					activityDtoDetails = showActivity(activityDetails);
-					evaluation.setActivity(act);
-					evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
-					evaluation.setCrtdDtTime(timestamp);
-					evaluation.setDecision(FAILED);
-					evaluation.setEvaluationDate(timestamp);
-					evaluation.setEvaluationMarks(0);
-					evaluation.setGenericStatus(ACTIVE);
-					evaluation.setUpdatedBy(usersSession.getViewId());
-					evaluation.setUpDtTime(timestamp);
-					evaluationImpl.saveEvaluation(evaluation);
-					JSFMessagers.resetMessages();
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity.reportingDate"));
-					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-				}
 			}
+			/*
+			 * Activity act = new Activity(); act = new Activity(); act =
+			 * activityImpl.getActivityById(activity.getActivityId(), "activityId");
+			 * 
+			 * LOGGER.info("here update sart for " + act + " activityiD " +
+			 * act.getActivityId());
+			 * 
+			 * activity.setEditable(false);
+			 * 
+			 * // Checking the reporting period if not exceed due date plus variation period
+			 * SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy"); String dt =
+			 * smf.format(new Date()); if ((smf.parse(dt).before(addDay(act)))) {
+			 * JSFMessagers.resetMessages(); setValid(false); this.renderPeriod = true;
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.failes.report.activity")); LOGGER.info(CLASSNAME +
+			 * ":::Activity type Details is foundes"); } else { if
+			 * (activity.getStatus().equals(APPROVED)) {
+			 * act.setUpdatedBy(usersSession.getViewId()); act.setUpDtTime(timestamp);
+			 * act.setStatus(FAILED);
+			 * act.setCountReported(act.getCountReported()+incrementCount);
+			 * act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
+			 * act.setEndDate(timestamp); activityImpl.UpdateActivity(act); activityDetails
+			 * = activityImpl.getGenericListWithHQLParameter( new String[] {
+			 * "genericStatus", "task", "user" }, new Object[] { ACTIVE, activity.getTask(),
+			 * usersSession }, "Activity", "creationDate desc"); activityDtoDetails =
+			 * showActivity(activityDetails); evaluation.setActivity(act);
+			 * evaluation.setCreatedBy(usersSession.getFname() + " " +
+			 * usersSession.getLname()); evaluation.setCrtdDtTime(timestamp);
+			 * evaluation.setDecision(FAILED); evaluation.setEvaluationDate(timestamp);
+			 * evaluation.setEvaluationMarks(0); evaluation.setGenericStatus(ACTIVE);
+			 * evaluation.setUpdatedBy(usersSession.getViewId());
+			 * evaluation.setUpDtTime(timestamp); evaluationImpl.saveEvaluation(evaluation);
+			 * JSFMessagers.resetMessages(); setValid(false);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.update.form.activity.reportingDate")); LOGGER.info(CLASSNAME +
+			 * ":::Activity Details is saved"); } }
+			 */
 
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
@@ -1302,75 +1327,91 @@ public class ActivityController implements Serializable, DbConstant {
 		// return to current page
 		return null;
 	}
+	public int getMarks(Activity act) {
+		try {
+			institution = act.getUser().getBoard().getInstitution();
+			policy = null;
+			policy = iepImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
+			if (act.getWeight().equals(LONG))
+				return (int) policy.getLongMarks();
+			else if (act.getWeight().equals(MEDIUM))
+				return (int) policy.getMediumgMarks();
+			else if (act.getWeight().equals(SHORT)) {
+				return (int) policy.getShortMarks();
+			} else {
+				return 0;
+			}
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 	@SuppressWarnings("unchecked")
-	public String reportAction(ActivityDto activity) {
+	public String checkActReportedAfterPeriod(ActivityDto activity) {
 		try {
 			Activity act = new Activity();
 			act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
 
-			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
+			if (activity.getStatus().equals(APPROVED)) {
+				act.setUpdatedBy(usersSession.getViewId());
+				act.setUpDtTime(timestamp);
+				act.setStatus(FAILED);
+				act.setCountReported(incrementCount);
+				act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
+				act.setEndDate(timestamp);
+				activityImpl.UpdateActivity(act);
+				activityDetails = activityImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "task", "user" },
+						new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
+				activityDtoDetails = showActivity(activityDetails);
+				LOGGER.info(":::::::::ACTION FOR EVALUATION START:::::::::::" + act.getActivityId());
+				ActivityEvaluation evaluate = new ActivityEvaluation();
+				evaluate.setSupervisor(usersSession);
+				evaluate.setActivity(act);
+				evaluate.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
+				evaluate.setCrtdDtTime(timestamp);
+				evaluate.setDecision(COMPLETED);
+				evaluate.setEvaluationDate(timestamp);
+				evaluate.setEvaluationMarks(defaultCount);
+				evaluate.setEvaluationOverAllMarks(getMarks(act));
+				evaluate.setGenericStatus(ACTIVE);
+				evaluate.setUpdatedBy(usersSession.getViewId());
+				evaluate.setUpDtTime(timestamp);
+				evaluationImpl.saveActivityEvaluation(evaluate);
+				LOGGER.info(":::::::::ACTION FOR EVALUATION END:::::::::::");
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity.reportingDate"));
+				LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+			}
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
+			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+		}
+		return null;
+	}
 
-			/* activity.setEditable(false); */
-			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
-					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
-					" from InstitutionEscaletePolicy");
-			// Checking the reporting period if not exceed due date plus variation period
-			SimpleDateFormat smf = new SimpleDateFormat("dd-MM-yyyy");
-			String dt = smf.format(new Date());
-			if ((smf.parse(dt).before(addDay(act)))) {
-				LOGGER.info("TODAY DATE:::" + smf.parse(dt));
-				if (activity.getStatus().equals(APPROVED) && activity.getType().equals(MILESTONE)) {
-					uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(
-							new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act },
-							"UploadingActivity", "crtdDtTime desc");
-					if (uploadingActivityDetails.size() > 0) {
-						if (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
-							act.setUpdatedBy(usersSession.getViewId());
-							act.setUpDtTime(timestamp);
-							act.setStatus(DONE);
-							act.setCountReported(act.getCountReported()+incrementCount);
-							act.setEndDate(timestamp);
-							activityImpl.UpdateActivity(act);
-							activityDetails = activityImpl.getGenericListWithHQLParameter(
-									new String[] { "genericStatus", "task", "user" },
-									new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity",
-									"creationDate desc");
-							activityDtoDetails = showActivity(activityDetails);
-							JSFMessagers.resetMessages();
-							setValid(true);
-							JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-							LOGGER.info(CLASSNAME + ":::Activity Details is saved");	
-						}else {
-							act.setUpdatedBy(usersSession.getViewId());
-							act.setUpDtTime(timestamp);
-							act.setStatus(DONE);
-							act.setCountReported(incrementCount);
-							act.setEndDate(timestamp);
-							activityImpl.UpdateActivity(act);
-							activityDetails = activityImpl.getGenericListWithHQLParameter(
-									new String[] { "genericStatus", "task", "user" },
-									new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity",
-									"creationDate desc");
-							activityDtoDetails = showActivity(activityDetails);
-							JSFMessagers.resetMessages();
-							setValid(true);
-							JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-							LOGGER.info(CLASSNAME + ":::Activity Details is saved");
-						}
-						
-					} else {
-						JSFMessagers.resetMessages();
-						setValid(false);
-						JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
-						LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
-					}
-				} else if (activity.getStatus().equals(APPROVED)) {
-					if (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
+	@SuppressWarnings("unchecked")
+	public String checkActivityReportedBeforeAndWithinPeriod(ActivityDto activity) {
+		try {
+			Activity act = new Activity();
+			act = new Activity();
+			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+
+			if (activity.getStatus().equals(APPROVED) && activity.getType().equals(MILESTONE)) {
+				uploadingActivityDetails = uplActImpl.getGenericListWithHQLParameter(
+						new String[] { "genericStatus", "activity" }, new Object[] { ACTIVE, act }, "UploadingActivity",
+						"crtdDtTime desc");
+				if (uploadingActivityDetails.size() > 0) {
+					if (act.getCountActivityFailed() > defaultCount
+							&& act.getCountActivityFailed() < iep.getPlanPeriod()) {
 						act.setUpdatedBy(usersSession.getViewId());
 						act.setUpDtTime(timestamp);
 						act.setStatus(DONE);
-						act.setCountReported(act.getCountReported()+incrementCount);
+						act.setCountReported(act.getCountReported() + incrementCount);
 						act.setEndDate(timestamp);
 						activityImpl.UpdateActivity(act);
 						activityDetails = activityImpl.getGenericListWithHQLParameter(
@@ -1381,8 +1422,8 @@ public class ActivityController implements Serializable, DbConstant {
 						JSFMessagers.resetMessages();
 						setValid(true);
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
-						LOGGER.info(CLASSNAME + ":::Activity Details is saved");	
-					}else {
+						LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+					} else {
 						act.setUpdatedBy(usersSession.getViewId());
 						act.setUpDtTime(timestamp);
 						act.setStatus(DONE);
@@ -1399,36 +1440,167 @@ public class ActivityController implements Serializable, DbConstant {
 						JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 						LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 					}
+
+				} else {
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.milestone.upload.activity"));
+					LOGGER.info(CLASSNAME + ":::Activity type Details is foundes");
 				}
-			} else {
-				if (activity.getStatus().equals(APPROVED)) {
+			} else if (activity.getStatus().equals(APPROVED)) {
+				if (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
 					act.setUpdatedBy(usersSession.getViewId());
 					act.setUpDtTime(timestamp);
-					act.setStatus(FAILED);
-					act.setCountReported(incrementCount);
-					act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
+					act.setStatus(DONE);
+					act.setCountReported(act.getCountReported() + incrementCount);
 					act.setEndDate(timestamp);
 					activityImpl.UpdateActivity(act);
 					activityDetails = activityImpl.getGenericListWithHQLParameter(
 							new String[] { "genericStatus", "task", "user" },
 							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
 					activityDtoDetails = showActivity(activityDetails);
-					evaluation.setActivity(act);
-					evaluation.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
-					evaluation.setCrtdDtTime(timestamp);
-					evaluation.setDecision(FAILED);
-					evaluation.setEvaluationDate(timestamp);
-					evaluation.setEvaluationMarks(0);
-					evaluation.setGenericStatus(ACTIVE);
-					evaluation.setUpdatedBy(usersSession.getViewId());
-					evaluation.setUpDtTime(timestamp);
-					evaluationImpl.saveEvaluation(evaluation);
 					JSFMessagers.resetMessages();
-					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity.reportingDate"));
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
+					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+				} else {
+					act.setUpdatedBy(usersSession.getViewId());
+					act.setUpDtTime(timestamp);
+					act.setStatus(DONE);
+					act.setCountReported(incrementCount);
+					act.setEndDate(timestamp);
+					activityImpl.UpdateActivity(act);
+					activityDetails = activityImpl.getGenericListWithHQLParameter(
+							new String[] { "genericStatus", "task", "user" },
+							new Object[] { ACTIVE, activity.getTask(), usersSession }, "Activity", "creationDate desc");
+					activityDtoDetails = showActivity(activityDetails);
+					JSFMessagers.resetMessages();
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.update.form.activity"));
 					LOGGER.info(CLASSNAME + ":::Activity Details is saved");
 				}
 			}
+		} catch (Exception e) {
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.updatefail.form.activity"));
+			LOGGER.info(CLASSNAME + ":::Activity Details is saved");
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String reportAction(ActivityDto activity) {
+		try {
+			Activity act = new Activity();
+			act = new Activity();
+			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
+
+			LOGGER.info("here update sart for " + act + " activityiD " + act.getActivityId());
+
+			/* activity.setEditable(false); */
+			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
+					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
+					" from InstitutionEscaletePolicy");
+			// Checking the reporting period if not exceed due date plus variation period
+			SimpleDateFormat smf = new SimpleDateFormat("yyyy-MM-dd");
+			String dt = smf.format(new Date());
+			Date date1 = smf.parse(dt);
+			Date date2 = addDay(act);
+
+			LOGGER.info("TODAY DATE:::" + smf.format(date1));
+			LOGGER.info("::::DUE DATE::::" + smf.format(date2));
+
+			if (date1.compareTo(date2) > 0) {
+				LOGGER.info("Date1 is after Date2");
+				checkActReportedAfterPeriod(activity);
+			} else if (date1.compareTo(date2) < 0) {
+				LOGGER.info("Date1 is before Date2");
+				checkActivityReportedBeforeAndWithinPeriod(activity);
+			} else if (date1.compareTo(date2) == 0) {
+				LOGGER.info("Date1 is equal to Date2");
+				checkActivityReportedBeforeAndWithinPeriod(activity);
+			} else {
+				LOGGER.info("How to get here?");
+			}
+
+			/*
+			 * if ((smf.parse(dt).before(addDay(act)))) { LOGGER.info("TODAYS DATE:::" +
+			 * smf.parse(dt)); if (activity.getStatus().equals(APPROVED) &&
+			 * activity.getType().equals(MILESTONE)) { uploadingActivityDetails =
+			 * uplActImpl.getGenericListWithHQLParameter( new String[] { "genericStatus",
+			 * "activity" }, new Object[] { ACTIVE, act }, "UploadingActivity",
+			 * "crtdDtTime desc"); if (uploadingActivityDetails.size() > 0) { if
+			 * (act.getCountActivityFailed() > defaultCount && act.getCountActivityFailed()
+			 * < iep.getPlanPeriod()) { act.setUpdatedBy(usersSession.getViewId());
+			 * act.setUpDtTime(timestamp); act.setStatus(DONE);
+			 * act.setCountReported(act.getCountReported()+incrementCount);
+			 * act.setEndDate(timestamp); activityImpl.UpdateActivity(act); activityDetails
+			 * = activityImpl.getGenericListWithHQLParameter( new String[] {
+			 * "genericStatus", "task", "user" }, new Object[] { ACTIVE, activity.getTask(),
+			 * usersSession }, "Activity", "creationDate desc"); activityDtoDetails =
+			 * showActivity(activityDetails); JSFMessagers.resetMessages(); setValid(true);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.update.form.activity")); LOGGER.info(CLASSNAME +
+			 * ":::Activity Details is saved"); }else {
+			 * act.setUpdatedBy(usersSession.getViewId()); act.setUpDtTime(timestamp);
+			 * act.setStatus(DONE); act.setCountReported(incrementCount);
+			 * act.setEndDate(timestamp); activityImpl.UpdateActivity(act); activityDetails
+			 * = activityImpl.getGenericListWithHQLParameter( new String[] {
+			 * "genericStatus", "task", "user" }, new Object[] { ACTIVE, activity.getTask(),
+			 * usersSession }, "Activity", "creationDate desc"); activityDtoDetails =
+			 * showActivity(activityDetails); JSFMessagers.resetMessages(); setValid(true);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.update.form.activity")); LOGGER.info(CLASSNAME +
+			 * ":::Activity Details is saved"); }
+			 * 
+			 * } else { JSFMessagers.resetMessages(); setValid(false);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.milestone.upload.activity")); LOGGER.info(CLASSNAME +
+			 * ":::Activity type Details is foundes"); } } else if
+			 * (activity.getStatus().equals(APPROVED)) { if (act.getCountActivityFailed() >
+			 * defaultCount && act.getCountActivityFailed() < iep.getPlanPeriod()) {
+			 * act.setUpdatedBy(usersSession.getViewId()); act.setUpDtTime(timestamp);
+			 * act.setStatus(DONE);
+			 * act.setCountReported(act.getCountReported()+incrementCount);
+			 * act.setEndDate(timestamp); activityImpl.UpdateActivity(act); activityDetails
+			 * = activityImpl.getGenericListWithHQLParameter( new String[] {
+			 * "genericStatus", "task", "user" }, new Object[] { ACTIVE, activity.getTask(),
+			 * usersSession }, "Activity", "creationDate desc"); activityDtoDetails =
+			 * showActivity(activityDetails); JSFMessagers.resetMessages(); setValid(true);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.update.form.activity")); LOGGER.info(CLASSNAME +
+			 * ":::Activity Details is saved"); }else {
+			 * act.setUpdatedBy(usersSession.getViewId()); act.setUpDtTime(timestamp);
+			 * act.setStatus(DONE); act.setCountReported(incrementCount);
+			 * act.setEndDate(timestamp); activityImpl.UpdateActivity(act); activityDetails
+			 * = activityImpl.getGenericListWithHQLParameter( new String[] {
+			 * "genericStatus", "task", "user" }, new Object[] { ACTIVE, activity.getTask(),
+			 * usersSession }, "Activity", "creationDate desc"); activityDtoDetails =
+			 * showActivity(activityDetails); JSFMessagers.resetMessages(); setValid(true);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.update.form.activity")); LOGGER.info(CLASSNAME +
+			 * ":::Activity Details is saved"); } } } else { if
+			 * (activity.getStatus().equals(APPROVED)) {
+			 * act.setUpdatedBy(usersSession.getViewId()); act.setUpDtTime(timestamp);
+			 * act.setStatus(FAILED); act.setCountReported(incrementCount);
+			 * act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
+			 * act.setEndDate(timestamp); activityImpl.UpdateActivity(act); activityDetails
+			 * = activityImpl.getGenericListWithHQLParameter( new String[] {
+			 * "genericStatus", "task", "user" }, new Object[] { ACTIVE, activity.getTask(),
+			 * usersSession }, "Activity", "creationDate desc"); activityDtoDetails =
+			 * showActivity(activityDetails); evaluation.setActivity(act);
+			 * evaluation.setCreatedBy(usersSession.getFname() + " " +
+			 * usersSession.getLname()); evaluation.setCrtdDtTime(timestamp);
+			 * evaluation.setDecision(FAILED); evaluation.setEvaluationDate(timestamp);
+			 * evaluation.setEvaluationMarks(0); evaluation.setGenericStatus(ACTIVE);
+			 * evaluation.setUpdatedBy(usersSession.getViewId());
+			 * evaluation.setUpDtTime(timestamp); evaluationImpl.saveEvaluation(evaluation);
+			 * JSFMessagers.resetMessages(); setValid(false);
+			 * JSFMessagers.addErrorMessage(getProvider().getValue(
+			 * "com.update.form.activity.reportingDate")); LOGGER.info(CLASSNAME +
+			 * ":::Activity Details is saved"); } }
+			 */
 
 		} catch (Exception e) {
 			JSFMessagers.resetMessages();
@@ -1677,7 +1849,7 @@ public class ActivityController implements Serializable, DbConstant {
 			this.renderTaskForm = true;
 			this.rendered = false;
 			this.backBtn = true;
-			this.renderAssignedEscalation=false;
+			this.renderAssignedEscalation = false;
 		}
 	}
 
@@ -2293,23 +2465,6 @@ public class ActivityController implements Serializable, DbConstant {
 	public void setPolicy(InstitutionEscaletePolicy policy) {
 		this.policy = policy;
 	}
-
-	public Evaluation getEvaluation() {
-		return evaluation;
-	}
-
-	public void setEvaluation(Evaluation evaluation) {
-		this.evaluation = evaluation;
-	}
-
-	public EvaluationImpl getEvaluationImpl() {
-		return evaluationImpl;
-	}
-
-	public void setEvaluationImpl(EvaluationImpl evaluationImpl) {
-		this.evaluationImpl = evaluationImpl;
-	}
-
 	public boolean isRenderEscalated() {
 		return renderEscalated;
 	}
@@ -2349,7 +2504,6 @@ public class ActivityController implements Serializable, DbConstant {
 	public void setCategoryImpl(UserCategoryImpl categoryImpl) {
 		this.categoryImpl = categoryImpl;
 	}
-
 
 	public boolean isRenderAssignedEscalation() {
 		return renderAssignedEscalation;
@@ -2398,6 +2552,7 @@ public class ActivityController implements Serializable, DbConstant {
 	public void setTaskAssignList(List<TaskAssignment> taskAssignList) {
 		this.taskAssignList = taskAssignList;
 	}
+
 	public String getPlanperiod() {
 		return planperiod;
 	}
@@ -2412,6 +2567,38 @@ public class ActivityController implements Serializable, DbConstant {
 
 	public void setRenderPeriod(boolean renderPeriod) {
 		this.renderPeriod = renderPeriod;
+	}
+
+	public TaskImpl getTaskImpl() {
+		return taskImpl;
+	}
+
+	public void setTaskImpl(TaskImpl taskImpl) {
+		this.taskImpl = taskImpl;
+	}
+
+	public StrategicPlanImpl getPlanImpl() {
+		return planImpl;
+	}
+
+	public void setPlanImpl(StrategicPlanImpl planImpl) {
+		this.planImpl = planImpl;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public void setEvaluation(ActivityEvaluation evaluation) {
+		this.evaluation = evaluation;
+	}
+
+	public void setEvaluationImpl(ActivityEvaluationImpl evaluationImpl) {
+		this.evaluationImpl = evaluationImpl;
 	}
 
 }

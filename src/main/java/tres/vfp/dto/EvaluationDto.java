@@ -22,14 +22,111 @@ public class EvaluationDto implements Serializable {
 	private int evaluationMarks;
 
 	private String genericstatus;
-
+	private String weight;
+	private String description;
+	private Date EvaluationDate;
 	private Date createdDate;
 
 	private boolean editable;
 
 	private boolean failedBtn;
-
+	private Task task;
 	private Users user;
+	private Users supervisor;
+	private int TotalEvalActivity;
+	private int TotalEvalMarks;
+	private int TotalExpMarks;
+	private int TotalActFailed;
+	private int TotalActCompleted;
+	private int EvaluationOverAllMarks;
+	
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getEvaluationDate() {
+		return EvaluationDate;
+	}
+
+	public void setEvaluationDate(Date evaluationDate) {
+		EvaluationDate = evaluationDate;
+	}
+
+	public int getEvaluationOverAllMarks() {
+		return EvaluationOverAllMarks;
+	}
+
+	public void setEvaluationOverAllMarks(int evaluationOverAllMarks) {
+		EvaluationOverAllMarks = evaluationOverAllMarks;
+	}
+
+	public Users getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSupervisor(Users supervisor) {
+		this.supervisor = supervisor;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public int getTotalEvalActivity() {
+		return TotalEvalActivity;
+	}
+
+	public void setTotalEvalActivity(int totalEvalActivity) {
+		TotalEvalActivity = totalEvalActivity;
+	}
+
+	public int getTotalEvalMarks() {
+		return TotalEvalMarks;
+	}
+
+	public void setTotalEvalMarks(int totalEvalMarks) {
+		TotalEvalMarks = totalEvalMarks;
+	}
+
+	public int getTotalExpMarks() {
+		return TotalExpMarks;
+	}
+
+	public void setTotalExpMarks(int totalExpMarks) {
+		TotalExpMarks = totalExpMarks;
+	}
+
+	public int getTotalActFailed() {
+		return TotalActFailed;
+	}
+
+	public void setTotalActFailed(int totalActFailed) {
+		TotalActFailed = totalActFailed;
+	}
+
+	public int getTotalActCompleted() {
+		return TotalActCompleted;
+	}
+
+	public void setTotalActCompleted(int totalActCompleted) {
+		TotalActCompleted = totalActCompleted;
+	}
 
 	public int getEvaluationId() {
 		return evaluationId;

@@ -831,10 +831,19 @@
 											<h:commandLink data-toggle="tooltip" data-placement="left"
 												title="#{msg['createactivity.escalateButton']}"
 												class="btn btn-sm btn-primary glyphicon glyphicon-align-center"
-												action="#{activityController.showEscalateActivity(data)}">
+												action="#{activityController.showEscalateActivity(data)}"
+												rendered="#{ not data.planAction}">
 												<f:ajax render="@form" execute="@form"
 													onevent="showProgress" />
 											</h:commandLink>
+											<p:outputPanel rendered="#{data.planAction}">
+											<a href="#" data-toggle="tooltip" data-placement="left"
+												title="#{msg['UserCategoryView.iconsescalateButton']}">
+												<span class=" glyphicon glyphicon-question-sign fa-fw fa-2x"
+												style="color: white; background-color: red; margin-left: 5%; border: none; border-radius:25%;margin-top:5px;">
+											</span>
+											</a>
+										</p:outputPanel>
 										</div>
 									</h:column>
 								</h:dataTable>

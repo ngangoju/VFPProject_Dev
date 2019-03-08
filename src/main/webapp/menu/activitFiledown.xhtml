@@ -13,7 +13,7 @@
 			<div class="panel panel-info">
 				<h:form>
 					<h:panelGroup layout="block"
-						rendered="#{not evaluationController.valid and not facesContext.validationFailed}">
+						rendered="#{not activityEvaluationController.valid and not facesContext.validationFailed}">
 						<ul>
 							<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 								<li class="alert alert-danger"
@@ -27,7 +27,7 @@
 					</h:panelGroup>
 
 					<h:panelGroup layout="block"
-						rendered="#{evaluationController.valid and  not facesContext.validationFailed}">
+						rendered="#{activityEvaluationController.valid and  not facesContext.validationFailed}">
 						<ul>
 							<ui:repeat value="#{facesContext.messageList}" var="facesMessage">
 								<li
@@ -48,7 +48,7 @@
        						 -webkit-box-shadow: none;
        							 box-shadow: none !important;
        								 margin: 17px 25px 0 !important;"
-						value="#{evaluationController.showFiles()}" var="fileDetails"
+						value="#{activityEvaluationController.showFiles()}" var="fileDetails"
 						class="table table-striped table-hover table-bordered tableUpdated ">
 						<f:facet name="header">
 							<label
@@ -90,7 +90,7 @@
 								<h:commandLink target="_blank" data-toggle="tooltip"
 									data-placement="left" title="Download"
 									class="btn btn-info glyphicon glyphicon-download"
-									action="#{evaluationController.downloadFile}">
+									action="#{activityEvaluationController.downloadFile}">
 									<f:param name="docId" value="#{fileDetails.documents.docId}" />
 								</h:commandLink>
 							</h:form>

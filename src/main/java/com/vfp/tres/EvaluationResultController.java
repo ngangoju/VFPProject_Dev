@@ -29,6 +29,7 @@ import tres.dao.impl.InstitutionImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
+import tres.domain.ActivityEvaluation;
 import tres.domain.Board;
 import tres.domain.Contact;
 import tres.domain.Evaluation;
@@ -47,7 +48,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	private String CLASSNAME = "EvaluationResultController:: ";
 	private static final long serialVersionUID = 1L;
 	/* to manage validation messages */
-	private boolean isValid, viewStaffActiv, viewSpecfcStaff, dwnBtn, apDltBtn, viewAttached, rsbtn;
+	private boolean isValid, viewStaffActiv, viewSpecfcStaff, dwnBtn, apDltBtn, viewAttached,viewactivity, rsbtn,backHome,staffEvaluation;
 	/* end manage validation messages */
 
 	private Evaluation evaluation;
@@ -65,7 +66,9 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	private List<Users> staffsComplete = new ArrayList<Users>();
 	private List<ActivityDto> activitiesDtos = new ArrayList<ActivityDto>();
 	private List<EvaluationDto> evaluationDtos = new ArrayList<EvaluationDto>();
-
+	private List<EvaluationDto> activityAvaluationDtos = new ArrayList<EvaluationDto>();
+	private List<EvaluationDto> evaluationStaffDtos = new ArrayList<EvaluationDto>();
+	private List<EvaluationDto> activityAvaluationStaffDtos = new ArrayList<EvaluationDto>();
 	EvaluationImpl evaluationImpl = new EvaluationImpl();
 	ActivityImpl activityImpl = new ActivityImpl();
 	InstitutionImpl instImpl = new InstitutionImpl();
@@ -95,6 +98,10 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		}
 		try {
 			staffsComplete = getUserDetailsCompletedActivities();
+			evaluationDtos=completedEvaByStaff();
+			evaluationStaffDtos=ActEvaluatedByStaff();
+			LOGGER.info("::::LIST SIZE::::::::"+evaluationDtos.size());
+			staffEvaluation=true;
 		} catch (Exception e) {
 			setValid(false);
 			e.printStackTrace();
@@ -134,7 +141,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		try {
 			staffs = new ArrayList<Users>();
 			for (Object[] object : usersImpl.reportList(
-					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co,Evaluation ev where co.user=us.userId and ev.activity=co.activityId and us.board="
+					"select distinct us.userId, us.fname, us.lname, us.board from Users us,Activity co,ActivityEvaluation ev where co.user=us.userId and ev.activity=co.activityId and us.board="
 							+ usersSession.getBoard().getBoardId() + "")) {
 				Users user = new Users();
 				user.setUserId((Integer) object[0]);
@@ -158,6 +165,8 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	public void backHome() {
 		viewSpecfcStaff = false;
 		viewStaffActiv = false;
+		viewactivity=false;
+		backHome=false;
 	}
 
 	// desplay name of user
@@ -224,7 +233,8 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		try {
 			viewStaffActiv = true;
 			viewSpecfcStaff = true;
-			evaluationDtos = completedEva(user);
+			backHome=true;
+			evaluationDtos = OverallTargetsEvaluation(user);
 			HttpSession ses = SessionUtils.getSession();
 			ses.setAttribute("usrSession", user);
 			LoadUserInformationsController loadUserInformationsController = new LoadUserInformationsController();
@@ -653,15 +663,101 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		}
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	public List<EvaluationDto> OverallTargetsEvaluation(Users usr) {
+		try {
+			evaluationDtos = new ArrayList<EvaluationDto>();
+			String chk;
+			for (Object[] object : evaluationImpl.reportList(
+					"select ev.evaluationId,count(ac.activityId) as TotalEvaluatedActivity,Sum(ev.EvaluationMarks) as TotalEvaluationMarks,Sum(ev.EvaluationOverAllMarks) as TotalExpectedMarks,sum(case when (ev.decision='Failed') then 1 else 0 end) as TotalFailed,sum(case when (ev.decision='Completed') then 1 else 0 end) as TotalCompleted,ac.status,ac.type,ac.weight,ac.task,ac.user,ev.supervisor,ev.activity from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and ac.user="+ usr.getUserId()+" group by ac.task")) {
+				EvaluationDto dto = new EvaluationDto();
+				dto.setEvaluationId(Integer.parseInt(object[0]+""));
+				dto.setTotalEvalActivity(Integer.parseInt(object[1]+""));
+				dto.setTotalEvalMarks(Integer.parseInt(object[2]+""));
+				dto.setTotalExpMarks(Integer.parseInt(object[3]+""));
+				dto.setTotalActFailed(Integer.parseInt(object[4]+""));
+				dto.setTotalActCompleted(Integer.parseInt(object[5]+""));
+				dto.setTask((Task)object[9]);
+				dto.setUser((Users)object[10]);
+				dto.setSupervisor((Users)object[11]);
+				dto.setActivity((Activity)object[12]);
+				evaluationDtos.add(dto);
+			}
+			return evaluationDtos;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public List<EvaluationDto> OverallActivityEvaluationByStaff(EvaluationDto task) {
+		try {
+			activityAvaluationStaffDtos = new ArrayList<EvaluationDto>();
+			for (Object[] object : evaluationImpl.reportList("select ev.evaluationId,ev.EvaluationMarks,ev.EvaluationOverAllMarks as ExpectedMarks,ac.weight ,ev.decision,ev.EvaluationDate,ac.description,ev.supervisor from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and tsk.taskId="+task.getTask().getTaskId()+"")){
+				EvaluationDto dto = new EvaluationDto();
+				dto.setEvaluationId(Integer.parseInt(object[0]+""));
+				dto.setEvaluationMarks(Integer.parseInt(object[1]+""));
+				dto.setEvaluationOverAllMarks(Integer.parseInt(object[2]+""));
+				dto.setWeight(object[3]+"");
+				dto.setDecision(object[4]+"");
+				dto.setEvaluationDate((Date)object[5]);
+				dto.setDescription(object[6]+"");
+				dto.setSupervisor((Users)object[7]);
+				activityAvaluationStaffDtos.add(dto);
+			}
+			staffEvaluation=false;
+			this.viewactivity=true;
+			backHome=true;
+			return activityAvaluationStaffDtos;	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public void backStaffHome() {
+		staffEvaluation=true;
+		viewactivity=false;
+		backHome=false;
+	}
+	@SuppressWarnings("unchecked")
+	public List<EvaluationDto> OverallActivityEvaluation(EvaluationDto task) {
+		try {
+			activityAvaluationDtos = new ArrayList<EvaluationDto>();
+			for (Object[] object : evaluationImpl.reportList("select ev.evaluationId,ev.EvaluationMarks,ev.EvaluationOverAllMarks as ExpectedMarks,ac.weight ,ev.decision,ev.EvaluationDate,ac.description,ev.supervisor from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and tsk.taskId="+task.getTask().getTaskId()+"")){
+				EvaluationDto dto = new EvaluationDto();
+				dto.setEvaluationId(Integer.parseInt(object[0]+""));
+				dto.setEvaluationMarks(Integer.parseInt(object[1]+""));
+				dto.setEvaluationOverAllMarks(Integer.parseInt(object[2]+""));
+				dto.setWeight(object[3]+"");
+				dto.setDecision(object[4]+"");
+				dto.setEvaluationDate((Date)object[5]);
+				dto.setDescription(object[6]+"");
+				dto.setSupervisor((Users)object[7]);
+				activityAvaluationDtos.add(dto);
+			}
+			this.viewSpecfcStaff=true;
+			this.viewactivity=true;
+			viewStaffActiv=false;
+			backHome=true;
+			return activityAvaluationDtos;	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	// user results
 	@SuppressWarnings("unchecked")
 	public List<EvaluationDto> completedEvaByStaff() {
 		try {  
 			evaluationDtos = new ArrayList<EvaluationDto>();
 			for (Object[] object : evaluationImpl.reportList(
-					"select us.evaluationId,us.decision,us.EvaluationMarks,us.activity,us.supervisor  from Evaluation us,Activity co where us.activity=co.activityId and co.user="
+					"select us.evaluationId,us.decision,us.EvaluationMarks,us.activity,us.supervisor from ActivityEvaluation us,Activity co where us.activity=co.activityId and co.user="
 							+ usersSession.getUserId() + "")) {
 				EvaluationDto dto = new EvaluationDto();
+				LOGGER.info(":::EVALUATION:::"+object[0]+":::::::::"+object[2]);
 				dto.setEvaluationId(Integer.parseInt(object[0] + ""));
 				dto.setDecision(object[1] + "");
 				dto.setFailedBtn(false);
@@ -677,6 +773,32 @@ public class EvaluationResultController implements Serializable, DbConstant {
 			setValid(false);
 			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
 			LOGGER.info(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<EvaluationDto> ActEvaluatedByStaff() {
+		try {
+			evaluationStaffDtos = new ArrayList<EvaluationDto>();
+			for (Object[] object : evaluationImpl.reportList(
+					"select ev.evaluationId,count(ac.activityId) as TotalEvaluatedActivity,Sum(ev.EvaluationMarks) as TotalEvaluationMarks,Sum(ev.EvaluationOverAllMarks) as TotalExpectedMarks,sum(case when (ev.decision='Failed') then 1 else 0 end) as TotalFailed,sum(case when (ev.decision='Completed') then 1 else 0 end) as TotalCompleted,ac.status,ac.type,ac.weight,ac.task,ac.user,ev.supervisor,ev.activity from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and ac.user="+ usersSession.getUserId()+" group by ac.task")) {
+				EvaluationDto dto = new EvaluationDto();
+				dto.setEvaluationId(Integer.parseInt(object[0]+""));
+				dto.setTotalEvalActivity(Integer.parseInt(object[1]+""));
+				dto.setTotalEvalMarks(Integer.parseInt(object[2]+""));
+				dto.setTotalExpMarks(Integer.parseInt(object[3]+""));
+				dto.setTotalActFailed(Integer.parseInt(object[4]+""));
+				dto.setTotalActCompleted(Integer.parseInt(object[5]+""));
+				dto.setTask((Task)object[9]);
+				dto.setUser((Users)object[10]);
+				dto.setSupervisor((Users)object[11]);
+				dto.setActivity((Activity)object[12]);
+				evaluationStaffDtos.add(dto);
+			}
+			return evaluationStaffDtos;
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -937,6 +1059,54 @@ public class EvaluationResultController implements Serializable, DbConstant {
 
 	public void setEvaluationDtos(List<EvaluationDto> evaluationDtos) {
 		this.evaluationDtos = evaluationDtos;
+	}
+
+	public List<EvaluationDto> getActivityAvaluationDtos() {
+		return activityAvaluationDtos;
+	}
+
+	public void setActivityAvaluationDtos(List<EvaluationDto> activityAvaluationDtos) {
+		this.activityAvaluationDtos = activityAvaluationDtos;
+	}
+
+	public boolean isViewactivity() {
+		return viewactivity;
+	}
+
+	public void setViewactivity(boolean viewactivity) {
+		this.viewactivity = viewactivity;
+	}
+
+	public boolean isBackHome() {
+		return backHome;
+	}
+
+	public void setBackHome(boolean backHome) {
+		this.backHome = backHome;
+	}
+
+	public List<EvaluationDto> getEvaluationStaffDtos() {
+		return evaluationStaffDtos;
+	}
+
+	public void setEvaluationStaffDtos(List<EvaluationDto> evaluationStaffDtos) {
+		this.evaluationStaffDtos = evaluationStaffDtos;
+	}
+
+	public List<EvaluationDto> getActivityAvaluationStaffDtos() {
+		return activityAvaluationStaffDtos;
+	}
+
+	public void setActivityAvaluationStaffDtos(List<EvaluationDto> activityAvaluationStaffDtos) {
+		this.activityAvaluationStaffDtos = activityAvaluationStaffDtos;
+	}
+
+	public boolean isStaffEvaluation() {
+		return staffEvaluation;
+	}
+
+	public void setStaffEvaluation(boolean staffEvaluation) {
+		this.staffEvaluation = staffEvaluation;
 	}
 
 	/* Getter and setters ends */
