@@ -217,8 +217,12 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public void staffCompl(Users user) {
 		try {
+
+			HttpSession sessionuser = SessionUtils.getSession();
+				sessionuser.setAttribute("staff", user);
 			viewStaffActiv = true;
 			viewSpecfcStaff = true;
+			activities=new ArrayList<Activity>();
 			System.out.println("viewSpecfcStaff::" + viewSpecfcStaff);
 			List<Activity>list= new ArrayList<Activity>();
 			 list= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
@@ -272,6 +276,7 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 				ac.setUser(act.getUser());
 				activities.add(ac);
 			}
+			list= new ArrayList<Activity>();
 			
 		} catch (Exception e) {
 		}
@@ -365,6 +370,9 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public String checkActivityReportedBeforeAndWithinPeriod(Activity activity) {
 		try {
+			HttpSession session = SessionUtils.getSession();
+			Users user= new Users();
+			user = (Users) session.getAttribute("staff");
 			Activity act = new Activity();
 			act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
@@ -372,6 +380,8 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			act.setUpdatedBy(usersSession.getViewId());
 			act.setUpDtTime(timestamp);
 			activityImpl.UpdateActivity(act);
+			activities=activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
+					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
 			ActivityEvaluation evaluate= new ActivityEvaluation();
 			evaluate = new ActivityEvaluation();
 			evaluate.setSupervisor(usersSession);
@@ -402,6 +412,9 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 	@SuppressWarnings("unchecked")
 	public String checkActReportedAfterPeriod(Activity activity) {
 		try {
+			HttpSession session = SessionUtils.getSession();
+			Users user= new Users();
+			user = (Users) session.getAttribute("staff");
 			Activity act = new Activity();
 			act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
@@ -409,6 +422,8 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			act.setUpdatedBy(usersSession.getViewId());
 			act.setUpDtTime(timestamp);
 			activityImpl.UpdateActivity(act);
+			activities=activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
+					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
 			ActivityEvaluation evaluate= new ActivityEvaluation();
 			evaluate = new ActivityEvaluation();
 			evaluate.setActivity(act);
@@ -548,8 +563,12 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 
 	/* activity completion ends */
 	/* activity rejection starts */
+	@SuppressWarnings("unchecked")
 	public void rejectAction(Activity act) {
 		try {
+			HttpSession session = SessionUtils.getSession();
+			Users user= new Users();
+			user = (Users) session.getAttribute("staff");
 			LOGGER.info("IGIKORWA CYITWA: " + act.getDescription());
 			act.setUpdatedBy(usersSession.getViewId());
 			act.setUpDtTime(timestamp);
@@ -561,6 +580,8 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			act.setCountActivityFailed(act.getCountActivityFailed() + incrementCount);
 			activityImpl.UpdateActivity(act);
 			
+			activities=activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
+					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
 			ActivityEvaluation evaluate= new ActivityEvaluation();
 			evaluate.setActivity(act);
 			evaluate.setCreatedBy(usersSession.getFname() + " " + usersSession.getLname());
