@@ -26,6 +26,7 @@ import tres.dao.impl.ContactImpl;
 import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
@@ -36,6 +37,7 @@ import tres.domain.Evaluation;
 import tres.domain.Institution;
 import tres.domain.InstitutionEscaletePolicy;
 import tres.domain.InstitutionRegistrationRequest;
+import tres.domain.Task;
 import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
@@ -54,12 +56,14 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 	private ActivityEvaluation evaluation;
 	private Activity activity;
 	private Users users;
+	private Task task;
 	private InstitutionEscaletePolicy policy;
 	private Users usersSession;
 	private Institution institution;
 	private UploadingActivity uploadingActivity;
 
 	private List<Activity> activities = new ArrayList<Activity>();
+	private List<ActivityDto> activitiesDetails = new ArrayList<ActivityDto>();
 	private List<Evaluation> evaluations = new ArrayList<Evaluation>();
 	private List<Users> staffs = new ArrayList<Users>();
 	private List<UploadingActivity> docmts = new ArrayList<UploadingActivity>();
@@ -75,6 +79,7 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 	ContactImpl contactImpl = new ContactImpl();
 	UploadingActivityImpl upimpl = new UploadingActivityImpl();
 	private List<EvaluationDto> evaluationDtos = new ArrayList<EvaluationDto>();
+	TaskImpl taskImpl = new TaskImpl();
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -215,23 +220,62 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			viewStaffActiv = true;
 			viewSpecfcStaff = true;
 			System.out.println("viewSpecfcStaff::" + viewSpecfcStaff);
-			activities = activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
+			List<Activity>list= new ArrayList<Activity>();
+			 list= activityImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "status", "user" },
 					new Object[] { ACTIVE, DONE, user }, "Activity", "ACTIVITY_ID desc");
+			for(Activity act:list) {
+				Activity ac= new Activity();
+				ac.setActivityId(act.getActivityId());
+				ac.setDescription(act.getDescription());
+				ac.setTask(act.getTask());
+				ac.setTaskWeight(act.getTask().getTaskWeight());
+				
+				if (act.getTask().getTaskWeight().equals(LONG)) {
+					ac.setRedIcon(false);	
+				}else {
+					ac.setRedIcon(true);	
+				}
+				if (act.getTask().getTaskWeight().equals(SHORT)) {
+					ac.setGreenIcon(false);	
+				}else {
+					ac.setGreenIcon(true);	
+				}
+				
+				if (act.getTask().getTaskWeight().equals(MEDIUM)) {
+					ac.setYellowIcon(false);	
+				}else {
+					ac.setYellowIcon(true);	
+				}
+				ac.setStatus(act.getStatus());
+				ac.setActivityEscalated(act.getActivityEscalated());
+				ac.setWeight(act.getWeight());
+				
+				if (act.getWeight().equals(LONG)) {
+					ac.setActredIcon(false);	
+				}else {
+					ac.setActredIcon(true);	
+				}
+				if (act.getWeight().equals(SHORT)) {
+					ac.setActgreenIcon(false);	
+				}else {
+					ac.setActgreenIcon(true);	
+				}
+				
+				if (act.getWeight().equals(MEDIUM)) {
+					ac.setActyellowIcon(false);	
+				}else {
+					ac.setActyellowIcon(true);;	
+				}
+				ac.setType(act.getType());
+				ac.setEndDate(act.getEndDate());
+				ac.setDueDate(act.getDueDate());
+				ac.setUser(act.getUser());
+				activities.add(ac);
+			}
+			
 		} catch (Exception e) {
 		}
 	}
-
-	/*
-	 * // list of complete ativities by staff
-	 * 
-	 * @SuppressWarnings("unchecked") public void staffComplAct(Users user) { try {
-	 * viewStaffActiv = true; viewSpecfcStaff = true; activities = activityImpl
-	 * .getListWithHQL("select f from Activity f where f.genericStatus='" + ACTIVE +
-	 * "' and f.user=" + user.getUserId() + " and f.status='" + COMPLETED +
-	 * "' or f.status='" + FAILED + "'  "); } catch (Exception e) { } }
-	 */
-
-	/* Evaluation Method For Completed task */
 
 	public boolean isCompleted(Activity activity) {
 		try {
@@ -324,7 +368,6 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			Activity act = new Activity();
 			act = new Activity();
 			act = activityImpl.getActivityById(activity.getActivityId(), "activityId");
-
 			act.setStatus(COMPLETED);
 			act.setUpdatedBy(usersSession.getViewId());
 			act.setUpDtTime(timestamp);
@@ -337,8 +380,8 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			evaluate.setCrtdDtTime(timestamp);
 			evaluate.setDecision(COMPLETED);
 			evaluate.setEvaluationDate(timestamp);
-			evaluate.setEvaluationMarks(getMarks(activity));
-			evaluate.setEvaluationOverAllMarks(getMarks(activity));
+			evaluate.setEvaluationMarks(getTargetWeightMarks(activity)*getMarks(activity));
+			evaluate.setEvaluationOverAllMarks(getTargetWeightMarks(activity)*getMarks(activity));
 			evaluate.setGenericStatus(ACTIVE);
 			evaluate.setUpdatedBy(usersSession.getViewId());
 			evaluate.setUpDtTime(timestamp);
@@ -375,7 +418,7 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			evaluate.setDecision(FAILED);
 			evaluate.setEvaluationDate(timestamp);
 			evaluate.setEvaluationMarks(defaultCount);
-			evaluate.setEvaluationOverAllMarks(getMarks(activity));
+			evaluate.setEvaluationOverAllMarks(getTargetWeightMarks(activity)*getMarks(activity));
 			evaluate.setGenericStatus(ACTIVE);
 			evaluate.setUpdatedBy(usersSession.getViewId());
 			evaluate.setUpDtTime(timestamp);
@@ -557,6 +600,26 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 			else if (act.getWeight().equals(MEDIUM))
 				return (int) policy.getMediumgMarks();
 			else if (act.getWeight().equals(SHORT)) {
+				return (int) policy.getShortMarks();
+			} else {
+				return 0;
+			}
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	public int getTargetWeightMarks(Activity act) {
+		try {
+			institution = act.getUser().getBoard().getInstitution();
+			policy = null;
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
+			task=taskImpl.getTaskById(act.getTask().getTaskId(),"taskId");
+			if (task.getTaskWeight().equals(LONG))
+				return (int) policy.getLongMarks();
+			else if (task.getTaskWeight().equals(MEDIUM))
+				return (int) policy.getMediumgMarks();
+			else if (task.getTaskWeight().equals(SHORT)) {
 				return (int) policy.getShortMarks();
 			} else {
 				return 0;
@@ -846,6 +909,30 @@ public class ActivityEvaluationController implements Serializable, DbConstant {
 
 	public void setEvaluationDtos(List<EvaluationDto> evaluationDtos) {
 		this.evaluationDtos = evaluationDtos;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public TaskImpl getTaskImpl() {
+		return taskImpl;
+	}
+
+	public void setTaskImpl(TaskImpl taskImpl) {
+		this.taskImpl = taskImpl;
+	}
+
+	public List<ActivityDto> getActivitiesDetails() {
+		return activitiesDetails;
+	}
+
+	public void setActivitiesDetails(List<ActivityDto> activitiesDetails) {
+		this.activitiesDetails = activitiesDetails;
 	}
 
 	/* Getter and setters ends */

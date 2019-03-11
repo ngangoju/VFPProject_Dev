@@ -20,7 +20,9 @@ public class ActivityDto implements Serializable {
 	private String status;
 
 	private String weight;
-
+	
+	private String taskWeight;
+	
 	private Date date;
 
 	private Task task;
@@ -62,7 +64,12 @@ public class ActivityDto implements Serializable {
 	private boolean showFailedStartedIcon;
 	private boolean failedActIcon;
 	private boolean failedEvButton;
-
+	private boolean redIcon;
+	private boolean yellowIcon;
+	private boolean greenIcon;
+	private boolean actredIcon;
+	private boolean actyellowIcon;
+	private boolean actgreenIcon;
 	public int getActivityId() {
 		return activityId;
 	}
@@ -374,6 +381,62 @@ public class ActivityDto implements Serializable {
 
 	public void setActivityEscalated(int activityEscalated) {
 		ActivityEscalated = activityEscalated;
-	}	
-	
+	}
+
+	public boolean isRedIcon() {
+		return redIcon;
+	}
+
+	public void setRedIcon(boolean redIcon) {
+		this.redIcon = redIcon;
+	}
+
+	public boolean isYellowIcon() {
+		return yellowIcon;
+	}
+
+	public void setYellowIcon(boolean yellowIcon) {
+		this.yellowIcon = yellowIcon;
+	}
+
+	public boolean isGreenIcon() {
+		return greenIcon;
+	}
+
+	public void setGreenIcon(boolean greenIcon) {
+		this.greenIcon = greenIcon;
+	}
+
+	public String getTaskWeight() {
+		return taskWeight;
+	}
+
+	public void setTaskWeight(String taskWeight) {
+		this.taskWeight = taskWeight;
+	}
+
+	public boolean isActredIcon() {
+		return actredIcon;
+	}
+
+	public void setActredIcon(boolean actredIcon) {
+		this.actredIcon = actredIcon;
+	}
+
+	public boolean isActyellowIcon() {
+		return actyellowIcon;
+	}
+
+	public void setActyellowIcon(boolean actyellowIcon) {
+		this.actyellowIcon = actyellowIcon;
+	}
+
+	public boolean isActgreenIcon() {
+		return actgreenIcon;
+	}
+
+	public void setActgreenIcon(boolean actgreenIcon) {
+		this.actgreenIcon = actgreenIcon;
+	}
+
 }

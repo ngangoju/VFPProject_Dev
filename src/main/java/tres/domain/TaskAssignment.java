@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 @Entity
@@ -29,7 +30,14 @@ public class TaskAssignment extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "task")
 	private Task task;
-
+	@Transient
+	private boolean redIcon;
+	@Transient
+	private boolean yellowIcon;
+	@Transient
+	private boolean greenIcon;
+	@Transient
+	private String taskWeight;
 	public int getTaskAssignmentId() {
 		return taskAssignmentId;
 	}
@@ -54,4 +62,35 @@ public class TaskAssignment extends CommonDomain implements Serializable {
 		this.task = task;
 	}
 
+	public boolean isRedIcon() {
+		return redIcon;
+	}
+
+	public void setRedIcon(boolean redIcon) {
+		this.redIcon = redIcon;
+	}
+
+	public boolean isYellowIcon() {
+		return yellowIcon;
+	}
+
+	public void setYellowIcon(boolean yellowIcon) {
+		this.yellowIcon = yellowIcon;
+	}
+
+	public boolean isGreenIcon() {
+		return greenIcon;
+	}
+
+	public void setGreenIcon(boolean greenIcon) {
+		this.greenIcon = greenIcon;
+	}
+
+	public String getTaskWeight() {
+		return taskWeight;
+	}
+
+	public void setTaskWeight(String taskWeight) {
+		this.taskWeight = taskWeight;
+	}
 }

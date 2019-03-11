@@ -16,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -43,16 +44,16 @@ public class Activity extends CommonDomain implements Serializable {
 
 	@Column(name = "type")
 	private String type;
-	
-	@Column(name="ActivityFailed",nullable = false, columnDefinition ="int default 0")
+
+	@Column(name = "ActivityFailed", nullable = false, columnDefinition = "int default 0")
 	private int countActivityFailed;
-	@Column(name="ActivityEscalated",nullable = false, columnDefinition ="int default 0")
+	@Column(name = "ActivityEscalated", nullable = false, columnDefinition = "int default 0")
 	private int ActivityEscalated;
-	@Column(name="ActivityApproved",nullable = false, columnDefinition ="int default 0")
+	@Column(name = "ActivityApproved", nullable = false, columnDefinition = "int default 0")
 	private int countApproved;
-	@Column(name="ActivityPlanned",nullable = false, columnDefinition ="int default 0")
+	@Column(name = "ActivityPlanned", nullable = false, columnDefinition = "int default 0")
 	private int countPlanned;
-	@Column(name="ActivityReported",nullable = false, columnDefinition ="int default 0")
+	@Column(name = "ActivityReported", nullable = false, columnDefinition = "int default 0")
 	private int countReported;
 	@Column(name = "creationDate", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -77,11 +78,25 @@ public class Activity extends CommonDomain implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user")
 	private Users user;
-	
+
 	public int getActivityId() {
 		return activityId;
 	}
-
+	@Transient
+	private boolean redIcon;
+	@Transient
+	private boolean yellowIcon;
+	@Transient
+	private boolean greenIcon;
+	@Transient
+	private boolean actredIcon;
+	@Transient
+	private boolean actyellowIcon;
+	@Transient
+	private boolean actgreenIcon;
+	@Transient
+	private String taskWeight;
+	
 	public void setActivityId(int activityId) {
 		this.activityId = activityId;
 	}
@@ -157,7 +172,7 @@ public class Activity extends CommonDomain implements Serializable {
 	public void setUser(Users user) {
 		this.user = user;
 	}
-	
+
 	public String getType() {
 		return type;
 	}
@@ -181,7 +196,7 @@ public class Activity extends CommonDomain implements Serializable {
 	public void setCountApproved(int countApproved) {
 		this.countApproved = countApproved;
 	}
-	
+
 	public int getCountPlanned() {
 		return countPlanned;
 	}
@@ -204,7 +219,62 @@ public class Activity extends CommonDomain implements Serializable {
 
 	public void setActivityEscalated(int activityEscalated) {
 		ActivityEscalated = activityEscalated;
-	}	
-	
-}
+	}
 
+	public boolean isRedIcon() {
+		return redIcon;
+	}
+
+	public void setRedIcon(boolean redIcon) {
+		this.redIcon = redIcon;
+	}
+
+	public boolean isYellowIcon() {
+		return yellowIcon;
+	}
+
+	public void setYellowIcon(boolean yellowIcon) {
+		this.yellowIcon = yellowIcon;
+	}
+
+	public boolean isGreenIcon() {
+		return greenIcon;
+	}
+
+	public void setGreenIcon(boolean greenIcon) {
+		this.greenIcon = greenIcon;
+	}
+
+	public boolean isActredIcon() {
+		return actredIcon;
+	}
+
+	public void setActredIcon(boolean actredIcon) {
+		this.actredIcon = actredIcon;
+	}
+
+	public boolean isActyellowIcon() {
+		return actyellowIcon;
+	}
+
+	public void setActyellowIcon(boolean actyellowIcon) {
+		this.actyellowIcon = actyellowIcon;
+	}
+
+	public boolean isActgreenIcon() {
+		return actgreenIcon;
+	}
+
+	public void setActgreenIcon(boolean actgreenIcon) {
+		this.actgreenIcon = actgreenIcon;
+	}
+
+	public String getTaskWeight() {
+		return taskWeight;
+	}
+
+	public void setTaskWeight(String taskWeight) {
+		this.taskWeight = taskWeight;
+	}
+
+}

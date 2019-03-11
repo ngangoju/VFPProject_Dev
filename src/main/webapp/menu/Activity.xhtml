@@ -294,9 +294,20 @@
 												<label>Target weight</label>
 											</f:facet>
 											<br />
+												<p:outputPanel rendered="#{ not esca.redIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not esca.greenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not esca.yellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
 											<h:outputText value="#{esca.task.taskWeight}">
 											</h:outputText>
-
 										</h:column>
 										<h:column>
 											<f:facet name="header">
@@ -378,6 +389,18 @@
 											<label>Target weight</label>
 										</f:facet>
 										<br />
+										<p:outputPanel rendered="#{ not info.redIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not info.greenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not info.yellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
 										<h:outputText value="#{info.task.taskWeight}">
 										</h:outputText>
 
@@ -494,7 +517,18 @@
 												render="ReasonPanel" />
 										</h:selectOneMenu>
 										<h:message for="weightId1" styleClass="help-block"></h:message>
-
+										<p:outputPanel rendered="#{ not act.redIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.greenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.yellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
 										<h:outputText value="#{act.weight}"
 											rendered="#{not act.editable}" />
 									</h:column>
@@ -597,7 +631,7 @@
 										<h:commandLink
 											style="color:white;background-color:blue;margin-left:5%; border: none;border-radius: 50%;"
 											data-toggle="tooltip" data-placement="left"
-											title="#{msg['UserCategoryView.iconsDueDateButton']}"
+											title="#{msg['UserCategoryView.iconsDuDateButton']}"
 											class="glyphicon glyphicon-info-sign fa-fw fa-1x"
 											rendered="#{act.showNotStartedIcon}"></h:commandLink>
 

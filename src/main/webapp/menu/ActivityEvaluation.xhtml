@@ -56,10 +56,9 @@
 								</f:facet>
 								<h:column>
 									<f:facet name="header">
-										<label>#</label>
+										<label>No</label>
 									</f:facet>
-									<br />
-									<h:outputText value="#{table.rowIndex + 1}" />
+									<h:outputText value="#{tabl.rowIndex + 1}" />
 								</h:column>
 								<h:column>
 									<f:facet name="header">
@@ -137,9 +136,33 @@
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Targets</label>
+											<label>Target</label>
 										</f:facet>
 										<h:outputText value="#{act.task.taskName}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label>Target weight</label>
+										</f:facet>
+										<p:outputPanel rendered="#{ not act.redIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.greenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.yellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
+										<h:outputText value="#{act.taskWeight}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label> Target weight marks</label>
+										</f:facet>
+										<h:outputText value="#{activityEvaluationController.getTargetWeightMarks(act)}" />
 									</h:column>
 									<h:column>
 										<f:facet name="header">
@@ -157,11 +180,23 @@
 										<f:facet name="header">
 											<label>Activity weight</label>
 										</f:facet>
+										<p:outputPanel rendered="#{ not act.actredIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.actgreenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.actyellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
 										<h:outputText value="#{act.weight}" />
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<label>Weight marks</label>
+											<label> Activity weight marks</label>
 										</f:facet>
 										<h:outputText value="#{activityEvaluationController.getMarks(act)}" />
 									</h:column>
@@ -211,6 +246,8 @@
 											<h:commandLink
 												class="btn btn-success glyphicon glyphicon-file"
 												action="#{activityEvaluationController.getDownoadPage(act)}">
+												<f:ajax render="@form" execute="@form"
+													onevent="showProgress" />
 											</h:commandLink>
 										</div>
 

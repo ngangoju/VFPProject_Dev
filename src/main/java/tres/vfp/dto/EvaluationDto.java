@@ -39,7 +39,70 @@ public class EvaluationDto implements Serializable {
 	private int TotalActFailed;
 	private int TotalActCompleted;
 	private int EvaluationOverAllMarks;
+	private boolean redIcon;
+	private boolean yellowIcon;
+	private boolean greenIcon;
+	private boolean actredIcon;
+	private boolean actyellowIcon;
+	private boolean actgreenIcon;
+	private String taskWeight;
 	
+	public boolean isRedIcon() {
+		return redIcon;
+	}
+
+	public void setRedIcon(boolean redIcon) {
+		this.redIcon = redIcon;
+	}
+
+	public boolean isYellowIcon() {
+		return yellowIcon;
+	}
+
+	public void setYellowIcon(boolean yellowIcon) {
+		this.yellowIcon = yellowIcon;
+	}
+
+	public boolean isGreenIcon() {
+		return greenIcon;
+	}
+
+	public void setGreenIcon(boolean greenIcon) {
+		this.greenIcon = greenIcon;
+	}
+
+	public boolean isActredIcon() {
+		return actredIcon;
+	}
+
+	public void setActredIcon(boolean actredIcon) {
+		this.actredIcon = actredIcon;
+	}
+
+	public boolean isActyellowIcon() {
+		return actyellowIcon;
+	}
+
+	public void setActyellowIcon(boolean actyellowIcon) {
+		this.actyellowIcon = actyellowIcon;
+	}
+
+	public boolean isActgreenIcon() {
+		return actgreenIcon;
+	}
+
+	public void setActgreenIcon(boolean actgreenIcon) {
+		this.actgreenIcon = actgreenIcon;
+	}
+
+	public String getTaskWeight() {
+		return taskWeight;
+	}
+
+	public void setTaskWeight(String taskWeight) {
+		this.taskWeight = taskWeight;
+	}
+
 	public String getWeight() {
 		return weight;
 	}

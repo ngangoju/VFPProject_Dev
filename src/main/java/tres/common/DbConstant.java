@@ -55,9 +55,9 @@ public interface DbConstant {
 	public static final String JAVAFACERESOURCE = "javax.faces.resource";
 	public static final String NOTSTARTED = "Not Started";
 	public static final String COMPLETED = "Completed";
-	public static final String SHORT = "Short";
-	public static final String MEDIUM = "Medium";
-	public static final String LONG = "Long";
+	public static final String SHORT = "Green";
+	public static final String MEDIUM = "Yellow";
+	public static final String LONG = "Red";
 	public static final String PENDING = "pending";
 	public static final String ACCEPTED = "acepted";
 	public static final String REJECTED = "rejected";

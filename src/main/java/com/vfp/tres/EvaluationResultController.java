@@ -26,6 +26,7 @@ import tres.dao.impl.ContactImpl;
 import tres.dao.impl.EvaluationImpl;
 import tres.dao.impl.InstitutionEscaletPolicyImpl;
 import tres.dao.impl.InstitutionImpl;
+import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UploadingActivityImpl;
 import tres.dao.impl.UserImpl;
 import tres.domain.Activity;
@@ -78,7 +79,8 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	InstitutionEscaletPolicyImpl policyImpl = new InstitutionEscaletPolicyImpl();
 	ContactImpl contactImpl = new ContactImpl();
 	UploadingActivityImpl upimpl = new UploadingActivityImpl();
-
+	TaskImpl taskImpl = new TaskImpl();
+	private Task task;
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -433,7 +435,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 			return null;
 		}
 	}
-
+	
 	// returning files forms
 
 	@SuppressWarnings("unchecked")
@@ -670,7 +672,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 			evaluationDtos = new ArrayList<EvaluationDto>();
 			String chk;
 			for (Object[] object : evaluationImpl.reportList(
-					"select ev.evaluationId,count(ac.activityId) as TotalEvaluatedActivity,Sum(ev.EvaluationMarks) as TotalEvaluationMarks,Sum(ev.EvaluationOverAllMarks) as TotalExpectedMarks,sum(case when (ev.decision='Failed') then 1 else 0 end) as TotalFailed,sum(case when (ev.decision='Completed') then 1 else 0 end) as TotalCompleted,ac.status,ac.type,ac.weight,ac.task,ac.user,ev.supervisor,ev.activity from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and ac.user="+ usr.getUserId()+" group by ac.task")) {
+					"select ev.evaluationId,count(ac.activityId) as TotalEvaluatedActivity,Sum(ev.EvaluationMarks) as TotalEvaluationMarks,Sum(ev.EvaluationOverAllMarks) as TotalExpectedMarks,sum(case when (ev.decision='Failed') then 1 else 0 end) as TotalFailed,sum(case when (ev.decision='Completed') then 1 else 0 end) as TotalCompleted,ac.status,ac.type,ac.weight,ac.task,ac.user,ev.supervisor,ev.activity,tsk.taskWeight from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and ac.user="+ usr.getUserId()+" group by ac.task")) {
 				EvaluationDto dto = new EvaluationDto();
 				dto.setEvaluationId(Integer.parseInt(object[0]+""));
 				dto.setTotalEvalActivity(Integer.parseInt(object[1]+""));
@@ -682,6 +684,23 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				dto.setUser((Users)object[10]);
 				dto.setSupervisor((Users)object[11]);
 				dto.setActivity((Activity)object[12]);
+				dto.setTaskWeight(object[13]+"");
+				if (object[13].equals(LONG)) {
+					dto.setRedIcon(false);	
+				}else {
+					dto.setRedIcon(true);	
+				}
+				if (object[13].equals(SHORT)) {
+					dto.setGreenIcon(false);	
+				}else {
+					dto.setGreenIcon(true);	
+				}
+				
+				if (object[13].equals(MEDIUM)) {
+					dto.setYellowIcon(false);	
+				}else {
+					dto.setYellowIcon(true);	
+				}
 				evaluationDtos.add(dto);
 			}
 			return evaluationDtos;
@@ -694,7 +713,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	public List<EvaluationDto> OverallActivityEvaluationByStaff(EvaluationDto task) {
 		try {
 			activityAvaluationStaffDtos = new ArrayList<EvaluationDto>();
-			for (Object[] object : evaluationImpl.reportList("select ev.evaluationId,ev.EvaluationMarks,ev.EvaluationOverAllMarks as ExpectedMarks,ac.weight ,ev.decision,ev.EvaluationDate,ac.description,ev.supervisor from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and tsk.taskId="+task.getTask().getTaskId()+"")){
+			for (Object[] object : evaluationImpl.reportList("select ev.evaluationId,ev.EvaluationMarks,ev.EvaluationOverAllMarks as ExpectedMarks,ac.weight ,ev.decision,ev.EvaluationDate,ac.description,ev.supervisor,tsk.taskWeight from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and tsk.taskId="+task.getTask().getTaskId()+"")){
 				EvaluationDto dto = new EvaluationDto();
 				dto.setEvaluationId(Integer.parseInt(object[0]+""));
 				dto.setEvaluationMarks(Integer.parseInt(object[1]+""));
@@ -704,6 +723,22 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				dto.setEvaluationDate((Date)object[5]);
 				dto.setDescription(object[6]+"");
 				dto.setSupervisor((Users)object[7]);
+				dto.setTaskWeight(object[8]+"");
+				if (object[3].equals(LONG)) {
+					dto.setRedIcon(false);	
+				}else {
+					dto.setRedIcon(true);	
+				}
+				if (object[3].equals(SHORT)) {
+					dto.setGreenIcon(false);	
+				}else {
+					dto.setGreenIcon(true);	
+				}			
+				if (object[3].equals(MEDIUM)) {
+					dto.setYellowIcon(false);	
+				}else {
+					dto.setYellowIcon(true);	
+				}
 				activityAvaluationStaffDtos.add(dto);
 			}
 			staffEvaluation=false;
@@ -725,7 +760,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 	public List<EvaluationDto> OverallActivityEvaluation(EvaluationDto task) {
 		try {
 			activityAvaluationDtos = new ArrayList<EvaluationDto>();
-			for (Object[] object : evaluationImpl.reportList("select ev.evaluationId,ev.EvaluationMarks,ev.EvaluationOverAllMarks as ExpectedMarks,ac.weight ,ev.decision,ev.EvaluationDate,ac.description,ev.supervisor from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and tsk.taskId="+task.getTask().getTaskId()+"")){
+			for (Object[] object : evaluationImpl.reportList("select ev.evaluationId,ev.EvaluationMarks,ev.EvaluationOverAllMarks as ExpectedMarks,ac.weight ,ev.decision,ev.EvaluationDate,ac.description,ev.supervisor,tsk.taskWeight from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and tsk.taskId="+task.getTask().getTaskId()+"")){
 				EvaluationDto dto = new EvaluationDto();
 				dto.setEvaluationId(Integer.parseInt(object[0]+""));
 				dto.setEvaluationMarks(Integer.parseInt(object[1]+""));
@@ -735,6 +770,23 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				dto.setEvaluationDate((Date)object[5]);
 				dto.setDescription(object[6]+"");
 				dto.setSupervisor((Users)object[7]);
+				dto.setTaskWeight(object[8]+"");
+				if (object[3].equals(LONG)) {
+					dto.setRedIcon(false);	
+				}else {
+					dto.setRedIcon(true);	
+				}
+				if (object[3].equals(SHORT)) {
+					dto.setGreenIcon(false);	
+				}else {
+					dto.setGreenIcon(true);	
+				}
+				
+				if (object[3].equals(MEDIUM)) {
+					dto.setYellowIcon(false);	
+				}else {
+					dto.setYellowIcon(true);	
+				}
 				activityAvaluationDtos.add(dto);
 			}
 			this.viewSpecfcStaff=true;
@@ -754,7 +806,7 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		try {  
 			evaluationDtos = new ArrayList<EvaluationDto>();
 			for (Object[] object : evaluationImpl.reportList(
-					"select us.evaluationId,us.decision,us.EvaluationMarks,us.activity,us.supervisor from ActivityEvaluation us,Activity co where us.activity=co.activityId and co.user="
+					"select us.evaluationId,us.decision,us.EvaluationMarks,us.activity,us.supervisor,tsk.taskWeight from ActivityEvaluation us,Activity co,Task tsk where us.activity=co.activityId and co.task=tsk.taskId and co.user="
 							+ usersSession.getUserId() + "")) {
 				EvaluationDto dto = new EvaluationDto();
 				LOGGER.info(":::EVALUATION:::"+object[0]+":::::::::"+object[2]);
@@ -764,6 +816,23 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				dto.setEvaluationMarks(Integer.parseInt(object[2] + ""));
 				dto.setActivity((Activity) object[3]);
 				dto.setUser((Users) object[4]);
+				dto.setTaskWeight(object[5]+"");
+				if (object[5].equals(LONG)) {
+					dto.setRedIcon(false);	
+				}else {
+					dto.setRedIcon(true);	
+				}
+				if (object[5].equals(SHORT)) {
+					dto.setGreenIcon(false);	
+				}else {
+					dto.setGreenIcon(true);	
+				}
+				
+				if (object[5].equals(MEDIUM)) {
+					dto.setYellowIcon(false);	
+				}else {
+					dto.setYellowIcon(true);	
+				}
 				evaluationDtos.add(dto);
 			}
 			return evaluationDtos;
@@ -778,12 +847,32 @@ public class EvaluationResultController implements Serializable, DbConstant {
 		}
 	}
 
+	public int getTargetWeightMarks(EvaluationDto evaluationDto) {
+		try {
+			institution = evaluationDto.getActivity().getUser().getBoard().getInstitution();
+			policy = null;
+			policy = policyImpl.getModelWithMyHQL(new String[] { "institution", "genericStatus" },
+					new Object[] { institution, ACTIVE }, "from InstitutionEscaletePolicy");
+			task=taskImpl.getTaskById(evaluationDto.getActivity().getTask().getTaskId(),"taskId");
+			if (task.getTaskWeight().equals(LONG))
+				return (int) policy.getLongMarks();
+			else if (task.getTaskWeight().equals(MEDIUM))
+				return (int) policy.getMediumgMarks();
+			else if (task.getTaskWeight().equals(SHORT)) {
+				return (int) policy.getShortMarks();
+			} else {
+				return 0;
+			}
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 	@SuppressWarnings("unchecked")
 	public List<EvaluationDto> ActEvaluatedByStaff() {
 		try {
 			evaluationStaffDtos = new ArrayList<EvaluationDto>();
 			for (Object[] object : evaluationImpl.reportList(
-					"select ev.evaluationId,count(ac.activityId) as TotalEvaluatedActivity,Sum(ev.EvaluationMarks) as TotalEvaluationMarks,Sum(ev.EvaluationOverAllMarks) as TotalExpectedMarks,sum(case when (ev.decision='Failed') then 1 else 0 end) as TotalFailed,sum(case when (ev.decision='Completed') then 1 else 0 end) as TotalCompleted,ac.status,ac.type,ac.weight,ac.task,ac.user,ev.supervisor,ev.activity from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and ac.user="+ usersSession.getUserId()+" group by ac.task")) {
+					"select ev.evaluationId,count(ac.activityId) as TotalEvaluatedActivity,Sum(ev.EvaluationMarks) as TotalEvaluationMarks,Sum(ev.EvaluationOverAllMarks) as TotalExpectedMarks,sum(case when (ev.decision='Failed') then 1 else 0 end) as TotalFailed,sum(case when (ev.decision='Completed') then 1 else 0 end) as TotalCompleted,ac.status,ac.type,ac.weight,ac.task,ac.user,ev.supervisor,ev.activity,tsk.taskWeight from ActivityEvaluation ev,Activity ac,Task tsk where ev.activity=ac.activityId and ac.task=tsk.taskId and ac.user="+ usersSession.getUserId()+" group by ac.task")) {
 				EvaluationDto dto = new EvaluationDto();
 				dto.setEvaluationId(Integer.parseInt(object[0]+""));
 				dto.setTotalEvalActivity(Integer.parseInt(object[1]+""));
@@ -795,6 +884,23 @@ public class EvaluationResultController implements Serializable, DbConstant {
 				dto.setUser((Users)object[10]);
 				dto.setSupervisor((Users)object[11]);
 				dto.setActivity((Activity)object[12]);
+				dto.setTaskWeight(object[13]+"");
+				if (object[13].equals(LONG)) {
+					dto.setRedIcon(false);	
+				}else {
+					dto.setRedIcon(true);	
+				}
+				if (object[13].equals(SHORT)) {
+					dto.setGreenIcon(false);	
+				}else {
+					dto.setGreenIcon(true);	
+				}
+				
+				if (object[13].equals(MEDIUM)) {
+					dto.setYellowIcon(false);	
+				}else {
+					dto.setYellowIcon(true);	
+				}
 				evaluationStaffDtos.add(dto);
 			}
 			return evaluationStaffDtos;
@@ -1107,6 +1213,22 @@ public class EvaluationResultController implements Serializable, DbConstant {
 
 	public void setStaffEvaluation(boolean staffEvaluation) {
 		this.staffEvaluation = staffEvaluation;
+	}
+
+	public TaskImpl getTaskImpl() {
+		return taskImpl;
+	}
+
+	public void setTaskImpl(TaskImpl taskImpl) {
+		this.taskImpl = taskImpl;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
 	/* Getter and setters ends */

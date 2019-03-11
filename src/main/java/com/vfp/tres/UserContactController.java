@@ -756,7 +756,7 @@ public class UserContactController implements Serializable, DbConstant {
 				} else {
 					JSFMessagers.resetMessages();
 					setValid(false);
-					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifail"));
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.notifyError.representative.user"));
 				}
 			} else {
 

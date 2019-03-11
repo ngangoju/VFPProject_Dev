@@ -57,6 +57,7 @@ import tres.domain.UploadingActivity;
 import tres.domain.Users;
 import tres.vfp.dto.ActivityDto;
 import tres.vfp.dto.ClearanceDto;
+import tres.vfp.dto.TaskAssignmentDto;
 
 @ManagedBean
 @ViewScoped
@@ -86,7 +87,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private List<Activity> approvedActDetails = new ArrayList<Activity>();
 	private List<Users> usersDetail = new ArrayList<Users>();
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
-	private List<TaskAssignment> taskAssignList = new ArrayList<TaskAssignment>();
+	private List<TaskAssignmentDto> taskAssignList = new ArrayList<TaskAssignmentDto>();
 	private List<ActivityDto> activityDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> approvedActDtoDetails = new ArrayList<ActivityDto>();
 	private List<ActivityDto> activityDtoDetail = new ArrayList<ActivityDto>();
@@ -102,7 +103,7 @@ public class ActivityController implements Serializable, DbConstant {
 	private Documents document;
 	private DocumentsImpl docsImpl = new DocumentsImpl();
 	private UploadingActivityImpl uplActImpl = new UploadingActivityImpl();
-	private List<TaskAssignment> taskEscaltedAssignDetails = new ArrayList<TaskAssignment>();
+	private List<TaskAssignmentDto> taskEscaltedAssignDetails = new ArrayList<TaskAssignmentDto>();
 	private int lSize;
 	private int listSize;
 	private int completedSize;
@@ -281,17 +282,34 @@ public class ActivityController implements Serializable, DbConstant {
 
 	}
 
-	public List<TaskAssignment> listAssignedEscalatedActivity() {
+	public List<TaskAssignmentDto> listAssignedEscalatedActivity() {
 		try {
-			taskEscaltedAssignDetails = new ArrayList<TaskAssignment>();
+			taskEscaltedAssignDetails = new ArrayList<TaskAssignmentDto>();
 			for (Object[] data : taskAssignImpl.reportList(
-					"select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="
+					"select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime,tsk.taskWeight from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="
 							+ userassigned.getUserId() + " and tsk.taskStatus='" + ESCALATED + "'")) {
-				TaskAssignment ass = new TaskAssignment();
+				TaskAssignmentDto ass = new TaskAssignmentDto();
 				ass.setTaskAssignmentId(Integer.parseInt(data[0] + ""));
 				ass.setTask((Task) data[1]);
 				ass.setUser((Users) data[2]);
 				ass.setCrtdDtTime((Timestamp) data[3]);
+				ass.setTaskWeight(data[4]+"");
+				if (data[4].equals(LONG)) {
+					ass.setRedIcon(false);	
+				}else {
+					ass.setRedIcon(true);	
+				}
+				if (data[4].equals(SHORT)) {
+					ass.setGreenIcon(false);	
+				}else {
+					ass.setGreenIcon(true);	
+				}
+				
+				if (data[4].equals(MEDIUM)) {
+					ass.setYellowIcon(false);	
+				}else {
+					ass.setYellowIcon(true);	
+				}
 				taskEscaltedAssignDetails.add(ass);
 			}
 			return (taskEscaltedAssignDetails);
@@ -305,17 +323,34 @@ public class ActivityController implements Serializable, DbConstant {
 		}
 	}
 
-	public List<TaskAssignment> listAssignedTarget() {
+	public List<TaskAssignmentDto> listAssignedTarget() {
 		try {
-			taskAssignList = new ArrayList<TaskAssignment>();
+			taskAssignList = new ArrayList<TaskAssignmentDto>();
 			for (Object[] data : taskAssignImpl.reportList(
-					"select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="
+					"select ass.taskAssignmentId,ass.task,ass.user,ass.crtdDtTime,tsk.taskWeight from TaskAssignment ass,Task tsk,Users us where ass.task=tsk.taskId and ass.user=us.userId and ass.user="
 							+ userassigned.getUserId() + " and tsk.taskStatus='" + ACTIVE + "'")) {
-				TaskAssignment ass = new TaskAssignment();
+				TaskAssignmentDto ass = new TaskAssignmentDto();
 				ass.setTaskAssignmentId(Integer.parseInt(data[0] + ""));
 				ass.setTask((Task) data[1]);
 				ass.setUser((Users) data[2]);
 				ass.setCrtdDtTime((Timestamp) data[3]);
+				ass.setTaskWeight(data[4]+"");
+				if (data[4].equals(LONG)) {
+					ass.setRedIcon(false);	
+				}else {
+					ass.setRedIcon(true);	
+				}
+				if (data[4].equals(SHORT)) {
+					ass.setGreenIcon(false);	
+				}else {
+					ass.setGreenIcon(true);	
+				}
+				
+				if (data[4].equals(MEDIUM)) {
+					ass.setYellowIcon(false);	
+				}else {
+					ass.setYellowIcon(true);	
+				}
 				taskAssignList.add(ass);
 			}
 			return (taskAssignList);
@@ -469,19 +504,20 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	@SuppressWarnings({ "static-access", "unchecked" })
-	public boolean isdayActivityIsApproved(TaskAssignment info) {
+	public boolean isdayActivityIsApproved(TaskAssignmentDto info) {
 		try {
 			boolean validTransaction = false;
 			Formating fmt = new Formating();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
+			TaskAssignment task= new TaskAssignment();
+			task=taskAssignImpl.getTaskAssignmentById(info.getTaskAssignmentId(), "taskAssignmentId");
 			Date today = fmt.getCurrentDateFormtNOTime();
 			iep = iepImpl.getModelWithMyHQL(new String[] { "genericStatus", "institution" },
 					new Object[] { ACTIVE, usersSession.getBoard().getInstitution() },
 					" from InstitutionEscaletePolicy");
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "status", "task" }, new Object[] { ACTIVE,
-							usersSession.getFname() + " " + usersSession.getLname(), PLAN_ACTIVITY, info.getTask() },
+							usersSession.getFname() + " " + usersSession.getLname(), PLAN_ACTIVITY, task.getTask() },
 					"Activity", "creationDate desc");
 			if (activityDetails.size() > 0) {
 				for (Activity activity : activityDetails) {
@@ -587,15 +623,25 @@ public class ActivityController implements Serializable, DbConstant {
 			activityDto.setTask(activity.getTask());
 			activityDto.setType(activity.getType());
 			activityDto.setGenericstatus(activity.getGenericStatus());
+			if (activityDto.getWeight().equals(LONG)) {
+				activityDto.setRedIcon(false);	
+			}else {
+				activityDto.setRedIcon(true);	
+			}
+			if (activityDto.getWeight().equals(SHORT)) {
+				activityDto.setGreenIcon(false);	
+			}else {
+				activityDto.setGreenIcon(true);	
+			}
+			
+			if (activityDto.getWeight().equals(MEDIUM)) {
+				activityDto.setYellowIcon(false);	
+			}else {
+				activityDto.setYellowIcon(true);	
+			}
 			if (activityDto.getStatus().equals(FAILED)) {
 				activityDto.setAction(false);
 				activityDto.setFailedAction(false);
-				// activityDto.setShowFailedStartedIcon(true);
-				/*
-				 * activityDto.setEditFailedAction(false);
-				 * activityDto.setPlanFailedAction(false);
-				 */
-
 				LOGGER.info(":FailedActivity:::" + activity.getCountActivityFailed() + "::Reschuled Time::"
 						+ iep.getReschduleTime());
 				if (activity.getCountActivityFailed() > iep.getReschduleTime()) {
@@ -620,11 +666,6 @@ public class ActivityController implements Serializable, DbConstant {
 			if (activityDto.getStatus().equals(PLAN_ACTIVITY)) {
 				activityDto.setAction(false);
 				activityDto.setShowPlanedIcon(true);
-				/*
-				 * if (activityDto.getStartDate() == null && activityDto.getDueDate() == null) {
-				 * activityDto.setShowPlanedIcon(true); } else {
-				 * activityDto.setShowPlanedIcon(false); }
-				 */
 			} else {
 				activityDto.setAction(true);
 				activityDto.setShowPlanedIcon(false);
@@ -651,11 +692,6 @@ public class ActivityController implements Serializable, DbConstant {
 				activityDto.setApprovedComment(true);
 				activityDto.setFailedEvButton(true);
 			}
-
-			/*
-			 * if (activityDto.getStatus().equals(REJECT) && (activityDto.getDueDate() ==
-			 * null)) {
-			 */
 			if (activityDto.getStatus().equals(REJECT)) {
 				activityDto.setReplanAction(false);
 				activityDto.setCommmentAction(false);
@@ -692,29 +728,21 @@ public class ActivityController implements Serializable, DbConstant {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void viewActivity(TaskAssignment info) {
+	public void viewActivity(TaskAssignmentDto info) {
 		try {
-			taskAssign = info;
+			TaskAssignment task= new TaskAssignment();
+			task=taskAssignImpl.getTaskAssignmentById(info.getTaskAssignmentId(), "taskAssignmentId");
+			taskAssign = task;
 			boolean isTransactionValid = isdayActivityIsApproved(info);
 			if (isTransactionValid) {
-				/*
-				 * JSFMessagers.resetMessages(); setValid(true);
-				 * JSFMessagers.addErrorMessage(getProvider().getValue(
-				 * "com.transaction.actitityapproval.done"));
-				 */
 				LOGGER.info(CLASSNAME + ":::Transaction done");
 			} else {
-				/*
-				 * JSFMessagers.resetMessages(); setValid(false);
-				 * JSFMessagers.addErrorMessage(getProvider().getValue(
-				 * "com.transaction.actitityapproval.failed"));
-				 */
 				LOGGER.info(CLASSNAME + ":::Transaction fail");
 			}
 
 			activityDetails = activityImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "task", "user" },
-					new Object[] { ACTIVE, info.getTask(), usersSession }, "Activity", "creationDate desc");
+					new Object[] { ACTIVE, task.getTask(), usersSession }, "Activity", "creationDate desc");
 
 			activityDtoDetails = showActivity(activityDetails);
 			this.renderTask = false;
@@ -1837,10 +1865,12 @@ public class ActivityController implements Serializable, DbConstant {
 		// showAssignments();
 	}
 
-	public void createActivity(TaskAssignment info) {
+	public void createActivity(TaskAssignmentDto info) {
 		HttpSession sessionuser = SessionUtils.getSession();
 		if (null != info) {
-			sessionuser.setAttribute("taskinfo", info);
+			TaskAssignment task= new TaskAssignment();
+			task=taskAssignImpl.getTaskAssignmentById(info.getTaskAssignmentId(), "taskAssignmentId");
+			sessionuser.setAttribute("taskinfo", task);
 			LOGGER.info("Info Founded are TaskAssId:>>>>>>>>>>>>>>>>>>>>>>>:" + info.getTaskAssignmentId()
 					+ "taskname:::" + info.getTask().getTaskName() + "Task desc::" + info.getTask().getDescription()
 					+ "USERINFO::" + info.getUser().getUserId());
@@ -2537,22 +2567,6 @@ public class ActivityController implements Serializable, DbConstant {
 		this.contact = contact;
 	}
 
-	public List<TaskAssignment> getTaskEscaltedAssignDetails() {
-		return taskEscaltedAssignDetails;
-	}
-
-	public void setTaskEscaltedAssignDetails(List<TaskAssignment> taskEscaltedAssignDetails) {
-		this.taskEscaltedAssignDetails = taskEscaltedAssignDetails;
-	}
-
-	public List<TaskAssignment> getTaskAssignList() {
-		return taskAssignList;
-	}
-
-	public void setTaskAssignList(List<TaskAssignment> taskAssignList) {
-		this.taskAssignList = taskAssignList;
-	}
-
 	public String getPlanperiod() {
 		return planperiod;
 	}
@@ -2600,5 +2614,38 @@ public class ActivityController implements Serializable, DbConstant {
 	public void setEvaluationImpl(ActivityEvaluationImpl evaluationImpl) {
 		this.evaluationImpl = evaluationImpl;
 	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public ActivityEvaluation getEvaluation() {
+		return evaluation;
+	}
+
+	public ActivityEvaluationImpl getEvaluationImpl() {
+		return evaluationImpl;
+	}
+
+	public void setTaskEscaltedAssignDetails(List<TaskAssignmentDto> taskEscaltedAssignDetails) {
+		this.taskEscaltedAssignDetails = taskEscaltedAssignDetails;
+	}
+
+	public List<TaskAssignmentDto> getTaskEscaltedAssignDetails() {
+		return taskEscaltedAssignDetails;
+	}
+
+	public List<TaskAssignmentDto> getTaskAssignList() {
+		return taskAssignList;
+	}
+
+	public void setTaskAssignList(List<TaskAssignmentDto> taskAssignList) {
+		this.taskAssignList = taskAssignList;
+	}
+
 
 }

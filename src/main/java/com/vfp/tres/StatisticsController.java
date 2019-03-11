@@ -89,6 +89,7 @@ public class StatisticsController implements Serializable, DbConstant {
 	private List<TaskAssignment> taskAssignDetails = new ArrayList<TaskAssignment>();
 	
 	private List<TaskAssignment> supervisorStaffAssignTask = new ArrayList<TaskAssignment>();
+	private List<TaskAssignment> listAssignTask = new ArrayList<TaskAssignment>();
 	TaskAssignmentImpl taskAssignImpl = new TaskAssignmentImpl();
 	private boolean renderTaskForm;
 	private boolean renderTask;
@@ -164,9 +165,9 @@ public class StatisticsController implements Serializable, DbConstant {
 			elementsList = statImpl.getGenericListWithHQLParameter(
 					new String[] { "genericStatus", "createdBy", "statGraph" },
 					new Object[] { ACTIVE, usersSession.getViewId(), graphSession }, "Statistics", "id asc");
-			taskAssignDetails = taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
+			 listAssignTask= taskAssignImpl.getGenericListWithHQLParameter(new String[] { "genericStatus", "user" },
 					new Object[] { ACTIVE, userassigned }, "TaskAssignment", "upDtTime desc");
-
+			 taskAssignDetails=staffReport(listAssignTask);
 			this.renderTask = true;
 			this.rendered = true;
 			/*
@@ -198,14 +199,62 @@ public class StatisticsController implements Serializable, DbConstant {
 		}
 
 	}
+	
+	public List<TaskAssignment>staffReport(List<TaskAssignment>list){
+		List<TaskAssignment>listdetails= new ArrayList<TaskAssignment>();
+		for (TaskAssignment ass:list) {
+			TaskAssignment taskAssign= new TaskAssignment();
+			taskAssign.setTaskAssignmentId(ass.getTaskAssignmentId());
+			taskAssign.setTask(ass.getTask());
+			taskAssign.setUser(ass.getUser());
+			taskAssign.setCrtdDtTime(ass.getCrtdDtTime());
+			taskAssign.setTaskWeight(ass.getTask().getTaskWeight());
+			if (ass.getTask().getTaskWeight().equals(LONG)) {
+				taskAssign.setRedIcon(false);	
+			}else {
+				taskAssign.setRedIcon(true);	
+			}
+			if (ass.getTask().getTaskWeight().equals(SHORT)) {
+				taskAssign.setGreenIcon(false);	
+			}else {
+				taskAssign.setGreenIcon(true);	
+			}
+			
+			if (ass.getTask().getTaskWeight().equals(MEDIUM)) {
+				taskAssign.setYellowIcon(false);	
+			}else {
+				taskAssign.setYellowIcon(true);	
+			}
+			listdetails.add(taskAssign);
+		}
+		return(listdetails);
+		
+	}
 	public List<TaskAssignment>superVisorStaffTask(){
 		List<TaskAssignment> staffAssignTask = new ArrayList<TaskAssignment>();
-		for (Object[] data :taskAssignImpl.reportList("Select ass.taskAssignmentId ,ass.task, ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us,Board b where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and us.board="+usersSession.getBoard().getBoardId()+" and ass.genericStatus='"+ACTIVE+"'")) {
+		for (Object[] data :taskAssignImpl.reportList("Select ass.taskAssignmentId ,ass.task, ass.user,ass.crtdDtTime,tsk.taskWeight from TaskAssignment ass,Task tsk,Users us,Board b where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and us.board="+usersSession.getBoard().getBoardId()+" and ass.genericStatus='"+ACTIVE+"'")) {
 			TaskAssignment taskAssign= new TaskAssignment();
 			taskAssign.setTaskAssignmentId(Integer.parseInt(data[0]+""));
 			taskAssign.setTask((Task)data[1]);
 			taskAssign.setUser((Users)data[2]);
 			taskAssign.setCrtdDtTime((Timestamp)data[3]);
+			taskAssign.setTaskWeight(data[4]+"");
+			if (data[4].equals(LONG)) {
+				taskAssign.setRedIcon(false);	
+			}else {
+				taskAssign.setRedIcon(true);	
+			}
+			if (data[4].equals(SHORT)) {
+				taskAssign.setGreenIcon(false);	
+			}else {
+				taskAssign.setGreenIcon(true);	
+			}
+			
+			if (data[4].equals(MEDIUM)) {
+				taskAssign.setYellowIcon(false);	
+			}else {
+				taskAssign.setYellowIcon(true);	
+			}
 			staffAssignTask.add(taskAssign);
 		}
 		return(staffAssignTask);
@@ -789,6 +838,38 @@ public class StatisticsController implements Serializable, DbConstant {
 
 	public void setSupervisorStaffAssignTask(List<TaskAssignment> supervisorStaffAssignTask) {
 		this.supervisorStaffAssignTask = supervisorStaffAssignTask;
+	}
+
+	public ArrayList<ActivityDto> getNewList() {
+		return newList;
+	}
+
+	public void setNewList(ArrayList<ActivityDto> newList) {
+		this.newList = newList;
+	}
+
+	public List<TaskAssignment> getListAssignTask() {
+		return listAssignTask;
+	}
+
+	public void setListAssignTask(List<TaskAssignment> listAssignTask) {
+		this.listAssignTask = listAssignTask;
+	}
+
+	public boolean isRendersuperchart() {
+		return rendersuperchart;
+	}
+
+	public void setRendersuperchart(boolean rendersuperchart) {
+		this.rendersuperchart = rendersuperchart;
+	}
+
+	public int getSelectedStaff() {
+		return selectedStaff;
+	}
+
+	public void setSelectedStaff(int selectedStaff) {
+		this.selectedStaff = selectedStaff;
 	}
 
 }

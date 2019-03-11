@@ -47,6 +47,30 @@
 									<h:outputText value="#{act.task.taskName}" />
 								</h:column>
 								<h:column>
+										<f:facet name="header">
+											<label>Target weight</label>
+										</f:facet>
+										<p:outputPanel rendered="#{ not act.redIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.greenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not act.yellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
+										<h:outputText value="#{act.task.taskWeight}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<label> Target weight marks</label>
+										</f:facet>
+										<h:outputText value="#{evaluationResultController.getTargetWeightMarks(act)}" />
+									</h:column>
+								<h:column>
 									<f:facet name="header">
 										<label>Evaluated activities</label>
 									</f:facet>
@@ -148,6 +172,18 @@
 									<f:facet name="header">
 										<label>Weight</label>
 									</f:facet>
+									<p:outputPanel rendered="#{ not info.redIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: red;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not info.greenIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: green;"></div>
+											</p:outputPanel>
+											<p:outputPanel rendered="#{ not info.yellowIcon}">
+										<div class="square"
+											style="height: 10px; width: 10px; background-color: yellow;"></div>
+											</p:outputPanel>
 									<h:outputText value="#{info.weight}" />
 								</h:column>
 								<h:column>
