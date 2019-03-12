@@ -87,6 +87,51 @@ public class SendSupportEmail extends HttpServlet implements DbConstant {
 		}
 		LOGGER.info("::: notidficatio sent   ");
 	}
+	
+	public boolean sendResetMail(String fname, String lname, String email) {
+
+		boolean valid=false;
+		if ((null != fname) && (null != lname) && (null != email)) {
+			String msg = "<p>Your request for a new password was received and your new password is as follow:</p>" + 
+					"<p>Your new password: Rp4TOKRW</p>"+ 
+					"<p>If you did not request for any new password, please contact us immediately.</p>"+ 
+					"<p>Upon entry into the system you are required to change the system generated password to one that is only known to you.</p>"+ 
+					"<p>Note : Password must be minimum 8 characters and maximum 20 characters in length.</p>"+ 
+					"<p>Password is Case Sensitive.</p>"+					 
+					"<p>You are also required to keep your password private & confidential at all times to prevent unauthorized access.</p>"
+					;
+			
+			/* End send content in table sample */
+			try {
+				
+				gen.sendEmailNotification(email, fname + " " + lname + "", "Support Team", msg);
+				valid = true;
+			} catch (AddressException e) {
+				LOGGER.info("returing false1");
+				valid = false;
+				setValid(false);
+				e.printStackTrace();
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.emailerror"));
+				e.printStackTrace();
+				LOGGER.info("returing false2");
+				LOGGER.info("This content" + msg + " was not send to MY BE wrong address check email ::"
+						+ email + " on " + timestamp);
+			} catch (MessagingException e) {
+			LOGGER.info(
+						"This content" + msg + " was not send to ::" + email + " on " + timestamp);
+				valid = false;
+				setValid(false);
+				e.printStackTrace();
+				JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+				e.printStackTrace();
+			}
+			LOGGER.info("::: notidficatio sent   ");
+		} else {
+			valid = false;
+		}
+		LOGGER.info("returing values"+valid);
+		return (valid);
+	}
 
 	public boolean sendMailStrategicPlan(String type, String fname, String senderName, String email) {
 

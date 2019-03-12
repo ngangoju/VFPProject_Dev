@@ -18,10 +18,14 @@ import tres.common.DbConstant;
 import tres.common.JSFBoundleProvider;
 import tres.common.JSFMessagers;
 import tres.common.SessionUtils;
+import tres.dao.impl.ContactImpl;
 import tres.dao.impl.ListOfMenuImpl;
+import tres.dao.impl.LoginImpl;
 import tres.dao.impl.MenuAssignmentImpl;
 import tres.dao.impl.MenuGroupImpl;
 import tres.dao.impl.UserCategoryImpl;
+import tres.dao.impl.UserImpl;
+import tres.domain.Contact;
 import tres.domain.ListOfMenu;
 import tres.domain.MenuAssignment;
 import tres.domain.MenuGroup;
@@ -29,8 +33,6 @@ import tres.domain.UserCategory;
 import tres.domain.Users;
 import tres.vfp.dto.MenuGroupDto;
 import tres.vfp.dto.UserDto;
-
-@SuppressWarnings("unused")
 @ManagedBean
 @ViewScoped
 public class GroupOfMenuController implements Serializable, DbConstant {
@@ -59,6 +61,15 @@ public class GroupOfMenuController implements Serializable, DbConstant {
 	private ListOfMenu listOfMenu;
 	private int menuAssignId;
 	private int listOfMenuId;
+	private String fname;
+	private String lname;
+	private String email;
+	private String username;
+	private int userId;
+	
+	private Users users;
+
+	private Contact contact;
 
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -73,8 +84,11 @@ public class GroupOfMenuController implements Serializable, DbConstant {
 	JSFBoundleProvider provider = new JSFBoundleProvider();
 	UserCategoryImpl userCategoryImpl = new UserCategoryImpl();
 	MenuGroupImpl menuGroupImpl = new MenuGroupImpl();
+	UserImpl userImpl = new UserImpl();
+	ContactImpl contactImpl = new ContactImpl();
 
 	ListOfMenuImpl listOfMenuImpl = new ListOfMenuImpl();
+	LoginImpl loginImpl = new LoginImpl();
 	MenuAssignmentImpl menuAssignmentImpl = new MenuAssignmentImpl();
 
 	@SuppressWarnings("unchecked")
@@ -98,20 +112,25 @@ public class GroupOfMenuController implements Serializable, DbConstant {
 		if (menuGroupDto == null) {
 			menuGroupDto = new MenuGroupDto();
 		}
+		if (users == null) {
+			users = new Users();
+		}
 
 		try {
 			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
 			// MenuGroup menu = new MenuGroup();
 			// menu = new MenuGroup();
-//			MenuGroup menu = menuGroupImpl.getMenuGroupById(menuGroupSession.getMenuGroupId(), "menuGroupId");
-//			
-//			MenuGroupDto menuGroupDto = new MenuGroupDto();
-//			menuGroupDto.setEditable(false);
-//			menuGroupDto.setMenuGroupName(menu.getMenuGroupName());
-//			menuGroupDto.setDefaultGroupMenu(menu.getDefaulGrouptMenu());
-//			menuGroupDto.setUserCategory(menu.getUserCategory());
-//			menuGroupDtoDetails.add(menuGroupDto);
-//			// below list concern list of all users by changing their status
+			// MenuGroup menu =
+			// menuGroupImpl.getMenuGroupById(menuGroupSession.getMenuGroupId(),
+			// "menuGroupId");
+			//
+			// MenuGroupDto menuGroupDto = new MenuGroupDto();
+			// menuGroupDto.setEditable(false);
+			// menuGroupDto.setMenuGroupName(menu.getMenuGroupName());
+			// menuGroupDto.setDefaultGroupMenu(menu.getDefaulGrouptMenu());
+			// menuGroupDto.setUserCategory(menu.getUserCategory());
+			// menuGroupDtoDetails.add(menuGroupDto);
+			// // below list concern list of all users by changing their status
 			menuGroupDetails = menuGroupImpl.getListWithHQL(SELECT_MENUGROUP);
 
 			userCategoryDetails = userCategoryImpl.getListWithHQL(SELECT_USERCATEGORY);
@@ -162,6 +181,77 @@ public class GroupOfMenuController implements Serializable, DbConstant {
 			e.printStackTrace();
 		}
 
+	}
+
+	public String resetPassword() throws IOException{
+		try {
+			LOGGER.info("returing values controller EMILE EMILE EMILE EMILE EMILE EMILE EMILE EMILE EMILE EMILE");
+			Users user = new Users();
+			Contact ct = new Contact();
+
+			SendSupportEmail support = new SendSupportEmail();
+
+			// user=userImpl.getModelWithMyHQL(new String[]{"userId"}, new object []
+			// {users.getViewId()}, "from Users");
+			//users.setFname(getFname());
+			//users.setLname(getLname());
+			//users.setViewId(getUsername());
+
+			//ct = contactImpl.getModelWithMyHQL(new String[] { "email" }, new Object[] { email }, "from Contact ");
+			
+			user = userImpl.getModelWithMyHQL(new String[] { "viewId","fname","lname" }, new Object[] { username,fname,lname}, "from Users");
+			if (null != user) {
+				
+				LOGGER.info("returing values controller EMILE EMILE EMILE EMILE EMILE EMILE EMILE EMILE EMILE EMILE");
+				boolean verifyemail = support.sendResetMail(fname, lname, email);
+				// ::: end sending email action:::::::::::://
+				if (verifyemail) {
+					
+//						UserDto user2=new UserDto();
+						LOGGER.info("update  saveAction method");
+						// get all existing value but set "editable" to false
+						Users users = new Users();
+						users = userImpl.gettUserById(user.getUserId(), "userId");
+
+						LOGGER.info("here update sart for " + users + " userId " + users.getUserId());
+
+						if (user.getViewName()!=null) {
+							LOGGER.info("irya mbere "+user.getViewName());
+							users.setViewName(loginImpl.criptPassword("Rp4TOKRW"));
+							LOGGER.info("IZINA RISHYA");
+							userImpl.UpdateUsers(users);
+							LOGGER.info("IRYANYUMA: " + users.getViewName());
+						} 
+						
+					
+					LOGGER.info("returing values controller" + verifyemail);
+					setValid(true);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.email.notifications"));
+					LOGGER.info(CLASSNAME + ":::Contact Details is saved"+email);
+				} else {
+					LOGGER.info(CLASSNAME + ":::Contact Details is not saved, HITIMANA");
+					JSFMessagers.resetMessages();
+					setValid(false);
+					JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.notificationError"));
+					LOGGER.info(CLASSNAME + ":::Contact Details is not saved"+email);
+
+				}
+			} else {
+				LOGGER.info(CLASSNAME + ":::Dtata not found HITIMANA HITIMANA HITIMANA HITIMANA");
+				JSFMessagers.resetMessages();
+				setValid(false);
+				JSFMessagers.addErrorMessage(getProvider().getValue("error.server.side.notfound.email"));
+				LOGGER.info(CLASSNAME + "sivaserside validation :: email already  recorded in the system! ");
+			}
+		} catch (Exception ex) {
+			LOGGER.info(CLASSNAME + ":::MenuGroup is fail with HibernateException  error");
+			JSFMessagers.resetMessages();
+			setValid(false);
+			JSFMessagers.addErrorMessage(getProvider().getValue("com.server.side.internal.error"));
+			LOGGER.info(CLASSNAME + "" + ex.getMessage());
+			ex.printStackTrace();
+		}
+		return null;
 	}
 
 	public String saveMenuGroupInfo() throws IOException {
@@ -302,6 +392,8 @@ public class GroupOfMenuController implements Serializable, DbConstant {
 		return "/menu/ViewMenuGroup.xhtml?faces-redirect=true";
 
 	}
+	
+	
 
 	public String updateStatus(MenuGroupDto menu) {
 		LOGGER.info("update  saveAction method");
@@ -588,5 +680,86 @@ public class GroupOfMenuController implements Serializable, DbConstant {
 	public void setMenuGroupDto(MenuGroupDto menuGroupDto) {
 		this.menuGroupDto = menuGroupDto;
 	}
+
+	public String getFname() {
+		return fname;
+	}
+
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+
+	public String getLname() {
+		return lname;
+	}
+
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public Users getUsers() {
+		return users;
+	}
+
+	public void setUsers(Users users) {
+		this.users = users;
+	}
+
+	public UserImpl getUserImpl() {
+		return userImpl;
+	}
+
+	public void setUserImpl(UserImpl userImpl) {
+		this.userImpl = userImpl;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public ContactImpl getContactImpl() {
+		return contactImpl;
+	}
+
+	public void setContactImpl(ContactImpl contactImpl) {
+		this.contactImpl = contactImpl;
+	}
+
+	public LoginImpl getLoginImpl() {
+		return loginImpl;
+	}
+
+	public void setLoginImpl(LoginImpl loginImpl) {
+		this.loginImpl = loginImpl;
+	}
+	
 
 }
