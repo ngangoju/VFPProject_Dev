@@ -119,6 +119,7 @@
 														requiredMessage="#{msg['parent.task.required']}">
 														<p:ajax listener="#{mdReportActivity.repfoboard()}"
 															update="psdfViewpanel" />
+															<f:ajax onevent="showProgress" />
 
 														<f:selectItem
 															itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
@@ -162,6 +163,7 @@
 														requiredMessage="#{msg['parent.task.required']}">
 														<p:ajax listener="#{mdReportActivity.repfoboard()}"
 															update="psdfViewpanel" />
+															<f:ajax onevent="showProgress" />
 														<f:selectItem
 															itemLabel="#{msg['common.message.select.PLACEHOLDER']}"
 															itemValue="#{null}" escapeItem="true" />
@@ -269,7 +271,7 @@
 
 
 						<h:panelGroup id="chartpanel" layout="block">
-							<p:outputPanel id="toUpdates" autoUpdate="true"
+							<p:outputPanel id="toUpdates" autoUpdate="true" 
 								rendered="#{mdReportActivity.renderedchart}">
 								<h:panelGroup id="forchart" layout="block">
 
@@ -278,21 +280,20 @@
 									<h:body>
 										<script
 											src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js">
-											
 										</script>
 										<meta http-equiv="Content-Type"
 											content="text/html; charset=utf-8" />
 										<style type="text/css">
-@media ( max-width :960) {
-	.myChartDiv {
-		width: 100%;
-	}
-}
-</style>
+											@media ( max-width :960) {
+												.myChartDiv {
+													width: 100%;
+												}
+											}
+											</style>
 										<!-- <h1 style="margin-top: 150px;">Reporting Graph</h1> -->
-										<div id="orgChartContainer">
+										<!-- <div id="orgChartContainer">
 											<div id="orgChart"></div>
-										</div>
+										</div> -->
 										<div id="consoleOutput">
 											<h1 style="margin-left: 200PX">The clearance report on
 												graph</h1>
@@ -306,10 +307,9 @@
 													<div class="col-lg-8">
 
 														<h:inputText class="name" style="display:none;"
-															value="#{charController.name}"></h:inputText>
+															value="#{mdReportActivity.namess}"></h:inputText>
 													</div>
 												</div>
-
 												<!-- This is another form -->
 											</h:form>
 										</div>
@@ -317,81 +317,120 @@
 										<script
 											src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 										<script>
-											$(function() {
+						$(function Myname() {
+							var taskperform = document.getElementById(
+									'myChart').getContext('2d');
+							var replaceTaskData = $(".name")
+									.val();
+							var taskReq = replaceTaskData.replace("id", "x");
+							taskReq.replace("Rate", "y");
 
-												var j;
-												var ctx = document
-														.getElementById(
-																'myChart')
-														.getContext('2d');
-												var replacedData = $(".name")
-														.val();
-												var req = replacedData.replace(
-														"id", "x");
-												req.replace("Rate", "y");
-												console.log(req);
+							console.log(taskReq);
+							//CONCERN OVERALL TASK PROGRESS 
+							var plan = [];
+							var approved = [];
+							var rejected = [];
+							var reported = [];
+							var completed = [];
+							var failed = [];
 
-												var value = [];
-												var p = [];
-												var comp = [];
-												var labels = [];
-												function recusive(n, testData,
-														n2) {
-													if (n2 >= n) {
-														value
-																.push(testData[n].numberOfActivities);
-														p
-																.push(testData[n].approved);
-														comp
-																.push(testData[n].completed);
-														labels
-																.push(testData[n].taskName);
-														recusive(n + 1,
-																testData, n2);
+							var taskname = [];
+							function recusiveTask(n, testTaskData, n2) {
+								if (n2 >= n) {
+									plan.push(testTaskData[n].planned);
+									approved.push(testTaskData[n].approved);
+									rejected.push(testTaskData[n].rejected);
+									reported.push(testTaskData[n].reported);
+									completed.push(testTaskData[n].completed);
+									failed.push(testTaskData[n].failed);
+									taskname.push(testTaskData[n].taskName);
+									recusiveTask(n + 1, testTaskData, n2);
+								}
+							}
+
+							var testTaskData = JSON.parse($(
+									".namess").val());
+							console.log(testTaskData[0].taskName);
+							recusiveTask(0, testTaskData,
+									testTaskData.length - 1);
+							console.log(plan);
+
+							var mytaskChart = new Chart(
+									taskperform,
+									{
+										type : 'bar',
+										data : {
+											labels : taskname,
+											datasets : [
+													{
+														label : "Planned In %",
+														data : plan,
+														backgroundColor : '#92a8d1',
+													},
+													{
+														label : "Approved In %",
+														data : approved,
+														backgroundColor : 'rgba(75, 192, 192, 0.6)',
+													},
+													{
+														label : "Rejected In %",
+														data : rejected,
+														backgroundColor : 'rgba(255, 99, 132, 0.6)',
+													},
+													{
+														label : "Reported In %",
+														data : reported,
+														backgroundColor : 'rgba(255, 159, 64, 0.6)',
+													},
+													{
+														label : "Completed In %",
+														data : completed,
+														backgroundColor : 'rgba(0,128,0)',
+													},
+													{
+														label : "Failed In %",
+														data : failed,
+														backgroundColor : 'rgba(255,0,0)',
+													} ]
+										},
+										options : {
+											title : {
+												display : true,
+												fontSize : 20
+											},
+											/* scales : {
+												yAxes : [ {
+													ticks : {
+														// suggestedMin: 50,
+														suggestedMax : 100
 													}
+												} ]
+											}, */
+											legend : {
+												display : true,
+												position : 'right',
+												labels : {
+													fontColor : '#000'
 												}
+											},
 
-												var testData = JSON.parse($(
-														".name").val());
-												console
-														.log(testData[0].taskName);
-												recusive(0, testData,
-														testData.length - 1);
-												console.log(value);
+											layout : {
+												padding : {
+													left : 20,
+													right : 0,
+													bottom : 0,
+													top : 0
+												}
+											},
+											tooltips : {
+												enabled : true
+											},
 
-												var myLineChart = new Chart(
-														ctx,
-														{
-															type : 'bar',
-															data : {
-																labels : labels,
-																datasets : [
-																		{
-																			label : "Planned ",
-																			data : value,
-																			backgroundColor : '#0318CF',
-																		},
-																		{
-																			label : "Approved",
-																			data : p,
-																			backgroundColor : '#29C3BE',
-																		},
-																		{
-																			label : "Completed",
-																			data : comp,
-																			backgroundColor : '#c328a4',
-																		} ]
-															},
-															options : {
-																elements : {
-																	line : {
-																		tension : 0, // disables bezier curves
-																	}
-																}
-															}
-														});
-											});
-										</script>
+										}
+									});
+
+						});
+					</script>
 									</h:body>
 
 								</h:panelGroup>
@@ -496,13 +535,13 @@
 										</script>
 										<meta http-equiv="Content-Type"
 											content="text/html; charset=utf-8" />
-										<style type="text/css">
-		@media ( max-width :960) {
-			.myChartDiv {
-				width: 100%;
-			}
-		}
-		</style>
+																			<style type="text/css">
+											@media ( max-width :960) {
+												.myChartDiv {
+													width: 100%;
+												}
+											}
+											</style>
 										<!-- <h1 style="margin-top: 150px;">Reporting Graph</h1> -->
 										<div id="orgChartContainer">
 											<div id="orgChart"></div>
@@ -530,82 +569,123 @@
 										<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 										<script
 											src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+										
+
 										<script>
-											$(function() {
+						$(function Myname() {
+							var taskperform = document.getElementById(
+									'myChart').getContext('2d');
+							var replaceTaskData = $(".name")
+									.val();
+							var taskReq = replaceTaskData.replace("id", "x");
+							taskReq.replace("Rate", "y");
 
-												var j;
-												var ctx = document
-														.getElementById(
-																'myChart')
-														.getContext('2d');
-												var replacedData = $(".name")
-														.val();
-												var req = replacedData.replace(
-														"id", "x");
-												req.replace("Rate", "y");
-												console.log(req);
+							console.log(taskReq);
+							//CONCERN OVERALL TASK PROGRESS 
+							var plan = [];
+							var approved = [];
+							var rejected = [];
+							var reported = [];
+							var completed = [];
+							var failed = [];
 
-												var value = [];
-												var p = [];
-												var comp = [];
-												var labels = [];
-												function recusive(n, testData,
-														n2) {
-													if (n2 >= n) {
-														value
-																.push(testData[n].numberOfActivities);
-														p
-																.push(testData[n].approved);
-														comp
-																.push(testData[n].completed);
-														labels
-																.push(testData[n].taskName);
-														recusive(n + 1,
-																testData, n2);
+							var taskname = [];
+							function recusiveTask(n, testTaskData, n2) {
+								if (n2 >= n) {
+									plan.push(testTaskData[n].planned);
+									approved.push(testTaskData[n].approved);
+									rejected.push(testTaskData[n].rejected);
+									reported.push(testTaskData[n].reported);
+									completed.push(testTaskData[n].completed);
+									failed.push(testTaskData[n].failed);
+									taskname.push(testTaskData[n].taskName);
+									recusiveTask(n + 1, testTaskData, n2);
+								}
+							}
+
+							var testTaskData = JSON.parse($(
+									".name").val());
+							console.log(testTaskData[0].taskName);
+							recusiveTask(0, testTaskData,
+									testTaskData.length - 1);
+							console.log(plan);
+
+							var mytaskChart = new Chart(
+									taskperform,
+									{
+										type : 'bar',
+										data : {
+											labels : taskname,
+											datasets : [
+													{
+														label : "Planned In %",
+														data : plan,
+														backgroundColor : '#92a8d1',
+													},
+													{
+														label : "Approved In %",
+														data : approved,
+														backgroundColor : 'rgba(75, 192, 192, 0.6)',
+													},
+													{
+														label : "Rejected In %",
+														data : rejected,
+														backgroundColor : 'rgba(255, 99, 132, 0.6)',
+													},
+													{
+														label : "Reported In %",
+														data : reported,
+														backgroundColor : 'rgba(255, 159, 64, 0.6)',
+													},
+													{
+														label : "Completed In %",
+														data : completed,
+														backgroundColor : 'rgba(0,128,0)',
+													},
+													{
+														label : "Failed In %",
+														data : failed,
+														backgroundColor : 'rgba(255,0,0)',
+													} ]
+										},
+										options : {
+											title : {
+												display : true,
+												fontSize : 20
+											},
+											/* scales : {
+												yAxes : [ {
+													ticks : {
+														// suggestedMin: 50,
+														suggestedMax : 100
 													}
+												} ]
+											}, */
+											legend : {
+												display : true,
+												position : 'right',
+												labels : {
+													fontColor : '#000'
 												}
+											},
 
-												var testData = JSON.parse($(
-														".name").val());
-												console
-														.log(testData[0].taskName);
-												recusive(0, testData,
-														testData.length - 1);
-												console.log(value);
+											layout : {
+												padding : {
+													left : 20,
+													right : 0,
+													bottom : 0,
+													top : 0
+												}
+											},
+											tooltips : {
+												enabled : true
+											},
 
-												var myLineChart = new Chart(
-														ctx,
-														{
-															type : 'bar',
-															data : {
-																labels : labels,
-																datasets : [
-																		{
-																			label : "Planned ",
-																			data : value,
-																			backgroundColor : '#0318CF',
-																		},
-																		{
-																			label : "Approved",
-																			data : p,
-																			backgroundColor : '#29C3BE',
-																		},
-																		{
-																			label : "Completed",
-																			data : comp,
-																			backgroundColor : '#c328a4',
-																		} ]
-															},
-															options : {
-																elements : {
-																	line : {
-																		tension : 0, // disables bezier curves
-																	}
-																}
-															}
-														});
-											});
-										</script>
+										}
+									});
+
+						});
+					</script>
 									</h:body>
 
 								</h:panelGroup>

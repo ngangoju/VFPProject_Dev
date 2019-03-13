@@ -339,7 +339,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 			
 		Font font18 = new Font(Font.FontFamily.TIMES_ROMAN, 13, Font.BOLDITALIC, BaseColor.BLUE);
 		Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-		Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11,Font.BOLDITALIC);
+		Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11);
 		Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD,BaseColor.BLACK);
 		Date date = new Date();
 		
@@ -439,8 +439,10 @@ public class MdReportActivity implements Serializable, DbConstant {
 				setValid(true);
 			int number=1;
 			for (Object[] data : taskImpl.reportList(
-					"select t.taskName,t.endDate,t.dueDate,t.startDate,t.taskWeight,t.genericStatus,b.boardName from Task t,Board b \r\n" + 
-					"where b.boardId=t.board and b.boardId='"+selectedBoard+"' order by t.startDate" )) {
+					"select distinct tsk.taskName,tsk.endDate,tsk.dueDate,tsk.startDate,tsk.taskWeight,tsk.genericStatus,b.boardName, ass.taskAssignmentId ,\r\n" + 
+					"ass.task, ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us,Board b,StrategicPlan s \r\n" + 
+					"where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and tsk.strategicPlan=s.planId and s.genericStatus='"+ACTIVE+"' and \r\n" + 
+					"us.board='"+selectedBoard+"' and ass.genericStatus='"+ACTIVE+"'" )) {
 				
 				PdfPCell p = new PdfPCell(new Paragraph(number + "",font8));
 				p.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -510,10 +512,10 @@ public class MdReportActivity implements Serializable, DbConstant {
 		// create a heading
 		Row heading = sheet.createRow(0);
 		heading.createCell(0).setCellValue("Task Name");
-		heading.createCell(1).setCellValue("Execution Date");
-		heading.createCell(2).setCellValue("Status");
-		heading.createCell(3).setCellValue("Departement");
-		heading.createCell(4).setCellValue("Marks");
+		heading.createCell(1).setCellValue("Weight");
+		heading.createCell(2).setCellValue("Start Date");
+		heading.createCell(3).setCellValue("Due date");
+		heading.createCell(4).setCellValue("End date");
 		for (int i = 0; i < 5; i++) {
 			CellStyle cellStyle = book.createCellStyle();
 			HSSFFont font = book.createFont();
@@ -531,31 +533,28 @@ public class MdReportActivity implements Serializable, DbConstant {
 		try {
 			int i = 1;
 			for (Object[] data : taskImpl
-					.reportList("select t.taskName,t.endDate,t.genericStatus,b.boardName from Task t,Board b,Users u,"
-							+ "Activity a where t.taskId=a.task and u.userId=a.user and a.user=u.userId and b.boardId=u.board and b.boardId='"
-							+ selectedBoard + "'")) {
+					.reportList("select tsk.taskName,tsk.endDate,tsk.dueDate,tsk.startDate,tsk.taskWeight,tsk.genericStatus,b.boardName, ass.taskAssignmentId ,\r\n" + 
+							"ass.task, ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us,Board b,StrategicPlan s \r\n" + 
+							"where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and tsk.strategicPlan=s.planId and s.genericStatus='"+ACTIVE+"' and \r\n" + 
+							"us.board='"+selectedBoard+"' and ass.genericStatus='"+ACTIVE+"'")) {
 
 				Row row = sheet.createRow(i);
 				Cell cell1 = row.createCell(0);
 				cell1.setCellValue(data[0] + "");
 
 				Cell cell2 = row.createCell(1);
-				cell2.setCellValue(data[1] + "");
+				cell2.setCellValue(data[4] + "");
 
 				Cell cell3 = row.createCell(2);
-				cell3.setCellValue(data[2] + "");
+				cell3.setCellValue(data[3] + "");
 
 				Cell cell4 = row.createCell(3);
-				cell4.setCellValue(data[3] + "");
-				if (data[2].equals("active")) {
-					Cell cell5 = row.createCell(4);
-					cell5.setCellValue("5");
+				cell4.setCellValue(data[2] + "");
+				
+				Cell cell5 = row.createCell(4);
+				cell5.setCellValue(data[1] + "");
 
-				} else {
-					Cell cell5 = row.createCell(4);
-					cell5.setCellValue("0");
-
-				}
+				
 
 				i++;
 
@@ -587,8 +586,9 @@ public class MdReportActivity implements Serializable, DbConstant {
 			renderSelectedBoard=false;
 		} else if (myChoice.equalsIgnoreCase(taskchart)) {
 			renderedchart = true;
-			ChartController chart= new ChartController();
-			chart.myClearance();
+			/*ChartController chart= new ChartController();
+			chart.myClearance();*/
+			CrearanceClearanceForTheOverAll();
 			rendered = false;
 			renderTableByBoard = false;
 			renderEditedTableByBoard = false;
@@ -609,7 +609,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 		} else {
 			rendered = false;
 			renderedx = true;
-			//renderTableByBoard = true;
+			renderTableByBoard = false;
 			renderEditedTableByBoard = true;
 			renderedchart = false;
 			renderedclear = false;
@@ -669,32 +669,30 @@ public class MdReportActivity implements Serializable, DbConstant {
 								"(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)) ,\r\n" + 
 								"sum(case when (status='rejected' ) then 1 else 0 end) ,\r\n" + 
 								"sum(case when (status='Approved' ) then 1 else 0 end) , \r\n" + 
-								"sum(case when (status='Completed' ) then 1 else 0 end) ,\r\n" + 
+								"sum(case when (status='Completed' ) then 1 else 0 end) ,\r\n" +
+								"sum(case when (status='reported' ) then 1 else 0 end) ,\r\n" +
+								"sum(case when (status='failed' ) then 1 else 0 end) ,\r\n" +
 								"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)))  \r\n" + 
 								"from InstitutionReportView where board='"+selectedBoard+"'   group by mytaskName"
 				)) {
-					
 					ClearanceDto userDtos = new ClearanceDto();
 					//userDtos.setStrategicplan(data[0] + "");
 					userDtos.setTaskName(data[0] + "");
 					//userDtos.setNumberOfActivities(Integer.parseInt(data[1] + ""));
 					userDtos.setApproved(Integer.parseInt(data[3] + ""));
-					//userDtos.setPending(Integer.parseInt(data[4] + ""));*/
+					userDtos.setRejected(Integer.parseInt(data[2] + ""));
 					userDtos.setCompleted(Integer.parseInt(data[4] + ""));
+					userDtos.setReported(Integer.parseInt(data[5] + ""));
+					userDtos.setFailed(Integer.parseInt(data[6] + ""));
 					//userDtos.setRate(Double.parseDouble(data[5]+""));
 					ClearanceDtoDetails.add(userDtos);
 					this.name=new Gson().toJson(ClearanceDtoDetails);
 					LOGGER.info("tes1 1::::::::::::::::the selectesd board is" +selectedBoard);
-					
 				}	
 				return(ClearanceDtoDetails);
-				
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			
 			return null;
 		}
 		//The following method is for generating the clearance report on chart for MdReport.
@@ -711,7 +709,6 @@ public class MdReportActivity implements Serializable, DbConstant {
 								"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)))  \r\n" + 
 								"from InstitutionReportView group by mytaskName"
 				)) {
-					
 					ClearanceDto userDtos = new ClearanceDto();
 					//userDtos.setStrategicplan(data[0] + "");
 					userDtos.setTaskName(data[0] + "");
@@ -742,9 +739,15 @@ public class MdReportActivity implements Serializable, DbConstant {
 			if (selectedBoard != 0) {
 
 				activityMddtodetails = new ArrayList<ClearanceDto>();
-				for (Object[] data : taskImpl.reportList("select t.taskName,t.endDate,t.dueDate,t.startDate,t.taskWeight,t.genericStatus,b.boardName from Task t,Board b \r\n" + 
-						"where b.boardId=t.board and b.boardId='"+selectedBoard+"' order by t.startDate")) {
+				for (Object[] data : taskImpl.reportList("select tsk.taskName,tsk.endDate,tsk.dueDate,tsk.startDate,tsk.taskWeight,tsk.genericStatus,b.boardName, ass.taskAssignmentId ,\r\n" + 
+						"ass.task, ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us,Board b,StrategicPlan s \r\n" + 
+						"where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and tsk.strategicPlan=s.planId and s.genericStatus='"+ACTIVE+"' and \r\n" + 
+						"us.board='"+selectedBoard+"' and ass.genericStatus='"+ACTIVE+"'")) {
 					LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana"+data[0] + "");
+					
+					/*for (Object[] data : taskImpl.reportList("select t.taskName,t.endDate,t.dueDate,t.startDate,t.taskWeight,t.genericStatus,b.boardName from Task t,Board b \r\n" + 
+							"where b.boardId=t.board and b.boardId='"+selectedBoard+"' order by t.startDate")) {
+						LOGGER.info("ndamukunda::::::::::::::::::::::::::::::::::::::::::::::kamana"+data[0] + "");*/
 
 					ClearanceDto userDtos = new ClearanceDto();
 					userDtos.setTaskName(data[0] + "");
@@ -753,9 +756,7 @@ public class MdReportActivity implements Serializable, DbConstant {
 					userDtos.setStartDate(sdf.format(data[3]));
 					userDtos.setTaskWeight(data[4]+"");
 					userDtos.setGenericStatus(data[5] + "");
-					userDtos.setBoarName(data[3] + "");
-					
-
+					userDtos.setBoarName(data[6] + "");
 					activityMddtodetails.add(userDtos);
 				}
 				return (activityMddtodetails);
