@@ -26,10 +26,7 @@ import tres.dao.impl.StatisticsImpl;
 import tres.dao.impl.TaskAssignmentImpl;
 import tres.dao.impl.TaskImpl;
 import tres.dao.impl.UserImpl;
-import tres.domain.Activity;
-import tres.domain.Board;
-import tres.domain.BoardTemplate;
-import tres.domain.Contact;
+
 import tres.domain.InstitutionReportView;
 import tres.domain.StatGraph;
 import tres.domain.Statistics;
