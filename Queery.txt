@@ -249,6 +249,8 @@ taskName AS mytask,u.fname AS myName,a.description AS activityName,a.status AS s
  and (i.institutionId = b.institution) and (b.boardId = u.board) and (u.userId = a.user) and (a.task = t.taskId));
 =========================Querry to create view in db ---By Emma---====================
 
+
 Create view InstitutionReportView as select a.ACTIVITY_ID as'activity',a.description as 'activityName',a.status as 'status',
-t.taskId as 'taskId',t.taskName as'mytaskName',b.boardId as'board' from Activity a,Task t,Board b where a.task=t.taskId and t.board=b.boardId;
+t.taskId as 'taskId',t.taskName as'mytaskName',s.planId as 'planId',s.details as 'strategicplan',s.genericStatus as'strategicPlanStatus',b.boardId as'board' 
+from Activity a,Task t,Board b ,StrategicPlan s,TaskAssignment ass where a.task=t.taskId and t.board=b.boardId and t.strategicPlan=s.planId and ass.task=t.taskId;
 ================================Create view By RICHARD==============================================

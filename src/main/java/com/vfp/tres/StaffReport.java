@@ -122,9 +122,10 @@ public class StaffReport implements Serializable, DbConstant {
 
 	/* end class injection */
 	Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-
+	
 	// fonts
-	Font ffont0 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD, BaseColor.RED);
+	
+	Font ffont0 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD, BaseColor.BLACK);
 	Font ffont4 = new Font(Font.FontFamily.UNDEFINED, 10, Font.BOLD, BaseColor.RED);
 	Font ffont5 = new Font(Font.FontFamily.UNDEFINED, 10, Font.NORMAL, BaseColor.BLACK);
 	Font ffont2 = new Font(Font.FontFamily.UNDEFINED, 16, Font.BOLD);
@@ -307,7 +308,7 @@ public class StaffReport implements Serializable, DbConstant {
 				Font font0 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD, BaseColor.BLUE);
 				Font font1 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD, BaseColor.BLUE);
 
-				Paragraph header1 = new Paragraph("Clearance report", ffont2);
+				Paragraph header1 = new Paragraph("Performance report", ffont2);
 				header1.setAlignment(Element.ALIGN_CENTER);
 				Paragraph welcome = new Paragraph();
 				ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -333,6 +334,7 @@ public class StaffReport implements Serializable, DbConstant {
 				tableh.setWidths(new int[] { 1, 4 });
 				tableh.addCell(createImageCell(""));
 				tableh.addCell(createTextCell("TRUST ENGEENERING SOLUTION LTD"));
+				
 				document.add(tableh);
 				document.add(header1);
 				document.add(new Paragraph(
@@ -349,14 +351,14 @@ public class StaffReport implements Serializable, DbConstant {
 				document.add(new Paragraph("                                              "));
 
 				PdfPTable table = new PdfPTable(6);
-				// table.setWidths(new int[]{3, 2, 1, 1, 1, 1 ,1});
+				table.setWidths(new int[]{ 1, 4, 2, 2, 2 ,2});
 				table.setTotalWidth(PageSize.A4.getWidth());
 				table.setLockedWidth(true);
-/*
-				PdfPCell pc1 = new PdfPCell(new Paragraph(" Strategic plan", font1));
+
+				PdfPCell pc1 = new PdfPCell(new Paragraph(" No", font1));
 				pc1.setHorizontalAlignment(Element.ALIGN_CENTER);
 				pc1.setRowspan(2);
-				table.addCell(pc1);*/
+				table.addCell(pc1);
 
 				PdfPCell pc2 = new PdfPCell(new Paragraph(" Target", font1));
 				pc2.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -364,7 +366,7 @@ public class StaffReport implements Serializable, DbConstant {
 				table.addCell(pc2);
 
 				PdfPCell pc = new PdfPCell(new Paragraph("Activities", font1));
-				pc.setColspan(5);
+				pc.setColspan(4);
 				pc.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc);
 
@@ -372,11 +374,11 @@ public class StaffReport implements Serializable, DbConstant {
 				pc4.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc4);
 
-				PdfPCell pc3 = new PdfPCell(new Paragraph(" Not started", font1));
+				/*PdfPCell pc3 = new PdfPCell(new Paragraph(" Not started", font1));
 				pc3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(pc3);
+				table.addCell(pc3);*/
 
-				PdfPCell pc6 = new PdfPCell(new Paragraph(" Approved", font1));
+				PdfPCell pc6 = new PdfPCell(new Paragraph(" Pending", font1));
 				pc6.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(pc6);
 
@@ -394,17 +396,17 @@ public class StaffReport implements Serializable, DbConstant {
 				 * SubTotalEvent(totals)); table.addCell(cell); // definitions
 				 * table.setFooterRows(1);
 				 */
+				int i=1;
 
-				for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,\r\n"
-						+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
-						+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
-						+ "sum(case when (status='Appoved') then 1 else 0 end),\r\n"
-						+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
-						+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
-						+ "from InstitutionReportView group by mytaskName")) {
-					/*PdfPCell pcel1 = new PdfPCell(new Paragraph(data[0] + "", ffont5));
+				for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,(count(*)-(sum(case when (status='rejected' ) then 1 else 0 end)+sum(case when (status='Not Started' ) then 1 else 0 end))),\r\n" + 
+						"sum(case when (status='approved' ) then 1 else 0 end),\r\n" + 
+						"sum(case when (status='Completed' ) then 1 else 0 end),\r\n" + 
+						"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-(sum(case when (status='rejected' ) then 1 else 0 end)+sum(case when (status='Not Started' ) then 1 else 0 end)))) \r\n" + 
+						"from InstitutionReportView  where strategicPlanStatus='"+ACTIVE+"' group by mytaskName")) {
+					
+					PdfPCell pcel1 = new PdfPCell(new Paragraph(i+"", ffont5));
 					pcel1.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(pcel1);*/
+					table.addCell(pcel1);
 
 					PdfPCell pcel2 = new PdfPCell(new Paragraph(data[1] + "", ffont5));
 					pcel2.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -418,13 +420,14 @@ public class StaffReport implements Serializable, DbConstant {
 					PdfPCell pcel5 = new PdfPCell(new Paragraph(data[4] + "", ffont5));
 					pcel5.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel5);
-					PdfPCell pcel6 = new PdfPCell(new Paragraph(data[5] + "", ffont5));
+					/*PdfPCell pcel6 = new PdfPCell(new Paragraph(data[5] + "", ffont5));
 					pcel6.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(pcel6);
+					table.addCell(pcel6);*/
 
-					PdfPCell pcel7 = new PdfPCell(new Paragraph(data[6] + "%", ffont5));
+					PdfPCell pcel7 = new PdfPCell(new Paragraph(data[5] + "%", ffont5));
 					pcel7.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(pcel7);
+					i++;
 
 				}
 				document.add(table);

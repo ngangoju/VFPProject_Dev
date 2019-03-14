@@ -806,13 +806,11 @@ public class MdReportActivity implements Serializable, DbConstant {
 			ClearanceDtoDetailsy = new ArrayList<ClearanceDto>();
 
 			ClearanceDtoDetailsy = new ArrayList<ClearanceDto>();
-			for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,\r\n"
-					+ "(count(*)-sum(case when (status='rejected' ) then 1 else 0 end)),\r\n"
-					+ "sum(case when (status='Not Started' ) then 1 else 0 end),\r\n"
-					+ "sum(case when (status='pending' ) then 1 else 0 end),\r\n"
-					+ "sum(case when (status='Completed' ) then 1 else 0 end),\r\n"
-					+ "((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-sum(case when (status='rejected' ) then 1 else 0 end))) \r\n"
-					+ "from InstitutionReportView group by mytaskName")) {
+			for (Object[] data : institutionReportViewImpl.reportList("SELECT board,mytaskName,(count(*)-(sum(case when (status='rejected' ) then 1 else 0 end)+sum(case when (status='Not Started' ) then 1 else 0 end))),\r\n" + 
+					"sum(case when (status='Approved' ) then 1 else 0 end),\r\n" + 
+					"sum(case when (status='Completed' ) then 1 else 0 end),\r\n" + 
+					"((sum(case when (status='Completed' ) then 1 else 0 end)*100)/(count(*)-(sum(case when (status='rejected' ) then 1 else 0 end)+sum(case when (status='Not Started' ) then 1 else 0 end)))) \r\n" + 
+					"from InstitutionReportView  where strategicPlanStatus='"+ACTIVE+"' group by mytaskName")) {
                  
 				ClearanceDto userDtos = new ClearanceDto();
 
@@ -820,9 +818,9 @@ public class MdReportActivity implements Serializable, DbConstant {
 				userDtos.setTaskName(data[1] + "");
 				userDtos.setNumberOfActivities(Integer.parseInt(data[2] + ""));
 				userDtos.setApproved(Integer.parseInt(data[3] + ""));
-				userDtos.setRejected(Integer.parseInt(data[4] + ""));
-				userDtos.setCompleted(Integer.parseInt(data[5] + ""));
-				userDtos.setRate(Double.parseDouble(data[6] + ""));
+				//userDtos.setRejected(Integer.parseInt(data[4] + ""));
+				userDtos.setCompleted(Integer.parseInt(data[4] + ""));
+				userDtos.setRate(Double.parseDouble(data[5] + ""));
 				ClearanceDtoDetailsy.add(userDtos);
 
 			}
