@@ -229,7 +229,7 @@ public class StatisticsController implements Serializable, DbConstant {
 	}
 	public List<TaskAssignment>superVisorStaffTask(){
 		List<TaskAssignment> staffAssignTask = new ArrayList<TaskAssignment>();
-		for (Object[] data :taskAssignImpl.reportList("Select ass.taskAssignmentId ,ass.task, ass.user,ass.crtdDtTime from TaskAssignment ass,Task tsk,Users us,Board b,StrategicPlan s "
+		for (Object[] data :taskAssignImpl.reportList("Select ass.taskAssignmentId ,ass.task, ass.user,ass.crtdDtTime,tsk.taskWeight from TaskAssignment ass,Task tsk,Users us,Board b,StrategicPlan s "
 				+ "where tsk.taskId=ass.task and us.userId=ass.user and b.boardId=us.board and tsk.strategicPlan=s.planId and s.genericStatus='"+ACTIVE+"' and "
 				+ "us.board="+usersSession.getBoard().getBoardId()+" and ass.genericStatus='"+ACTIVE+"'")) {
 			TaskAssignment taskAssign= new TaskAssignment();
